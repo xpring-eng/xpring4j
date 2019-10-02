@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.xpring</groupId>
-    <artifactId>xrp</artifactId>
+    <artifactId>xpring4j</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -236,4 +236,11 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/xpring-eng/xpring4j</url>
+        </repository>
+    </distributionManagement>
 </project>

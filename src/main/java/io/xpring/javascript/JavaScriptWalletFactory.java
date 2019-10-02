@@ -9,13 +9,28 @@ import org.graalvm.polyglot.Value;
 import java.security.SecureRandom;
 
 public class JavaScriptWalletFactory {
+
+    private static final JavaScriptWalletFactory sharedJavaScriptWalletFactory;
+
     public static String invalidMnemonicOrDerivationPathMessage = "Invalid mnemonic or derivation path.";
+
+    static {
+        try {
+            sharedJavaScriptWalletFactory = new JavaScriptWalletFactory();
+        } catch (JavaScriptLoaderException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private Value wallet;
 
-    public JavaScriptWalletFactory() throws JavaScriptLoaderException {
+    private JavaScriptWalletFactory() throws JavaScriptLoaderException {
         Context context = JavaScriptLoader.getContext();
         this.wallet = JavaScriptLoader.loadResource("Wallet", context);
+    }
+
+    public static JavaScriptWalletFactory get() {
+        return sharedJavaScriptWalletFactory;
     }
 
     public String getDefaultDerivationPath() throws JavaScriptLoaderException {
@@ -23,19 +38,19 @@ public class JavaScriptWalletFactory {
         return getDefaultDerivationPathFunction.execute().asString();
     }
 
-    public JavaScriptWalletGenerationResult generateRandomWallet() throws JavaScriptLoaderException {
-        byte [] randomBytes = randomBytes(16);
+    public JavaScriptWalletGenerationResult generateRandomWallet() {
+        byte[] randomBytes = randomBytes(16);
         String hexRandomBytes = Utils.byteArrayToHex(randomBytes);
 
         Value walletGenerationResult = this.wallet.invokeMember("generateRandomWallet", hexRandomBytes);
         return new JavaScriptWalletGenerationResult(
-                walletGenerationResult.getMember("mnemonic").asString(),
-                walletGenerationResult.getMember("derivationPath").asString(),
-                new JavaScriptWallet(walletGenerationResult.getMember("wallet"))
+            walletGenerationResult.getMember("mnemonic").asString(),
+            walletGenerationResult.getMember("derivationPath").asString(),
+            new JavaScriptWallet(walletGenerationResult.getMember("wallet"))
         );
     }
 
-    public JavaScriptWallet walletFromSeed(String seed) throws JavaScriptLoaderException, XpringKitException {
+    public JavaScriptWallet walletFromSeed(String seed) throws XpringKitException {
         Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed);
         if (wallet.isNull()) {
             throw new XpringKitException("Invalid Seed");
@@ -43,7 +58,8 @@ public class JavaScriptWalletFactory {
         return new JavaScriptWallet(wallet);
     }
 
-    public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath) throws JavaScriptLoaderException, XpringKitException {
+    public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath)
+        throws XpringKitException {
         try {
             Value wallet;
             if (derivationPath != null) {
@@ -62,7 +78,7 @@ public class JavaScriptWalletFactory {
         }
     }
 
-    private byte [] randomBytes(int numBytes) {
+    private byte[] randomBytes(int numBytes) {
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[numBytes];
         random.nextBytes(bytes);
