@@ -42,7 +42,7 @@ Xpring is working on building a zero-config way for XRP node users to deploy and
 A wallet is a fundamental model object in Xpring4j which provides key management, address derivation, and signing functionality. Wallets can be derived from either a seed or a mnemonic and derivation path. You can also choose to generate a new random HD wallet.
 
 #### Wallet Derivation
-Xpring-JS can derive a wallet from a seed or it can derive a hierarchical deterministic wallet (HDWallet) from a mnemonic and derivation path.
+Xpring4j can derive a wallet from a seed or it can derive a hierarchical deterministic wallet (HDWallet) from a mnemonic and derivation path.
 
 ##### Hierarchical Deterministic Wallets
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you can pass `null` for the derivation path and have a default path be used instead.
