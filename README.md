@@ -155,7 +155,7 @@ import java.math.BigInteger;
 XpringClient xpringClient = new XpringClient();
 
 String address = "rHsMGQEkVNJmpGWs8XUBoTBiAAbwxZN5v3";
-BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
+BigInteger balance = xpringClient.getBalance(address);
 System.out.println(balance); // Logs a balance in drops of XRP
 ```
 
