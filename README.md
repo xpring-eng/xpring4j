@@ -198,11 +198,7 @@ Utils.isValidAddress(bitcoinAddress); // returns false
 To get set up for development on XpringJ, run the following commands:
 
 ```shell
-# Clone repository
-$ git clone https://github.com/xpring-eng/xpring4j.git
+# Clone repository and submodules
+$ git clone --recursive https://github.com/xpring-eng/xpring4j.git
 $ cd xpring4j
-
-# Pull submodules
-$ git submodule init
-$ git submodule update --remote --recursive --init
 ```
