@@ -8,6 +8,7 @@
     <artifactId>xpring4j</artifactId>
     <version>1.0.0</version>
     <name>xpring4j</name>
+    <url>https://github.com/xpring-eng/xpring4j</url>
     <description>
         Xpring4j provides a Java based SDK for interacting with Xpring Platform (XRP/ILP)
     </description>
@@ -278,12 +279,36 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.3</version>
+                <configuration>
+                    <excludePackageNames>
+                        <!--
+                        The protocol buffer compiler doesn't generate javadoc. Exclude all protocol buffers from documentation.
+                        TODO(keefer): Protocol buffers should be in a separate package. Update this when there is a separate java package.
+                        -->
+                        io.xpring:io.xpring.xrpl
+                    </excludePackageNames>
+                    <source>8</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

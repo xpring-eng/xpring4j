@@ -54,6 +54,8 @@ public class JavaScriptLoader {
 
     /**
      * Load a JavaScript Context that contains all the JavaScript code for the Xpring ecosystem.
+     *
+     * @return a new JavaScript context.
      */
     public static Context getContext() {
         return context;
@@ -62,7 +64,9 @@ public class JavaScriptLoader {
     /**
      * Load a class or function from the default entry point on the given JSContext.
      *
-     * This method loads value from `EntryPoint.default.<value>`.
+     * This method loads value from `EntryPoint.default.$value`.
+     *
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      *
      * @param resourceName: The name of the resource to load.
      * @param context:      The context load from.
@@ -83,6 +87,8 @@ public class JavaScriptLoader {
     /**
      * Load a class or function as a keyed subscript from the given value.
      *
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
+     *
      * @param resourceName: The name of the resource to load.
      * @param value:        The value to load a resource from.
      *
@@ -97,4 +103,3 @@ public class JavaScriptLoader {
         return resource;
     }
 }
-

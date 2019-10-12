@@ -15,6 +15,8 @@ public class JavaScriptWallet {
 
     /**
      * Initialize a new JavaScriptWallet.
+     *
+     * @param javaScriptWallet A reference to a JavaScript based wallet.
      */
     public JavaScriptWallet(Value javaScriptWallet) {
         this.javaScriptWallet = javaScriptWallet;
@@ -22,6 +24,8 @@ public class JavaScriptWallet {
 
     /**
      * Returns the address of this `JavaScriptWallet`.
+     *
+     * @return The address of the wallet.
      */
     public String getAddress() {
         return javaScriptWallet.invokeMember("getAddress").asString();
@@ -29,6 +33,8 @@ public class JavaScriptWallet {
 
     /**
      * Returns the public key of this `JavaScriptWallet`.
+     *
+     * @return A hexadecimal encoded representation of the wallet's public key.
      */
     public String getPublicKey() {
         return javaScriptWallet.invokeMember("getPublicKey").asString();
@@ -36,6 +42,8 @@ public class JavaScriptWallet {
 
     /**
      * Returns the private key of this `JavaScriptWallet`.
+     *
+     * @return A hexadecimal encoded representation of the wallet's private key.
      */
     public String getPrivateKey() {
         return javaScriptWallet.invokeMember("getPrivateKey").asString();
@@ -43,6 +51,8 @@ public class JavaScriptWallet {
 
     /**
      * Sign the given input.
+     *
+     * @throws XpringKitException If the input was not valid.
      *
      * @param input The input to sign.
      *

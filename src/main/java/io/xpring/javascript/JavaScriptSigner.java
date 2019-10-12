@@ -29,8 +29,12 @@ public class JavaScriptSigner {
 
     /**
      * Sign the given transaction with the given wallet.
+     *
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
+     *
      * @param transaction The transaction to sign.
      * @param wallet The wallet that will sign the transaction.
+     *
      * @return A `SignedTransaction`.
      */
     public SignedTransaction signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
@@ -51,6 +55,12 @@ public class JavaScriptSigner {
 
     /**
      * Convert a JavaScript SignedTransaction to a native SignedTransaction.
+     *
+     * @throws InvalidProtocolBufferException An exception if the javascript protocol buffer was invalid or could not be converted.
+     *
+     * @param javaScriptSignedTransaction A reference to a SignedTransaction in JavaScript .
+     *
+     * @return A `SignedTransaction` from the JavaScript based input.
      */
     private SignedTransaction valueToSignedTransaction(Value javaScriptSignedTransaction) throws InvalidProtocolBufferException {
         Value javaScriptSignedTransactionBytes = javaScriptSignedTransaction.invokeMember("serializeBinary");
@@ -61,6 +71,10 @@ public class JavaScriptSigner {
 
     /**
      * Convert a Wallet to a JavaScript Value reference.
+     *
+     * @param wallet The wallet to convert.
+     *
+     * @return A reference to the analagous wallet in JavaScript.
      */
     private Value walletToJavaScriptValue(Wallet wallet) {
         String publicKeyHex = wallet.getPublicKey();
@@ -70,6 +84,10 @@ public class JavaScriptSigner {
 
     /**
      * Convert a Transaction to a JavaScript Value reference.
+     *
+     * @param transaction The Transaction to convert.
+     *
+     * @return A reference to the analagous transaction in JavaScript.
      */
     private Value transactionToJavaScriptValue(Transaction transaction) {
         byte [] transactionBytes = transaction.toByteArray();
