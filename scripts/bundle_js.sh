@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 WORKING_DIR=$(pwd)
-OUTPUT_DIR=./src/main/Resources/
+OUTPUT_DIR=./src/main/resources/
 
 echo "Bundling JS"
 cd xpring-common-js

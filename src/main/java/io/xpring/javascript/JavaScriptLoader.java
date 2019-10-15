@@ -4,7 +4,7 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
-import java.io.File;
+import java.io.InputStreamReader;
 
 /**
  * Provides helper functions for loading JavaScript
@@ -21,7 +21,7 @@ public class JavaScriptLoader {
     /**
      * The name of the JavaScript file to load from.
      */
-    private static final String javaScriptResourceName = "src/main/Resources/bundled.js";
+    private static final String javaScriptResourceName = "/bundled.js";
 
     /**
      * The identifier for the JavaScript language in the graalvm polygot package.
@@ -33,11 +33,10 @@ public class JavaScriptLoader {
     static {
         // Load the bundled JavaScript file.
         context = Context.create(javaScriptLanguageIdentifier);
-        File file;
         Source source;
-        try {
-            file = new File(javaScriptResourceName);
-            source = Source.newBuilder(javaScriptLanguageIdentifier, file).build();
+        try (InputStreamReader reader =
+                 new InputStreamReader(JavaScriptLoader.class.getResourceAsStream(javaScriptResourceName))) {
+            source = Source.newBuilder(javaScriptLanguageIdentifier, reader, javaScriptResourceName).build();
         } catch (Exception exception) {
             throw new RuntimeException(missingBundledJS);
         }
