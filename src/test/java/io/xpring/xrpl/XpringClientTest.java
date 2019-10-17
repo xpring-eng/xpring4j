@@ -54,6 +54,6 @@ public class XpringClientTest {
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
 
         SubmitSignedTransactionResponse response = xpringClient.send(amount, "rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn", wallet);
-        assertThat(response.getEngineResultMessage()).isEqual("The transaction was applied. Only final in a validated ledger.");
+        assertThat(response.getEngineResultMessage()).isEqualTo("The transaction was applied. Only final in a validated ledger.");
     }
 }
