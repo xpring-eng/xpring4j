@@ -22,4 +22,6 @@ jobs:
             git submodule update --remote
       - protobuf/install
 
-      - run: mvn clean test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
+      - run: mvn clean test jacoco:report
+
+      - run: bash <(curl -s https://codecov.io/bash)
