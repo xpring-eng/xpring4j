@@ -23,7 +23,7 @@ public class JavaScriptWallet {
     }
 
     /**
-     * Returns the address of this `JavaScriptWallet`.
+     * Returns the address of this JavaScriptWallet.
      *
      * @return The address of the wallet.
      */
@@ -32,7 +32,7 @@ public class JavaScriptWallet {
     }
 
     /**
-     * Returns the public key of this `JavaScriptWallet`.
+     * Returns the public key of this JavaScriptWallet.
      *
      * @return A hexadecimal encoded representation of the wallet's public key.
      */
@@ -41,7 +41,7 @@ public class JavaScriptWallet {
     }
 
     /**
-     * Returns the private key of this `JavaScriptWallet`.
+     * Returns the private key of this JavaScriptWallet.
      *
      * @return A hexadecimal encoded representation of the wallet's private key.
      */

@@ -30,12 +30,12 @@ public class JavaScriptSigner {
     /**
      * Sign the given transaction with the given wallet.
      *
-     * @param transaction The transaction to sign.
-     * @param wallet The wallet that will sign the transaction.
+     * @param transaction The {@link Transaction} to sign.
+     * @param wallet The {@link Wallet} that will sign the transaction.
      *
-     * @return A `SignedTransaction`.
+     * @return A {@link SignedTransaction}.
      *
-     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
+     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
      */
     public SignedTransaction signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
         // Convert Java objects into JavaScript objects.
@@ -54,13 +54,13 @@ public class JavaScriptSigner {
     }
 
     /**
-     * Convert a JavaScript SignedTransaction to a native SignedTransaction.
+     * Convert a JavaScript SignedTransaction to a native {@link SignedTransaction}.
      *
-     * @param javaScriptSignedTransaction A reference to a SignedTransaction in JavaScript .
+     * @param javaScriptSignedTransaction A reference to a SignedTransaction in JavaScript.
      *
-     * @return A `SignedTransaction` from the JavaScript based input.
+     * @return A {@link SignedTransaction} from the JavaScript based input.
      *
-     * @throws InvalidProtocolBufferException An exception if the javascript protocol buffer was invalid or could not be converted.
+     * @throws {@link InvalidProtocolBufferException} An exception if the javascript protocol buffer was invalid or could not be converted.
      */
     private SignedTransaction valueToSignedTransaction(Value javaScriptSignedTransaction) throws InvalidProtocolBufferException {
         Value javaScriptSignedTransactionBytes = javaScriptSignedTransaction.invokeMember("serializeBinary");
@@ -72,7 +72,7 @@ public class JavaScriptSigner {
     /**
      * Convert a Wallet to a JavaScript Value reference.
      *
-     * @param wallet The wallet to convert.
+     * @param wallet The {@link Wallet} to convert.
      *
      * @return A reference to the analagous wallet in JavaScript.
      */
@@ -85,7 +85,7 @@ public class JavaScriptSigner {
     /**
      * Convert a Transaction to a JavaScript Value reference.
      *
-     * @param transaction The Transaction to convert.
+     * @param transaction The {@link Transaction} to convert.
      *
      * @return A reference to the analagous transaction in JavaScript.
      */

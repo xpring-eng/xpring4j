@@ -71,7 +71,7 @@ public class JavaScriptLoader {
      *
      * @return A `Value` referring to the requested resource.
      *
-     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
+     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Context context) throws JavaScriptLoaderException {
         Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint").getMember("default");
@@ -90,9 +90,9 @@ public class JavaScriptLoader {
      * @param resourceName: The name of the resource to load.
      * @param value:        The value to load a resource from.
      *
-     * @return A `Value` referring to the requested resource.
+     * @return A {@link Value} referring to the requested resource.
      *
-     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
+     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Value value) throws JavaScriptLoaderException {
         Value resource = value.getMember(resourceName);
