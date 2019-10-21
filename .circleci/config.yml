@@ -19,7 +19,7 @@ jobs:
           name: "Pull Submodules"
           command: |
             git submodule init
-            git submodule update --remote
+            git submodule update
       - protobuf/install
 
-      - run: mvn clean test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
+      - run: mvn clean test jacoco:report coveralls:report
