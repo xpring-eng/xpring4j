@@ -25,7 +25,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testIsvValidAddressInvalidClassicAddressChecksum() {
+    public void testIvValidAddressInvalidClassicAddressChecksum() {
         assertFalse(Utils.isValidAddress("rU6K7V3Po4sBBBBBaU29sesqs2qTQJWDw1"));
     }
 
