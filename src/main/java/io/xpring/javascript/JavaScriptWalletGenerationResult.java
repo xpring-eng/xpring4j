@@ -13,8 +13,7 @@ public class JavaScriptWalletGenerationResult {
     /** The newly generated Wallet. */
     private JavaScriptWallet wallet;
     public JavaScriptWallet getWallet()  { return wallet; }
-
-
+    
     public JavaScriptWalletGenerationResult(String mnemonic, String derivationPath, JavaScriptWallet wallet) {
         this.mnemonic = mnemonic;
         this.derivationPath = derivationPath;

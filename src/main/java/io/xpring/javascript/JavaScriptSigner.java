@@ -30,12 +30,12 @@ public class JavaScriptSigner {
     /**
      * Sign the given transaction with the given wallet.
      *
-     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
-     *
      * @param transaction The transaction to sign.
      * @param wallet The wallet that will sign the transaction.
      *
      * @return A `SignedTransaction`.
+     *
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public SignedTransaction signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
         // Convert Java objects into JavaScript objects.
@@ -56,11 +56,11 @@ public class JavaScriptSigner {
     /**
      * Convert a JavaScript SignedTransaction to a native SignedTransaction.
      *
-     * @throws InvalidProtocolBufferException An exception if the javascript protocol buffer was invalid or could not be converted.
-     *
      * @param javaScriptSignedTransaction A reference to a SignedTransaction in JavaScript .
      *
      * @return A `SignedTransaction` from the JavaScript based input.
+     *
+     * @throws InvalidProtocolBufferException An exception if the javascript protocol buffer was invalid or could not be converted.
      */
     private SignedTransaction valueToSignedTransaction(Value javaScriptSignedTransaction) throws InvalidProtocolBufferException {
         Value javaScriptSignedTransactionBytes = javaScriptSignedTransaction.invokeMember("serializeBinary");

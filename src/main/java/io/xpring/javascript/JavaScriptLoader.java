@@ -66,12 +66,12 @@ public class JavaScriptLoader {
      *
      * This method loads value from `EntryPoint.default.$value`.
      *
-     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
-     *
      * @param resourceName: The name of the resource to load.
      * @param context:      The context load from.
      *
      * @return A `Value` referring to the requested resource.
+     *
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Context context) throws JavaScriptLoaderException {
         Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint").getMember("default");
@@ -87,12 +87,12 @@ public class JavaScriptLoader {
     /**
      * Load a class or function as a keyed subscript from the given value.
      *
-     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
-     *
      * @param resourceName: The name of the resource to load.
      * @param value:        The value to load a resource from.
      *
      * @return A `Value` referring to the requested resource.
+     *
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Value value) throws JavaScriptLoaderException {
         Value resource = value.getMember(resourceName);
