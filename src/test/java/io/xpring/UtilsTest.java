@@ -11,8 +11,13 @@ import org.junit.Test;
 public class UtilsTest {
 
     @Test
-    public void testIsValidAddressValidAddress() {
+    public void testIsValidAddressValidClassicAddress() {
         assertTrue(Utils.isValidAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
+    }
+
+    @Test
+    public void testIsValidAddressValidXAddress() {
+        assertTrue(Utils.isValidAddress("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi"));
     }
 
     @Test
@@ -21,8 +26,13 @@ public class UtilsTest {
     }
 
     @Test
-    public void testIsvValidAddressInvlalidChecksum() {
+    public void testIsvValidAddressInvalidClassicAddressChecksum() {
         assertFalse(Utils.isValidAddress("rU6K7V3Po4sBBBBBaU29sesqs2qTQJWDw1"));
+    }
+
+    @Test
+    public void testIsvValidAddressInvalidXAddressChecksum() {
+        assertFalse(Utils.isValidAddress("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHI"));
     }
 
     @Test
