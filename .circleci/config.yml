@@ -22,4 +22,4 @@ jobs:
             git submodule update
       - protobuf/install
 
-      - run: mvn clean test jacoco:report coveralls:report
+      - run: mvn clean test jacoco:report
