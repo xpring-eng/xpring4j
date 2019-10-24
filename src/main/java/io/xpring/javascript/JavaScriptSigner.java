@@ -35,7 +35,7 @@ public class JavaScriptSigner {
      *
      * @return A {@link SignedTransaction}.
      *
-     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public SignedTransaction signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
         // Convert Java objects into JavaScript objects.

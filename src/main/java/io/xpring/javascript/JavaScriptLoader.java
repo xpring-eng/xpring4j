@@ -70,7 +70,7 @@ public class JavaScriptLoader {
      *
      * @return A `Value` referring to the requested resource.
      *
-     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Context context) throws JavaScriptLoaderException {
         Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint").getMember("default");
@@ -91,7 +91,7 @@ public class JavaScriptLoader {
      *
      * @return A {@link Value} referring to the requested resource.
      *
-     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
+     * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Value value) throws JavaScriptLoaderException {
         Value resource = value.getMember(resourceName);

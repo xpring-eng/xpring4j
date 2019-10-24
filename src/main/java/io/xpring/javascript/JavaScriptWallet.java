@@ -56,7 +56,7 @@ public class JavaScriptWallet {
      *
      * @return A hexadecimal encoded signature.
      *
-     * @throws InvalidProtocolBufferException An exception if the javascript protocol buffer was invalid or could not be converted.
+     * @throws XpringKitException An exception if the input could not be signed.
      */
     public String sign(String input) throws XpringKitException {
         Value javaScriptSignature = javaScriptWallet.invokeMember("sign", input);
