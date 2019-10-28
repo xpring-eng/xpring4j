@@ -15,27 +15,35 @@ public class JavaScriptWallet {
 
     /**
      * Initialize a new JavaScriptWallet.
+     *
+     * @param javaScriptWallet A reference to a JavaScript based wallet.
      */
     public JavaScriptWallet(Value javaScriptWallet) {
         this.javaScriptWallet = javaScriptWallet;
     }
 
     /**
-     * Returns the address of this `JavaScriptWallet`.
+     * Returns the address of this JavaScriptWallet.
+     *
+     * @return The address of the wallet.
      */
     public String getAddress() {
         return javaScriptWallet.invokeMember("getAddress").asString();
     }
 
     /**
-     * Returns the public key of this `JavaScriptWallet`.
+     * Returns the public key of this JavaScriptWallet.
+     *
+     * @return A hexadecimal encoded representation of the wallet's public key.
      */
     public String getPublicKey() {
         return javaScriptWallet.invokeMember("getPublicKey").asString();
     }
 
     /**
-     * Returns the private key of this `JavaScriptWallet`.
+     * Returns the private key of this JavaScriptWallet.
+     *
+     * @return A hexadecimal encoded representation of the wallet's private key.
      */
     public String getPrivateKey() {
         return javaScriptWallet.invokeMember("getPrivateKey").asString();
@@ -47,6 +55,8 @@ public class JavaScriptWallet {
      * @param input The input to sign.
      *
      * @return A hexadecimal encoded signature.
+     *
+     * @throws InvalidProtocolBufferException An exception if the javascript protocol buffer was invalid or could not be converted.
      */
     public String sign(String input) throws XpringKitException {
         Value javaScriptSignature = javaScriptWallet.invokeMember("sign", input);

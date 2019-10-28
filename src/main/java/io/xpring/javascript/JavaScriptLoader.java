@@ -53,6 +53,8 @@ public class JavaScriptLoader {
 
     /**
      * Load a JavaScript Context that contains all the JavaScript code for the Xpring ecosystem.
+     *
+     * @return a new JavaScript context.
      */
     public static Context getContext() {
         return context;
@@ -61,12 +63,14 @@ public class JavaScriptLoader {
     /**
      * Load a class or function from the default entry point on the given JSContext.
      *
-     * This method loads value from `EntryPoint.default.<value>`.
+     * This method loads value from `EntryPoint.default.$value`.
      *
      * @param resourceName: The name of the resource to load.
      * @param context:      The context load from.
      *
      * @return A `Value` referring to the requested resource.
+     *
+     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Context context) throws JavaScriptLoaderException {
         Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint").getMember("default");
@@ -85,7 +89,9 @@ public class JavaScriptLoader {
      * @param resourceName: The name of the resource to load.
      * @param value:        The value to load a resource from.
      *
-     * @return A `Value` referring to the requested resource.
+     * @return A {@link Value} referring to the requested resource.
+     *
+     * @throws {@link JavaScriptLoaderException} An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Value value) throws JavaScriptLoaderException {
         Value resource = value.getMember(resourceName);
@@ -96,4 +102,3 @@ public class JavaScriptLoader {
         return resource;
     }
 }
-

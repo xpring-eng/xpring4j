@@ -23,3 +23,5 @@ jobs:
       - protobuf/install
 
       - run: mvn clean test jacoco:report
+      
+      - run: bash <(curl -s https://codecov.io/bash)
