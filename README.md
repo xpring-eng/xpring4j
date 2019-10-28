@@ -24,14 +24,14 @@ Xpring4j utilizes two components to access Xpring:
 
 ### Client-Side Library
 
-Xpring4j is available as a Java Library. Simply add the following to your `pom.xml`:
+Xpring4j is available as a Java library from Maven Central. Simply add the following to your `pom.xml`:
 
 ```xml
-<repository>
-  <id>github</id>
-  <name>GitHub xpring-eng Apache Maven Packages</name>
-  <url>https://maven.pkg.github.com/xpring-eng</url>
-</repository>
+<dependency>
+  <groupId>io.xpring</groupId>
+  <artifactId>xpring4j</artifactId>
+  <version>1.0.0</version>
+</dependency>
 ```
 
 ### Server-Side Component
