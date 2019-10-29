@@ -9,10 +9,14 @@ import org.junit.Test;
  * Unit tests for {@link Utils}.
  */
 public class UtilsTest {
+    @Test
+    public void testIsValidAddressValidClassicAddress() {
+        assertTrue(Utils.isValidAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
+    }
 
     @Test
-    public void testIsValidAddressValidAddress() {
-        assertTrue(Utils.isValidAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
+    public void testIsValidAddressValidXAddress() {
+        assertTrue(Utils.isValidAddress("XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi"));
     }
 
     @Test
@@ -21,7 +25,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void testIsvValidAddressInvlalidChecksum() {
+    public void testIsValidAddressInvalidClassicAddressChecksum() {
         assertFalse(Utils.isValidAddress("rU6K7V3Po4sBBBBBaU29sesqs2qTQJWDw1"));
     }
 
