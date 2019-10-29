@@ -9,7 +9,7 @@ public class JavaScriptUtils {
     private Value javaScriptUtils;
 
     /**
-     * @throws {@link JavaScriptLoaderException} If the underlying JavaScript was missing or malformed.
+     * @throws JavaScriptLoaderException If the underlying JavaScript was missing or malformed.
      */
     public JavaScriptUtils() throws JavaScriptLoaderException {
         Context context = JavaScriptLoader.getContext();
