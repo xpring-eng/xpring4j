@@ -2,6 +2,8 @@ package io.xpring;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -42,5 +44,42 @@ public class UtilsTest {
     @Test
     public void testIsValidAddressTooShort() {
         assertFalse(Utils.isValidAddress("rU6K7V3Po4s2qTQJWDw1"));
+    }
+
+    @Test
+    public void testEncodeXAddressWithAddressAndTag() {
+        // GIVEN a valid classic address and a tag.
+        String address =  "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
+        long tag = 12345;
+
+        // WHEN they are encoded to an x-address.
+        String xAddress = Utils.encodeXAddress(address, tag);
+
+        // THEN the result is as expected.
+        assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT");
+    }
+
+    @Test
+    public void testEncodeXAddressWithAddressOnly() {
+        // GIVEN a valid classic address.
+        String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
+
+        // WHEN it is encoded to an x-address.
+        String xAddress = Utils.encodeXAddress(address, null);
+
+        // THEN the result is as expected.
+        assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH");
+    }
+
+    @Test
+    public void testEncodeXAddressWithInvalidAddress() {
+        // GIVEN an invalid address.
+        String address = "xrp";
+
+        // WHEN it is encoded to an x-address.
+        String xAddress = Utils.encodeXAddress(address, null);
+
+        // THEN the result is undefined.
+        assertNull(xAddress);
     }
 }

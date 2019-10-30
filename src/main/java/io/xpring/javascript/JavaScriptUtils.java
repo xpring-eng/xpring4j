@@ -5,7 +5,9 @@ import org.graalvm.polyglot.Value;
 
 /** Provides JavaScript based Utils functionality. */
 public class JavaScriptUtils {
-    /** An reference to the underlying JavaScript Utils object. */
+    /**
+     * An reference to the underlying JavaScript Utils object.
+     */
     private Value javaScriptUtils;
 
     /**
@@ -27,5 +29,19 @@ public class JavaScriptUtils {
     public boolean isValidAddress(String address) {
         Value isValidAddressFunction = javaScriptUtils.getMember("isValidAddress");
         return isValidAddressFunction.execute(address).asBoolean();
+    }
+
+    /**
+     * Encode the given classic address and tag into an x-address.
+     *
+     * @param classicAddress A classic address to encode.
+     * @param tag            An optional tag to encode.
+     * @return A new x-address if inputs were valid, otherwise undefined.
+     * @see https://xrpaddress.info/
+     */
+    public String encodeXAddress(String classicAddress, Long tag) {
+        Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
+        Value result = tag != null ? encodeXAddressFunction.execute(classicAddress, tag) : encodeXAddressFunction.execute(classicAddress);
+        return result.asString();
     }
 }
