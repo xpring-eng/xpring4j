@@ -46,31 +46,31 @@ public class UtilsTest {
 
     @Test
     public void testIsValidXAddressWithValidXAddress() {
-        assertTrue(Utils.isValidXAddresds("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"));
+        assertTrue(Utils.isValidXAddress("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"));
     }
 
     @Test
     public void testIsValidXAddressWithValidClassicAddress() {
-        assertFalse(Utils.isValidXAddresds("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
+        assertFalse(Utils.isValidXAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
     }
 
     @Test
     public void testIsValidXAddressWithInvalidAddress() {
-        assertFalse(Utils.isValidXAddresds("xrp"));
+        assertFalse(Utils.isValidXAddress("xrp"));
     }
 
     @Test
     public void testIsValidClassicAddressWithValidXAddress() {
-        assertFalse(Utils.isValidXAddresds("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"));
+        assertFalse(Utils.isValidClassicAddress("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"));
     }
 
     @Test
     public void testIsValidClassicAddressWithValidClassicAddress() {
-        assertTrue(Utils.isValidXAddresds("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
+        assertTrue(Utils.isValidClassicAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"));
     }
 
     @Test
     public void testIsValidClassicAddressWithInvalidAddress() {
-        assertFalse(Utils.isValidXAddresds("xrp"));
+        assertFalse(Utils.isValidClassicAddress("xrp"));
     }
 }

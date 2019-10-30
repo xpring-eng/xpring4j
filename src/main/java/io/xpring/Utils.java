@@ -88,7 +88,7 @@ public class Utils {
      * @param address: A string to validate
      * @return A boolean indicating whether this was a valid clssic address.
      */
-    public boolean isValidClassicAddress(String address) {
+    public static boolean isValidClassicAddress(String address) {
         try {
             return javaScriptUtils.isValidClassicAddress(address);
         } catch (Exception exception) {
