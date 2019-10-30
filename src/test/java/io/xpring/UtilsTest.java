@@ -58,4 +58,19 @@ public class UtilsTest {
     public void testIsValidXAddressWithInvalidAddress() {
         assertFalse(Utils.isValidXAddresds("xrp"))
     }
+
+    @Test
+    public void testIsValidClassicAddressWithValidXAddress() {
+        assertFalse(Utils.isValidXAddresds("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"))
+    }
+
+    @Test
+    public void testIsValidClassicAddressWithValidClassicAddress() {
+        assertTrue(Utils.isValidXAddresds("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"))
+    }
+
+    @Test
+    public void testIsValidClassicAddressWithInvalidAddress() {
+        assertFalse(Utils.isValidXAddresds("xrp"))
+    }
 }
