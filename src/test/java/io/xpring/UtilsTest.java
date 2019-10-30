@@ -43,4 +43,19 @@ public class UtilsTest {
     public void testIsValidAddressTooShort() {
         assertFalse(Utils.isValidAddress("rU6K7V3Po4s2qTQJWDw1"));
     }
+
+    @Test
+    public void testIsValidXAddressWithValidXAddress() {
+        assertTrue(Utils.isValidXAddresds("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"))
+    }
+
+    @Test
+    public void testIsValidXAddressWithValidClassicAddress() {
+        assertFalse(Utils.isValidXAddresds("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1"))
+    }
+
+    @Test
+    public void testIsValidXAddressWithInvalidAddress() {
+        assertFalse(Utils.isValidXAddresds("xrp"))
+    }
 }

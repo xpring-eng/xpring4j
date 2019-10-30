@@ -28,4 +28,15 @@ public class JavaScriptUtils {
         Value isValidAddressFunction = javaScriptUtils.getMember("isValidAddress");
         return isValidAddressFunction.execute(address).asBoolean();
     }
+
+    /**
+     * Check if the given string is a valid X-Address on the XRP Ledger.
+     *
+     * @param address: A string to validate
+     * @return A boolean indicating whether this was a valid X-Address.
+     */
+    public boolean isValidXAddress(String address) {
+        Value isValidAddressFunction = javaScriptUtils.getMember("isValidXAddress");
+        return isValidAddressFunction.execute(address).asBoolean();
+    }
 }
