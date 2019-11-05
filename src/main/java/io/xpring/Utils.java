@@ -83,4 +83,12 @@ public class Utils {
             throw new RuntimeException(exception);
         }
     }
+
+    public static ClassicAddress decodeXAddress(String xAddress) {
+        try {
+            return javaScriptUtils.decodeXAddress(xAddress);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 }

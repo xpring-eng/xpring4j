@@ -82,4 +82,42 @@ public class UtilsTest {
         // THEN the result is undefined.
         assertNull(xAddress);
     }
+
+    @Test
+    public void testDecodeXAddressWithValidAddressContainingTag() {
+        // GIVEN an x-address that encodes an address and a tag.
+        String address = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT";
+
+        // WHEN it is decoded to an classic address
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        // Then the decoded address and tag as are expected.
+        assertEquals(classicAddress.getAddress(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        assertEquals(classicAddress.getTag(), new Long(12345));
+    }
+
+    @Test
+    public void testDecodeXAddressWithValidAddressWithoutTag() {
+        // GIVEN an x-address that encodes an address and no tag.
+        String address = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
+
+        // WHEN it is decoded to an classic address
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        // Then the decoded address and tag as are expected.
+        assertEquals(classicAddress.getAddress(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        assertNull(classicAddress.getTag());
+    }
+
+    @Test
+    public void testDecodeXAddressWithInvalidXAddress() {
+        // GIVEN an invalid address
+        String address = "xrp";
+
+        // WHEN it is decoded to an classic address
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        // Then the decoded address is undefined.
+        assertNull(classicAddress);
+    }
 }

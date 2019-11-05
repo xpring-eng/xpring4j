@@ -2,6 +2,7 @@ package io.xpring.javascript;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
+import io.xpring.ClassicAddress;
 
 /** Provides JavaScript based Utils functionality. */
 public class JavaScriptUtils {
@@ -36,12 +37,26 @@ public class JavaScriptUtils {
      *
      * @param classicAddress A classic address to encode.
      * @param tag            An optional tag to encode.
-     * @return A new x-address if inputs were valid, otherwise undefined.
+     * @return A new x-address if inputs were valid, otherwise null.
      * @see https://xrpaddress.info/
      */
     public String encodeXAddress(String classicAddress, Long tag) {
         Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
         Value result = tag != null ? encodeXAddressFunction.execute(classicAddress, tag) : encodeXAddressFunction.execute(classicAddress);
         return result.asString();
+    }
+
+    public ClassicAddress decodeXAddress(String xAddress) {
+        Value decodeXAddressFunction = javaScriptUtils.getMember("decodeXAddress");
+        Value result = decodeXAddressFunction.execute(xAddress);
+
+        if (result.isNull()) {
+            return null;
+        }
+
+        String address = result.getMember("address").asString();
+        Long tag = result.getMember("tag").isNull() ? null : result.getMember("tag").asLong();
+
+        return new ClassicAddress(address, tag);
     }
 }
