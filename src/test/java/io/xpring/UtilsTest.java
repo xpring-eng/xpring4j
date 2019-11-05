@@ -46,10 +46,10 @@ public class UtilsTest {
     @Test
     public void testEncodeXAddressWithAddressAndTag() {
         // GIVEN a valid classic address and a tag.
-        String address =  "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
+        String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
         long tag = 12345;
 
-        // WHEN they are encoded to an x-address.
+        // WHEN they are encoded to an X-Address.
         String xAddress = Utils.encodeXAddress(address, tag);
 
         // THEN the result is as expected.
@@ -61,7 +61,7 @@ public class UtilsTest {
         // GIVEN a valid classic address.
         String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
 
-        // WHEN it is encoded to an x-address.
+        // WHEN it is encoded to an X-Address.
         String xAddress = Utils.encodeXAddress(address, null);
 
         // THEN the result is as expected.
@@ -73,19 +73,19 @@ public class UtilsTest {
         // GIVEN an invalid address.
         String address = "xrp";
 
-        // WHEN it is encoded to an x-address.
+        // WHEN it is encoded to an X-Address.
         String xAddress = Utils.encodeXAddress(address, null);
 
-        // THEN the result is undefined.
+        // THEN the result is null.
         assertNull(xAddress);
     }
 
     @Test
     public void testDecodeXAddressWithValidAddressContainingTag() {
-        // GIVEN an x-address that encodes an address and a tag.
+        // GIVEN an X-Address that encodes an address and a tag.
         String address = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT";
 
-        // WHEN it is decoded to an classic address
+        // WHEN it is decoded to an classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
         // Then the decoded address and tag as are expected.
@@ -95,10 +95,10 @@ public class UtilsTest {
 
     @Test
     public void testDecodeXAddressWithValidAddressWithoutTag() {
-        // GIVEN an x-address that encodes an address and no tag.
+        // GIVEN an X-Address that encodes an address and no tag.
         String address = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
 
-        // WHEN it is decoded to an classic address
+        // WHEN it is decoded to an classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
         // Then the decoded address and tag as are expected.
@@ -108,13 +108,13 @@ public class UtilsTest {
 
     @Test
     public void testDecodeXAddressWithInvalidXAddress() {
-        // GIVEN an invalid address
+        // GIVEN an invalid address.
         String address = "xrp";
 
-        // WHEN it is decoded to an classic address
+        // WHEN it is decoded to an classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
-        // Then the decoded address is undefined.
+        // Then the decoded address is null.
         assertNull(classicAddress);
     }
 

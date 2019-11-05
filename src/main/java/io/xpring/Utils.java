@@ -69,11 +69,11 @@ public class Utils {
     }
 
     /**
-     * Encode the given classic address and tag into an x-address.
+     * Encode the given classic address and tag into an X-Address.
      *
      * @param classicAddress A classic address to encode.
-     * @param tag            An optional tag to encode.
-     * @return A new x-address if inputs were valid, otherwise undefined.
+     * @param tag An optional tag to encode.
+     * @return A new X-Address if inputs were valid, otherwise undefined.
      * @see https://xrpaddress.info/
      */
     public static String encodeXAddress(String classicAddress, Long tag) {
@@ -98,6 +98,13 @@ public class Utils {
         }
     }
 
+    /**
+     * Decode a {@link ClassicAddress} from a given X-Address.
+     *
+     * @param xAddress The xAddress to decode.
+     * @return A {@link ClassicAddress} if the inputs were valid, otherwise null.
+     * @see https://xrpaddress.info/
+     */
     public static ClassicAddress decodeXAddress(String xAddress) {
         try {
             return javaScriptUtils.decodeXAddress(xAddress);

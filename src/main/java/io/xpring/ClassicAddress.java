@@ -5,7 +5,7 @@ import io.xpring.javascript.JavaScriptWalletFactory;
 import io.xpring.javascript.JavaScriptWalletGenerationResult;
 
 /**
- * Represents classic address components on the XRP Ledger
+ * Represents classic address components on the XRP Ledger.
  */
 public class ClassicAddress {
     /** The address component of the classic address. */
