@@ -27,7 +27,7 @@ public class Utils {
     /**
      * Check if the given string is a valid address on the XRP Ledger.
      *
-     * @param address: A string to validate
+     * @param address A string to validate
      *
      * @return A boolean indicating whether this was a valid address.
      */
@@ -84,9 +84,52 @@ public class Utils {
         }
     }
 
+    /**
+     * Check if the given string is a valid X-Address on the XRP Ledger.
+     *
+     * @param address A string to validate
+     * @return A boolean indicating whether this was a valid X-Address.
+     */
+    public static boolean isValidXAddress(String address) {
+        try {
+            return javaScriptUtils.isValidXAddress(address);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
     public static ClassicAddress decodeXAddress(String xAddress) {
         try {
             return javaScriptUtils.decodeXAddress(xAddress);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    /**
+     * Check if the given string is a valid classic address on the XRP Ledger.
+     *
+     * @param address A string to validate
+     * @return A boolean indicating whether this was a valid clssic address.
+     */
+    public static boolean isValidClassicAddress(String address) {
+        try {
+            return javaScriptUtils.isValidClassicAddress(address);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }          
+          
+    /**
+     * Convert the given transaction blob to a transaction hash.
+     *
+     * @param transactionBlobHex  A hexadecimal encoded transaction blob.
+     * @return  A hex encoded hash if the input was valid, otherwise null.
+     */
+    public static String toTransactionHash(String transactionBlobHex) {
+        try {
+            return javaScriptUtils.toTransactionHash(transactionBlobHex);
+>>>>>>> master
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
