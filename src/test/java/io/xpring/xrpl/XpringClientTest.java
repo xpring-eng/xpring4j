@@ -53,7 +53,7 @@ public class XpringClientTest {
         BigInteger amount = new BigInteger("1");
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
 
-        SubmitSignedTransactionResponse response = xpringClient.send(amount, "rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn", wallet);
-        assertThat(response.getEngineResultMessage()).isEqualTo("The transaction was applied. Only final in a validated ledger.");
+        String transactionHash = xpringClient.send(amount, "rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn", wallet);
+        assertThat(transactionHash).isNotNull();
     }
 }
