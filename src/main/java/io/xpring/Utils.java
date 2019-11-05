@@ -129,7 +129,6 @@ public class Utils {
     public static String toTransactionHash(String transactionBlobHex) {
         try {
             return javaScriptUtils.toTransactionHash(transactionBlobHex);
->>>>>>> master
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
