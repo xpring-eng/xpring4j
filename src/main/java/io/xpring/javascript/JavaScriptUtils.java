@@ -38,7 +38,7 @@ public class JavaScriptUtils {
      * @param classicAddress A classic address to encode.
      * @param tag An optional tag to encode.
      * @return A new X-Address if inputs were valid, otherwise null.
-     * @see https://xrpaddress.info/
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
     public String encodeXAddress(String classicAddress, Long tag) {
         Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
@@ -51,7 +51,7 @@ public class JavaScriptUtils {
      *
      * @param xAddress The xAddress to decode.
      * @return A {@link ClassicAddress} if the inputs were valid, otherwise null.
-     * @see https://xrpaddress.info/
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
     public ClassicAddress decodeXAddress(String xAddress) {
         Value decodeXAddressFunction = javaScriptUtils.getMember("decodeXAddress");

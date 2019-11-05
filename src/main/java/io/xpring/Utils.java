@@ -74,11 +74,26 @@ public class Utils {
      * @param classicAddress A classic address to encode.
      * @param tag An optional tag to encode.
      * @return A new X-Address if inputs were valid, otherwise undefined.
-     * @see https://xrpaddress.info/
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
     public static String encodeXAddress(String classicAddress, Long tag) {
         try {
             return javaScriptUtils.encodeXAddress(classicAddress, tag);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    /**
+     * Decode a {@link ClassicAddress} from a given X-Address.
+     *
+     * @param xAddress The xAddress to decode.
+     * @return A {@link ClassicAddress} if the inputs were valid, otherwise null.
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
+     */
+    public static ClassicAddress decodeXAddress(String xAddress) {
+        try {
+            return javaScriptUtils.decodeXAddress(xAddress);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
@@ -93,21 +108,6 @@ public class Utils {
     public static boolean isValidXAddress(String address) {
         try {
             return javaScriptUtils.isValidXAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
-    }
-
-    /**
-     * Decode a {@link ClassicAddress} from a given X-Address.
-     *
-     * @param xAddress The xAddress to decode.
-     * @return A {@link ClassicAddress} if the inputs were valid, otherwise null.
-     * @see https://xrpaddress.info/
-     */
-    public static ClassicAddress decodeXAddress(String xAddress) {
-        try {
-            return javaScriptUtils.decodeXAddress(xAddress);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
