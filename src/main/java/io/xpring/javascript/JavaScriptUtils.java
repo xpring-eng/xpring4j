@@ -5,7 +5,9 @@ import org.graalvm.polyglot.Value;
 
 /** Provides JavaScript based Utils functionality. */
 public class JavaScriptUtils {
-    /** An reference to the underlying JavaScript Utils object. */
+    /**
+     * An reference to the underlying JavaScript Utils object.
+     */
     private Value javaScriptUtils;
 
     /**
@@ -49,5 +51,17 @@ public class JavaScriptUtils {
     public boolean isValidClassicAddress(String address) {
         Value isValidClassicAddressFunction = javaScriptUtils.getMember("isValidClassicAddress");
         return isValidClassicAddressFunction.execute(address).asBoolean();
+    }
+
+    /**
+     * Convert the given transaction blob to a transaction hash.
+     *
+     * @param transactionBlobHex  A hexadecimal encoded transaction blob.
+     * @return  A hex encoded hash if the input was valid, otherwise null.
+     */
+    public String toTransactionHash(String transactionBlobHex) {
+        Value transactionBlobToTransactionHashFunction = javaScriptUtils.getMember("transactionBlobToTransactionHash");
+        Value hash = transactionBlobToTransactionHashFunction.execute(transactionBlobHex);
+        return hash.isNull() ? null : hash.toString();
     }
 }

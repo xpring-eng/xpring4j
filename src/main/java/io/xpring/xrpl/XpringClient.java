@@ -13,6 +13,7 @@ import io.xpring.Signer;
 import io.xpring.SubmitSignedTransactionRequestOuterClass.SubmitSignedTransactionRequest;
 import io.xpring.SubmitSignedTransactionResponseOuterClass.SubmitSignedTransactionResponse;
 import io.xpring.TransactionOuterClass.Transaction;
+import io.xpring.Utils;
 import io.xpring.Wallet;
 import io.xpring.XrpAmount.XRPAmount;
 import io.xpring.xrpl.XRPLedgerGrpc.XRPLedgerBlockingStub;
@@ -62,7 +63,7 @@ public class XpringClient {
     }
 
     /**
-     * Get the balance of the specified
+     * Get the balance of the specified account on the XRP Ledger.
      *
      * @param xrplAccountAddress The address to retrieve the balance for.
      *
@@ -82,7 +83,7 @@ public class XpringClient {
         return new BigInteger(result.getBalance().getDrops());
     }
 
-    public SubmitSignedTransactionResponse send(
+    public String send(
         final BigInteger amount,
         final String destinationAddress,
         final Wallet sourceWallet
@@ -106,7 +107,8 @@ public class XpringClient {
         SubmitSignedTransactionRequest submitSignedTransactionRequest = SubmitSignedTransactionRequest.newBuilder()
                 .setSignedTransaction(signedTransaction).build();
 
-        return stub.submitSignedTransaction(submitSignedTransactionRequest);
+        SubmitSignedTransactionResponse response = stub.submitSignedTransaction(submitSignedTransactionRequest);
+        return Utils.toTransactionHash(response.getTransactionBlob());
     }
 
     /**

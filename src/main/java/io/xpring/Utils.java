@@ -94,5 +94,19 @@ public class Utils {
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
+    }          
+          
+    /**
+     * Convert the given transaction blob to a transaction hash.
+     *
+     * @param transactionBlobHex  A hexadecimal encoded transaction blob.
+     * @return  A hex encoded hash if the input was valid, otherwise null.
+     */
+    public static String toTransactionHash(String transactionBlobHex) {
+        try {
+            return javaScriptUtils.toTransactionHash(transactionBlobHex);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

@@ -1,9 +1,8 @@
 package io.xpring;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link Utils}.
@@ -72,5 +71,19 @@ public class UtilsTest {
     @Test
     public void testIsValidClassicAddressWithInvalidAddress() {
         assertFalse(Utils.isValidClassicAddress("xrp"));
+    }
+
+    @Test
+    public void testToTransactionHashValidTransaction() {
+        String transactionBlob = "120000240000000561400000000000000168400000000000000C73210261BBB9D242440BA38375DAD79B146E559A9DFB99055F7077DA63AE0D643CA0E174473045022100C8BB1CE19DFB1E57CDD60947C5D7F1ACD10851B0F066C28DBAA3592475BC3808022056EEB85CC8CD41F1F1CF635C244943AD43E3CF0CE1E3B7359354AC8A62CF3F488114F8942487EDB0E4FD86190BF8DCB3AF36F608839D83141D10E382F805CD7033CC4582D2458922F0D0ACA6";
+        String expectedHash = "7B9F6E019C2A79857427B4EF968D77D683AC84F5A880830955D7BDF47F120667";
+        String hash = Utils.toTransactionHash(transactionBlob);
+        assertEquals(hash, expectedHash);
+    }
+
+    @Test
+    public void testToTransactionHashInvalidTransaction() {
+        String hash = Utils.toTransactionHash("xrp");
+        assertNull(hash, null);
     }
 }
