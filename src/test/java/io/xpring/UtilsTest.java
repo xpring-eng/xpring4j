@@ -48,9 +48,10 @@ public class UtilsTest {
         // GIVEN a valid classic address and a tag.
         String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
         long tag = 12345;
+        ClassicAddress classicAddress = new ClassicAddress(address, tag);
 
         // WHEN they are encoded to an X-Address.
-        String xAddress = Utils.encodeXAddress(address, tag);
+        String xAddress = Utils.encodeXAddress(classicAddress);
 
         // THEN the result is as expected.
         assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT");
@@ -58,11 +59,11 @@ public class UtilsTest {
 
     @Test
     public void testEncodeXAddressWithAddressOnly() {
-        // GIVEN a valid classic address.
-        String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
+        // GIVEN a valid classic address without a tag.
+        ClassicAddress classicAddress = new ClassicAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
 
         // WHEN it is encoded to an X-Address.
-        String xAddress = Utils.encodeXAddress(address, null);
+        String xAddress = Utils.encodeXAddress(classicAddress);
 
         // THEN the result is as expected.
         assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH");
@@ -71,10 +72,10 @@ public class UtilsTest {
     @Test
     public void testEncodeXAddressWithInvalidAddress() {
         // GIVEN an invalid address.
-        String address = "xrp";
+        ClassicAddress classicAddress = new ClassicAddress("xrp");
 
         // WHEN it is encoded to an X-Address.
-        String xAddress = Utils.encodeXAddress(address, null);
+        String xAddress = Utils.encodeXAddress(classicAddress);
 
         // THEN the result is null.
         assertNull(xAddress);

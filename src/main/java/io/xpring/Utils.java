@@ -69,16 +69,15 @@ public class Utils {
     }
 
     /**
-     * Encode the given classic address and tag into an X-Address.
+     * Encode the given {@link ClassicAddress} and tag into an X-Address.
      *
-     * @param classicAddress A classic address to encode.
-     * @param tag An optional tag to encode.
+     * @param classicAddress A {@link ClassicAddress} to encode
      * @return A new X-Address if inputs were valid, otherwise undefined.
      * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
-    public static String encodeXAddress(String classicAddress, Long tag) {
+    public static String encodeXAddress(ClassicAddress classicAddress) {
         try {
-            return javaScriptUtils.encodeXAddress(classicAddress, tag);
+            return javaScriptUtils.encodeXAddress(classicAddress);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }

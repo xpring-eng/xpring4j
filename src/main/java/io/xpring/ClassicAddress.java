@@ -15,7 +15,16 @@ public class ClassicAddress {
     private Long tag;
 
     /**
-     * Initialize a new classic address.
+     * Initialize a new classic address without a tag.
+     *
+     * @param address The address component of a classic address.
+     */
+    public ClassicAddress(String address) {
+        this(address, null);
+    }
+
+    /**
+     * Initialize a new classic address with a tag.
      *
      * @param address The address component of a classic address.
      * @param tag The tag component of a classic address.

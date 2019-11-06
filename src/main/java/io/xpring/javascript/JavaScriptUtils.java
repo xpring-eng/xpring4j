@@ -33,16 +33,17 @@ public class JavaScriptUtils {
     }
 
     /**
-     * Encode the given classic address and tag into an X-Address.
+     * Encode the given {@link ClassicAddress} and tag into an X-Address.
      *
-     * @param classicAddress A classic address to encode.
-     * @param tag An optional tag to encode.
+     * @param classicAddress A {@link ClassicAddress} to encode
      * @return A new X-Address if inputs were valid, otherwise null.
      * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
-    public String encodeXAddress(String classicAddress, Long tag) {
+    public String encodeXAddress(ClassicAddress classicAddress) {
         Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
-        Value result = tag != null ? encodeXAddressFunction.execute(classicAddress, tag) : encodeXAddressFunction.execute(classicAddress);
+        Value result = classicAddress.getTag() != null ?
+                encodeXAddressFunction.execute(classicAddress.getAddress(), classicAddress.getTag()) :
+                encodeXAddressFunction.execute(classicAddress.getAddress());
         return result.asString();
     }
 
