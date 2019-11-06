@@ -14,7 +14,7 @@ public class WalletTest {
     @Test
     public void testGenerateWalletFromSeed() throws XpringKitException {
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
-        assertEquals(wallet.getAddress(), "rByLcEZ7iwTBAK8FfjtpFuT7fCzt4kF4r2");
+        assertEquals(wallet.getAddress(), "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8");
     }
 
     @Test
@@ -45,7 +45,7 @@ public class WalletTest {
 
         assertEquals(wallet.getPublicKey(), "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE");
         assertEquals(wallet.getPrivateKey(), "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4");
-        assertEquals(wallet.getAddress(), "rHsMGQEkVNJmpGWs8XUBoTBiAAbwxZN5v3");
+        assertEquals(wallet.getAddress(), "XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class WalletTest {
 
         assertEquals(wallet.getPublicKey(), "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE");
         assertEquals(wallet.getPrivateKey(), "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4");
-        assertEquals(wallet.getAddress(), "rHsMGQEkVNJmpGWs8XUBoTBiAAbwxZN5v3");
+        assertEquals(wallet.getAddress(), "XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class WalletTest {
 
         assertEquals(wallet.getPublicKey(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89");
         assertEquals(wallet.getPrivateKey(), "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389");
-        assertEquals(wallet.getAddress(), "r3AgF9mMBFtaLhKcg96weMhbbEFLZ3mx17");
+        assertEquals(wallet.getAddress(), "X7uRz9jfzHUFEjZTZ7rMVzFuTGZTHWcmkKjvGkNqVbfMhca");
     }
 
     @Test
