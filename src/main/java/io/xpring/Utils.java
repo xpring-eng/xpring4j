@@ -32,11 +32,7 @@ public class Utils {
      * @return A boolean indicating whether this was a valid address.
      */
     public static boolean isValidAddress(String address) {
-        try {
-            return javaScriptUtils.isValidAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.isValidAddress(address);
     }
 
     /**
@@ -76,11 +72,7 @@ public class Utils {
      * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
     public static String encodeXAddress(ClassicAddress classicAddress) {
-        try {
-            return javaScriptUtils.encodeXAddress(classicAddress);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.encodeXAddress(classicAddress);
     }
 
     /**
@@ -91,11 +83,7 @@ public class Utils {
      * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
      */
     public static ClassicAddress decodeXAddress(String xAddress) {
-        try {
-            return javaScriptUtils.decodeXAddress(xAddress);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.decodeXAddress(xAddress);
     }
 
     /**
@@ -105,11 +93,7 @@ public class Utils {
      * @return A boolean indicating whether this was a valid X-Address.
      */
     public static boolean isValidXAddress(String address) {
-        try {
-            return javaScriptUtils.isValidXAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.isValidXAddress(address);
     }
 
     /**
@@ -119,12 +103,8 @@ public class Utils {
      * @return A boolean indicating whether this was a valid clssic address.
      */
     public static boolean isValidClassicAddress(String address) {
-        try {
-            return javaScriptUtils.isValidClassicAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
-    }          
+        return javaScriptUtils.isValidClassicAddress(address);
+    }
           
     /**
      * Convert the given transaction blob to a transaction hash.
@@ -133,10 +113,6 @@ public class Utils {
      * @return  A hex encoded hash if the input was valid, otherwise null.
      */
     public static String toTransactionHash(String transactionBlobHex) {
-        try {
-            return javaScriptUtils.toTransactionHash(transactionBlobHex);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.toTransactionHash(transactionBlobHex);
     }
 }
