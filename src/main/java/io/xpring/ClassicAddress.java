@@ -3,52 +3,22 @@ package io.xpring;
 import io.xpring.javascript.JavaScriptWallet;
 import io.xpring.javascript.JavaScriptWalletFactory;
 import io.xpring.javascript.JavaScriptWalletGenerationResult;
+import org.immutables.value.Value;
+
+import java.util.Optional;
 
 /**
  * Represents classic address components on the XRP Ledger.
  */
-public class ClassicAddress {
-    /** The address component of the classic address. */
-    private String address;
-
-    /** The tag component of the classic address. */
-    private Long tag;
+@Value.Immutable
+public abstract class ClassicAddress {
+    /**
+     * The address component of the classic address.
+     */
+    public abstract String address();
 
     /**
-     * Initialize a new classic address without a tag.
-     *
-     * @param address The address component of a classic address.
+     * The tag component of the classic address.
      */
-    public ClassicAddress(String address) {
-        this(address, null);
-    }
-
-    /**
-     * Initialize a new classic address with a tag.
-     *
-     * @param address The address component of a classic address.
-     * @param tag The tag component of a classic address.
-     */
-    public ClassicAddress(String address, Long tag) {
-        this.address = address;
-        this.tag = tag;
-    }
-
-    /**
-     * Returns the address of the classic address.
-     *
-     * @return The address component of the classic address.
-     */
-    public String getAddress() {
-        return this.address;
-    }
-
-    /**
-     * Returns the tag of the classic address.
-     *
-     * @return The tag component of the classic address.
-     */
-    public Long getTag() {
-        return this.tag;
-    }
+    public abstract Optional<Long> tag();
 }

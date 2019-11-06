@@ -48,7 +48,7 @@ public class UtilsTest {
         // GIVEN a valid classic address and a tag.
         String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
         long tag = 12345;
-        ClassicAddress classicAddress = new ClassicAddress(address, tag);
+        ClassicAddress classicAddress = ImmutableClassicAddress.builder().address(address).tag(tag).build();
 
         // WHEN they are encoded to an X-Address.
         String xAddress = Utils.encodeXAddress(classicAddress);
@@ -60,7 +60,7 @@ public class UtilsTest {
     @Test
     public void testEncodeXAddressWithAddressOnly() {
         // GIVEN a valid classic address without a tag.
-        ClassicAddress classicAddress = new ClassicAddress("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        ClassicAddress classicAddress = ImmutableClassicAddress.builder().address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1").build();
 
         // WHEN it is encoded to an X-Address.
         String xAddress = Utils.encodeXAddress(classicAddress);
@@ -72,7 +72,7 @@ public class UtilsTest {
     @Test
     public void testEncodeXAddressWithInvalidAddress() {
         // GIVEN an invalid address.
-        ClassicAddress classicAddress = new ClassicAddress("xrp");
+        ClassicAddress classicAddress = ImmutableClassicAddress.builder().address("xrp").build();
 
         // WHEN it is encoded to an X-Address.
         String xAddress = Utils.encodeXAddress(classicAddress);
@@ -90,8 +90,8 @@ public class UtilsTest {
         ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
         // Then the decoded address and tag as are expected.
-        assertEquals(classicAddress.getAddress(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
-        assertEquals(classicAddress.getTag(), new Long(12345));
+        assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        assertEquals(classicAddress.tag().get(), new Long(12345));
     }
 
     @Test
@@ -103,8 +103,8 @@ public class UtilsTest {
         ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
         // Then the decoded address and tag as are expected.
-        assertEquals(classicAddress.getAddress(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
-        assertNull(classicAddress.getTag());
+        assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        assertFalse(classicAddress.tag().isPresent());
     }
 
     @Test
