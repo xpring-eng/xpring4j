@@ -3,13 +3,13 @@ package io.xpring.xrpl;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.AccountInfoOuterClass.AccountInfo;
-import io.xpring.SubmitSignedTransactionResponseOuterClass.SubmitSignedTransactionResponse;
 import io.xpring.Wallet;
 import io.xpring.XpringKitException;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.rules.ExpectedException;
 
 import java.math.BigInteger;
 
@@ -18,9 +18,15 @@ import java.math.BigInteger;
  */
 public class XpringClientTest {
 
-    private static final String XRPL_ADDRESS = "rD7zai6QQQVvWc39ZVAhagDgtH5xwEoeXD";
+    private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
+    /** Drops of XRP to send. */
+    private static final BigInteger AMOUNT = new BigInteger("1");
+
+    /** The seed for a wallet with funds on the XRP Ledger test net. */
+    private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB"
+
     private XpringClient xpringClient;
 
     @Before
@@ -29,9 +35,19 @@ public class XpringClientTest {
     }
 
     @Test
-    public void getBalanceTest() {
+    public void getBalanceTest() throws XpringKitException {
         BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
+    }
+
+    @Test
+    public void getBalanceWithClassicAddressTest() throws XpringKitException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+
+        // WHEN the balance for the classic address is retrieved THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        xpringClient.getBalance(classicAddress.address());
     }
 
     @Test
@@ -50,10 +66,20 @@ public class XpringClientTest {
 
     @Test
     public void sendXRPTest() throws XpringKitException {
-        BigInteger amount = new BigInteger("1");
-        Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
+        Wallet wallet = new Wallet(WALLET_SEED);
 
-        String transactionHash = xpringClient.send(amount, "rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn", wallet);
+        String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
         assertThat(transactionHash).isNotNull();
+    }
+
+    @Test
+    public void sendXRPTestWithClassicAddress() throws XpringKitException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent to the classic address THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
 }
