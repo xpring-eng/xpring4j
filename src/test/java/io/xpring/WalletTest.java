@@ -7,7 +7,6 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 
 public class WalletTest {
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
