@@ -11,14 +11,14 @@ import java.util.Optional;
  * Represents classic address components on the XRP Ledger.
  */
 @Value.Immutable
-public abstract class ClassicAddress {
+public interface ClassicAddress {
     /**
      * The address component of the classic address.
      */
-    public abstract String address();
+    public String address();
 
     /**
      * The tag component of the classic address.
      */
-    public abstract Optional<Long> tag();
+    public Optional<Long> tag();
 }
