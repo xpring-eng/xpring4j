@@ -25,7 +25,7 @@ public class XpringClientTest {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     /** The seed for a wallet with funds on the XRP Ledger test net. */
-    private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB"
+    private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
 
     private XpringClient xpringClient;
 
