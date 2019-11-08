@@ -3,21 +3,22 @@ package io.xpring.xrpl;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.xpring.AccountInfoOuterClass.AccountInfo;
-import io.xpring.FeeOuterClass.Fee;
-import io.xpring.GetAccountInfoRequestOuterClass.GetAccountInfoRequest;
-import io.xpring.GetFeeRequestOuterClass.GetFeeRequest;
-import io.xpring.PaymentOuterClass.Payment;
-import io.xpring.SignedTransactionOuterClass.SignedTransaction;
+import io.xpring.proto.AccountInfo;
+import io.xpring.proto.Fee;
+import io.xpring.proto.GetAccountInfoRequest;
+import io.xpring.proto.GetFeeRequest;
+import io.xpring.proto.Payment;
+import io.xpring.proto.SignedTransaction;
 import io.xpring.Signer;
-import io.xpring.SubmitSignedTransactionRequestOuterClass.SubmitSignedTransactionRequest;
-import io.xpring.SubmitSignedTransactionResponseOuterClass.SubmitSignedTransactionResponse;
-import io.xpring.TransactionOuterClass.Transaction;
+import io.xpring.proto.SubmitSignedTransactionRequest;
+import io.xpring.proto.SubmitSignedTransactionResponse;
+import io.xpring.proto.Transaction;
 import io.xpring.Utils;
 import io.xpring.Wallet;
 import io.xpring.XpringKitException;
-import io.xpring.XrpAmount.XRPAmount;
-import io.xpring.xrpl.XRPLedgerGrpc.XRPLedgerBlockingStub;
+import io.xpring.proto.XRPAmount;
+import io.xpring.proto.XRPLedgerAPIGrpc;
+import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class XpringClient {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // Channel is the abstraction to connect to a service endpoint
-    private final XRPLedgerBlockingStub stub;
+    private final XRPLedgerAPIBlockingStub stub;
 
     /**
      * No-args Constructor.
@@ -59,7 +60,7 @@ public class XpringClient {
     XpringClient(final ManagedChannel channel) {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
-        this.stub = XRPLedgerGrpc.newBlockingStub(channel);
+        this.stub = XRPLedgerAPIGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -114,7 +115,7 @@ public class XpringClient {
             .setSequence(accountInfo.getSequence())
             .setPayment(Payment.newBuilder()
                 .setDestination(destinationAddress)
-                .setXRPAmount(XRPAmount.newBuilder().setDrops(amount.toString()).build())
+                .setXrpAmount(XRPAmount.newBuilder().setDrops(amount.toString()).build())
                 .build())
             .setSigningPublicKeyHex(sourceWallet.getPublicKey())
             .build();

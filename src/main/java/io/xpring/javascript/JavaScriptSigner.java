@@ -1,16 +1,13 @@
 package io.xpring.javascript;
 
-import static io.xpring.TransactionOuterClass.Transaction;
-import static io.xpring.SignedTransactionOuterClass.SignedTransaction;
+import io.xpring.proto.Transaction;
+import io.xpring.proto.SignedTransaction;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.oracle.truffle.js.runtime.array.TypedArray;
 import io.xpring.Utils;
 import io.xpring.Wallet;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
-
-import javax.annotation.Signed;
 
 /** Provides JavaScript based Signing functionality. */
 public class JavaScriptSigner {

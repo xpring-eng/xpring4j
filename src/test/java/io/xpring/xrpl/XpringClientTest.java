@@ -2,7 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.AccountInfoOuterClass.AccountInfo;
+import io.xpring.proto.AccountInfo;
 import io.xpring.Wallet;
 import io.xpring.XpringKitException;
 import org.junit.Before;
