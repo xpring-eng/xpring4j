@@ -82,7 +82,7 @@ public class Wallet {
      * @return A hexadecimal encoded signature.
      * @throws XpringKitException If the input is malformed.
      */
-    public String sign(String input) throws XpringKitExceptiaon {
+    public String sign(String input) throws XpringKitException {
         return javaScriptWallet.sign(input);
     }
 
