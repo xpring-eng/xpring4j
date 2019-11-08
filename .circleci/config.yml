@@ -22,5 +22,5 @@ jobs:
             git submodule update
       - protobuf/install
 
-      - run: mvn clean test jacoco:report
+      - run: mvn clean verify jacoco:report
       - run: bash <(curl -s https://codecov.io/bash)
