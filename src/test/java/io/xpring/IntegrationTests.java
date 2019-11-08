@@ -1,26 +1,22 @@
-package io.xpring.xrpl;
+package io.xpring;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.xrpl.XpringClient;
 import io.xpring.proto.AccountInfo;
-import io.xpring.proto.SubmitSignedTransactionResponse;
 import io.xpring.Wallet;
 import io.xpring.XpringKitException;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 
 /**
- * Unit tests for {@link XpringClient}.
+ * Integration tests for Xpring4J.
  */
-public class XpringClientTest {
-
+public class IntegrationTests {
     private static final String XRPL_ADDRESS = "rD7zai6QQQVvWc39ZVAhagDgtH5xwEoeXD";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     private XpringClient xpringClient;
 
     @Before
@@ -32,20 +28,6 @@ public class XpringClientTest {
     public void getBalanceTest() {
         BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
-    }
-
-    @Test
-    public void getFeeTest() {
-        BigInteger balance = xpringClient.getCurrentFeeInDrops();
-        assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Fee should have been positive");
-    }
-
-    @Test
-    public void getAccountInfo() {
-        AccountInfo accountInfo = xpringClient.getAccountInfo(XRPL_ADDRESS);
-        assertThat(new BigInteger(accountInfo.getBalance().getDrops()))
-            .isGreaterThan(BigInteger.ONE)
-            .withFailMessage("Balance should have been positive");
     }
 
     @Test
