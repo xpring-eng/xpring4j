@@ -3,8 +3,8 @@ package io.xpring;
 import io.xpring.Wallet;
 import io.xpring.javascript.JavaScriptSigner;
 
-import static io.xpring.TransactionOuterClass.Transaction;
-import static io.xpring.SignedTransactionOuterClass.SignedTransaction;
+import io.xpring.proto.Transaction;
+import io.xpring.proto.SignedTransaction;
 
 public class Signer {
     /** Please do not instantiate this static utility class. */
