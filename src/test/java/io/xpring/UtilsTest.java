@@ -44,6 +44,82 @@ public class UtilsTest {
     }
 
     @Test
+    public void testEncodeXAddressWithAddressAndTag() {
+        // GIVEN a valid classic address and a tag.
+        String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
+        long tag = 12345;
+        ClassicAddress classicAddress = ImmutableClassicAddress.builder().address(address).tag(tag).build();
+
+        // WHEN they are encoded to an X-Address.
+        String xAddress = Utils.encodeXAddress(classicAddress);
+
+        // THEN the result is as expected.
+        assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT");
+    }
+
+    @Test
+    public void testEncodeXAddressWithAddressOnly() {
+        // GIVEN a valid classic address without a tag.
+        ClassicAddress classicAddress = ImmutableClassicAddress.builder().address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1").build();
+
+        // WHEN it is encoded to an X-Address.
+        String xAddress = Utils.encodeXAddress(classicAddress);
+
+        // THEN the result is as expected.
+        assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH");
+    }
+
+    @Test
+    public void testEncodeXAddressWithInvalidAddress() {
+        // GIVEN an invalid address.
+        ClassicAddress classicAddress = ImmutableClassicAddress.builder().address("xrp").build();
+
+        // WHEN it is encoded to an X-Address.
+        String xAddress = Utils.encodeXAddress(classicAddress);
+
+        // THEN the result is null.
+        assertNull(xAddress);
+    }
+
+    @Test
+    public void testDecodeXAddressWithValidAddressContainingTag() {
+        // GIVEN an X-Address that encodes an address and a tag.
+        String address = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT";
+
+        // WHEN it is decoded to an classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        // Then the decoded address and tag as are expected.
+        assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        assertEquals(classicAddress.tag().get(), new Long(12345));
+    }
+
+    @Test
+    public void testDecodeXAddressWithValidAddressWithoutTag() {
+        // GIVEN an X-Address that encodes an address and no tag.
+        String address = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
+
+        // WHEN it is decoded to an classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        // Then the decoded address and tag as are expected.
+        assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
+        assertFalse(classicAddress.tag().isPresent());
+    }
+
+    @Test
+    public void testDecodeXAddressWithInvalidXAddress() {
+        // GIVEN an invalid address.
+        String address = "xrp";
+
+        // WHEN it is decoded to an classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        // Then the decoded address is null.
+        assertNull(classicAddress);
+    }
+
+    @Test
     public void testIsValidXAddressWithValidXAddress() {
         assertTrue(Utils.isValidXAddress("XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUvtU3HnooQDgBnUpQT"));
     }
