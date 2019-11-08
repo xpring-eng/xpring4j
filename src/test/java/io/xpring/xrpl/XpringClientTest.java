@@ -2,10 +2,13 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.Utils;
+import io.xpring.ClassicAddress;
 import io.xpring.proto.AccountInfo;
 import io.xpring.Wallet;
 import io.xpring.XpringKitException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,8 @@ import java.math.BigInteger;
  * Unit tests for {@link XpringClient}.
  */
 public class XpringClientTest {
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
