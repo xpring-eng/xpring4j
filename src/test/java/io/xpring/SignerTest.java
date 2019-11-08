@@ -3,10 +3,10 @@ package io.xpring;
 import org.junit.Test;
 import io.xpring.Signer;
 import io.xpring.Wallet;
-import io.xpring.XrpAmount.XRPAmount;
-import io.xpring.TransactionOuterClass.Transaction;
-import io.xpring.PaymentOuterClass.Payment;
-import io.xpring.SignedTransactionOuterClass.SignedTransaction;
+import io.xpring.proto.XRPAmount;
+import io.xpring.proto.Transaction;
+import io.xpring.proto.Payment;
+import io.xpring.proto.SignedTransaction;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,10 +14,10 @@ public class SignerTest {
     @Test
     public void testSign() throws Exception {
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
-        XrpAmount.XRPAmount amount = XRPAmount.newBuilder().setDrops("1").build();
-        XrpAmount.XRPAmount fee = XRPAmount.newBuilder().setDrops("12").build();
+        XRPAmount amount = XRPAmount.newBuilder().setDrops("1").build();
+        XRPAmount fee = XRPAmount.newBuilder().setDrops("12").build();
 
-        Payment payment = Payment.newBuilder().setXRPAmount(amount).setDestination("rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn").build();
+        Payment payment = Payment.newBuilder().setXrpAmount(amount).setDestination("rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn").build();
 
         Transaction transaction = Transaction.newBuilder()
                 .setSequence(40)

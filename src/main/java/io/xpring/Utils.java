@@ -32,11 +32,7 @@ public class Utils {
      * @return A boolean indicating whether this was a valid address.
      */
     public static boolean isValidAddress(String address) {
-        try {
-            return javaScriptUtils.isValidAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.isValidAddress(address);
     }
 
     /**
@@ -69,17 +65,35 @@ public class Utils {
     }
 
     /**
+     * Encode the given {@link ClassicAddress} and tag into an X-Address.
+     *
+     * @param classicAddress A {@link ClassicAddress} to encode
+     * @return A new X-Address if inputs were valid, otherwise undefined.
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
+     */
+    public static String encodeXAddress(ClassicAddress classicAddress) {
+        return javaScriptUtils.encodeXAddress(classicAddress);
+    }
+
+    /**
+     * Decode a {@link ClassicAddress} from a given X-Address.
+     *
+     * @param xAddress The xAddress to decode.
+     * @return A {@link ClassicAddress} if the inputs were valid, otherwise null.
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
+     */
+    public static ClassicAddress decodeXAddress(String xAddress) {
+        return javaScriptUtils.decodeXAddress(xAddress);
+    }
+
+    /**
      * Check if the given string is a valid X-Address on the XRP Ledger.
      *
      * @param address A string to validate
      * @return A boolean indicating whether this was a valid X-Address.
      */
     public static boolean isValidXAddress(String address) {
-        try {
-            return javaScriptUtils.isValidXAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.isValidXAddress(address);
     }
 
     /**
@@ -89,12 +103,8 @@ public class Utils {
      * @return A boolean indicating whether this was a valid clssic address.
      */
     public static boolean isValidClassicAddress(String address) {
-        try {
-            return javaScriptUtils.isValidClassicAddress(address);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
-    }          
+        return javaScriptUtils.isValidClassicAddress(address);
+    }
           
     /**
      * Convert the given transaction blob to a transaction hash.
@@ -103,10 +113,6 @@ public class Utils {
      * @return  A hex encoded hash if the input was valid, otherwise null.
      */
     public static String toTransactionHash(String transactionBlobHex) {
-        try {
-            return javaScriptUtils.toTransactionHash(transactionBlobHex);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+        return javaScriptUtils.toTransactionHash(transactionBlobHex);
     }
 }

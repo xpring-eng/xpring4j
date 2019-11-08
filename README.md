@@ -169,7 +169,7 @@ A `XpringClient` can send XRP to other [accounts](https://xrpl.org/accounts.html
 
 ```java
 import java.math.BigInteger;
-import io.xpring.SubmitSignedTransactionResponseOuterClass.SubmitSignedTransactionResponse;
+import io.xpring.SubmitSignedTransactionResponseProto.SubmitSignedTransactionResponse;
 import io.xpring.Wallet;
 import io.xpring.xrpl.XpringClient;
 

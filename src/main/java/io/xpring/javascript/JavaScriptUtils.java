@@ -1,7 +1,11 @@
 package io.xpring.javascript;
 
+import java.util.Objects;
+import java.util.Optional;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
+import io.xpring.ClassicAddress;
+import io.xpring.ImmutableClassicAddress;
 
 /** Provides JavaScript based Utils functionality. */
 public class JavaScriptUtils {
@@ -27,8 +31,50 @@ public class JavaScriptUtils {
      * @return A boolean indicating whether this was a valid address.
      */
     public boolean isValidAddress(String address) {
+        Objects.requireNonNull(address);
+
         Value isValidAddressFunction = javaScriptUtils.getMember("isValidAddress");
         return isValidAddressFunction.execute(address).asBoolean();
+    }
+
+    /**
+     * Encode the given {@link ClassicAddress} and tag into an X-Address.
+     *
+     * @param classicAddress A {@link ClassicAddress} to encode
+     * @return A new X-Address if inputs were valid, otherwise null.
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
+     */
+    public String encodeXAddress(ClassicAddress classicAddress) {
+        Objects.requireNonNull(classicAddress);
+
+        Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
+        Value result = classicAddress.tag().isPresent() ?
+                encodeXAddressFunction.execute(classicAddress.address(), classicAddress.tag().get()) :
+                encodeXAddressFunction.execute(classicAddress.address());
+        return result.asString();
+    }
+
+    /**
+     * Decode a {@link ClassicAddress} from a given X-Address.
+     *
+     * @param xAddress The xAddress to decode.
+     * @return A {@link ClassicAddress} if the inputs were valid, otherwise null.
+     * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
+     */
+    public ClassicAddress decodeXAddress(String xAddress) {
+        Objects.requireNonNull(xAddress);
+
+        Value decodeXAddressFunction = javaScriptUtils.getMember("decodeXAddress");
+        Value result = decodeXAddressFunction.execute(xAddress);
+
+        if (result.isNull()) {
+            return null;
+        }
+
+        String address = result.getMember("address").asString();
+        Long tag = result.getMember("tag").isNull() ? null : result.getMember("tag").asLong();
+
+        return ImmutableClassicAddress.builder().address(address).tag(Optional.ofNullable(tag)).build();
     }
 
     /**
@@ -38,6 +84,8 @@ public class JavaScriptUtils {
      * @return A boolean indicating whether this was a valid X-Address.
      */
     public boolean isValidXAddress(String address) {
+        Objects.requireNonNull(address);
+
         Value isValidXAddressFunction = javaScriptUtils.getMember("isValidXAddress");
         return isValidXAddressFunction.execute(address).asBoolean();
     }
@@ -49,6 +97,8 @@ public class JavaScriptUtils {
      * @return A boolean indicating whether this was a valid clssic address.
      */
     public boolean isValidClassicAddress(String address) {
+        Objects.requireNonNull(address);
+
         Value isValidClassicAddressFunction = javaScriptUtils.getMember("isValidClassicAddress");
         return isValidClassicAddressFunction.execute(address).asBoolean();
     }
@@ -60,6 +110,8 @@ public class JavaScriptUtils {
      * @return  A hex encoded hash if the input was valid, otherwise null.
      */
     public String toTransactionHash(String transactionBlobHex) {
+        Objects.requireNonNull(transactionBlobHex);
+
         Value transactionBlobToTransactionHashFunction = javaScriptUtils.getMember("transactionBlobToTransactionHash");
         Value hash = transactionBlobToTransactionHashFunction.execute(transactionBlobHex);
         return hash.isNull() ? null : hash.toString();
