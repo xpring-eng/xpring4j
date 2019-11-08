@@ -85,6 +85,6 @@ public class XpringClientTest {
 
         // WHEN XRP is sent to the classic address THEN an error is thrown.
         expectedException.expect(XpringKitException.class);
-        xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+        xpringClient.send(AMOUNT, classicAddress.address(), wallet);
     }
 }
