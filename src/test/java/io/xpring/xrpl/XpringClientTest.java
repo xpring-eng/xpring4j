@@ -2,8 +2,10 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.Utils;
 import io.xpring.proto.*;
+import io.xpring.Utils;
+import io.xpring.ClassicAddress;
+import io.xpring.proto.AccountInfo;
 import io.xpring.Wallet;
 import io.xpring.XpringKitException;
 import org.junit.Before;
@@ -11,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.rules.ExpectedException;
 import io.grpc.testing.GrpcCleanupRule;
 import io.grpc.inprocess.InProcessServerBuilder;
 import static org.mockito.Mockito.mock;
@@ -25,13 +28,21 @@ import java.math.BigInteger;
  */
 public class XpringClientTest {
     @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
     /** The XpringClient under test. */
     private XpringClient client;
 
     /** An address on the XRP Ledger. */
-    private static final String XRPL_ADDRESS = "rD7zai6QQQVvWc39ZVAhagDgtH5xwEoeXD";
+    private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
+
+    /** The seed for a wallet with funds on the XRP Ledger test net. */
+    private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
+
+    /** Drops of XRP to send. */
+    private static final BigInteger AMOUNT = new BigInteger("1");
 
     /** Mocked values in responses from the gRPC server. */
     private static final String DROPS_OF_XRP_IN_ACCOUNT = "10";
@@ -81,19 +92,17 @@ public class XpringClientTest {
         String serverName = InProcessServerBuilder.generateName();
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
-        grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(serviceImpl).build().start());
+        grpcCleanup.register(InProcessServerBuilder.forName(serverName).directExecutor().addService(serviceImpl).build().start());
 
         // Create a client channel and register for automatic graceful shutdown.
-        ManagedChannel channel = grpcCleanup.register(
-                InProcessChannelBuilder.forName(serverName).directExecutor().build());
+        ManagedChannel channel = grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
         // Create a new XpringClient using the in-process channel;
         client = new XpringClient(channel);
     }
 
     @Test
-    public void getBalanceTest() {
+    public void getBalanceTest() throws XpringKitException {
         // GIVEN a XpringClient with mocked networking WHEN the balance is retrieved.
         BigInteger balance = client.getBalance(XRPL_ADDRESS);
 
@@ -102,13 +111,31 @@ public class XpringClientTest {
     }
 
     @Test
-    public void submitTransactionTest() throws XpringKitException {
-        // GIVEN a XpringClient with mocked networking WHEN a transaction is sent.
-        Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
-        String transactionHash = client.send(new BigInteger("30"), XRPL_ADDRESS, wallet);
+    public void getBalanceWithClassicAddressTest() throws XpringKitException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
 
-        // THEN the transaction hash is the same as the hash of the mocked transaction blob in the response.
-        String expectedTransactionHash = Utils.toTransactionHash(TRANSACTION_BLOB);
-        assertThat(transactionHash).isEqualTo(expectedTransactionHash);
+        // WHEN the balance for the classic address is retrieved THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        client.getBalance(classicAddress.address());
+    }
+
+    @Test
+    public void sendXRPTest() throws XpringKitException {
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        String transactionHash = client.send(AMOUNT, XRPL_ADDRESS, wallet);
+        assertThat(transactionHash).isNotNull();
+    }
+
+    @Test
+    public void sendXRPTestWithClassicAddress() throws XpringKitException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent to the classic address THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        client.send(AMOUNT, classicAddress.address(), wallet);
     }
 }
