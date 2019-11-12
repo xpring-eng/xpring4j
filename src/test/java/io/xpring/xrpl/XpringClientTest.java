@@ -3,11 +3,9 @@ package io.xpring.xrpl;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.proto.*;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.rules.ExpectedException;
 import io.grpc.testing.GrpcCleanupRule;
 import io.grpc.inprocess.InProcessServerBuilder;
 import static org.mockito.Mockito.mock;
@@ -15,12 +13,50 @@ import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Optional;
+
+/**
+ * Represents the result of a gRPC network call for an object of type T or an error.
+ */
+class GRPCResult<T> {
+    private Optional<T> value;
+    private Optional<String> error;
+
+    private GRPCResult(T value, String error) {
+        this.value = Optional.ofNullable(value);
+        this.error = Optional.ofNullable(error);
+    }
+
+    public static <U> GRPCResult<U> ok(U value) {
+        return new GRPCResult<>(value, null);
+    }
+
+    public static <U> GRPCResult<U> error(String error) {
+        return new GRPCResult<>(null, error);
+    }
+
+    public boolean isError() {
+        return error.isPresent();
+    }
+
+    public T getValue() {
+        return value.get();
+    }
+
+    public String getError() {
+        return error.get();
+    }
+}
 
 /**
  * Unit tests for {@link XpringClient}.
  */
 public class XpringClientTest {
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
@@ -34,46 +70,143 @@ public class XpringClientTest {
     private static final String DROPS_OF_XRP_IN_ACCOUNT = "10";
     private static final String DROPS_OF_XRP_FOR_FEE = "20";
     private static final String TRANSACTION_BLOB = "DEADBEEF";
+    private static final String GENERIC_ERROR = "Mocked network error";
 
-    /** A mock implementation of the gRPC server. */
-    private final XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl =
-            mock(XRPLedgerAPIGrpc.XRPLedgerAPIImplBase.class, delegatesTo(
-                new XRPLedgerAPIGrpc.XRPLedgerAPIImplBase() {
-                    @Override
-                    public void getAccountInfo(io.xpring.proto.GetAccountInfoRequest request,
-                                               io.grpc.stub.StreamObserver<io.xpring.proto.AccountInfo> responseObserver) {
-                        XRPAmount balanceAmount = XRPAmount.newBuilder().setDrops(DROPS_OF_XRP_IN_ACCOUNT).build();
-                        AccountInfo accountInfo = AccountInfo.newBuilder().setBalance(balanceAmount).build();
+    /** The seed for a wallet with funds on the XRP Ledger test net. */
+    private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
 
-                        responseObserver.onNext(accountInfo);
-                        responseObserver.onCompleted();
-                    }
+    /** Drops of XRP to send. */
+    private static final BigInteger AMOUNT = new BigInteger("1");
 
-                    @Override
-                    public void getFee(io.xpring.proto.GetFeeRequest request,
-                                       io.grpc.stub.StreamObserver<io.xpring.proto.Fee> responseObserver) {
-                        XRPAmount feeAmount = XRPAmount.newBuilder().setDrops(DROPS_OF_XRP_FOR_FEE).build();
-                        Fee fee = Fee.newBuilder().setAmount(feeAmount).build();
+    @Test
+    public void getBalanceTest() throws IOException, XpringKitException {
+        // GIVEN a XpringClient with mocked networking which will succeed.
+        XpringClient client = getClient();
 
-                        responseObserver.onNext(fee);
-                        responseObserver.onCompleted();
-                    }
+        // WHEN the balance is retrieved.
+        BigInteger balance = client.getBalance(XRPL_ADDRESS);
 
-                    @Override
-                    public void submitSignedTransaction(io.xpring.proto.SubmitSignedTransactionRequest request,
-                                                        io.grpc.stub.StreamObserver<io.xpring.proto.SubmitSignedTransactionResponse> responseObserver) {
-                        SubmitSignedTransactionResponse response = SubmitSignedTransactionResponse.newBuilder().setTransactionBlob(TRANSACTION_BLOB).build();
+        // THEN the balance returned is the the same as the mocked response.
+        assertThat(balance.toString()).isEqualTo(DROPS_OF_XRP_IN_ACCOUNT);
+    }
 
-                        responseObserver.onNext(response);
-                        responseObserver.onCompleted();
-                    }
-                }
-            )
-    );
+    @Test
+    public void getBalanceWithClassicAddressTest() throws IOException, XpringKitException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        XpringClient client = getClient();
 
-    /** Mocks gRPC networking inside of XpringClient. */
-    @Before
-    public void setUp() throws Exception {
+        // WHEN the balance for the classic address is retrieved THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        client.getBalance(classicAddress.address());
+    }
+
+    @Test
+    public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringKitException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
+        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        XpringClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+        );
+
+        // WHEN the balance is retrieved THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.getBalance(XRPL_ADDRESS);
+    }
+
+    @Test
+    public void submitTransactionTest() throws IOException, XpringKitException {
+        // GIVEN a XpringClient with mocked networking which will succeed.
+        XpringClient client = getClient();
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN a transaction is sent.
+        String transactionHash = client.send(AMOUNT, XRPL_ADDRESS, wallet);
+
+        // THEN the transaction hash is the same as the hash of the mocked transaction blob in the response.
+        String expectedTransactionHash = Utils.toTransactionHash(TRANSACTION_BLOB);
+        assertThat(transactionHash).isEqualTo(expectedTransactionHash);
+    }
+
+    @Test
+    public void submitTransactionWithClassicAddress() throws IOException, XpringKitException {
+        // GIVEN a classic address.
+        XpringClient client = getClient();
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent to the classic address THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        client.send(AMOUNT, classicAddress.address(), wallet);
+    }
+
+    @Test
+    public void submitTransactionWithFailedAccountInfo() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to return account info.
+        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        XpringClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+    @Test
+    public void submitTransactionWithFailedFee() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to retrieve a fee.
+        GRPCResult<Fee> feeResult = GRPCResult.error(GENERIC_ERROR);
+        XpringClient client = getClient(
+                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                feeResult,
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+    @Test
+    public void submitTransactionWithFailedSubmit() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to submit a transaction.
+        GRPCResult<SubmitSignedTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
+        XpringClient client = getClient(
+                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                submitResult
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+    /**
+     * Convenience method to get a XpringClient which has successful network calls.
+     */
+    private XpringClient getClient() throws IOException {
+        return getClient(
+                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+        );
+    }
+
+    /**
+     * Return a XpringClient which returns the given results for network calls.
+     */
+    private XpringClient getClient(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult) throws IOException {
+        XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl = getService(accountInfoResult, feeResult, submitResult);
+
         // Generate a unique in-process server name.
         String serverName = InProcessServerBuilder.generateName();
 
@@ -86,26 +219,73 @@ public class XpringClientTest {
                 InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
         // Create a new XpringClient using the in-process channel;
-        client = new XpringClient(channel);
+        return new XpringClient(channel);
     }
 
-    @Test
-    public void getBalanceTest() throws XpringKitException {
-        // GIVEN a XpringClient with mocked networking WHEN the balance is retrieved.
-        BigInteger balance = client.getBalance(XRPL_ADDRESS);
+    /**
+     * Return a XRPLedgerService implementation which returns the given results for network calls.
+     */
+    private XRPLedgerAPIGrpc.XRPLedgerAPIImplBase getService(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult) {
+        return mock(XRPLedgerAPIGrpc.XRPLedgerAPIImplBase.class, delegatesTo(
+                new XRPLedgerAPIGrpc.XRPLedgerAPIImplBase() {
+                    @Override
+                    public void getAccountInfo(io.xpring.proto.GetAccountInfoRequest request,
+                                               io.grpc.stub.StreamObserver<io.xpring.proto.AccountInfo> responseObserver) {
+                        if (accountInfoResult.isError()) {
+                            responseObserver.onError(new Throwable(accountInfoResult.getError()));
+                        } else {
+                            responseObserver.onNext(accountInfoResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
 
-        // THEN the balance returned is the the same as the mocked response.
-        assertThat(balance.toString()).isEqualTo(DROPS_OF_XRP_IN_ACCOUNT);
+                    @Override
+                    public void getFee(io.xpring.proto.GetFeeRequest request,
+                                       io.grpc.stub.StreamObserver<io.xpring.proto.Fee> responseObserver) {
+                        if (feeResult.isError()) {
+                            responseObserver.onError(new Throwable(feeResult.getError()));
+                        } else {
+                            responseObserver.onNext(feeResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
+
+                    @Override
+                    public void submitSignedTransaction(io.xpring.proto.SubmitSignedTransactionRequest request,
+                                                        io.grpc.stub.StreamObserver<io.xpring.proto.SubmitSignedTransactionResponse> responseObserver) {
+                        if (submitResult.isError()) {
+                            responseObserver.onError(new Throwable(submitResult.getError()));
+                        } else {
+                            responseObserver.onNext(submitResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
+                }
+                )
+        );
     }
 
-    @Test
-    public void submitTransactionTest() throws XpringKitException {
-        // GIVEN a XpringClient with mocked networking WHEN a transaction is sent.
-        Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
-        String transactionHash = client.send(new BigInteger("30"), XRPL_ADDRESS, wallet);
+    /**
+     * Make an AccountInfo protocol buffer with the given balance.
+     */
+    private AccountInfo makeAccountInfo(String balance) {
+        XRPAmount balanceAmount = XRPAmount.newBuilder().setDrops(balance).build();
+        return AccountInfo.newBuilder().setBalance(balanceAmount).build();
+    }
 
-        // THEN the transaction hash is the same as the hash of the mocked transaction blob in the response.
-        String expectedTransactionHash = Utils.toTransactionHash(TRANSACTION_BLOB);
-        assertThat(transactionHash).isEqualTo(expectedTransactionHash);
+    /**
+     * Make an Fee protocol buffer with the given fee.
+     */
+    private Fee makeFee(String fee) {
+        XRPAmount feeAmount = XRPAmount.newBuilder().setDrops(fee).build();
+        return Fee.newBuilder().setAmount(feeAmount).build();
+
+    }
+
+    /**
+     * Make a SubmitSignedTransactionResponse with the given transaction blob.
+     */
+    private SubmitSignedTransactionResponse makeSubmitSignedTransactionResponse(String transactionBlob) {
+        return SubmitSignedTransactionResponse.newBuilder().setTransactionBlob(TRANSACTION_BLOB).build();
     }
 }
