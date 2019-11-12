@@ -1,4 +1,4 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 /** Contains artifacts of generating a new Wallet. */
 public class WalletGenerationResult {

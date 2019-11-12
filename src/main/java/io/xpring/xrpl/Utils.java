@@ -1,4 +1,4 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 import io.xpring.javascript.JavaScriptLoaderException;
 import io.xpring.javascript.JavaScriptUtils;

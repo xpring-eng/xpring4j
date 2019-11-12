@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.Optional;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
-import io.xpring.ClassicAddress;
-import io.xpring.ImmutableClassicAddress;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
 
 /** Provides JavaScript based Utils functionality. */
 public class JavaScriptUtils {

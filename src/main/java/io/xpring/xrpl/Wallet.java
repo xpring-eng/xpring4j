@@ -1,4 +1,4 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 import io.xpring.javascript.JavaScriptWallet;
 import io.xpring.javascript.JavaScriptWalletFactory;

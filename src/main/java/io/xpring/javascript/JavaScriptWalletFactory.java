@@ -1,7 +1,7 @@
 package io.xpring.javascript;
 
-import io.xpring.Utils;
-import io.xpring.XpringKitException;
+import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.XpringKitException;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;

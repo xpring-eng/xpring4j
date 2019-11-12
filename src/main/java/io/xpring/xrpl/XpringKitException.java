@@ -1,4 +1,4 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 /** Exceptions which occur when working with XpringKit. */
 public class XpringKitException extends Exception {

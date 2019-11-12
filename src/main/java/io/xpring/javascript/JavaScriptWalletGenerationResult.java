@@ -1,5 +1,7 @@
 package io.xpring.javascript;
 
+import io.xpring.xrpl.Wallet;
+
 /** Contains JavaScript artifacts of generating a new Wallet. */
 public class JavaScriptWalletGenerationResult {
     /** The mnemonic of the newly generated {@link Wallet}. */

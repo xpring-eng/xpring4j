@@ -1,8 +1,6 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 import org.junit.Test;
-import io.xpring.Signer;
-import io.xpring.Wallet;
 import io.xpring.proto.XRPAmount;
 import io.xpring.proto.Transaction;
 import io.xpring.proto.Payment;

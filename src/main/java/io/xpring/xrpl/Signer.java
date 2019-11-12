@@ -1,6 +1,6 @@
-package io.xpring;
+package io.xpring.xrpl;
 
-import io.xpring.Wallet;
+import io.xpring.xrpl.Wallet;
 import io.xpring.javascript.JavaScriptSigner;
 
 import io.xpring.proto.Transaction;

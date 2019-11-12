@@ -1,4 +1,4 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 import org.junit.Test;
 
