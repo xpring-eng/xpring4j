@@ -15,7 +15,10 @@ public class Wallet {
     private JavaScriptWallet javaScriptWallet;
 
     /**
-     * Initialize a new wallet from a base58check encoded seed.
+     * Initialize a new wallet from a seed.
+     *
+     * @param seed A base58check encoded seed for the wallet.
+     * @throws XpringKitException If the seed is malformed.
      */
     public Wallet(String seed) throws XpringKitException {
         this.javaScriptWallet = JavaScriptWalletFactory.get().walletFromSeed(seed);
@@ -26,6 +29,7 @@ public class Wallet {
      *
      * @param mnemonic       A space separated mnemonic.
      * @param derivationPath A derivation. If null, the default derivation path will be used.
+     * @throws XpringKitException If the mnemonic or derivation path are malformed.
      */
     public Wallet(String mnemonic, String derivationPath) throws XpringKitException {
         this.javaScriptWallet = JavaScriptWalletFactory.get().walletFromMnemonicAndDerivationPath(mnemonic,
@@ -36,12 +40,13 @@ public class Wallet {
      * Generate a random Wallet.
      *
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
+     * @throws XpringKitException If wallet generation fails.
      */
     public static WalletGenerationResult generateRandomWallet() throws XpringKitException {
         JavaScriptWalletGenerationResult javaScriptWalletGenerationResult = JavaScriptWalletFactory.get()
             .generateRandomWallet();
 
-        // TODO(keefertaylor): This should be a direct conversion, rather than recreatign a new wallet.
+        // TODO(keefertaylor): This should be a direct conversion, rather than recreating a new wallet.
         Wallet newWallet = new Wallet(javaScriptWalletGenerationResult.getMnemonic(),
             javaScriptWalletGenerationResult.getDerivationPath());
 
@@ -50,21 +55,21 @@ public class Wallet {
     }
 
     /**
-     * Returns the address of this `Wallet`.
+     * @return The address of this `Wallet`.
      */
     public String getAddress() {
         return javaScriptWallet.getAddress();
     }
 
     /**
-     * Returns the public key of this `Wallet`.
+     * @return The public key of this `Wallet`.
      */
     public String getPublicKey() {
         return javaScriptWallet.getPublicKey();
     }
 
     /**
-     * Returns the private key of this `Wallet`.
+     * @return The private key of this `Wallet`.
      */
     public String getPrivateKey() {
         return javaScriptWallet.getPrivateKey();
@@ -73,9 +78,9 @@ public class Wallet {
     /**
      * Sign the given input.
      *
-     * @param input The input to sign.
-     *
+     * @param input The input to sign as a hexadecimal string.
      * @return A hexadecimal encoded signature.
+     * @throws XpringKitException If the input is malformed.
      */
     public String sign(String input) throws XpringKitException {
         return javaScriptWallet.sign(input);
@@ -86,7 +91,6 @@ public class Wallet {
      *
      * @param message   A message in hexadecimal encoding.
      * @param signature A signature in hexademical encoding.
-     *
      * @return A boolean indicating the validity of the signature.
      */
     public boolean verify(String message, String signature) {

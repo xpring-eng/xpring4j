@@ -240,7 +240,7 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>io.xpring.xrpl.*Outer*</exclude>
+                        <exclude>io.xpring.proto</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -308,11 +308,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <excludePackageNames>
-                        <!--
-                        The protocol buffer compiler doesn't generate javadoc. Exclude all protocol buffers from documentation.
-                        TODO(keefer): Protocol buffers should be in a separate package. Update this when there is a separate java package.
-                        -->
-                        io.xpring:io.xpring.xrpl
+                        io.xpring.proto
                     </excludePackageNames>
                     <source>8</source>
                 </configuration>

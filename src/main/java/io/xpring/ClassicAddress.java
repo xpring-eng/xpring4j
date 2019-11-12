@@ -13,12 +13,12 @@ import java.util.Optional;
 @Value.Immutable
 public interface ClassicAddress {
     /**
-     * The address component of the classic address.
+     * @return The address component of the classic address.
      */
     public String address();
 
     /**
-     * The tag component of the classic address.
+     * @return The tag component of the classic address.
      */
     public Optional<Long> tag();
 }
