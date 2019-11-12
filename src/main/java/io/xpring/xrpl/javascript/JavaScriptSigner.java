@@ -1,11 +1,11 @@
-package io.xpring.javascript;
+package io.xpring.xrpl.javascript;
 
 import io.xpring.proto.Transaction;
 import io.xpring.proto.SignedTransaction;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.xpring.Utils;
-import io.xpring.Wallet;
+import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.Wallet;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 

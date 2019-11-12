@@ -1,4 +1,4 @@
-package io.xpring.javascript;
+package io.xpring.xrpl.javascript;
 
 /** Exceptions which occur when working with JavaScript. */
 public class JavaScriptLoaderException extends Exception {

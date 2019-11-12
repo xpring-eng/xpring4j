@@ -1,8 +1,8 @@
-package io.xpring;
+package io.xpring.xrpl;
 
-import io.xpring.javascript.JavaScriptWallet;
-import io.xpring.javascript.JavaScriptWalletFactory;
-import io.xpring.javascript.JavaScriptWalletGenerationResult;
+import io.xpring.xrpl.javascript.JavaScriptWallet;
+import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
+import io.xpring.xrpl.javascript.JavaScriptWalletGenerationResult;
 
 /**
  * Represents an account on the XRP Ledger and provides signing / verifying cryptographic functions.

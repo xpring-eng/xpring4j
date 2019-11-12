@@ -1,7 +1,7 @@
-package io.xpring;
+package io.xpring.xrpl;
 
-import io.xpring.javascript.JavaScriptLoaderException;
-import io.xpring.javascript.JavaScriptUtils;
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
+import io.xpring.xrpl.javascript.JavaScriptUtils;
 
 /**
  * Provides utility functions for working in the XRP Ecosystem.

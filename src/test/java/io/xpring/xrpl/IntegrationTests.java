@@ -1,13 +1,8 @@
-package io.xpring;
+package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.xrpl.XpringClient;
-import io.xpring.proto.AccountInfo;
-import io.xpring.Wallet;
-import io.xpring.XpringKitException;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.math.BigInteger;

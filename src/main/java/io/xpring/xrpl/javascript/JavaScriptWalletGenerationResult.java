@@ -1,4 +1,6 @@
-package io.xpring.javascript;
+package io.xpring.xrpl.javascript;
+
+import io.xpring.xrpl.Wallet;
 
 /** Contains JavaScript artifacts of generating a new Wallet. */
 public class JavaScriptWalletGenerationResult {
