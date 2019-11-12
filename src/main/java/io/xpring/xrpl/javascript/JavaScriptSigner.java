@@ -1,4 +1,4 @@
-package io.xpring.javascript;
+package io.xpring.xrpl.javascript;
 
 import io.xpring.proto.Transaction;
 import io.xpring.proto.SignedTransaction;

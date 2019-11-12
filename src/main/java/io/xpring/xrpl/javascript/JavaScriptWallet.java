@@ -1,4 +1,4 @@
-package io.xpring.javascript;
+package io.xpring.xrpl.javascript;
 
 import io.xpring.xrpl.XpringKitException;
 import org.graalvm.polyglot.Value;

@@ -1,8 +1,5 @@
 package io.xpring.xrpl;
 
-import io.xpring.javascript.JavaScriptWallet;
-import io.xpring.javascript.JavaScriptWalletFactory;
-import io.xpring.javascript.JavaScriptWalletGenerationResult;
 import org.immutables.value.Value;
 
 import java.util.Optional;

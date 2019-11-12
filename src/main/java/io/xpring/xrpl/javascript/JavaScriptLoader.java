@@ -1,4 +1,4 @@
-package io.xpring.javascript;
+package io.xpring.xrpl.javascript;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;

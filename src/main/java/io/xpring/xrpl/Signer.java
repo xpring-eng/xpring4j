@@ -1,7 +1,7 @@
 package io.xpring.xrpl;
 
 import io.xpring.xrpl.Wallet;
-import io.xpring.javascript.JavaScriptSigner;
+import io.xpring.xrpl.javascript.JavaScriptSigner;
 
 import io.xpring.proto.Transaction;
 import io.xpring.proto.SignedTransaction;
