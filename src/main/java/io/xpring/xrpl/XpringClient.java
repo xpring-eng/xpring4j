@@ -1,6 +1,5 @@
 package io.xpring.xrpl;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.proto.AccountInfo;
@@ -134,8 +133,7 @@ public class XpringClient {
      *
      * @return A {@link BigInteger} representing a `fee` for submitting a transaction to the ledger.
      */
-    @VisibleForTesting
-    BigInteger getCurrentFeeInDrops() {
+    private BigInteger getCurrentFeeInDrops() {
         Fee getFeeResult = stub.getFee(GetFeeRequest.newBuilder().build());
         return new BigInteger(getFeeResult.getAmount().getDrops());
     }
@@ -147,8 +145,7 @@ public class XpringClient {
      *
      * @return An {@link AccountInfo} containing data about the given address.
      */
-    @VisibleForTesting
-    AccountInfo getAccountInfo(final String xrplAddress) {
+    private AccountInfo getAccountInfo(final String xrplAddress) {
         return stub.getAccountInfo(
             GetAccountInfoRequest.newBuilder().setAddress(xrplAddress).build()
         );

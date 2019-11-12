@@ -63,7 +63,7 @@ public class JavaScriptLoader {
     /**
      * Load a class or function from the default entry point on the given JSContext.
      *
-     * This method loads value from `EntryPoint.default.$value`.
+     * This method loads value from `EntryPoint.$value`.
      *
      * @param resourceName: The name of the resource to load.
      * @param context:      The context load from.
@@ -73,7 +73,7 @@ public class JavaScriptLoader {
      * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
     public static Value loadResource(String resourceName, Context context) throws JavaScriptLoaderException {
-        Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint").getMember("default");
+        Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint");
 
         // If the root is not found throw an exception.
         if (root.isNull()) {

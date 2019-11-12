@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.proto.*;
 import io.xpring.Utils;
 import io.xpring.ClassicAddress;
 import io.xpring.proto.AccountInfo;
@@ -13,6 +14,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.rules.ExpectedException;
+import io.grpc.testing.GrpcCleanupRule;
+import io.grpc.inprocess.InProcessServerBuilder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import io.grpc.ManagedChannel;
+import io.grpc.inprocess.InProcessChannelBuilder;
 
 import java.math.BigInteger;
 
@@ -23,26 +30,84 @@ public class XpringClientTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
-    /** Drops of XRP to send. */
-    private static final BigInteger AMOUNT = new BigInteger("1");
+    /** The XpringClient under test. */
+    private XpringClient client;
+
+    /** An address on the XRP Ledger. */
+    private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
 
     /** The seed for a wallet with funds on the XRP Ledger test net. */
     private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
 
-    private XpringClient xpringClient;
+    /** Drops of XRP to send. */
+    private static final BigInteger AMOUNT = new BigInteger("1");
 
+    /** Mocked values in responses from the gRPC server. */
+    private static final String DROPS_OF_XRP_IN_ACCOUNT = "10";
+    private static final String DROPS_OF_XRP_FOR_FEE = "20";
+    private static final String TRANSACTION_BLOB = "DEADBEEF";
+
+    /** A mock implementation of the gRPC server. */
+    private final XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl =
+            mock(XRPLedgerAPIGrpc.XRPLedgerAPIImplBase.class, delegatesTo(
+                new XRPLedgerAPIGrpc.XRPLedgerAPIImplBase() {
+                    @Override
+                    public void getAccountInfo(io.xpring.proto.GetAccountInfoRequest request,
+                                               io.grpc.stub.StreamObserver<io.xpring.proto.AccountInfo> responseObserver) {
+                        XRPAmount balanceAmount = XRPAmount.newBuilder().setDrops(DROPS_OF_XRP_IN_ACCOUNT).build();
+                        AccountInfo accountInfo = AccountInfo.newBuilder().setBalance(balanceAmount).build();
+
+                        responseObserver.onNext(accountInfo);
+                        responseObserver.onCompleted();
+                    }
+
+                    @Override
+                    public void getFee(io.xpring.proto.GetFeeRequest request,
+                                       io.grpc.stub.StreamObserver<io.xpring.proto.Fee> responseObserver) {
+                        XRPAmount feeAmount = XRPAmount.newBuilder().setDrops(DROPS_OF_XRP_FOR_FEE).build();
+                        Fee fee = Fee.newBuilder().setAmount(feeAmount).build();
+
+                        responseObserver.onNext(fee);
+                        responseObserver.onCompleted();
+                    }
+
+                    @Override
+                    public void submitSignedTransaction(io.xpring.proto.SubmitSignedTransactionRequest request,
+                                                        io.grpc.stub.StreamObserver<io.xpring.proto.SubmitSignedTransactionResponse> responseObserver) {
+                        SubmitSignedTransactionResponse response = SubmitSignedTransactionResponse.newBuilder().setTransactionBlob(TRANSACTION_BLOB).build();
+
+                        responseObserver.onNext(response);
+                        responseObserver.onCompleted();
+                    }
+                }
+            )
+    );
+
+    /** Mocks gRPC networking inside of XpringClient. */
     @Before
-    public void setUp() {
-        this.xpringClient = new XpringClient();
+    public void setUp() throws Exception {
+        // Generate a unique in-process server name.
+        String serverName = InProcessServerBuilder.generateName();
+
+        // Create a server, add service, start, and register for automatic graceful shutdown.
+        grpcCleanup.register(InProcessServerBuilder.forName(serverName).directExecutor().addService(serviceImpl).build().start());
+
+        // Create a client channel and register for automatic graceful shutdown.
+        ManagedChannel channel = grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
+
+        // Create a new XpringClient using the in-process channel;
+        client = new XpringClient(channel);
     }
 
     @Test
     public void getBalanceTest() throws XpringKitException {
-        BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
-        assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
+        // GIVEN a XpringClient with mocked networking WHEN the balance is retrieved.
+        BigInteger balance = client.getBalance(XRPL_ADDRESS);
+
+        // THEN the balance returned is the the same as the mocked response.
+        assertThat(balance.toString()).isEqualTo(DROPS_OF_XRP_IN_ACCOUNT);
     }
 
     @Test
@@ -52,28 +117,14 @@ public class XpringClientTest {
 
         // WHEN the balance for the classic address is retrieved THEN an error is thrown.
         expectedException.expect(XpringKitException.class);
-        xpringClient.getBalance(classicAddress.address());
-    }
-
-    @Test
-    public void getFeeTest() {
-        BigInteger balance = xpringClient.getCurrentFeeInDrops();
-        assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Fee should have been positive");
-    }
-
-    @Test
-    public void getAccountInfo() {
-        AccountInfo accountInfo = xpringClient.getAccountInfo(XRPL_ADDRESS);
-        assertThat(new BigInteger(accountInfo.getBalance().getDrops()))
-            .isGreaterThan(BigInteger.ONE)
-            .withFailMessage("Balance should have been positive");
+        client.getBalance(classicAddress.address());
     }
 
     @Test
     public void sendXRPTest() throws XpringKitException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
-        String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+        String transactionHash = client.send(AMOUNT, XRPL_ADDRESS, wallet);
         assertThat(transactionHash).isNotNull();
     }
 
@@ -85,6 +136,6 @@ public class XpringClientTest {
 
         // WHEN XRP is sent to the classic address THEN an error is thrown.
         expectedException.expect(XpringKitException.class);
-        xpringClient.send(AMOUNT, classicAddress.address(), wallet);
+        client.send(AMOUNT, classicAddress.address(), wallet);
     }
 }
