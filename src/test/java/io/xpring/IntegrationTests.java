@@ -16,10 +16,8 @@ import java.math.BigInteger;
  * Integration tests for Xpring4J.
  */
 public class IntegrationTests {
-    private static final String XRPL_ADDRESS = "rD7zai6QQQVvWc39ZVAhagDgtH5xwEoeXD";
-
     /** The XpringClient under test. */
-    private XpringClient client;
+    private XpringClient xpringClient;
 
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
@@ -38,21 +36,11 @@ public class IntegrationTests {
     /** Mocks gRPC networking inside of XpringClient. */
     @Before
     public void setUp() throws Exception {
-        // Generate a unique in-process server name.
-        String serverName = InProcessServerBuilder.generateName();
-
-        // Create a server, add service, start, and register for automatic graceful shutdown.
-        grpcCleanup.register(InProcessServerBuilder.forName(serverName).directExecutor().addService(serviceImpl).build().start());
-
-        // Create a client channel and register for automatic graceful shutdown.
-        ManagedChannel channel = grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
-
-        // Create a new XpringClient using the in-process channel;
-        client = new XpringClient(channel);
+        this.xpringClient = new XpringClient();
     }
 
     @Test
-    public void getBalanceTest() {
+    public void getBalanceTest() throws XpringKitException {
         BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
@@ -61,7 +49,7 @@ public class IntegrationTests {
     public void sendXRPTest() throws XpringKitException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
-        String transactionHash = client.send(AMOUNT, XRPL_ADDRESS, wallet);
+        String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
         assertThat(transactionHash).isNotNull();
     }
 }
