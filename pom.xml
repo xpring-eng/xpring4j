@@ -112,6 +112,18 @@
             <version>2.8.1</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-testing</artifactId>
+            <version>1.25.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -240,7 +252,7 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>io.xpring.xrpl.*Outer*</exclude>
+                        <exclude>io.xpring.proto</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -308,11 +320,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <excludePackageNames>
-                        <!--
-                        The protocol buffer compiler doesn't generate javadoc. Exclude all protocol buffers from documentation.
-                        TODO(keefer): Protocol buffers should be in a separate package. Update this when there is a separate java package.
-                        -->
-                        io.xpring:io.xpring.xrpl
+                        io.xpring.proto
                     </excludePackageNames>
                     <source>8</source>
                 </configuration>
