@@ -197,12 +197,16 @@ Utils.isValidAddress(rippleAddress); // returns true
 Utils.isValidAddress(bitcoinAddress); // returns false
 ```
 
-## Development
+# Contributing
 
-To get set up for development on XpringJ, run the following commands:
+Pull requests are welcome! To get started with building this library and opening pull requests, please see [contributing.md](CONTRIBUTING.md).
 
-```shell
-# Clone repository and submodules
-$ git clone --recursive https://github.com/xpring-eng/xpring4j.git
-$ cd xpring4j
-```
+Thank you to all the users who have contributed to this library!
+
+<a href="https://github.com/xpring-eng/xpring4j/graphs/contributors">
+  <img src="https://contributors-img.firebaseapp.com/image?repo=xpring-eng/xpring4j" />
+</a>
+
+# License
+
+Xpring SDK is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
