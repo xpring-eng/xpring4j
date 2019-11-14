@@ -29,7 +29,7 @@ The library should build and pass all tests.
 
 ```shell
 # Clone repository
-$ git clone https://github.com/xpring-eng/xpringkit.git
+$ git clone https://github.com/xpring-eng/xpring4j.git
 $ cd xpring4j
 
 # Run tests.
