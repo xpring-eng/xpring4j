@@ -1,6 +1,7 @@
 
 [![CircleCI](https://img.shields.io/circleci/build/github/xpring-eng/xpring4j?style=flat-square)](https://circleci.com/gh/xpring-eng/Xpring4j)
 [![CodeCov](https://img.shields.io/codecov/c/github/xpring-eng/xpring4j?style=flat-square)](https://codecov.io/gh/xpring-eng/Xpring4J)
+[![Dependabot Status](https://img.shields.io/static/v1?label=Dependabot&message=enabled&color=success&style=flat-square&logo=dependabot)](https://dependabot.com)
 
 # Xpring4j
 
@@ -48,6 +49,8 @@ Xpring is working on building a zero-config way for XRP node users to deploy and
 
 ## Usage
 
+**Note:** Xpring SDK only works with the X-Address format. For more information about this format, see the [Utilities section](#utilities) and <http://xrpaddress.info>.
+
 ### Wallets
 
 A wallet is a fundamental model object in Xpring4j. A wallet provides:
@@ -67,7 +70,7 @@ Xpring4j can derive a wallet from a seed or it can derive a hierarchical determi
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you can pass `null` for the derivation path and have a default path be used instead.
 
 ```java
-import xpring.io.Wallet;
+import xpring.io.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -82,7 +85,7 @@ Wallet hdWallet = new Wallet(mnemonic, "m/44'/144'/0'/0/1"); // Wallet with cust
 You can construct a seed based wallet by passing a base58check encoded seed string.
 
 ```java
-import xpring.io.Wallet;
+import xpring.io.xrpl.Wallet;
 
 Wallet seedWallet = new Wallet("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M");
 ```
@@ -96,7 +99,7 @@ Xpring4j can generate a new and random HD Wallet. The result of a wallet generat
 - A reference to the new wallet
 
 ```java
-import xpring.io.Wallet;
+import xpring.io.xrpl.Wallet;
 
 // Generate a random wallet.
 WalletGenerationResult generationResult = Wallet.generateRandomWallet();
@@ -111,13 +114,13 @@ Wallet copyOfNewWallet = new Wallet(generationResult.getMnemonic(), generationRe
 A generated wallet can provide its public key, private key, and address on the XRP ledger.
 
 ```java
-import xpring.io.Wallet;
+import xpring.io.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
 Wallet wallet = new Wallet(mnemonic, null);
 
-System.out.println(wallet.getAddress()); // rHsMGQEkVNJmpGWs8XUBoTBiAAbwxZN5v3
+System.out.println(wallet.getAddress()); // X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr
 System.out.println(wallet.getPublicKey()); // 031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE
 System.out.println(wallet.getPrivateKey()); // 0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4
 ```
@@ -127,7 +130,7 @@ System.out.println(wallet.getPrivateKey()); // 0090802A50AA84EFB6CDB225F17C27616
 A wallet can also sign and verify arbitrary hex messages. Generally, users should use the functions on `XpringClient` to perform cryptographic functions rather than using these low level APIs.
 
 ```java
-import xpring.io.Wallet;
+import xpring.io.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 String message = "deadbeef";
@@ -158,7 +161,7 @@ import java.math.BigInteger;
 
 XpringClient xpringClient = new XpringClient();
 
-String address = "rHsMGQEkVNJmpGWs8XUBoTBiAAbwxZN5v3";
+String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 BigInteger balance = xpringClient.getBalance(address);
 System.out.println(balance); // Logs a balance in drops of XRP
 ```
@@ -169,16 +172,19 @@ A `XpringClient` can send XRP to other [accounts](https://xrpl.org/accounts.html
 
 ```java
 import java.math.BigInteger;
-import io.xpring.SubmitSignedTransactionResponseProto.SubmitSignedTransactionResponse;
-import io.xpring.Wallet;
+import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XpringClient;
 
+// Amount of XRP to send.
 BigInteger amount = new BigInteger("1");
+
+// Wallet to send from.
 Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
 
-SubmitSignedTransactionResponse response = xpringClient.send(amount, "rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn", wallet);
+// Destination address.
+String destinationAddress = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 
-System.out.println(response.getEngineResultMessage());
+String transactionHash = xpringClient.send(amount, destinationAddress, wallet);
 ```
 
 ### Utilities
@@ -188,13 +194,55 @@ System.out.println(response.getEngineResultMessage());
 The `Utils` object provides an easy way to validate addresses.
 
 ```java
-import io.xpring.Utils;
+import io.xpring.xrpl.Utils;
 
-String rippleAddress = "rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G";
+String rippleClassicAddress = "rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G";
+String rippleXAddress = "X7jjQ4d6bz1qmjwxYUsw6gtxSyjYv5iWPqPEjGqqhn9Woti";
 String bitcoinAddress = "1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8";
 
-Utils.isValidAddress(rippleAddress); // returns true
+Utils.isValidAddress(rippleClassicAddress); // returns true
+Utils.isValidAddress(rippleXAddress); // returns true
 Utils.isValidAddress(bitcoinAddress); // returns false
+```
+
+You can also validate if an address is an X-Address or a classic address.
+
+```java
+import io.xpring.xrpl.Utils;
+
+String rippleClassicAddress = "rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G";
+String rippleXAddress = "X7jjQ4d6bz1qmjwxYUsw6gtxSyjYv5iWPqPEjGqqhn9Woti";
+String bitcoinAddress = "1DiqLtKZZviDxccRpowkhVowsbLSNQWBE8";
+
+Utils.isValidXAddress(rippleClassicAddress); // returns false
+Utils.isValidXAddress(rippleXAddress); // returns true
+Utils.isValidXAddress(bitcoinAddress); // returns false
+
+Utils.isValidClassicAddress(rippleClassicAddress); // returns true
+Utils.isValidClassicAddress(rippleXAddress); // returns false
+Utils.isValidClassicAddress(bitcoinAddress); // returns false
+```
+
+### X-Address Encoding
+
+You can encode and decode X-Addresses with the SDK.
+
+```java
+import io.xpring.xrpl.Utils;
+
+String rippleClassicAddress = "rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G"
+ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+  .address("rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G")
+  .tag(12345)
+  .build();
+
+// Encode an X-Address.
+String xAddress = Utils.encodeXAddress(rippleClassicAddress); // X7jjQ4d6bz1qmjwxYUsw6gtxSyjYv5xRB7JM3ht8XC4P45P
+
+// Decode an X-Address.
+ClassicAddressdecodedClassicAddress = Utils.decodeXAddress(xAddress);
+System.out.println(decodedClassicAddress.address()); // rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G
+System.out.println(decodedClassicAddress.tag()); // 12345
 ```
 
 # Contributing
