@@ -108,7 +108,8 @@ public class XpringClientTest {
         XpringClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
-                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence())
         );
 
         // WHEN the balance is retrieved THEN an error is thrown.
@@ -149,7 +150,8 @@ public class XpringClientTest {
         XpringClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
-                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -165,7 +167,25 @@ public class XpringClientTest {
         XpringClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 feeResult,
-                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence())
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+    @Test
+    public void submitTransactionWithFailedLatestValidatedLedgerSequence() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to retrieve a fee.
+        GRPCResult<LedgerSequence> lederSequence = GRPCResult.error(GENERIC_ERROR);
+        XpringClient client = getClient(
+                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -181,7 +201,8 @@ public class XpringClientTest {
         XpringClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
-                submitResult
+                submitResult,
+                GRPCResult.ok(makeLedgerSequence())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -197,15 +218,16 @@ public class XpringClientTest {
         return getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
-                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB))
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence())
         );
     }
 
     /**
      * Return a XpringClient which returns the given results for network calls.
      */
-    private XpringClient getClient(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult) throws IOException {
-        XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl = getService(accountInfoResult, feeResult, submitResult);
+    private XpringClient getClient(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult, GRPCResult<LedgerSequence> latestValidatedLedgerSequenceResult) throws IOException {
+        XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl = getService(accountInfoResult, feeResult, submitResult, latestValidatedLedgerSequenceResult);
 
         // Generate a unique in-process server name.
         String serverName = InProcessServerBuilder.generateName();
@@ -225,7 +247,7 @@ public class XpringClientTest {
     /**
      * Return a XRPLedgerService implementation which returns the given results for network calls.
      */
-    private XRPLedgerAPIGrpc.XRPLedgerAPIImplBase getService(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult) {
+    private XRPLedgerAPIGrpc.XRPLedgerAPIImplBase getService(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult, GRPCResult<LedgerSequence> latestValidatedLedgerSequenceResult) {
         return mock(XRPLedgerAPIGrpc.XRPLedgerAPIImplBase.class, delegatesTo(
                 new XRPLedgerAPIGrpc.XRPLedgerAPIImplBase() {
                     @Override
@@ -260,6 +282,17 @@ public class XpringClientTest {
                             responseObserver.onCompleted();
                         }
                     }
+
+                    @Override
+                    public void getLatestValidatedLedgerSequence(io.xpring.proto.GetLatestValidatedLedgerSequenceRequest request,
+                                                                 io.grpc.stub.StreamObserver<io.xpring.proto.LedgerSequence> responseObserver) {
+                        if (latestValidatedLedgerSequenceResult.isError()) {
+                            responseObserver.onError(new Throwable(latestValidatedLedgerSequenceResult.getError()));
+                        } else {
+                            responseObserver.onNext(latestValidatedLedgerSequenceResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
                 }
                 )
         );
@@ -287,5 +320,12 @@ public class XpringClientTest {
      */
     private SubmitSignedTransactionResponse makeSubmitSignedTransactionResponse(String transactionBlob) {
         return SubmitSignedTransactionResponse.newBuilder().setTransactionBlob(TRANSACTION_BLOB).build();
+    }
+
+    /**
+     * Make a Ledger Sequence.
+     */
+    private LedgerSequence makeLedgerSequence() {
+        return LedgerSequence.newBuilder().setIndex(12).build();
     }
 }
