@@ -2,17 +2,7 @@ package io.xpring.xrpl;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.xpring.proto.AccountInfo;
-import io.xpring.proto.Fee;
-import io.xpring.proto.GetAccountInfoRequest;
-import io.xpring.proto.GetFeeRequest;
-import io.xpring.proto.Payment;
-import io.xpring.proto.SignedTransaction;
-import io.xpring.proto.SubmitSignedTransactionRequest;
-import io.xpring.proto.SubmitSignedTransactionResponse;
-import io.xpring.proto.Transaction;
-import io.xpring.proto.XRPAmount;
-import io.xpring.proto.XRPLedgerAPIGrpc;
+import io.xpring.proto.*;
 import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +18,9 @@ import java.util.Objects;
 public class XpringClient {
     // TODO: Use TLS!
     public static final String XPRING_TECH_GRPC_URL = "grpc.xpring.tech:80";
+
+    // A margin to pad the current ledger sequence with when submitting transactions.
+    private static final int LEDGER_SEQUENCE_MARGIN = 10;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -103,16 +96,16 @@ public class XpringClient {
 
         AccountInfo accountInfo = this.getAccountInfo(sourceWallet.getAddress());
         BigInteger currentFeeInDrops = this.getCurrentFeeInDrops();
+        int lastValidatedLedgerSequence = this.getLatestValidatedLedgerSequence();
 
         Transaction transaction = Transaction.newBuilder()
-            .setAccount(sourceWallet.getAddress())
-            .setFee(XRPAmount.newBuilder().setDrops(currentFeeInDrops.toString()).build())
-            .setSequence(accountInfo.getSequence())
-            .setPayment(Payment.newBuilder()
+                .setAccount(sourceWallet.getAddress())
+                .setFee(XRPAmount.newBuilder().setDrops(currentFeeInDrops.toString()).build())
+                .setSequence(accountInfo.getSequence())
+                .setPayment(Payment.newBuilder()
                 .setDestination(destinationAddress)
-                .setXrpAmount(XRPAmount.newBuilder().setDrops(amount.toString()).build())
-                .build())
-            .setSigningPublicKeyHex(sourceWallet.getPublicKey())
+                .setXrpAmount(XRPAmount.newBuilder().setDrops(amount.toString()).build()).build())
+                .setSigningPublicKeyHex(sourceWallet.getPublicKey()).setLastLedgerSequence(lastValidatedLedgerSequence + LEDGER_SEQUENCE_MARGIN)
             .build();
 
         SignedTransaction signedTransaction = Signer.signTransaction(transaction, sourceWallet);
@@ -145,5 +138,16 @@ public class XpringClient {
         return stub.getAccountInfo(
             GetAccountInfoRequest.newBuilder().setAddress(xrplAddress).build()
         );
+    }
+
+    /**
+     * Retrieve the latest validated ledger sequence on the XRP Ledger.
+     *
+     * @return A long representing the sequence of the most recently validated ledger.
+     */
+    private int getLatestValidatedLedgerSequence() {
+        GetLatestValidatedLedgerSequenceRequest request = GetLatestValidatedLedgerSequenceRequest.newBuilder().build();
+        LedgerSequence ledgerSequence = stub.getLatestValidatedLedgerSequence(request);
+        return ledgerSequence.getIndex();
     }
 }
