@@ -180,12 +180,12 @@ public class XpringClientTest {
     @Test
     public void submitTransactionWithFailedLatestValidatedLedgerSequence() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will fail to retrieve a fee.
-        GRPCResult<LedgerSequence> lederSequence = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<LedgerSequence> ledgerSequence = GRPCResult.error(GENERIC_ERROR);
         XpringClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
-                GRPCResult.ok(makeLedgerSequence())
+                ledgerSequence)
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
