@@ -2,21 +2,7 @@ package io.xpring.xrpl;
 
 import java.math.BigInteger;
 
-/**
- * A client that can submit transactions to the XRP Ledger.
- *
- * @see "https://xrpl.org"
- */
-public class XpringClient implements XpringClientDecorator {
-    private XpringClientDecorator decoratedClient;
-
-    /**
-     * Initialize a new client with the given options.
-     */
-    public XpringClient() {
-        this.decoratedClient = new DefaultXpringClient();
-    }
-
+public interface XpringClientDecorator {
     /**
      * Get the balance of the specified account on the XRP Ledger.
      *
@@ -24,9 +10,7 @@ public class XpringClient implements XpringClientDecorator {
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringKitException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
-        return decoratedClient.getBalance(xrplAccountAddress);
-    }
+    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException;
 
     /**
      * Transact XRP between two accounts on the ledger.
@@ -38,10 +22,8 @@ public class XpringClient implements XpringClientDecorator {
      * @throws XpringKitException If the given inputs were invalid.
      */
     public String send(
-        final BigInteger amount,
-        final String destinationAddress,
-        final Wallet sourceWallet
-    ) throws XpringKitException {
-        return decoratedClient.send(amount, destinationAddress, sourceWallet);
-    }
+            final BigInteger amount,
+            final String destinationAddress,
+            final Wallet sourceWallet
+    ) throws XpringKitException;
 }
