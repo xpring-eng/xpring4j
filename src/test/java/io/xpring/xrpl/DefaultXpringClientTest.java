@@ -51,7 +51,7 @@ class GRPCResult<T> {
 }
 
 /**
- * Unit tests for {@link XpringClient}.
+ * Unit tests for {@link DefaultXpringClient}.
  */
 public class DefaultXpringClientTest {
     @Rule
@@ -80,7 +80,7 @@ public class DefaultXpringClientTest {
 
     @Test
     public void getBalanceTest() throws IOException, XpringKitException {
-        // GIVEN a XpringClient with mocked networking which will succeed.
+        // GIVEN a DefaultXpringClient with mocked networking which will succeed.
         DefaultXpringClient client = getClient();
 
         // WHEN the balance is retrieved.

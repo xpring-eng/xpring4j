@@ -2,6 +2,9 @@ package io.xpring.xrpl;
 
 import java.math.BigInteger;
 
+/**
+ * An common interface shared between XpringClient and the internal hierarchy of decorators.
+ */
 public interface XpringClientDecorator {
     /**
      * Get the balance of the specified account on the XRP Ledger.
