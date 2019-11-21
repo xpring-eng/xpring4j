@@ -77,14 +77,34 @@ public class XpringClient {
     }
 
     /**
-     * Transact XRP between two accounts on the ledger.
+     *  Retrieve the transaction status for a given transaction hash.
      *
-     * @param amount The number of drops of XRP to send.
-     * @param destinationAddress The X-Address to send the XRP to.
-     * @param sourceWallet The {@link Wallet} which holds the XRP.
-     * @return A transaction hash for the payment.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @param transactionHash: The hash of the transaction.
+     * @returns The status of the given transaction.
      */
+    public TransactionStatus getTransactionStatus(String transactionHash) {
+        GetTransactionStatusRequest transactionStatusRequest = GetTransactionStatusRequest.newBuilder().setTransactionHash(transactionHash).build();
+
+        io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
+
+        // Return PENDING if the transaction is not validated.
+        if (!transactionStatus.getValidated()) {
+            return TransactionStatus.PENDING;
+        }
+
+        return transactionStatus.getTransactionStatusCode().startsWith("tes") ? TransactionStatus.SUCCEEDED : TransactionStatus.FAILED;
+    }
+
+
+        /**
+         * Transact XRP between two accounts on the ledger.
+         *
+         * @param amount The number of drops of XRP to send.
+         * @param destinationAddress The X-Address to send the XRP to.
+         * @param sourceWallet The {@link Wallet} which holds the XRP.
+         * @return A transaction hash for the payment.
+         * @throws XpringKitException If the given inputs were invalid.
+         */
     public String send(
         final BigInteger amount,
         final String destinationAddress,

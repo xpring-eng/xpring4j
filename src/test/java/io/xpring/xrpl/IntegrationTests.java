@@ -23,12 +23,9 @@ public class IntegrationTests {
     /** Drops of XRP to send. */
     private static final BigInteger AMOUNT = new BigInteger("1");
 
-    /** Mocked values in responses from the gRPC server. */
-    private static final String DROPS_OF_XRP_IN_ACCOUNT = "10";
-    private static final String DROPS_OF_XRP_FOR_FEE = "20";
-    private static final String TRANSACTION_BLOB = "DEADBEEF";
+    /** Hash of a successful transaction. */
+    private static final String TRANSACTION_HASH = "2CBBD2523478848DA256F8EBFCBD490DD6048A4A5094BF8E3034F57EA6AA0522";
 
-    /** Mocks gRPC networking inside of XpringClient. */
     @Before
     public void setUp() throws Exception {
         this.xpringClient = new XpringClient();
@@ -38,6 +35,12 @@ public class IntegrationTests {
     public void getBalanceTest() throws XpringKitException {
         BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
+    }
+
+    @Test
+    public void getTransactionStatusTest() {
+        TransactionStatus transactionStatus = xpringClient.getTransactionStatus(TRANSACTION_HASH);
+        assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
     @Test
