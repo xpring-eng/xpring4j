@@ -220,7 +220,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithInvalidatedTransactionAndFailureCode() throws IOException {
+    public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException {
         // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(TRANSACTION_STATUS_FAILURE).build();
         XpringClient client = getClient(
@@ -239,8 +239,8 @@ public class XpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithInvalidatedTransactionAndSuccessCode() throws IOException {
-        // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
+    public void transactionStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException {
+        // GIVEN a XpringClient which will return an unvalidated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         XpringClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -259,7 +259,7 @@ public class XpringClientTest {
 
     @Test
     public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException {
-        // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
+        // GIVEN a XpringClient which will return an validated transaction with a failed code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_FAILURE).build();
         XpringClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -278,7 +278,7 @@ public class XpringClientTest {
 
     @Test
     public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException {
-        // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
+        // GIVEN a XpringClient which will return an validated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         XpringClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -293,6 +293,23 @@ public class XpringClientTest {
 
         // THEN the status is SUCCEEDED.
         assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void transactionStatusWithNodeError() throws IOException {
+        // GIVEN a XpringClient which will error when a transaction status is requested..
+        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
+        XpringClient client = getClient(
+                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence()),
+                GRPCResult.error(GENERIC_ERROR)
+        );
+
+        // WHEN the transaction status is retrieved THEN an error is thrown..
+        expectedException.expect(Exception.class);
+        client.getTransactionStatus(TRANSACTION_HASH);
     }
 
     /**

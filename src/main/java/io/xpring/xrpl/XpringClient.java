@@ -32,11 +32,11 @@ public class XpringClient {
      */
     public XpringClient() {
         this(ManagedChannelBuilder
-            .forTarget(XPRING_TECH_GRPC_URL)
-            // Let's use plaintext communication because we don't have certs
-            // TODO: Use TLS!
-            .usePlaintext(true)
-            .build()
+                .forTarget(XPRING_TECH_GRPC_URL)
+                // Let's use plaintext communication because we don't have certs
+                // TODO: Use TLS!
+                .usePlaintext(true)
+                .build()
         );
     }
 
@@ -66,20 +66,20 @@ public class XpringClient {
         Objects.requireNonNull(xrplAccountAddress, "xrplAccountAddress must not be null");
 
         AccountInfo result = stub
-            .getAccountInfo(GetAccountInfoRequest.newBuilder().setAddress(xrplAccountAddress).build());
+                .getAccountInfo(GetAccountInfoRequest.newBuilder().setAddress(xrplAccountAddress).build());
 
         logger.debug(
-            "Account balance successfully retrieved. accountAddress={} balance={}",
-            xrplAccountAddress, result.getBalance().toString()
+                "Account balance successfully retrieved. accountAddress={} balance={}",
+                xrplAccountAddress, result.getBalance().toString()
         );
 
         return new BigInteger(result.getBalance().getDrops());
     }
 
     /**
-     *  Retrieve the transaction status for a given transaction hash.
+     * Retrieve the transaction status for a given transaction hash.
      *
-     * @param transactionHash: The hash of the transaction.
+     * @param transactionHash The hash of the transaction.
      * @returns The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) {
@@ -96,19 +96,19 @@ public class XpringClient {
     }
 
 
-        /**
-         * Transact XRP between two accounts on the ledger.
-         *
-         * @param amount The number of drops of XRP to send.
-         * @param destinationAddress The X-Address to send the XRP to.
-         * @param sourceWallet The {@link Wallet} which holds the XRP.
-         * @return A transaction hash for the payment.
-         * @throws XpringKitException If the given inputs were invalid.
-         */
+    /**
+     * Transact XRP between two accounts on the ledger.
+     *
+     * @param amount The number of drops of XRP to send.
+     * @param destinationAddress The X-Address to send the XRP to.
+     * @param sourceWallet The {@link Wallet} which holds the XRP.
+     * @return A transaction hash for the payment.
+     * @throws XpringKitException If the given inputs were invalid.
+     * */
     public String send(
-        final BigInteger amount,
-        final String destinationAddress,
-        final Wallet sourceWallet
+            final BigInteger amount,
+            final String destinationAddress,
+            final Wallet sourceWallet
     ) throws XpringKitException {
         if (!Utils.isValidXAddress(destinationAddress)) {
             throw XpringKitException.xAddressRequiredException;
@@ -123,10 +123,10 @@ public class XpringClient {
                 .setFee(XRPAmount.newBuilder().setDrops(currentFeeInDrops.toString()).build())
                 .setSequence(accountInfo.getSequence())
                 .setPayment(Payment.newBuilder()
-                .setDestination(destinationAddress)
-                .setXrpAmount(XRPAmount.newBuilder().setDrops(amount.toString()).build()).build())
+                        .setDestination(destinationAddress)
+                        .setXrpAmount(XRPAmount.newBuilder().setDrops(amount.toString()).build()).build())
                 .setSigningPublicKeyHex(sourceWallet.getPublicKey()).setLastLedgerSequence(lastValidatedLedgerSequence + LEDGER_SEQUENCE_MARGIN)
-            .build();
+                .build();
 
         SignedTransaction signedTransaction = Signer.signTransaction(transaction, sourceWallet);
 
@@ -156,7 +156,7 @@ public class XpringClient {
      */
     private AccountInfo getAccountInfo(final String xrplAddress) {
         return stub.getAccountInfo(
-            GetAccountInfoRequest.newBuilder().setAddress(xrplAddress).build()
+                GetAccountInfoRequest.newBuilder().setAddress(xrplAddress).build()
         );
     }
 
