@@ -83,6 +83,7 @@ public class XpringClient {
      * @returns The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) {
+        Objects.requireNonNull(transactionHash);
         GetTransactionStatusRequest transactionStatusRequest = GetTransactionStatusRequest.newBuilder().setTransactionHash(transactionHash).build();
 
         io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
