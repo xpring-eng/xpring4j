@@ -80,7 +80,7 @@ public class XpringClient {
      * Retrieve the transaction status for a given transaction hash.
      *
      * @param transactionHash The hash of the transaction.
-     * @returns The status of the given transaction.
+     * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) {
         Objects.requireNonNull(transactionHash);
