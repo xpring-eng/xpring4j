@@ -77,6 +77,27 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     /**
+     * Retrieve the transaction status for a given transaction hash.
+     *
+     * @param transactionHash The hash of the transaction.
+     * @return The status of the given transaction.
+     */
+    public TransactionStatus getTransactionStatus(String transactionHash) {
+        Objects.requireNonNull(transactionHash);
+        GetTransactionStatusRequest transactionStatusRequest = GetTransactionStatusRequest.newBuilder().setTransactionHash(transactionHash).build();
+
+        io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
+
+        // Return PENDING if the transaction is not validated.
+        if (!transactionStatus.getValidated()) {
+            return TransactionStatus.PENDING;
+        }
+
+        return transactionStatus.getTransactionStatusCode().startsWith("tes") ? TransactionStatus.SUCCEEDED : TransactionStatus.FAILED;
+    }
+
+
+    /**
      * Transact XRP between two accounts on the ledger.
      *
      * @param amount The number of drops of XRP to send.

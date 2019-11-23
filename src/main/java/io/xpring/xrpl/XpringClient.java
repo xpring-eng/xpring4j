@@ -29,6 +29,16 @@ public class XpringClient implements XpringClientDecorator {
     }
 
     /**
+     * Retrieve the transaction status for a given transaction hash.
+     *
+     * @param transactionHash The hash of the transaction.
+     * @return The status of the given transaction.
+     */
+    public TransactionStatus getTransactionStatus(String transactionHash) {
+        return decoratedClient.getTransactionStatus(transactionHash);
+    }
+
+    /**
      * Transact XRP between two accounts on the ledger.
      *
      * @param amount The number of drops of XRP to send.
@@ -36,11 +46,11 @@ public class XpringClient implements XpringClientDecorator {
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
      * @throws XpringKitException If the given inputs were invalid.
-     */
+     * */
     public String send(
-        final BigInteger amount,
-        final String destinationAddress,
-        final Wallet sourceWallet
+            final BigInteger amount,
+            final String destinationAddress,
+            final Wallet sourceWallet
     ) throws XpringKitException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
     }

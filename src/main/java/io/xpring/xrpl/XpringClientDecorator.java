@@ -15,6 +15,15 @@ public interface XpringClientDecorator {
      */
     public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException;
 
+
+    /**
+     * Retrieve the transaction status for a given transaction hash.
+     *
+     * @param transactionHash The hash of the transaction.
+     * @return The status of the given transaction.
+     */
+    public TransactionStatus getTransactionStatus(String transactionHash);
+
     /**
      * Transact XRP between two accounts on the ledger.
      *
