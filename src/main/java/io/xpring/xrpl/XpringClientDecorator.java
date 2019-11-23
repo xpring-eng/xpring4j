@@ -3,20 +3,9 @@ package io.xpring.xrpl;
 import java.math.BigInteger;
 
 /**
- * A client that can submit transactions to the XRP Ledger.
- *
- * @see "https://xrpl.org"
+ * An common interface shared between XpringClient and the internal hierarchy of decorators.
  */
-public class XpringClient implements XpringClientDecorator {
-    private XpringClientDecorator decoratedClient;
-
-    /**
-     * Initialize a new client with the given options.
-     */
-    public XpringClient() {
-        this.decoratedClient = new DefaultXpringClient();
-    }
-
+public interface XpringClientDecorator {
     /**
      * Get the balance of the specified account on the XRP Ledger.
      *
@@ -24,9 +13,8 @@ public class XpringClient implements XpringClientDecorator {
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringKitException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
-        return decoratedClient.getBalance(xrplAccountAddress);
-    }
+    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException;
+
 
     /**
      * Retrieve the transaction status for a given transaction hash.
@@ -34,9 +22,7 @@ public class XpringClient implements XpringClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) {
-        return decoratedClient.getTransactionStatus(transactionHash);
-    }
+    public TransactionStatus getTransactionStatus(String transactionHash);
 
     /**
      * Transact XRP between two accounts on the ledger.
@@ -46,12 +32,10 @@ public class XpringClient implements XpringClientDecorator {
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
      * @throws XpringKitException If the given inputs were invalid.
-     * */
+     */
     public String send(
             final BigInteger amount,
             final String destinationAddress,
             final Wallet sourceWallet
-    ) throws XpringKitException {
-        return decoratedClient.send(amount, destinationAddress, sourceWallet);
-    }
+    ) throws XpringKitException;
 }
