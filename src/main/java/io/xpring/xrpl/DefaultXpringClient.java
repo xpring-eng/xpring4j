@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class DefaultXpringClient implements XpringClientDecorator {
     // TODO: Use TLS!
-    public static final String XPRING_TECH_GRPC_URL = "127.0.0.1:9090"; //"grpc.xpring.tech:80";
+    public static final String XPRING_TECH_GRPC_URL = "grpc.xpring.tech:80";
 
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int LEDGER_SEQUENCE_MARGIN = 10;
