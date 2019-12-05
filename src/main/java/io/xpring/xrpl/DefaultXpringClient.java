@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class DefaultXpringClient implements XpringClientDecorator {
     // TODO: Use TLS!
-    public static final String XPRING_TECH_GRPC_URL = "grpc.xpring.tech:80";
+    public static final String XPRING_TECH_GRPC_URL = "127.0.0.1:9090"; //"grpc.xpring.tech:80";
 
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int LEDGER_SEQUENCE_MARGIN = 10;
@@ -83,10 +83,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) {
-        Objects.requireNonNull(transactionHash);
-        GetTransactionStatusRequest transactionStatusRequest = GetTransactionStatusRequest.newBuilder().setTransactionHash(transactionHash).build();
-
-        io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
+        io.xpring.proto.TransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
 
         // Return PENDING if the transaction is not validated.
         if (!transactionStatus.getValidated()) {
@@ -95,7 +92,6 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         return transactionStatus.getTransactionStatusCode().startsWith("tes") ? TransactionStatus.SUCCEEDED : TransactionStatus.FAILED;
     }
-
 
     /**
      * Transact XRP between two accounts on the ledger.
@@ -166,9 +162,22 @@ public class DefaultXpringClient implements XpringClientDecorator {
      *
      * @return A long representing the sequence of the most recently validated ledger.
      */
-    private int getLatestValidatedLedgerSequence() {
+     public int getLatestValidatedLedgerSequence() {
         GetLatestValidatedLedgerSequenceRequest request = GetLatestValidatedLedgerSequenceRequest.newBuilder().build();
         LedgerSequence ledgerSequence = stub.getLatestValidatedLedgerSequence(request);
         return ledgerSequence.getIndex();
+    }
+
+    /**
+     * Retrieve the raw transaction status for the given transaction hash.
+     *
+     * @param transactionHash: The hash of the transaction.
+     * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
+     */
+    public io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash) {
+        Objects.requireNonNull(transactionHash);
+        GetTransactionStatusRequest transactionStatusRequest = GetTransactionStatusRequest.newBuilder().setTransactionHash(transactionHash).build();
+
+        return stub.getTransactionStatus(transactionStatusRequest);
     }
 }
