@@ -1,5 +1,8 @@
 package io.xpring.xrpl;
 
+import io.xpring.proto.GetLatestValidatedLedgerSequenceRequest;
+import io.xpring.proto.LedgerSequence;
+
 import java.math.BigInteger;
 
 /**
@@ -13,7 +16,7 @@ public interface XpringClientDecorator {
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringKitException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException;
+    BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException;
 
 
     /**
@@ -22,7 +25,7 @@ public interface XpringClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash);
+    TransactionStatus getTransactionStatus(String transactionHash);
 
     /**
      * Transact XRP between two accounts on the ledger.
@@ -33,9 +36,24 @@ public interface XpringClientDecorator {
      * @return A transaction hash for the payment.
      * @throws XpringKitException If the given inputs were invalid.
      */
-    public String send(
+    String send(
             final BigInteger amount,
             final String destinationAddress,
             final Wallet sourceWallet
     ) throws XpringKitException;
+
+    /**
+     * Retrieve the latest validated ledger sequence on the XRP Ledger.
+     *
+     * @return A long representing the sequence of the most recently validated ledger.
+     */
+    int getLatestValidatedLedgerSequence();
+
+    /**
+     * Retrieve the raw transaction status for the given transaction hash.
+     *
+     * @param transactionHash: The hash of the transaction.
+     * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
+     */
+    io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash);
 }

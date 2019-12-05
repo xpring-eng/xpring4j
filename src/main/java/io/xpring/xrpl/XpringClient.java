@@ -7,14 +7,15 @@ import java.math.BigInteger;
  *
  * @see "https://xrpl.org"
  */
-public class XpringClient implements XpringClientDecorator {
+public class XpringClient {
     private XpringClientDecorator decoratedClient;
 
     /**
      * Initialize a new client with the given options.
      */
     public XpringClient() {
-        this.decoratedClient = new DefaultXpringClient();
+        DefaultXpringClient defaultXpringClient = new DefaultXpringClient();
+        this.decoratedClient = new ReliableSubmissionXpringClient(defaultXpringClient);
     }
 
     /**
