@@ -6,12 +6,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigInteger;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
-interface AsyncWork {
-    void run();
-}
 
 public class ReliableSubmissionXpringClientTest {
     @Rule
@@ -38,9 +37,11 @@ public class ReliableSubmissionXpringClientTest {
 
     FakeXpringClient fakeXpringClient;
     ReliableSubmissionXpringClient reliableSubmissionXpringClient;
+    private ScheduledExecutorService scheduledExecutor;
 
     @Before
     public void setUp() throws Exception {
+        this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         this.fakeXpringClient = new FakeXpringClient(
                 DEFAULT_BALANCE_VALUE,
                 DEFAULT_TRANSACTION_STATUS_VALUE,
@@ -146,17 +147,7 @@ public class ReliableSubmissionXpringClientTest {
      *
      * @param work The work to run.
      */
-    private void runAfterOneSecond(AsyncWork work) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    assert(false);
-                }
-                work.run();
-            }
-        }).start();
+    private void runAfterOneSecond(Runnable work) {
+        scheduledExecutor.schedule(work, 1, TimeUnit.SECONDS);
     }
 }
