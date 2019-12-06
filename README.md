@@ -153,7 +153,7 @@ XpringClient xpringClient = new XpringClient();
 
 #### Retrieving a Balance
 
-A `XpringClient` can check the balance of an account on the ledger.
+A `XpringClient` can check the balance of an account on the XRP Ledger.
 
 ```java
 import io.xpring.xrpl.XpringClient;
@@ -166,9 +166,36 @@ BigInteger balance = xpringClient.getBalance(address);
 System.out.println(balance); // Logs a balance in drops of XRP
 ```
 
+### Checking Transaction Status
+
+A `XpringClient` can check the status of an transaction on the XRP Ledger. 
+
+Xpring4J returns the following transaction states:
+- `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
+- `FAILED:` The transaction was successfully validated but not applied to the XRP Ledger. Or the operation will never be validated.
+- `PENDING`: The transaction has not yet been validated, but may be validated in the future.
+- `UNKNOWN`: The transaction status could not be determined.
+
+**Note:** For more information, see [Reliable Transaction Submission](https://xrpl.org/reliable-transaction-submission.html) and [Transaction Results](https://xrpl.org/transaction-results.html).
+
+These states are determined by the `TransactionStatus` enum.
+
+```java
+import io.xpring.xrpl.XpringClient;
+import io.xpring.xrpl.TransactionStatus;
+
+XpringClient xpringClient = new XpringClient();
+
+String transactionHash = "2CBBD2523478848DA256F8EBFCBD490DD6048A4A5094BF8E3034F57EA6AA0522";
+TransactionStatus transactionStatus = xpringClient.xpringClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
+
+```
+
 #### Sending XRP
 
-A `XpringClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) on the ledger.
+A `XpringClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) on the XRP Ledger.
+
+**Note:** The payment operation will block the calling thread until the operation reaches a definitive and irreversible success or failure state.
 
 ```java
 import java.math.BigInteger;
