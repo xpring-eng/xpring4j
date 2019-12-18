@@ -44,7 +44,6 @@ public class JavaScriptWalletFactory {
      *
      * @param isTest Whether the address is for use on a test network.
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
-     * @throws XpringKitException If wallet generation fails.
      */
     public JavaScriptWalletGenerationResult generateRandomWallet(boolean isTest) {
         byte[] randomBytes = randomBytes(16);
@@ -64,7 +63,7 @@ public class JavaScriptWalletFactory {
      * @param seed A base58check encoded seed for the wallet.
      * @param isTest Whether the address is for use on a test network.
      * @throws XpringKitException If the seed is malformed.
-     * @returns A new {@link JavaScriptWallet}.
+     * @return A new {@link JavaScriptWallet}.
      */
     public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XpringKitException {
         Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed, isTest);
@@ -81,7 +80,7 @@ public class JavaScriptWalletFactory {
      * @param derivationPath A derivation. If null, the default derivation path will be used.
      * @param isTest Whether the address is for use on a test network.
      * @throws XpringKitException If the mnemonic or derivation path are malformed.
-     * @returns A new {@link JavaScriptWallet}.
+     * @return A new {@link JavaScriptWallet}.
      */
     public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath, boolean isTest) throws XpringKitException {
         try {
