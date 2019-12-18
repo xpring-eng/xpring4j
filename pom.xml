@@ -115,7 +115,7 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-testing</artifactId>
-            <version>1.25.0</version>
+            <version>1.26.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
