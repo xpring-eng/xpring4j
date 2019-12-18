@@ -7,6 +7,7 @@ import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
 import java.security.SecureRandom;
+import java.util.Objects;
 
 public class JavaScriptWalletFactory {
 
@@ -38,11 +39,18 @@ public class JavaScriptWalletFactory {
         return getDefaultDerivationPathFunction.execute().asString();
     }
 
-    public JavaScriptWalletGenerationResult generateRandomWallet() {
+    /**
+     * Generate a random Wallet.
+     *
+     * @param isTest Whether the address is for use on a test network.
+     * @return A {WalletGenerationResult} containing the artifacts of the generation process.
+     * @throws XpringKitException If wallet generation fails.
+     */
+    public JavaScriptWalletGenerationResult generateRandomWallet(boolean isTest) {
         byte[] randomBytes = randomBytes(16);
         String hexRandomBytes = Utils.byteArrayToHex(randomBytes);
 
-        Value walletGenerationResult = this.wallet.invokeMember("generateRandomWallet", hexRandomBytes);
+        Value walletGenerationResult = this.wallet.invokeMember("generateRandomWallet", hexRandomBytes, isTest);
         return new JavaScriptWalletGenerationResult(
             walletGenerationResult.getMember("mnemonic").asString(),
             walletGenerationResult.getMember("derivationPath").asString(),
@@ -50,23 +58,35 @@ public class JavaScriptWalletFactory {
         );
     }
 
-    public JavaScriptWallet walletFromSeed(String seed) throws XpringKitException {
-        Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed);
+    /**
+     * Initialize a new wallet from a seed.
+     *
+     * @param seed A base58check encoded seed for the wallet.
+     * @param isTest Whether the address is for use on a test network.
+     * @throws XpringKitException If the seed is malformed.
+     * @returns A new {@link JavaScriptWallet}.
+     */
+    public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XpringKitException {
+        Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed, isTest);
         if (wallet.isNull()) {
             throw new XpringKitException("Invalid Seed");
         }
         return new JavaScriptWallet(wallet);
     }
 
-    public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath)
-        throws XpringKitException {
+    /**
+     * Create a new HD Wallet.
+     *
+     * @param mnemonic       A space separated mnemonic.
+     * @param derivationPath A derivation. If null, the default derivation path will be used.
+     * @param isTest Whether the address is for use on a test network.
+     * @throws XpringKitException If the mnemonic or derivation path are malformed.
+     * @returns A new {@link JavaScriptWallet}.
+     */
+    public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath, boolean isTest) throws XpringKitException {
         try {
-            Value wallet;
-            if (derivationPath != null) {
-                wallet = this.wallet.invokeMember("generateWalletFromMnemonic", mnemonic, derivationPath);
-            } else {
-                wallet = this.wallet.invokeMember("generateWalletFromMnemonic", mnemonic);
-            }
+            String normalizedDerivationPath = derivationPath != null ? derivationPath : this.getDefaultDerivationPath();
+            Value wallet = this.wallet.invokeMember("generateWalletFromMnemonic", mnemonic, normalizedDerivationPath, isTest);
 
             if (wallet.isNull()) {
                 throw new XpringKitException(invalidMnemonicOrDerivationPathMessage);
@@ -74,6 +94,8 @@ public class JavaScriptWalletFactory {
 
             return new JavaScriptWallet(wallet);
         } catch (PolyglotException exception) {
+            throw new XpringKitException(invalidMnemonicOrDerivationPathMessage);
+        } catch (JavaScriptLoaderException exception) {
             throw new XpringKitException(invalidMnemonicOrDerivationPathMessage);
         }
     }
