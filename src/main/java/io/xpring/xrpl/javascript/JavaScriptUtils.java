@@ -50,8 +50,8 @@ public class JavaScriptUtils {
 
         Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
         Value result = classicAddress.tag().isPresent() ?
-                encodeXAddressFunction.execute(classicAddress.address(), classicAddress.tag().get()) :
-                encodeXAddressFunction.execute(classicAddress.address());
+                encodeXAddressFunction.execute(classicAddress.address(), classicAddress.tag().get(), classicAddress.isTest()) :
+                encodeXAddressFunction.execute(classicAddress.address(), classicAddress.isTest());
         return result.asString();
     }
 
