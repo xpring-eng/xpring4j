@@ -105,6 +105,7 @@ public class UtilsTest {
         // Then the decoded address and tag as are expected.
         assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
         assertEquals(classicAddress.tag().get(), new Long(12345));
+        assertFalse(classicAddress.isTest());
     }
 
     @Test
@@ -118,6 +119,7 @@ public class UtilsTest {
         // Then the decoded address and tag as are expected.
         assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
         assertFalse(classicAddress.tag().isPresent());
+        assertTrue(classicAddress.isTest());
     }
 
     @Test
