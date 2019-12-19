@@ -11,9 +11,15 @@ public class WalletTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void testGenerateWalletFromSeed() throws XpringKitException {
+    public void testGenerateMainNetWalletFromSeed() throws XpringKitException {
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
         assertEquals(wallet.getAddress(), "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8");
+    }
+
+    @Test
+    public void testGenerateTestNetWalletFromSeed() throws XpringKitException {
+        Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB", true);
+        assertEquals(wallet.getAddress(), "T7zFmeZo6uLHP4Vd21TpXjrTBk487ZQPGVQsJ1mKWGCD5rq");
     }
 
     @Test
@@ -38,7 +44,7 @@ public class WalletTest {
     }
 
     @Test
-    public void  testGenerateWalletFromMnemonicNoDerivationPath() throws XpringKitException {
+    public void testGenerateWalletFromMnemonicNoDerivationPath() throws XpringKitException {
         String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
         Wallet wallet = new Wallet(mnemonic, null);
 
@@ -48,7 +54,7 @@ public class WalletTest {
     }
 
     @Test
-    public void  testGenerateWalletFromMnemonicDerivationPath0() throws XpringKitException {
+    public void testGenerateMainNetWalletFromMnemonicDerivationPath0() throws XpringKitException {
         String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
         String derivationPath = "m/44'/144'/0'/0/0";
         Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -56,6 +62,17 @@ public class WalletTest {
         assertEquals(wallet.getPublicKey(), "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE");
         assertEquals(wallet.getPrivateKey(), "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4");
         assertEquals(wallet.getAddress(), "XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ");
+    }
+
+    @Test
+    public void testGenerateTestNetWalletFromMnemonicDerivationPath0() throws XpringKitException {
+        String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        String derivationPath = "m/44'/144'/0'/0/0";
+        Wallet wallet = new Wallet(mnemonic, derivationPath, true);
+
+        assertEquals(wallet.getPublicKey(), "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE");
+        assertEquals(wallet.getPrivateKey(), "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4");
+        assertEquals(wallet.getAddress(), "TVHLFWLKvbMv1LFzd6FA2Bf9MPpcy4mRto4VFAAxLuNpvdW");
     }
 
     @Test
