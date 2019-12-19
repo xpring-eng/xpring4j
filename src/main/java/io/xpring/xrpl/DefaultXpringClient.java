@@ -35,7 +35,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
             .forTarget(XPRING_TECH_GRPC_URL)
             // Let's use plaintext communication because we don't have certs
             // TODO: Use TLS!
-            .usePlaintext(true)
+            .usePlaintext()
             .build()
         );
     }

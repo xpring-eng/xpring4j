@@ -16,13 +16,17 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <grpc.version>1.25.0</grpc.version>
+        <grpc.version>1.26.0</grpc.version>
         <protobuf.version>3.11.1</protobuf.version>
         <slf4j.version>1.7.30</slf4j.version>
         <graalvm.version>19.3.0</graalvm.version>
         <!-- org.apache.maven.plugins:maven-checkstyle-plugin -->
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <checkstyle.violationSeverity>error</checkstyle.violationSeverity>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <scm>
@@ -109,19 +113,16 @@
         <dependency>
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
-            <version>2.8.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-testing</artifactId>
-            <version>1.25.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.2.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -149,6 +150,18 @@
                 <version>${grpc.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-testing</artifactId>
+                <version>${grpc.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>3.14.0</version>
@@ -170,6 +183,18 @@
                 <version>${graalvm.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.immutables</groupId>
+                <artifactId>value</artifactId>
+                <version>2.8.3</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>3.2.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
@@ -178,12 +203,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -287,11 +306,11 @@
                     <protocExecutable>/usr/local/bin/protoc</protocExecutable>
                     <protoSourceRoot>${project.basedir}/xpring-common-protocol-buffers/proto</protoSourceRoot>
                     <protocArtifact>
-                        com.google.protobuf:protoc:3.10.0:exe:${os.detected.classifier}
+                        com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
                     </protocArtifact>
                     <pluginId>grpc-java</pluginId>
                     <pluginArtifact>
-                        io.grpc:protoc-gen-grpc-java:1.24.0:exe:${os.detected.classifier}
+                        io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
                     </pluginArtifact>
                 </configuration>
                 <executions>
@@ -318,6 +337,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
                     <excludePackageNames>
                         io.xpring.proto
@@ -336,6 +356,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
