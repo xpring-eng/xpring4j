@@ -31,7 +31,7 @@ Xpring4j is available as a Java library from Maven Central. Simply add the follo
 <dependency>
   <groupId>io.xpring</groupId>
   <artifactId>xpring4j</artifactId>
-  <version>1.0.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
