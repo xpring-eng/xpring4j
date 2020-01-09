@@ -294,8 +294,6 @@
                     </pluginArtifact>
                 </configuration>
                 <executions>
-
-
                     <execution>
                         <id>Compile xpring-common-protocol-buffers protocol buffers</id>
                         <configuration>
@@ -321,7 +319,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
