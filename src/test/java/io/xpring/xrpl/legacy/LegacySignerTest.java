@@ -5,7 +5,7 @@ import io.xpring.proto.XRPAmount;
 import io.xpring.proto.Transaction;
 import io.xpring.proto.Payment;
 import io.xpring.proto.SignedTransaction;
-import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;.
 
 import static org.junit.Assert.assertEquals;
 
