@@ -14,14 +14,14 @@ public class JavaScriptLoader {
     /**
      * Error messages for exceptions.
      */
-    private static final String missingBundledJS = "Could not load JavaScript resources for the XRP Ledger. Check that `bundled.js` exists and is well formed.";
-    private static final String missingEntryPoint = "Could not find global EntryPoint in Context. Check that `EntryPoint.default` is defined as a global variable.";
+    private static final String missingIndexJS = "Could not load JavaScript resources for the XRP Ledger. Check that `index.js` exists and is well formed.";
+    private static final String missingXpringCommonJS = "Could not find global XpringCommonJS in Context. Check that `XpringCommonJS.default` is defined as a global variable.";
     private static final String missingResource = "Could not find the requested resource: ";
 
     /**
      * The name of the JavaScript file to load from.
      */
-    private static final String javaScriptResourceName = "/bundled.js";
+    private static final String javaScriptResourceName = "/index.js";
 
     /**
      * The identifier for the JavaScript language in the graalvm polygot package.
@@ -31,14 +31,14 @@ public class JavaScriptLoader {
     private static final Context context;
 
     static {
-        // Load the bundled JavaScript file.
+        // Load the webpacked XpringCommonJS JavaScript file.
         context = Context.create(javaScriptLanguageIdentifier);
         Source source;
         try (InputStreamReader reader =
                  new InputStreamReader(JavaScriptLoader.class.getResourceAsStream(javaScriptResourceName))) {
             source = Source.newBuilder(javaScriptLanguageIdentifier, reader, javaScriptResourceName).build();
         } catch (Exception exception) {
-            throw new RuntimeException(missingBundledJS);
+            throw new RuntimeException(missingIndexJS);
         }
 
         // Load the file into the context and find the root object.
@@ -61,26 +61,26 @@ public class JavaScriptLoader {
     }
 
     /**
-     * Load a class or function from the default entry point on the given JSContext.
+     * Load the value from the XpringCommonJS exports on the given JSContext.
      *
-     * This method loads value from `EntryPoint.$value`.
+     * This method loads value from `XpringCommonJS.$value`.
      *
-     * @param resourceName: The name of the resource to load.
-     * @param context:      The context load from.
+     * @param value:   The name of the value you are trying to load.
+     * @param context: The context load from.
      *
      * @return A `Value` referring to the requested resource.
      *
      * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
-    public static Value loadResource(String resourceName, Context context) throws JavaScriptLoaderException {
-        Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("EntryPoint");
+    public static Value loadResource(String value, Context context) throws JavaScriptLoaderException {
+        Value root = context.getBindings(javaScriptLanguageIdentifier).getMember("XpringCommonJS");
 
         // If the root is not found throw an exception.
         if (root.isNull()) {
-            throw new JavaScriptLoaderException(missingEntryPoint);
+            throw new JavaScriptLoaderException(missingXpringCommonJS);
         }
 
-        return loadResource(resourceName, root);
+        return loadResource(value, root);
     }
 
     /**
