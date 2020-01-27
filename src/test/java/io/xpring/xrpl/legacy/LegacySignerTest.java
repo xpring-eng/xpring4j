@@ -1,14 +1,15 @@
-package io.xpring.xrpl;
+package io.xpring.xrpl.legacy;
 
 import org.junit.Test;
 import io.xpring.proto.XRPAmount;
 import io.xpring.proto.Transaction;
 import io.xpring.proto.Payment;
 import io.xpring.proto.SignedTransaction;
+import io.xpring.xrpl.Wallet;
 
 import static org.junit.Assert.assertEquals;
 
-public class SignerTest {
+public class LegacySignerTest {
     @Test
     public void testSign() throws Exception {
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
@@ -25,7 +26,7 @@ public class SignerTest {
                 .setPayment(payment)
                 .build();
 
-        SignedTransaction signedTransaction = Signer.signTransaction(transaction, wallet);
+        SignedTransaction signedTransaction = LegacySigner.signTransaction(transaction, wallet);
         assertEquals(signedTransaction.getTransaction(), transaction);
         assertEquals(
                 signedTransaction.getTransactionSignatureHex(),
