@@ -1,14 +1,14 @@
-package io.xpring.xrpl;
+package io.xpring.xrpl.legacy;
 
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.javascript.JavaScriptSigner;
+import io.xpring.xrpl.legacy.javascript.LegacyJavaScriptSigner;
 
 import io.xpring.proto.Transaction;
 import io.xpring.proto.SignedTransaction;
 
-public class Signer {
+public class LegacySigner {
     /** Please do not instantiate this static utility class. */
-    private Signer() {}
+    private LegacySigner() {}
 
     /**
      * Sign the given transaction with the given wallet.
@@ -18,7 +18,7 @@ public class Signer {
      */
     public static SignedTransaction signTransaction(Transaction transaction, Wallet wallet) {
         try {
-            JavaScriptSigner javascriptSigner = new JavaScriptSigner();
+            LegacyJavaScriptSigner javascriptSigner = new LegacyJavaScriptSigner();
             return javascriptSigner.signTransaction(transaction, wallet);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
