@@ -1,4 +1,4 @@
-package io.xpring.xrpl.javascript;
+package io.xpring.xrpl.legacy.javascript;
 
 import io.xpring.proto.Transaction;
 import io.xpring.proto.SignedTransaction;
@@ -6,17 +6,19 @@ import io.xpring.proto.SignedTransaction;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
+import io.xpring.xrpl.javascript.JavaScriptLoader;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 
 /** Provides JavaScript based Signing functionality. */
-public class JavaScriptSigner {
+public class LegacyJavaScriptSigner {
     private Value signerClass;
     private Value walletClass;
     private Value transactionClass;
     private Value utilsClass;
 
-    public JavaScriptSigner() throws JavaScriptLoaderException {
+    public LegacyJavaScriptSigner() throws JavaScriptLoaderException {
         Context context = JavaScriptLoader.getContext();
         this.signerClass = JavaScriptLoader.loadResource("Signer", context);
         this.walletClass = JavaScriptLoader.loadResource("Wallet", context);

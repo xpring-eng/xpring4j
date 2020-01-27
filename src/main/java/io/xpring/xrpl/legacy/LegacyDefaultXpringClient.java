@@ -1,9 +1,15 @@
-package io.xpring.xrpl;
+package io.xpring.xrpl.legacy;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.proto.*;
 import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
+import io.xpring.xrpl.XpringClientDecorator;
+import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.legacy.LegacySigner;
+import io.xpring.xrpl.TransactionStatus;
+import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +21,7 @@ import java.util.Objects;
  *
  * @see "https://xrpl.org"
  */
-public class DefaultXpringClient implements XpringClientDecorator {
+public class LegacyDefaultXpringClient implements XpringClientDecorator {
     // TODO: Use TLS!
     public static final String XPRING_TECH_GRPC_URL = "grpc.xpring.tech:80";
 
@@ -30,7 +36,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * No-args Constructor.
      */
-    public DefaultXpringClient() {
+    public LegacyDefaultXpringClient() {
         this(ManagedChannelBuilder
             .forTarget(XPRING_TECH_GRPC_URL)
             // Let's use plaintext communication because we don't have certs
@@ -45,7 +51,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
      *
      * @param channel A {@link ManagedChannel}.
      */
-    DefaultXpringClient(final ManagedChannel channel) {
+    LegacyDefaultXpringClient(final ManagedChannel channel) {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
         this.stub = XRPLedgerAPIGrpc.newBlockingStub(channel);
@@ -125,7 +131,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
                 .setSigningPublicKeyHex(sourceWallet.getPublicKey()).setLastLedgerSequence(lastValidatedLedgerSequence + LEDGER_SEQUENCE_MARGIN)
             .build();
 
-        SignedTransaction signedTransaction = Signer.signTransaction(transaction, sourceWallet);
+        SignedTransaction signedTransaction = LegacySigner.signTransaction(transaction, sourceWallet);
 
         SubmitSignedTransactionRequest submitSignedTransactionRequest = SubmitSignedTransactionRequest.newBuilder()
                 .setSignedTransaction(signedTransaction).build();
