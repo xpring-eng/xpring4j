@@ -42,7 +42,7 @@ public class LegacyJavaScriptSigner {
         Value javaScriptWallet = walletToJavaScriptValue(wallet);
 
         // Create a JavaScript SignedTransaction.
-        Value javaScriptSignedTransaction = signerClass.invokeMember("signTransaction", javaScriptTransaction, javaScriptWallet);
+        Value javaScriptSignedTransaction = signerClass.invokeMember("signLegacyTransaction", javaScriptTransaction, javaScriptWallet);
 
         // Convert JavaScript SignedTransaction into a Java SignedTransaction.
         try {
