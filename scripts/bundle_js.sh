@@ -21,4 +21,4 @@ echo "Done Bundling JS"
 cd $WORKING_DIR
 echo "Copying Artifacts"
 mkdir -p $OUTPUT_DIR
-cp xpring-common-js/dist/bundled.js $OUTPUT_DIR
+cp xpring-common-js/dist/index.js $OUTPUT_DIR
