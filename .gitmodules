@@ -4,3 +4,7 @@
 [submodule "xpring-common-js"]
 	path = xpring-common-js
 	url = https://github.com/xpring-eng/xpring-common-js.git
+[submodule "rippled"]
+	path = rippled
+	url = https://github.com/ripple/rippled
+	branch = develop

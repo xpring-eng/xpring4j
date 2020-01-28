@@ -304,7 +304,6 @@
                 <version>0.6.1</version>
                 <configuration>
                     <protocExecutable>/usr/local/bin/protoc</protocExecutable>
-                    <protoSourceRoot>${project.basedir}/xpring-common-protocol-buffers/proto</protoSourceRoot>
                     <protocArtifact>
                         com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
                     </protocArtifact>
@@ -315,6 +314,22 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>Compile xpring-common-protocol-buffers protocol buffers</id>
+                        <configuration>
+                            <protoSourceRoot>${project.basedir}/xpring-common-protocol-buffers/proto</protoSourceRoot>
+                        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>Compile rippled protocol buffers</id>
+                        <configuration>
+                            <clearOutputDirectory>false</clearOutputDirectory>
+                            <protoSourceRoot>${project.basedir}/rippled/src/ripple/proto</protoSourceRoot>
+                        </configuration>
                         <goals>
                             <goal>compile</goal>
                             <goal>compile-custom</goal>
