@@ -25,7 +25,7 @@ public interface XpringClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    TransactionStatus getTransactionStatus(String transactionHash);
+    TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException;
 
     /**
      * Transact XRP between two accounts on the ledger.
@@ -47,7 +47,7 @@ public interface XpringClientDecorator {
      *
      * @return A long representing the sequence of the most recently validated ledger.
      */
-    int getLatestValidatedLedgerSequence();
+    int getLatestValidatedLedgerSequence() throws XpringKitException;
 
     /**
      * Retrieve the raw transaction status for the given transaction hash.
@@ -55,5 +55,5 @@ public interface XpringClientDecorator {
      * @param transactionHash: The hash of the transaction.
      * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
      */
-    io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash);
+    io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException;
 }
