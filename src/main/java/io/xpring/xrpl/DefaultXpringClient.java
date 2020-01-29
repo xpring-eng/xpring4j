@@ -108,6 +108,6 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         GetTxResponse response = this.stub.getTx(request);
 
-        throw XpringKitException.unimplemented;
+        return new RawTransactionStatus(response);
     }
 }
