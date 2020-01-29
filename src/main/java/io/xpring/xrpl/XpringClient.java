@@ -36,7 +36,7 @@ public class XpringClient {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws  XpringKitException {
         return decoratedClient.getTransactionStatus(transactionHash);
     }
 

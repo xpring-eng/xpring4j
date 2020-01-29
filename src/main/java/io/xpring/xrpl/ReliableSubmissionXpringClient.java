@@ -17,7 +17,7 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public TransactionStatus getTransactionStatus(String transactionHash) {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException  {
         return this.decoratedClient.getTransactionStatus(transactionHash);
     }
 
@@ -54,12 +54,12 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() {
+    public int getLatestValidatedLedgerSequence() throws XpringKitException {
         return this.decoratedClient.getLatestValidatedLedgerSequence();
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
     }
 }
