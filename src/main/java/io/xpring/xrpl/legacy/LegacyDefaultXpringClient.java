@@ -4,12 +4,8 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.proto.*;
 import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
-import io.xpring.xrpl.XpringClientDecorator;
-import io.xpring.xrpl.XpringKitException;
-import io.xpring.xrpl.legacy.LegacySigner;
+import io.xpring.xrpl.*;
 import io.xpring.xrpl.TransactionStatus;
-import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +85,7 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
      * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) {
-        io.xpring.proto.TransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
+        RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
 
         // Return PENDING if the transaction is not validated.
         if (!transactionStatus.getValidated()) {
@@ -180,10 +176,11 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
      * @param transactionHash: The hash of the transaction.
      * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
      */
-    public io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash) {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         Objects.requireNonNull(transactionHash);
         GetTransactionStatusRequest transactionStatusRequest = GetTransactionStatusRequest.newBuilder().setTransactionHash(transactionHash).build();
 
-        return stub.getTransactionStatus(transactionStatusRequest);
+        io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
+        return new RawTransactionStatus(transactionStatus);
     }
 }

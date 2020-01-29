@@ -28,12 +28,14 @@ public class ReliableSubmissionXpringClientTest {
     private static final TransactionStatus DEFAULT_TRANSACTION_STATUS_VALUE = TransactionStatus.SUCCEEDED;
     private static final String DEFAULT_SEND_VALUE = "DEADBEEF";
     private static final int DEFAULT_LATEST_LEDGER_VALUE = 10;
-    private static final io.xpring.proto.TransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE = io.xpring.proto.TransactionStatus.
-            newBuilder().
-            setValidated(true).
-            setTransactionStatusCode(TRANSACTION_STATUS_CODE).
-            setLastLedgerSequence(LAST_LEDGER_SEQUENCE).
-            build();
+    private static final RawTransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE =new RawTransactionStatus(
+            io.xpring.proto.TransactionStatus.
+                    newBuilder().
+                    setValidated(true).
+                    setTransactionStatusCode(TRANSACTION_STATUS_CODE).
+                    setLastLedgerSequence(LAST_LEDGER_SEQUENCE).
+                    build()
+    );
 
     FakeXpringClient fakeXpringClient;
     ReliableSubmissionXpringClient reliableSubmissionXpringClient;
@@ -84,7 +86,7 @@ public class ReliableSubmissionXpringClientTest {
     @Test
     public void testGetRawTransactionStatus() throws XpringKitException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXpringClient WHEN a raw transaction status is retrieved
-        io.xpring.proto.TransactionStatus transactionStatus = reliableSubmissionXpringClient.getRawTransactionStatus(TRANSACTION_HASH);
+        RawTransactionStatus transactionStatus = reliableSubmissionXpringClient.getRawTransactionStatus(TRANSACTION_HASH);
 
         // THEN the result is returned unaltered.
         assertThat(transactionStatus).isEqualTo(DEFAULT_RAW_TRANSACTION_STATUS_VALUE);
@@ -93,11 +95,13 @@ public class ReliableSubmissionXpringClientTest {
     @Test(timeout=10000)
     public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XpringKitException {
         // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
-        this.fakeXpringClient.rawTransactionStatusValue = io.xpring.proto.TransactionStatus.newBuilder()
-                .setValidated(false)
-                .setLastLedgerSequence(LAST_LEDGER_SEQUENCE)
-                .setTransactionStatusCode(TRANSACTION_STATUS_CODE)
-                .build();
+        this.fakeXpringClient.rawTransactionStatusValue = new RawTransactionStatus(
+                io.xpring.proto.TransactionStatus.newBuilder()
+                    .setValidated(false)
+                    .setLastLedgerSequence(LAST_LEDGER_SEQUENCE)
+                    .setTransactionStatusCode(TRANSACTION_STATUS_CODE)
+                    .build()
+        );
 
         runAfterOneSecond(() -> {
             this.fakeXpringClient.latestValidatedLedgerValue = LAST_LEDGER_SEQUENCE + 1;
@@ -111,18 +115,22 @@ public class ReliableSubmissionXpringClientTest {
     public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XpringKitException {
         // GIVEN A transaction that will validate in one second
         final String transactionStatusCode = "tesSuccess";
-        this.fakeXpringClient.rawTransactionStatusValue = io.xpring.proto.TransactionStatus.newBuilder()
-                .setValidated(false)
+        this.fakeXpringClient.rawTransactionStatusValue = new RawTransactionStatus(
+                io.xpring.proto.TransactionStatus.newBuilder()
+                        .setValidated(false)
                 .setLastLedgerSequence(LAST_LEDGER_SEQUENCE)
                 .setTransactionStatusCode(transactionStatusCode)
-                .build();
+                .build()
+        );
 
         runAfterOneSecond(() -> {
-            this.fakeXpringClient.rawTransactionStatusValue = io.xpring.proto.TransactionStatus.newBuilder()
-                    .setValidated(true)
-                    .setLastLedgerSequence(LAST_LEDGER_SEQUENCE)
-                    .setTransactionStatusCode(TRANSACTION_STATUS_CODE)
-                    .build();
+            this.fakeXpringClient.rawTransactionStatusValue = new RawTransactionStatus(
+                    io.xpring.proto.TransactionStatus.newBuilder()
+                        .setValidated(true)
+                        .setLastLedgerSequence(LAST_LEDGER_SEQUENCE)
+                        .setTransactionStatusCode(TRANSACTION_STATUS_CODE)
+                        .build()
+            );
         });
 
         // WHEN a reliable send is submitted THEN the send reaches a consistent state and returns.
@@ -132,10 +140,12 @@ public class ReliableSubmissionXpringClientTest {
     @Test
     public void testSendWithNoLastLedgerSequence() throws XpringKitException {
         // GIVEN a `ReliableSubmissionXpringClient` decorating a `FakeXpringClient` which will return a transaction that did not have a last ledger sequence attached.
-        this.fakeXpringClient.rawTransactionStatusValue = io.xpring.proto.TransactionStatus.newBuilder()
-                .setValidated(false)
-                .setTransactionStatusCode(TRANSACTION_STATUS_CODE)
-                .build();
+        this.fakeXpringClient.rawTransactionStatusValue = new RawTransactionStatus(
+                io.xpring.proto.TransactionStatus.newBuilder()
+                    .setValidated(false)
+                    .setTransactionStatusCode(TRANSACTION_STATUS_CODE)
+                    .build()
+        );
 
         // WHEN a reliable send is submitted THEN an error is thrown.
         expectedException.expect(Exception.class);
