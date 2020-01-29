@@ -28,7 +28,7 @@ public class ReliableSubmissionXpringClientTest {
     private static final TransactionStatus DEFAULT_TRANSACTION_STATUS_VALUE = TransactionStatus.SUCCEEDED;
     private static final String DEFAULT_SEND_VALUE = "DEADBEEF";
     private static final int DEFAULT_LATEST_LEDGER_VALUE = 10;
-    private static final RawTransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE =new RawTransactionStatus(
+    private static final RawTransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE = new RawTransactionStatus(
             io.xpring.proto.TransactionStatus.
                     newBuilder().
                     setValidated(true).

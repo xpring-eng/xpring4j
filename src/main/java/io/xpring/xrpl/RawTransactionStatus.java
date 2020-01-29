@@ -30,7 +30,7 @@ public class RawTransactionStatus {
      * Retrieve the transaction status code.
      */
     public String getTransactionStatusCode() {
-        return this.getTransactionStatusCode();
+        return this.transactionStatusCode;
     }
 
     /**
