@@ -44,8 +44,10 @@ public class SignerTest {
                 -78, -105, -49, -8, -14, -7, 55, -24
         };
 
+        // WHEN the transaction is signed.
         byte [] signedTransaction = Signer.signTransaction(transaction, wallet);
 
+        // THEN the result is the same as expected.
         assertArrayEquals(signedTransaction, expected);
     }
 }
