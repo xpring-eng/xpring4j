@@ -55,5 +55,5 @@ public interface XpringClientDecorator {
      * @param transactionHash: The hash of the transaction.
      * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
      */
-    io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash);
+    RawTransactionStatus getRawTransactionStatus(String transactionHash);
 }
