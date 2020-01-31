@@ -1,1 +1,5 @@
 * @keefertaylor
+
+
+# Allow anyone in DevX reviewers to approve automated dependency updates from Dependabot.
+pom.xml @xpring-eng/devx-reviewers
