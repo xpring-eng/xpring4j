@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import rpc.v1.Amount.AccountAddress;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
+import rpc.v1.LedgerObjects.AccountRoot;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 import rpc.v1.Tx.GetTxRequest;
@@ -70,13 +71,8 @@ public class DefaultXpringClient implements XpringClientDecorator {
             throw XpringKitException.xAddressRequiredException;
         }
 
-        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
-        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
-
-        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
-
-        long drops = response.getAccountData().getBalance().getDrops();
-        return BigInteger.valueOf(drops);
+        AccountRoot accountData = this.getAccountData(xrplAccountAddress);
+        return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
     /**
@@ -130,4 +126,14 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         return new RawTransactionStatus(response);
     }
+
+    private AccountRoot getAccountData(String xrplAccountAddress) {
+        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
+        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
+
+        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
+
+        return response.getAccountData();
+    }
+
 }
