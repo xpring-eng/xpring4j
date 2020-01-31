@@ -1,9 +1,21 @@
 package io.xpring.xrpl;
 
-import rpc.v1.TransactionOuterClass.Transaction;
 import io.xpring.xrpl.javascript.JavaScriptSigner;
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
+import rpc.v1.TransactionOuterClass.Transaction;
+
 
 public class Signer {
+    private static final JavaScriptSigner javascriptSigner;
+
+    static {
+        try {
+            javascriptSigner = new JavaScriptSigner();
+        } catch (JavaScriptLoaderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /** Please do not instantiate this static utility class. */
     private Signer() {}
 
@@ -15,7 +27,6 @@ public class Signer {
      */
     public static byte[] signTransaction(Transaction transaction, Wallet wallet) {
         try {
-            JavaScriptSigner javascriptSigner = new JavaScriptSigner();
             return javascriptSigner.signTransaction(transaction, wallet);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
