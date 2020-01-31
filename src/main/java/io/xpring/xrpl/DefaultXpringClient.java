@@ -73,7 +73,14 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
+
+        // Return PENDING if the transaction is not validated.
+        if (!transactionStatus.getValidated()) {
+            return TransactionStatus.PENDING;
+        }
+
+        return transactionStatus.getTransactionStatusCode().startsWith("tes") ? TransactionStatus.SUCCEEDED : TransactionStatus.FAILED;
     }
 
     /**

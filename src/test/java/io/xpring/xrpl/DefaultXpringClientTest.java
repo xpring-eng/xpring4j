@@ -43,4 +43,6 @@ public class DefaultXpringClientTest {
         expectedException.expect(XpringKitException.class);
         BigInteger balance = client.getBalance(XRPL_ADDRESS);
     }
+
+    // TODO(keefertaylor): Add tests.
 }
