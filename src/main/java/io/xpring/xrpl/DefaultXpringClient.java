@@ -5,9 +5,13 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rpc.v1.Amount;
 import rpc.v1.Amount.AccountAddress;
+import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
+import rpc.v1.FeeOuterClass.GetFeeRequest;
+import rpc.v1.FeeOuterClass.GetFeeResponse;
 import rpc.v1.LedgerObjects.AccountRoot;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
@@ -111,7 +115,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
     @Override
     public int getLatestValidatedLedgerSequence() throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        return this.getFee().getLedgerCurrentIndex();
     }
 
     @Override
@@ -125,6 +129,15 @@ public class DefaultXpringClient implements XpringClientDecorator {
         GetTxResponse response = this.stub.getTx(request);
 
         return new RawTransactionStatus(response);
+    }
+
+    private XRPDropsAmount getMinimumFee() {
+        return this.getFee().getDrops().getMinimumFee();
+    }
+
+    private GetFeeResponse getFee() {
+        GetFeeRequest request = GetFeeRequest.newBuilder().build();
+        return this.stub.getFee(request);
     }
 
     private AccountRoot getAccountData(String xrplAccountAddress) {
