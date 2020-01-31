@@ -102,7 +102,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
         throw XpringKitException.unimplemented;
     }
 }
