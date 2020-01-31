@@ -14,14 +14,14 @@ public class FakeXpringClient implements  XpringClientDecorator {
     public TransactionStatus transactionStatusValue;
     public String sendValue;
     public int latestValidatedLedgerValue;
-    public io.xpring.proto.TransactionStatus rawTransactionStatusValue;
+    public RawTransactionStatus rawTransactionStatusValue;
 
     public FakeXpringClient(
             BigInteger getBalanceValue,
             TransactionStatus transactionStatusValue,
             String sendValue,
             int latestValidatedLedgerValue,
-            io.xpring.proto.TransactionStatus rawTransactionStatusValue
+            RawTransactionStatus rawTransactionStatusValue
     ) {
         this.getBalanceValue = getBalanceValue;
         this.transactionStatusValue = transactionStatusValue;
@@ -51,7 +51,7 @@ public class FakeXpringClient implements  XpringClientDecorator {
     }
 
     @Override
-    public io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash) {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         return this.rawTransactionStatusValue;
     }
 }
