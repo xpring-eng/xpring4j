@@ -30,7 +30,7 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
             Thread.sleep(ledgerCloseTime);
 
             // Get transaction status.
-            io.xpring.proto.TransactionStatus transactionStatus = this.getRawTransactionStatus(transactionHash);
+            RawTransactionStatus transactionStatus = this.getRawTransactionStatus(transactionHash);
             int lastLedgerSequence = transactionStatus.getLastLedgerSequence();
             if (lastLedgerSequence == 0) {
                 throw new XpringKitException("The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined.");
@@ -59,7 +59,7 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public io.xpring.proto.TransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
     }
 }
