@@ -11,7 +11,10 @@ import java.math.BigInteger;
  * Integration tests for Xpring4J.
  */
 public class IntegrationTests {
-    /** The XpringClient under test. */
+    /** The legacy XpringClient under test. */
+    private XpringClient legacyXpringClient;
+
+    /** The rippled XpringClient under test. */
     private XpringClient xpringClient;
 
     /** An address on the XRP Ledger. */
@@ -29,6 +32,7 @@ public class IntegrationTests {
     @Before
     public void setUp() throws Exception {
         this.xpringClient = new XpringClient();
+        this.xpringClient = new XpringClient(true);
     }
 
     @Test
