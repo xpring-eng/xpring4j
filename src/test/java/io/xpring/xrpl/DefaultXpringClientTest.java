@@ -236,8 +236,7 @@ public class DefaultXpringClientTest {
         String transactionHash = client.send(AMOUNT, XRPL_ADDRESS, wallet);
 
         // THEN the transaction hash is the same as the hash of the mocked transaction blob in the response.
-        String expectedTransactionHash = Utils.toTransactionHash(TRANSACTION_BLOB);
-        assertThat(transactionHash).isEqualTo(expectedTransactionHash);
+        assertThat(transactionHash).isEqualTo(TRANSACTION_HASH.toLowerCase());
     }
 
     @Test
@@ -255,7 +254,7 @@ public class DefaultXpringClientTest {
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will fail to return account info.
-        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -272,7 +271,7 @@ public class DefaultXpringClientTest {
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will fail to retrieve a fee.
-        GRPCResult<Fee> feeResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<GetFeeResponse> feeResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -290,7 +289,7 @@ public class DefaultXpringClientTest {
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will fail to submit a transaction.
-        GRPCResult<SubmitSignedTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<SubmitTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -403,8 +402,7 @@ public class DefaultXpringClientTest {
                         }
                     }
                 }
-
-        );
+                ));
     }
 
     /**

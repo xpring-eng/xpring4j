@@ -150,7 +150,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         Payment payment = paymentBuilder.build();
 
-        byte [] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getAddress());
+        byte [] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getPublicKey());
         int lastLedgerSequence = lastValidatedLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
 
         Transaction transaction = Transaction.newBuilder()
