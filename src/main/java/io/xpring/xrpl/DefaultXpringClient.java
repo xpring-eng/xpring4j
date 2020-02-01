@@ -38,7 +38,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     public static final String XPRING_GRPC_URL = "3.14.64.116:50051";
 
     // A margin to pad the current ledger sequence with when submitting transactions.
-    private static final int LEDGER_SEQUENCE_MARGIN = 10;
+    private static final int MAX_LEDGER_VERSION_OFFSET = 10;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -138,17 +138,20 @@ public class DefaultXpringClient implements XpringClientDecorator {
                 .setAddress(sourceClassicAddress.address())
                 .build();
 
-        XRPDropsAmount drops = XRPDropsAmount.newBuilder().setDrops(Amount.toLong()).build();
+        XRPDropsAmount drops = XRPDropsAmount.newBuilder().setDrops(amount.longValue()).build();
         CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(drops).build();
 
-        Payment payment = Payment.newBuilder()
+        Payment.Builder paymentBuilder = Payment.newBuilder()
                 .setAmount(currencyAmount)
-                .setDestination(destinationAccountAddress)
-                .setDestinationTag(classicAddress.destinationTag)
-                .build();
+                .setDestination(destinationAccountAddress);
+        if (destinationClassicAddress.tag().isPresent()) {
+            paymentBuilder.setDestinationTag(destinationClassicAddress.tag().get());
+        }
+
+        Payment payment = paymentBuilder.build();
 
         byte [] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getAddress());
-        long lastLedgerSequence = lastValidatedLedgerSequence + maxLedgerVersionOffset;
+        int lastLedgerSequence = lastValidatedLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
 
         Transaction transaction = Transaction.newBuilder()
                 .setAccount(sourceAccountAddress)
@@ -159,7 +162,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
                 .setSigningPublicKey(ByteString.copyFrom(signingPublicKeyBytes))
                 .build();
 
-        byte [] signedTransaction = Signer.signTrasaction(transaction, sourceWallet);
+        byte [] signedTransaction = Signer.signTransaction(transaction, sourceWallet);
 
         SubmitTransactionRequest request = SubmitTransactionRequest.newBuilder()
                 .setSignedTransaction(ByteString.copyFrom(signedTransaction))

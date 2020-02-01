@@ -73,7 +73,7 @@ public class JavaScriptUtils {
         }
 
         String address = result.getMember("address").asString();
-        Long tag = result.getMember("tag").isNull() ? null : result.getMember("tag").asLong();
+        Integer tag = result.getMember("tag").isNull() ? null : result.getMember("tag").asInt();
         boolean isTest = result.getMember("test").asBoolean();
 
         return ImmutableClassicAddress.builder().address(address).tag(Optional.ofNullable(tag)).isTest(isTest).build();

@@ -47,7 +47,7 @@ public class UtilsTest {
     public void testEncodeMainNetXAddressWithAddressAndTag() {
         // GIVEN a valid classic address and a tag on MainNet.
         String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
-        long tag = 12345;
+        int tag = 12345;
         ClassicAddress classicAddress = ImmutableClassicAddress.builder().address(address).tag(tag).isTest(false).build();
 
         // WHEN they are encoded to an X-Address.
@@ -61,7 +61,7 @@ public class UtilsTest {
     public void testEncodeTestNetXAddressWithAddressAndTag() {
         // GIVEN a valid classic address and a tag on TestNet.
         String address = "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1";
-        long tag = 12345;
+        int tag = 12345;
         ClassicAddress classicAddress = ImmutableClassicAddress.builder().address(address).tag(tag).isTest(true).build();
 
         // WHEN they are encoded to an X-Address.
@@ -105,7 +105,7 @@ public class UtilsTest {
 
         // Then the decoded address and tag as are expected.
         assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
-        assertEquals(classicAddress.tag().get(), new Long(12345));
+        assertEquals(classicAddress.tag().get(), new Integer(12345));
         assertFalse(classicAddress.isTest());
     }
 
@@ -119,7 +119,7 @@ public class UtilsTest {
 
         // Then the decoded address and tag as are expected.
         assertEquals(classicAddress.address(), "rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1");
-        assertEquals(classicAddress.tag().get(), new Long(12345));
+        assertEquals(classicAddress.tag().get(), new Integer(12345));
         assertTrue(classicAddress.isTest());
     }
 
