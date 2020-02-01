@@ -3,16 +3,22 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.xpring.proto.SubmitSignedTransactionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rpc.v1.Amount;
 import rpc.v1.Amount.AccountAddress;
+import rpc.v1.Amount.CurrencyAmount;
 import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
 import rpc.v1.FeeOuterClass.GetFeeRequest;
 import rpc.v1.FeeOuterClass.GetFeeResponse;
 import rpc.v1.LedgerObjects.AccountRoot;
+import rpc.v1.Submit.SubmitTransactionRequest;
+import rpc.v1.Submit.SubmitTransactionResponse;
+import rpc.v1.TransactionOuterClass.Transaction;
+import rpc.v1.TransactionOuterClass.Payment;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 import rpc.v1.Tx.GetTxRequest;
@@ -110,7 +116,59 @@ public class DefaultXpringClient implements XpringClientDecorator {
             final String destinationAddress,
             final Wallet sourceWallet
     ) throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        Objects.requireNonNull(amount);
+        Objects.requireNonNull(destinationAddress);
+        Objects.requireNonNull(sourceWallet);
+
+        if (!Utils.isValidXAddress(destinationAddress)) {
+            throw XpringKitException.xAddressRequiredException;
+        }
+
+        ClassicAddress destinationClassicAddress = Utils.decodeXAddress(destinationAddress);
+        ClassicAddress sourceClassicAddress = Utils.decodeXAddress(sourceWallet.getAddress());
+
+        AccountRoot accountData = this.getAccountData(sourceClassicAddress.address());
+        XRPDropsAmount fee = this.getMinimumFee();
+        int lastValidatedLedgerSequence = this.getLatestValidatedLedgerSequence();
+
+        AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
+                .setAddress(destinationClassicAddress.address())
+                .build();
+        AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
+                .setAddress(sourceClassicAddress.address())
+                .build();
+
+        XRPDropsAmount drops = XRPDropsAmount.newBuilder().setDrops(Amount.toLong()).build();
+        CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(drops).build();
+
+        Payment payment = Payment.newBuilder()
+                .setAmount(currencyAmount)
+                .setDestination(destinationAccountAddress)
+                .setDestinationTag(classicAddress.destinationTag)
+                .build();
+
+        byte [] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getAddress());
+        long lastLedgerSequence = lastValidatedLedgerSequence + maxLedgerVersionOffset;
+
+        Transaction transaction = Transaction.newBuilder()
+                .setAccount(sourceAccountAddress)
+                .setFee(fee)
+                .setSequence(accountData.getSequence())
+                .setPayment(payment)
+                .setLastLedgerSequence(lastLedgerSequence)
+                .setSigningPublicKey(ByteString.copyFrom(signingPublicKeyBytes))
+                .build();
+
+        byte [] signedTransaction = Signer.signTrasaction(transaction, sourceWallet);
+
+        SubmitTransactionRequest request = SubmitTransactionRequest.newBuilder()
+                .setSignedTransaction(ByteString.copyFrom(signedTransaction))
+                .build();
+
+        SubmitTransactionResponse response = this.stub.submitTransaction(request);
+
+        byte [] hashBytes = response.getHash().toByteArray();
+        return Utils.byteArrayToHex(hashBytes);
     }
 
     @Override
