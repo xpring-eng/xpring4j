@@ -27,12 +27,32 @@ public class IntegrationTests {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     /** Hash of a successful transaction. */
-    private static final String TRANSACTION_HASH = "9A88C8548E03958FD97AF44AE5A8668896D195A70CF3FF3CB8E57096AA717135";
+    private static final String TRANSACTION_HASH = "4E732C5748DE722C7598CEB76350FCD6269ACBE5D641A5BCF0721150EF6E2C9F";
 
     @Before
     public void setUp() throws Exception {
-        this.xpringClient = new XpringClient();
+        this.legacyXpringClient = new XpringClient();
         this.xpringClient = new XpringClient(true);
+    }
+
+    @Test
+    public void getBalanceTest_legacy() throws XpringKitException {
+        BigInteger balance = legacyXpringClient.getBalance(XRPL_ADDRESS);
+        assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
+    }
+
+    @Test
+    public void getTransactionStatusTest_legacy() throws XpringKitException  {
+        TransactionStatus transactionStatus = legacyXpringClient.getTransactionStatus(TRANSACTION_HASH);
+        assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
+    }
+
+    @Test
+    public void sendXRPTest_legacy() throws XpringKitException {
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        String transactionHash = legacyXpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+        assertThat(transactionHash).isNotNull();
     }
 
     @Test
@@ -48,7 +68,7 @@ public class IntegrationTests {
     }
 
     @Test
-    public void sendXRPTest() throws XpringKitException {
+    public void sendXRPTesty() throws XpringKitException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);

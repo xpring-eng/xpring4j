@@ -80,8 +80,9 @@ public class DefaultXpringClient implements XpringClientDecorator {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
             throw XpringKitException.xAddressRequiredException;
         }
+        ClassicAddress classicAddress = Utils.decodeXAddress(xrplAccountAddress);
 
-        AccountRoot accountData = this.getAccountData(xrplAccountAddress);
+        AccountRoot accountData = this.getAccountData(classicAddress.address());
         return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
