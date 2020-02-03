@@ -22,7 +22,7 @@ public class LegacyJavaScriptSigner {
         Context context = JavaScriptLoader.getContext();
         this.signerClass = JavaScriptLoader.loadResource("Signer", context);
         this.walletClass = JavaScriptLoader.loadResource("Wallet", context);
-        this.transactionClass = JavaScriptLoader.loadResource("LegacyTransaction", context);        
+        this.transactionClass = JavaScriptLoader.loadResource("LegacyTransaction", context);
         this.utilsClass = JavaScriptLoader.loadResource("Utils", context);
     }
 
