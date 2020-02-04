@@ -1,6 +1,7 @@
 package io.xpring.xrpl;
 
 import io.xpring.proto.TransactionStatus;
+import rpc.v1.Tx.GetTxResponse;
 
 /** Encapsulates fields of a raw transaction status which is returned by the XRP Ledger. */
 public class RawTransactionStatus {
@@ -11,12 +12,23 @@ public class RawTransactionStatus {
     /**
      * Create a new RawTransactionStatus from a {@link TransactionStatus} protocol buffer.
      *
-     * @param transactionStatus The transaction status to encapsulate.
+     * @param transactionStatus The {@link TransactionStatus} to encapsulate.
      */
     public RawTransactionStatus(TransactionStatus transactionStatus) {
         this.validated = transactionStatus.getValidated();
         this.transactionStatusCode = transactionStatus.getTransactionStatusCode();
         this.lastLedgerSequence = transactionStatus.getLastLedgerSequence();
+    }
+
+    /**
+     * Create a new RawTransactionStatus from a {@link GetTxResponse} protocol buffer.
+     *
+     * @param getTxResponse The {@link GetTxResponse} to encapsulate.
+     */
+    public RawTransactionStatus(GetTxResponse getTxResponse) {
+        this.validated = getTxResponse.getValidated();
+        this.transactionStatusCode = getTxResponse.getMeta().getTransactionResult().getResult();
+        this.lastLedgerSequence = getTxResponse.getTransaction().getLastLedgerSequence();
     }
 
     /**
