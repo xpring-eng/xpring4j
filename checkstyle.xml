@@ -62,15 +62,19 @@
             <property name="tokens"
                       value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO, STATIC_INIT, INSTANCE_INIT"/>
         </module>
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingParamTags" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
+            <property name="validateThrows" value="false"/>
+        </module>
         <module name="MissingJavadocMethodCheck">
-             <property name="scope" value="public"/>
-             <property name="allowMissingParamTags" value="true"/>
-             <property name="allowMissingThrowsTags" value="true"/>
-             <property name="allowMissingReturnTag" value="true"/>
-             <property name="minLineCount" value="2"/>
-             <property name="allowedAnnotations" value="Override, Test"/>
-             <property name="allowThrowsTagsForSubclasses" value="true"/>
-        </module>            
+            <property name="scope" value="public"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
+        </module>               
         <module name="WhitespaceAround">
             <property name="allowEmptyConstructors" value="true"/>
             <property name="allowEmptyMethods" value="true"/>
