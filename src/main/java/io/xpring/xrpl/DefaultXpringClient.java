@@ -1,17 +1,16 @@
 package io.xpring.xrpl;
 
+import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.xpring.proto.*;
-import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
-import io.xpring.xrpl.XpringClientDecorator;
-import io.xpring.xrpl.XpringKitException;
-import io.xpring.xrpl.legacy.LegacySigner;
-import io.xpring.xrpl.TransactionStatus;
-import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rpc.v1.AccountInfo;
+import rpc.v1.Amount.AccountAddress;
+import rpc.v1.AccountInfo.GetAccountInfoRequest;
+import rpc.v1.AccountInfo.GetAccountInfoResponse;
+import rpc.v1.XRPLedgerAPIServiceGrpc;
+import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -32,7 +31,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // Channel is the abstraction to connect to a service endpoint
-    private final XRPLedgerAPIBlockingStub stub;
+    private final XRPLedgerAPIServiceBlockingStub stub;
 
     /**
      * No-args Constructor.
@@ -55,7 +54,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     DefaultXpringClient(final ManagedChannel channel) {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
-        this.stub = XRPLedgerAPIGrpc.newBlockingStub(channel);
+        this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -66,7 +65,17 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @throws XpringKitException If the given inputs were invalid.
      */
     public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        if (!Utils.isValidXAddress(xrplAccountAddress)) {
+            throw XpringKitException.xAddressRequiredException;
+        }
+
+        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
+        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
+
+        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
+
+        long drops = response.getAccountData().getBalance().getDrops();
+        return BigInteger.valueOf(drops);
     }
 
     /**
