@@ -22,7 +22,9 @@ import rpc.v1.AccountInfo;
 import rpc.v1.LedgerObjects.AccountRoot;
 import rpc.v1.MetaOuterClass.Meta;
 import rpc.v1.MetaOuterClass.TransactionResult;
-import rpc.v1.Tx;
+import rpc.v1.TransactionOuterClass.Transaction;
+import rpc.v1.Tx.GetTxRequest;
+import rpc.v1.Tx.GetTxResponse;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
 
@@ -179,10 +181,43 @@ public class DefaultXpringClientTest {
     @Test
     public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will return an validated transaction with a success code.
-        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
+        );
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+
+        // THEN the status is SUCCEEDED.
+        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.SUCCEEDED);
+    }
+
+    // TODO(keefertaylor): Update this test when UNKNOWN transaction status is implemented.
+    // TODO(keefertaylor): Propagate this test to other Xpring SDK libraries.
+    @Test
+    public void transactionStatusWithValidatedTransactionAndSuccessCodeNonPayment() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will return an validated transaction with a success code for a nonpayment
+        // transaction.
+
+        // gRPC only support Payment type transactions in protocol buffers. Set Payment oneof to be null to simulate a
+        // non-payment transaction.
+        // TODO(keefertaylor): Update this when we have proper support for other protocol buffers.
+        Transaction nonPaymentTransaction = Transaction.newBuilder().build();
+        TransactionResult transactionResult = TransactionResult.newBuilder()
+                .setResult(TRANSACTION_STATUS_SUCCESS)
+                .build();
+        Meta meta = Meta.newBuilder().setTransactionResult(transactionResult).build();
+
+        GetTxResponse transactionStatusResponse = GetTxResponse.newBuilder()
+                .setValidated(true)
+                .setMeta(meta)
+                .setTransaction(nonPaymentTransaction)
+                .build();
+
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(transactionStatusResponse)
         );
 
         // WHEN the transaction status is retrieved.
@@ -222,7 +257,7 @@ public class DefaultXpringClientTest {
 
     private DefaultXpringClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
-            GRPCResult<Tx.GetTxResponse> getTxResponseResult
+            GRPCResult<GetTxResponse> getTxResponseResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
@@ -250,7 +285,7 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<Tx.GetTxResponse> getTxResponseResult
+        GRPCResult<GetTxResponse> getTxResponseResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {
@@ -265,7 +300,7 @@ public class DefaultXpringClientTest {
                     }
 
                     @Override
-                    public void getTx(Tx.GetTxRequest request, StreamObserver<Tx.GetTxResponse> responseObserver) {
+                    public void getTx(GetTxRequest request, StreamObserver<GetTxResponse> responseObserver) {
                         if (getTxResponseResult.isError()) {
                             responseObserver.onError(new Throwable(getTxResponseResult.getError()));
                         } else {
@@ -290,12 +325,12 @@ public class DefaultXpringClientTest {
     /**
      * Make a GetTxResponse.
      */
-    private Tx.GetTxResponse makeTransactionStatus(Boolean validated, String result) {
+    private GetTxResponse makeTransactionStatus(Boolean validated, String result) {
         TransactionResult transactionResult = TransactionResult.newBuilder()
                 .setResult(result)
                 .build();
         Meta meta = Meta.newBuilder().setTransactionResult(transactionResult).build();
 
-        return Tx.GetTxResponse.newBuilder().setValidated(validated).setMeta(meta).build();
+        return GetTxResponse.newBuilder().setValidated(validated).setMeta(meta).build();
     }
 }
