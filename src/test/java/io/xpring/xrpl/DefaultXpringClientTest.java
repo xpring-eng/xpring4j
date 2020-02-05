@@ -224,7 +224,6 @@ public class DefaultXpringClientTest {
         client.getTransactionStatus(TRANSACTION_HASH);
     }
 
-
     @Test
     public void submitTransactionTest() throws IOException, XpringKitException {
         // GIVEN a XpringClient with mocked networking which will succeed.
@@ -302,7 +301,6 @@ public class DefaultXpringClientTest {
         client.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
 
-
     /**
      * Convenience method to get a XpringClient which has successful network calls.
      */
@@ -330,6 +328,7 @@ public class DefaultXpringClientTest {
                 getTxResponseResult,
                 getFeeResult,
                 submitTransactionResult
+
         );
 
         // Generate a unique in-process server name.
@@ -400,7 +399,7 @@ public class DefaultXpringClientTest {
                             responseObserver.onCompleted();
                         }
                     }
-                }
+|                }
                 ));
     }
 

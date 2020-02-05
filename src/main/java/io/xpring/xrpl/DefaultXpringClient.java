@@ -81,13 +81,8 @@ public class DefaultXpringClient implements XpringClientDecorator {
             throw XpringKitException.xAddressRequiredException;
         }
 
-        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
-        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
-
-        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
-
-        long drops = response.getAccountData().getBalance().getDrops();
-        return BigInteger.valueOf(drops);
+        AccountRoot accountData = this.getAccountData(xrplAccountAddress);
+        return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
     /**
