@@ -11,6 +11,8 @@ import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
+import rpc.v1.Tx.GetTxRequest;
+import rpc.v1.Tx.GetTxResponse;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -85,7 +87,16 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        Objects.requireNonNull(transactionHash);
+
+        RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
+
+        // Return PENDING if the transaction is not validated.
+        if (!transactionStatus.getValidated()) {
+            return TransactionStatus.PENDING;
+        }
+
+        return transactionStatus.getTransactionStatusCode().startsWith("tes") ? TransactionStatus.SUCCEEDED : TransactionStatus.FAILED;
     }
 
     /**
@@ -112,6 +123,14 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        Objects.requireNonNull(transactionHash);
+
+        byte [] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
+        ByteString transactionHashByteString = ByteString.copyFrom(transactionHashBytes);
+        GetTxRequest request = GetTxRequest.newBuilder().setHash(transactionHashByteString).build();
+
+        GetTxResponse response = this.stub.getTx(request);
+
+        return new RawTransactionStatus(response);
     }
 }
