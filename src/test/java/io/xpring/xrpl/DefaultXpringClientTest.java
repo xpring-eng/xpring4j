@@ -133,7 +133,7 @@ public class DefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringKitException {
-        // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
+        // GIVEN a XpringClient which will return an unvalidated transaction with a failed code.
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_FAILURE))
