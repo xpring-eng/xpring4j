@@ -1,7 +1,4 @@
-package io.xpring.xrpl.legacy.javascript;
-
-import io.xpring.proto.Transaction;
-import io.xpring.proto.SignedTransaction;
+package io.xpring.xrpl.javascript;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.xpring.xrpl.Utils;
@@ -10,19 +7,20 @@ import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptLoader;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
+import rpc.v1.TransactionOuterClass.Transaction;
 
 /** Provides JavaScript based Signing functionality. */
-public class LegacyJavaScriptSigner {
+public class JavaScriptSigner {
     private Value signerClass;
     private Value walletClass;
     private Value transactionClass;
     private Value utilsClass;
 
-    public LegacyJavaScriptSigner() throws JavaScriptLoaderException {
+    public JavaScriptSigner() throws JavaScriptLoaderException {
         Context context = JavaScriptLoader.getContext();
+        this.transactionClass = JavaScriptLoader.loadResource("Transaction", context);
         this.signerClass = JavaScriptLoader.loadResource("Signer", context);
         this.walletClass = JavaScriptLoader.loadResource("Wallet", context);
-        this.transactionClass = JavaScriptLoader.loadResource("LegacyTransaction", context);
         this.utilsClass = JavaScriptLoader.loadResource("Utils", context);
     }
 
@@ -32,40 +30,31 @@ public class LegacyJavaScriptSigner {
      * @param transaction The {@link Transaction} to sign.
      * @param wallet The {@link Wallet} that will sign the transaction.
      *
-     * @return A {@link SignedTransaction}.
+     * @return An array of bytes representing the signed transaction.
      *
      * @throws JavaScriptLoaderException An exception if the javascript could not be loaded.
      */
-    public SignedTransaction signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
+    public byte [] signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
         // Convert Java objects into JavaScript objects.
         Value javaScriptTransaction = transactionToJavaScriptValue(transaction);
         Value javaScriptWallet = walletToJavaScriptValue(wallet);
 
         // Create a JavaScript SignedTransaction.
-        Value javaScriptSignedTransaction = signerClass.invokeMember("signLegacyTransaction", javaScriptTransaction, javaScriptWallet);
+        Value javascriptSignedTransaction = signerClass.invokeMember("signTransaction", javaScriptTransaction, javaScriptWallet);
 
         // Convert JavaScript SignedTransaction into a Java SignedTransaction.
-        try {
-            return valueToSignedTransaction(javaScriptSignedTransaction);
-        } catch (InvalidProtocolBufferException exception) {
-            throw new RuntimeException(exception);
-        }
+        return valueToByteArray(javascriptSignedTransaction);
     }
 
     /**
-     * Convert a JavaScript SignedTransaction to a native {@link SignedTransaction}.
+     * Convert a {@link Value} into a byte array.
      *
-     * @param javaScriptSignedTransaction A reference to a SignedTransaction in JavaScript.
-     *
-     * @return A {@link SignedTransaction} from the JavaScript based input.
-     *
-     * @throws {@link InvalidProtocolBufferException} An exception if the javascript protocol buffer was invalid or could not be converted.
+     * @param javascriptByteArray The serialized bytes to convert.
+     * @return An array of bytes.
      */
-    private SignedTransaction valueToSignedTransaction(Value javaScriptSignedTransaction) throws InvalidProtocolBufferException {
-        Value javaScriptSignedTransactionBytes = javaScriptSignedTransaction.invokeMember("serializeBinary");
-        String signTransactionHex = utilsClass.invokeMember("toHex", javaScriptSignedTransactionBytes).asString();
-        byte [] signedTransactionBytes = Utils.hexStringToByteArray(signTransactionHex);
-        return SignedTransaction.parseFrom(signedTransactionBytes);
+    private byte [] valueToByteArray(Value javascriptByteArray) {
+        String signTransactionHex = utilsClass.invokeMember("toHex", javascriptByteArray).asString();
+        return Utils.hexStringToByteArray(signTransactionHex);
     }
 
     /**
