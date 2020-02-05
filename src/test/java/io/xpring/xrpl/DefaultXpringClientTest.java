@@ -399,7 +399,7 @@ public class DefaultXpringClientTest {
                             responseObserver.onCompleted();
                         }
                     }
-|                }
+                }
                 ));
     }
 
