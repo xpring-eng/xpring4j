@@ -38,7 +38,7 @@ public class IntegrationTests {
     }
 
     @Test
-    public void getTransactionStatusTest() {
+    public void getTransactionStatusTest() throws XpringKitException  {
         TransactionStatus transactionStatus = xpringClient.getTransactionStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }

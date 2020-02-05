@@ -12,10 +12,23 @@ public class XpringClient {
     private XpringClientDecorator decoratedClient;
 
     /**
-     * Initialize a new client with the given options.
+     * Initialize a new client.
+     *
+     * The client will use the legacy implementation of protocol buffers.
      */
     public XpringClient() {
-        LegacyDefaultXpringClient defaultXpringClient = new LegacyDefaultXpringClient();
+        this(false);
+    }
+
+    /**
+     * Initialize a new client with the given options.
+     *
+     * @param useNewProtocolBuffers:  If `true`, then the new protocol buffer implementation from rippled will be used.
+     */
+    public XpringClient(boolean useNewProtocolBuffers) {
+        XpringClientDecorator defaultXpringClient = useNewProtocolBuffers ?
+                new DefaultXpringClient() :
+                new LegacyDefaultXpringClient();
         this.decoratedClient = new ReliableSubmissionXpringClient(defaultXpringClient);
     }
 
@@ -36,7 +49,7 @@ public class XpringClient {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws  XpringKitException {
         return decoratedClient.getTransactionStatus(transactionHash);
     }
 
