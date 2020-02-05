@@ -124,7 +124,6 @@ public class DefaultXpringClientTest {
         DefaultXpringClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
-                accountInfoResult
         );
 
         // WHEN the balance is retrieved THEN an error is thrown.
