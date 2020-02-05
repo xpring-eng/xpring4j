@@ -141,7 +141,6 @@ public class DefaultXpringClientTest {
         client.getBalance(XRPL_ADDRESS);
     }
 
-
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
