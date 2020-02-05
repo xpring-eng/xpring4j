@@ -5,6 +5,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rpc.v1.AccountInfo;
 import rpc.v1.Amount.AccountAddress;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;

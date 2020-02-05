@@ -124,13 +124,13 @@ public class DefaultXpringClientTest {
         DefaultXpringClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
+                accountInfoResult
         );
 
         // WHEN the balance is retrieved THEN an error is thrown.
         expectedException.expect(Exception.class);
         client.getBalance(XRPL_ADDRESS);
     }
-
 
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringKitException {
