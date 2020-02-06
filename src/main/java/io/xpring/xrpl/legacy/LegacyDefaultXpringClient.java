@@ -9,7 +9,7 @@ import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XpringClientDecorator;
-import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,11 +57,11 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
 
         Objects.requireNonNull(xrplAccountAddress, "xrplAccountAddress must not be null");
@@ -101,15 +101,15 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
     public String send(
         final BigInteger amount,
         final String destinationAddress,
         final Wallet sourceWallet
-    ) throws XpringKitException {
+    ) throws XpringException {
         if (!Utils.isValidXAddress(destinationAddress)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
 
         AccountInfo accountInfo = this.getAccountInfo(sourceWallet.getAddress());

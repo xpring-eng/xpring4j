@@ -35,19 +35,19 @@ public class IntegrationTests {
     }
 
     @Test
-    public void getBalanceTest() throws XpringKitException {
+    public void getBalanceTest() throws XpringException {
         BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getTransactionStatusTest() throws XpringKitException  {
+    public void getTransactionStatusTest() throws XpringException {
         TransactionStatus transactionStatus = xpringClient.getTransactionStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
     @Test
-    public void sendXRPTest() throws XpringKitException {
+    public void sendXRPTest() throws XpringException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);

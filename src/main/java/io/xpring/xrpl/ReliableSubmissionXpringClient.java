@@ -1,7 +1,5 @@
 package io.xpring.xrpl;
 
-import io.xpring.xrpl.XpringClientDecorator;
-
 import java.math.BigInteger;
 
 public class ReliableSubmissionXpringClient implements XpringClientDecorator {
@@ -12,16 +10,16 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public BigInteger getBalance(String xrplAccountAddress) throws XpringKitException {
+    public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
         return this.decoratedClient.getBalance(xrplAccountAddress);
     }
 
     @Override
-    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException  {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
         return this.decoratedClient.getTransactionStatus(transactionHash);
     }
 
-    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringKitException {
+    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
         try {
             long ledgerCloseTime = 4 * 1000;
 
@@ -33,7 +31,7 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
             RawTransactionStatus transactionStatus = this.getRawTransactionStatus(transactionHash);
             int lastLedgerSequence = transactionStatus.getLastLedgerSequence();
             if (lastLedgerSequence == 0) {
-                throw new XpringKitException("The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined.");
+                throw new XpringException("The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined.");
             }
 
             // Retrieve the latest ledger index.
@@ -49,17 +47,17 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
 
             return transactionHash;
         } catch (InterruptedException e) {
-            throw new XpringKitException("Reliable transaction submission project was interrupted.");
+            throw new XpringException("Reliable transaction submission project was interrupted.");
         }
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringKitException {
+    public int getLatestValidatedLedgerSequence() throws XpringException {
         return this.decoratedClient.getLatestValidatedLedgerSequence();
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
     }
 }

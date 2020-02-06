@@ -5,7 +5,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rpc.v1.AccountInfo;
 import rpc.v1.Amount.AccountAddress;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
@@ -58,11 +57,11 @@ public class DefaultXpringClient implements XpringClientDecorator {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
 
         AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
@@ -80,7 +79,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
         Objects.requireNonNull(transactionHash);
 
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
@@ -100,23 +99,23 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
     public String send(
             final BigInteger amount,
             final String destinationAddress,
             final Wallet sourceWallet
-    ) throws XpringKitException {
-        throw XpringKitException.unimplemented;
+    ) throws XpringException {
+        throw XpringException.unimplemented;
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringKitException {
-        throw XpringKitException.unimplemented;
+    public int getLatestValidatedLedgerSequence() throws XpringException {
+        throw XpringException.unimplemented;
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
         Objects.requireNonNull(transactionHash);
 
         byte [] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
