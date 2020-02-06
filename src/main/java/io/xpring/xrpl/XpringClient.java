@@ -15,20 +15,24 @@ public class XpringClient {
      * Initialize a new client.
      *
      * The client will use the legacy implementation of protocol buffers.
+     *
+     * @param grpcURL The remote URL to use for gRPC calls.
      */
-    public XpringClient() {
-        this(false);
+    public XpringClient(String grpcURL) {
+        this(grpcURL,false);
     }
 
     /**
      * Initialize a new client with the given options.
      *
      * @param useNewProtocolBuffers:  If `true`, then the new protocol buffer implementation from rippled will be used.
+     *
+     * @param grpcURL The remote URL to use for gRPC calls.
      */
-    public XpringClient(boolean useNewProtocolBuffers) {
+    public XpringClient(String grpcURL, boolean useNewProtocolBuffers) {
         XpringClientDecorator defaultXpringClient = useNewProtocolBuffers ?
-                new DefaultXpringClient() :
-                new LegacyDefaultXpringClient();
+                new DefaultXpringClient(grpcURL) :
+                new LegacyDefaultXpringClient(grpcURL);
         this.decoratedClient = new ReliableSubmissionXpringClient(defaultXpringClient);
     }
 

@@ -23,10 +23,6 @@ import java.util.Objects;
  * @see "https://xrpl.org"
  */
 public class DefaultXpringClient implements XpringClientDecorator {
-    // TODO: Use TLS!
-    // TODO(keefertaylor): Make this configurable.
-    public static final String XPRING_GRPC_URL = "3.14.64.116:50051";
-
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int LEDGER_SEQUENCE_MARGIN = 10;
 
@@ -38,11 +34,9 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * No-args Constructor.
      */
-    public DefaultXpringClient() {
+    public DefaultXpringClient(String grpcURL) {
         this(ManagedChannelBuilder
-                .forTarget(XPRING_GRPC_URL)
-                // Let's use plaintext communication because we don't have certs
-                // TODO: Use TLS!
+                .forTarget(grpcURL)
                 .usePlaintext()
                 .build()
         );
