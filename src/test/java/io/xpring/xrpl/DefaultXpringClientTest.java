@@ -3,7 +3,6 @@ package io.xpring.xrpl;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.grpc.stub.StreamObserver;
-import io.xpring.proto.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,10 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.xpring.xrpl.XpringKitException;
-import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.ClassicAddress;
-import io.xpring.xrpl.Wallet;
 import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo;
 import rpc.v1.LedgerObjects.AccountRoot;
@@ -95,7 +90,7 @@ public class DefaultXpringClientTest {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     @Test
-    public void getBalanceTest() throws IOException, XpringKitException {
+    public void getBalanceTest() throws IOException, XpringException {
         // GIVEN a DefaultXpringClient with mocked networking which will succeed.
         DefaultXpringClient client = getClient();
 
@@ -107,18 +102,18 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void getBalanceWithClassicAddressTest() throws IOException, XpringKitException {
+    public void getBalanceWithClassicAddressTest() throws IOException, XpringException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         DefaultXpringClient client = getClient();
 
         // WHEN the balance for the classic address is retrieved THEN an error is thrown.
-        expectedException.expect(XpringKitException.class);
+        expectedException.expect(XpringException.class);
         client.getBalance(classicAddress.address());
     }
 
     @Test
-    public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringKitException {
+    public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
@@ -132,7 +127,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringKitException {
+    public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringException {
         // GIVEN a XpringClient which will return an unvalidated transaction with a failed code.
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -147,7 +142,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XpringKitException {
+    public void transactionStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XpringException {
         // GIVEN a XpringClient which will return an unvalidated transaction with a success code.
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -162,7 +157,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException, XpringKitException {
+    public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException, XpringException {
         // GIVEN a XpringClient which will return an validated transaction with a failed code.
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -177,7 +172,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringKitException {
+    public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringException {
         // GIVEN a XpringClient which will return an validated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
@@ -193,7 +188,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void transactionStatusWithNodeError() throws IOException, XpringKitException {
+    public void transactionStatusWithNodeError() throws IOException, XpringException {
         // GIVEN a XpringClient which will error when a transaction status is requested..
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(

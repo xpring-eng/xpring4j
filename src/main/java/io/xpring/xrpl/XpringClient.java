@@ -37,9 +37,9 @@ public class XpringClient {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
         return decoratedClient.getBalance(xrplAccountAddress);
     }
 
@@ -49,7 +49,7 @@ public class XpringClient {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) throws  XpringKitException {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
         return decoratedClient.getTransactionStatus(transactionHash);
     }
 
@@ -60,13 +60,13 @@ public class XpringClient {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      * */
     public String send(
             final BigInteger amount,
             final String destinationAddress,
             final Wallet sourceWallet
-    ) throws XpringKitException {
+    ) throws XpringException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
     }
 }
