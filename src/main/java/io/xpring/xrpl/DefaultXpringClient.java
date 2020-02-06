@@ -117,7 +117,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
     @Override
     public int getLatestValidatedLedgerSequence() throws XpringKitException {
-        return this.getFee().getLedgerCurrentIndex();
+        return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
     @Override
@@ -134,10 +134,10 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     private XRPDropsAmount getMinimumFee() {
-        return this.getFee().getDrops().getMinimumFee();
+        return this.getFeeResponse().getDrops().getMinimumFee();
     }
 
-    private GetFeeResponse getFee() {
+    private GetFeeResponse getFeeResponse() {
         GetFeeRequest request = GetFeeRequest.newBuilder().build();
         return this.stub.getFee(request);
     }
