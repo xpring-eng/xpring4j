@@ -76,8 +76,14 @@ public class LegacyDefaultXpringClientTest {
     private static final String TRANSACTION_BLOB = "DEADBEEF";
     private static final String GENERIC_ERROR = "Mocked network error";
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
-    private static final String TRANSACTION_STATUS_FAILURE = "tecFAILURE";
     private static final String TRANSACTION_HASH = "DEADBEEF";
+    private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
+            "tefFAILURE",
+            "tecCLAIM",
+            "telBAD_PUBLIC_KEY",
+            "temBAD_FEE",
+            "terRETRY"
+    };
 
     /** The seed for a wallet with funds on the XRP Ledger test net. */
     private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
@@ -225,21 +231,24 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException {
-        // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
-        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(TRANSACTION_STATUS_FAILURE).build();
-        LegacyDefaultXpringClient client = getClient(
-                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
-                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
-                GRPCResult.ok(makeLedgerSequence()),
-                GRPCResult.ok(transactionStatusResponse)
-        );
+        // Iterate over different types of transaction status codes which represent failures.
+        for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
+            // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
+            io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(transactionFailureCode).build();
+            LegacyDefaultXpringClient client = getClient(
+                    GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                    GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                    GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                    GRPCResult.ok(makeLedgerSequence()),
+                    GRPCResult.ok(transactionStatusResponse)
+            );
 
-        // WHEN the transaction status is retrieved.
-        io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+            // WHEN the transaction status is retrieved.
+            io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
 
-        // THEN the status is PENDING.
-        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
+            // THEN the status is PENDING.
+            assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
+        }
     }
 
     @Test
@@ -263,21 +272,24 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException {
-        // GIVEN a XpringClient which will return an validated transaction with a failed code.
-        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_FAILURE).build();
-        LegacyDefaultXpringClient client = getClient(
-                GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
-                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
-                GRPCResult.ok(makeLedgerSequence()),
-                GRPCResult.ok(transactionStatusResponse)
-        );
+        // Iterate over different types of transaction status codes which represent failures.
+        for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
+            // GIVEN a XpringClient which will return an validated transaction with a failed code.
+            io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(transactionFailureCode).build();
+            LegacyDefaultXpringClient client = getClient(
+                    GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
+                    GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                    GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                    GRPCResult.ok(makeLedgerSequence()),
+                    GRPCResult.ok(transactionStatusResponse)
+            );
 
-        // WHEN the transaction status is retrieved.
-        io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+            // WHEN the transaction status is retrieved.
+            io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
 
-        // THEN the status is FAILED.
-        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.FAILED);
+            // THEN the status is FAILED.
+            assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.FAILED);
+        }
     }
 
     @Test
