@@ -5,10 +5,14 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rpc.v1.AccountInfo;
+import rpc.v1.Amount;
 import rpc.v1.Amount.AccountAddress;
+import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
+import rpc.v1.FeeOuterClass.GetFeeRequest;
+import rpc.v1.FeeOuterClass.GetFeeResponse;
+import rpc.v1.LedgerObjects.AccountRoot;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 import rpc.v1.Tx.GetTxRequest;
@@ -71,13 +75,8 @@ public class DefaultXpringClient implements XpringClientDecorator {
             throw XpringKitException.xAddressRequiredException;
         }
 
-        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
-        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
-
-        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
-
-        long drops = response.getAccountData().getBalance().getDrops();
-        return BigInteger.valueOf(drops);
+        AccountRoot accountData = this.getAccountData(xrplAccountAddress);
+        return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
     /**
@@ -118,7 +117,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
     @Override
     public int getLatestValidatedLedgerSequence() throws XpringKitException {
-        throw XpringKitException.unimplemented;
+        return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
     @Override
@@ -132,5 +131,23 @@ public class DefaultXpringClient implements XpringClientDecorator {
         GetTxResponse response = this.stub.getTx(request);
 
         return new RawTransactionStatus(response);
+    }
+
+    private XRPDropsAmount getMinimumFee() {
+        return this.getFeeResponse().getDrops().getMinimumFee();
+    }
+
+    private GetFeeResponse getFeeResponse() {
+        GetFeeRequest request = GetFeeRequest.newBuilder().build();
+        return this.stub.getFee(request);
+    }
+
+    private AccountRoot getAccountData(String xrplAccountAddress) {
+        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
+        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
+
+        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
+
+        return response.getAccountData();
     }
 }
