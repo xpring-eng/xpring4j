@@ -212,11 +212,10 @@ public class DefaultXpringClientTest {
     @Test
     public void transactionStatusWithNodeError() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will error when a transaction status is requested..
+        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.error(GENERIC_ERROR),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.error(GENERIC_ERROR)
         );
 
         // WHEN the transaction status is retrieved THEN an error is thrown..
@@ -328,7 +327,6 @@ public class DefaultXpringClientTest {
                 getTxResponseResult,
                 getFeeResult,
                 submitTransactionResult
-
         );
 
         // Generate a unique in-process server name.
