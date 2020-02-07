@@ -186,10 +186,11 @@ import io.xpring.xrpl.TransactionStatus;
 
 XpringClient xpringClient = new XpringClient();
 
-String transactionHash = "2CBBD2523478848DA256F8EBFCBD490DD6048A4A5094BF8E3034F57EA6AA0522";
+String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
 TransactionStatus transactionStatus = xpringClient.xpringClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
-
 ```
+
+**Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
 
 #### Sending XRP
 
@@ -206,13 +207,16 @@ import io.xpring.xrpl.XpringClient;
 BigInteger amount = new BigInteger("1");
 
 // Wallet to send from.
-Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
+WalletGenerationResult walletGenerationResult = Wallet.generateRandomWallet();
+Wallet wallet = walletGenerationResult.getWallet();
 
 // Destination address.
 String destinationAddress = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 
 String transactionHash = xpringClient.send(amount, destinationAddress, wallet);
 ```
+
+**Note:** The above example will yield an "Account not found." error because the randomly generated wallet contains no XRP.
 
 ### Utilities
 

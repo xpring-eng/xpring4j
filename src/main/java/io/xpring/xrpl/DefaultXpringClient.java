@@ -83,7 +83,8 @@ public class DefaultXpringClient implements XpringClientDecorator {
         ClassicAddress classicAddress = Utils.decodeXAddress(xrplAccountAddress);
 
         AccountRoot accountData = this.getAccountData(classicAddress.address());
-        return BigInteger.valueOf(accountData.getBalance().getDrops());
+
+      return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
     /**
@@ -93,6 +94,8 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException {
+        Objects.requireNonNull(transactionHash);
+
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
 
         // Return PENDING if the transaction is not validated.
@@ -177,7 +180,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
     @Override
     public int getLatestValidatedLedgerSequence() throws XpringKitException {
-        return this.getFee().getLedgerCurrentIndex();
+        return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
     @Override
@@ -194,10 +197,10 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     private XRPDropsAmount getMinimumFee() {
-        return this.getFee().getDrops().getMinimumFee();
+        return this.getFeeResponse().getDrops().getMinimumFee();
     }
 
-    private GetFeeResponse getFee() {
+    private GetFeeResponse getFeeResponse() {
         GetFeeRequest request = GetFeeRequest.newBuilder().build();
         return this.stub.getFee(request);
     }
@@ -210,5 +213,4 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         return response.getAccountData();
     }
-
 }

@@ -225,7 +225,6 @@ public class DefaultXpringClientTest {
         client.getTransactionStatus(TRANSACTION_HASH);
     }
 
-
     @Test
     public void submitTransactionTest() throws IOException, XpringKitException {
         // GIVEN a XpringClient with mocked networking which will succeed.
@@ -302,7 +301,6 @@ public class DefaultXpringClientTest {
         expectedException.expect(Exception.class);
         client.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
-
 
     /**
      * Convenience method to get a XpringClient which has successful network calls.
