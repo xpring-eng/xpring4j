@@ -155,7 +155,9 @@ public class DefaultXpringClientTest {
             // GIVEN a XpringClient which will return an unvalidated transaction with a failed code.
             DefaultXpringClient client = getClient(
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                    GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode))
+                    GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode)),
+                    GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
             );
 
             // WHEN the transaction status is retrieved.
