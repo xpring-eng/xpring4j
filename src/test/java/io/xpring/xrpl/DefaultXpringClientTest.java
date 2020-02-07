@@ -215,7 +215,9 @@ public class DefaultXpringClientTest {
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.error(GENERIC_ERROR)
+                GRPCResult.error(GENERIC_ERROR),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
 
         // WHEN the transaction status is retrieved THEN an error is thrown..
