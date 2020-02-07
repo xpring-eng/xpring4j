@@ -141,6 +141,7 @@ public class DefaultXpringClientTest {
         client.getBalance(XRPL_ADDRESS);
     }
 
+
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
@@ -212,7 +213,6 @@ public class DefaultXpringClientTest {
     @Test
     public void transactionStatusWithNodeError() throws IOException, XpringKitException {
         // GIVEN a XpringClient which will error when a transaction status is requested..
-        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.error(GENERIC_ERROR),
