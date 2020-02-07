@@ -17,7 +17,7 @@ public interface ClassicAddress {
     /**
      * @return The tag component of the classic address.
      */
-    public Optional<Long> tag();
+    public Optional<Integer> tag();
 
     /**
      * @return A boolean indicating whether this address is for use on a test network.
