@@ -1,0 +1,23 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "org.interledger.spsp.server.grpc";
+package org.interledger.stream.proto;
+
+// Defines the fields that are returned after a SendPayment RPC has completed.
+// Next field: 4
+message SendPaymentResponse {
+
+    // The original amount that was requested to be sent.
+    uint64 original_amount = 1;
+
+    // The actual amount, in the receivers units, that was delivered to the receiver
+    uint64 amount_delivered = 2;
+
+    // The actual amount, in the senders units, that was sent to the receiver
+    uint64 amount_sent = 3;
+
+    // Indicates if the payment was completed successfully.
+    bool successful_payment = 4;
+
+    // TODO : include all other meta-data from SendPaymentResult
+}

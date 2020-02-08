@@ -1,0 +1,24 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "org.interledger.spsp.server.grpc";
+
+package org.interledger.stream.proto;
+
+import "get_balance_response.proto";
+import "get_balance_request.proto";
+
+// RPCs available to interact with Hermes.
+service BalanceService {
+
+    // Get the balance of a certain account on a connector
+    rpc GetBalance (GetBalanceRequest) returns (GetBalanceResponse);
+
+}
+
+// Real Methods
+//
+
+// Temporary Methods
+// Sign-up for ILP (create ILP Account)
+// Get Account Details for AccountId
+//

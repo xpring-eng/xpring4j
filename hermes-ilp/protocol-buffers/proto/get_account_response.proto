@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.interledger.spsp.server.grpc";
+package org.interledger.stream.proto;
+
+message GetAccountResponse {
+    string account_relationship = 1;
+    string asset_code = 2;
+    int32 asset_scale = 3;
+    uint64 maximum_packet_amount = 4;
+    map<string, string> custom_settings = 5; // TODO: What should protobuf :value type be?
+    string account_id = 6;
+    string created_at = 7;
+    string modified_at = 8;
+    string description = 9;
+    string link_type = 10;
+    bool is_internal = 11;
+    bool is_connection_initiator = 12;
+    string ilp_address_segment = 13;
+    bool is_send_routes = 14;
+    bool is_receive_routes = 15;
+    BalanceSettings balance_settings = 16;
+    int32 max_packets_per_second = 17;
+    SettlementEngineDetails settlement_engine_details = 18;
+    bool is_parent_account = 19;
+    bool is_child_account = 20;
+    bool is_peer_account = 21;
+    bool is_peer_or_parent_account = 22;
+
+    message SettlementEngineDetails {
+        string settlement_engine_account_id = 1;
+        string base_url = 2;
+        map<string, string> custom_settings = 3;
+    }
+
+    message BalanceSettings {
+        int64 min_balance = 1;
+        int64 settle_threshold = 2;
+        int64 settle_to = 3;
+    }
+}
+
+
+

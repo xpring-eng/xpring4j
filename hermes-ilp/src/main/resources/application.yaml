@@ -1,0 +1,35 @@
+logging:
+  level:
+    ROOT: INFO
+    com: INFO
+    org.springframework.boot: INFO
+    org.springframework.web: INFO
+
+management:
+  endpoints:
+    enabled-by-default: false
+
+spring:
+  cache:
+    redis:
+      time-to-live: 86400
+  output:
+    ansi:
+      enabled: ALWAYS
+  http:
+    log-request-details: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  servlet:
+    multipart:
+      enabled: false
+      max-file-size: 32KB
+      max-request-size: 32KB
+    session:
+      persistent: false # Whether to persist session data between restarts.
+      timeout: 0 # Session timeout. If a duration suffix is not specified, seconds will be used.
+      tracking-modes: SSL # Session tracking modes.
+  session:
+    store-type: NONE

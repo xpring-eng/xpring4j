@@ -1,0 +1,14 @@
+# enables management endpoints
+
+# By default, all endpoints except for shutdown are enabled.
+# https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints-enabling-endpoints
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+        #exclude: loggers
+  endpoint:
+    health:
+      show-details: always

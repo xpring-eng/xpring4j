@@ -1,0 +1,6 @@
+# Test settings to validate loading configuration properties.
+interledger:
+  spsp:
+    spsp-url: https://money.ilpv4.dev
+    auth-token: placeholder:c2ho
+    address-prefix: test.jc.money

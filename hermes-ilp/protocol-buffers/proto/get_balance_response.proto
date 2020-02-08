@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.interledger.spsp.server.grpc";
+package org.interledger.stream.proto;
+
+// Return fields of a balance request
+message GetBalanceResponse {
+
+    string account_id = 1;
+    string asset_code = 2;
+    int32 asset_scale = 3;
+    int64 net_balance = 4;
+    int64 prepaid_amount = 5;
+    int64 clearing_balance = 6;
+}
+
+

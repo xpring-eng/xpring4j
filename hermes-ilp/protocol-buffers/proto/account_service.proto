@@ -1,0 +1,29 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "org.interledger.spsp.server.grpc";
+
+package org.interledger.stream.proto;
+
+import "get_account_response.proto";
+import "get_account_request.proto";
+import "create_account_request.proto";
+import "create_account_response.proto";
+
+// RPCs available to interact with Hermes.
+service AccountService {
+
+    // Get account info for a given AccountId on the connector
+    rpc GetAccount (GetAccountRequest) returns (GetAccountResponse);
+
+    // Create a new account on a connector. HTTP response code will tell if succeeded
+    rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
+
+}
+
+// Real Methods
+//
+
+// Temporary Methods
+// Sign-up for ILP (create ILP Account)
+// Get Account Details for AccountId
+//

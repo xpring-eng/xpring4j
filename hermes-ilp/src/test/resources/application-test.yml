@@ -1,0 +1,21 @@
+# Used for pure development purposes. All accounts are simulated using the Loopback Link.
+# See https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#common-application-properties
+spring:
+  profiles:
+    include: jks
+  output:
+    ansi:
+      enabled: ALWAYS
+
+interledger:
+  connector:
+    connector-url: http://localhost:8080
+    #    admin-key:
+
+  spsp:
+    spsp-url: https://money.ilpv4.dev
+    auth-token: placeholder:c2ho
+    address-prefix: test.jc.money
+
+grpc:
+  port: ${random.int[3000,8000]}

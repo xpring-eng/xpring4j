@@ -1,0 +1,129 @@
+# Java Maven CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+
+  # This job builds the entire project and runs all unit tests (specifically the persistence tests) against H2 by
+  # setting the `spring.datasource.url` value. All Integration Tests are skipped.
+  build:
+    working_directory: ~/repo
+
+    docker:
+      # Primary container image where all commands run
+      - image: circleci/openjdk:8-jdk
+        environment:
+          # Customize the JVM maximum heap limit
+          MAVEN_OPTS: -Xmx4096m
+
+    steps:
+
+      # apply the JCE unlimited strength policy to allow the PSK 256 bit key length
+      # solution from http://qiita.com/yoskhdia/items/f4702a3abc4467de69b0
+      - run:
+          name: Getting JCE unlimited strength policy to allow the 256 bit keys
+          command: |
+            curl -L --cookie 'oraclelicense=accept-securebackup-cookie;'  http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip -o /tmp/jce_policy.zip
+            unzip -o /tmp/jce_policy.zip -d /tmp
+            sudo mv -f /tmp/UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_HOME/jre/lib/security/US_export_policy.jar
+            sudo mv -f /tmp/UnlimitedJCEPolicyJDK8/local_policy.jar $JAVA_HOME/jre/lib/security/local_policy.jar
+
+      - checkout # check out source code to working directory
+
+      # Restore the saved cache after the first run or if `pom.xml` has changed. Read about caching dependencies:
+      # https://circleci.com/docs/2.0/caching/
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+
+      - run:
+          name: Full Build (H2)
+          command:  mvn dependency:go-offline -DskipITs install
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
+      # save tests
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/junit/ \;
+            mkdir -p ~/checkstyle/
+            find . -type f -regex ".*/target/checkstyle-reports/.*xml" -exec cp {} ~/junit/ \;
+
+          when: always
+
+      - store_test_results:
+          path: ~/junit
+
+      - store_artifacts:
+          path: ~/junit
+
+      - run:
+          name: "Install Linter"
+          command: |
+            sudo curl -sSL https://github.com/uber/prototool/releases/download/v1.8.0/prototool-$(uname -s)-$(uname -m) -o /usr/local/bin/prototool
+            sudo chmod +x /usr/local/bin/prototool
+
+      - run:
+          name: "Lint Protocol Buffers"
+          command:
+            prototool lint
+
+      - run:
+          name: "Check Protocol Buffer Breakages"
+          command:
+            prototool break check
+
+      - run:
+          name: "Node Client Tests"
+          command: |
+            cd node-client
+            npm test
+
+      # publish the coverage report to codecov.io
+      - run: bash <(curl -s https://codecov.io/bash)
+
+  docker_image:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/openjdk:8-jdk
+        environment:
+          # Customize the JVM maximum heap limit
+          MAVEN_OPTS: -Xmx4096m
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+      - run:
+          name: Deploy docker image
+          command: mvn package -DskipTests -DskipITs -Pdocker -Dcontainer.version=nightly -Djib.to.auth.username=${DOCKERHUB_USERNAME} -Djib.to.auth.password=${DOCKERHUB_API_KEY}
+
+workflows:
+  version: 2
+
+  # In CircleCI v2.1, when no workflow is provided in config, an implicit one is used. However, if you declare a
+  #  workflow to run a scheduled build, the implicit workflow is no longer run. You must add the job workflow to your
+  # config in order for CircleCI to also build on every commit.
+  commit:
+    jobs:
+      - build
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
+      - docker_image:
+          context: org-java-ilp-connector
