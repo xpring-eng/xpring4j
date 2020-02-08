@@ -1,5 +1,7 @@
 package io.xpring.xrpl.ilp;
 
+import org.interledger.spsp.server.grpc.GetBalanceResponse;
+
 import io.xpring.xrpl.XpringKitException;
 
 import java.math.BigInteger;
@@ -23,11 +25,11 @@ public class IlpClient {
      * Get the balance of the specified account on the connector.
      *
      * @param accountId The account ID to get the balance for.
+     * @param bearerToken Authentication bearer token. TODO: Probably change from string to some wrapped JWT class
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringKitException If the given inputs were invalid.
      */
-    // TODO: change return value to the generated client AccountBalance entity
-    public BigInteger getBalance(final String accountId) throws XpringKitException {
-        return decoratedClient.getBalance(accountId);
+    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringKitException {
+        return decoratedClient.getBalance(accountId, bearerToken);
     }
 }
