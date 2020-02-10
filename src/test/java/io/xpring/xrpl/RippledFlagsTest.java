@@ -21,6 +21,6 @@ public class RippledFlagsTest {
         Integer flags = 1 | 4; // 1 and 4 are arbitrarily chosen numbers.
 
         // WHEN the presence of tfPartialPayment is checked THEN the flag is reported as not present.
-        assertFalse( RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags));
+        assertFalse(RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags));
     }
 }
