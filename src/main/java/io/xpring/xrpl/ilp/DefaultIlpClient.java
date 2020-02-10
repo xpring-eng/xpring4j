@@ -1,11 +1,15 @@
 package io.xpring.xrpl.ilp;
 
+import org.interledger.spsp.server.grpc.AccountServiceGrpc;
+import org.interledger.spsp.server.grpc.BalanceServiceGrpc;
+import org.interledger.spsp.server.grpc.CreateAccountRequest;
+import org.interledger.spsp.server.grpc.CreateAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceRequest;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
-import org.interledger.stream.proto.BalanceServiceGrpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.XpringKitException;
 import io.xpring.xrpl.ilp.grpc.IlpJwtCallCredentials;
 import org.slf4j.Logger;
@@ -13,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.net.URL;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -45,11 +49,12 @@ public class DefaultIlpClient implements IlpClientDecorator {
             XPRING_ILP_GRPC_URL = properties.getProperty("ilp.grpc.url");
         } catch (Exception e) {
             logger.info(String.format("Problem loading config file named %s. Using default configuration.", propertiesFileName));
-            XPRING_ILP_GRPC_URL = "https://localhost:6565";
+            XPRING_ILP_GRPC_URL = "http://localhost:6565";
         }
     };
 
-    private final BalanceServiceGrpc.BalanceServiceBlockingStub stub;
+    private final BalanceServiceGrpc.BalanceServiceBlockingStub balanceServiceStub;
+    private final AccountServiceGrpc.AccountServiceBlockingStub accountServiceStub;
 
     /**
      * No-args Constructor.
@@ -65,24 +70,43 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     public DefaultIlpClient(final ManagedChannel channel) {
-        this.stub = BalanceServiceGrpc.newBlockingStub(channel);
+        this.balanceServiceStub = BalanceServiceGrpc.newBlockingStub(channel);
+        this.accountServiceStub = AccountServiceGrpc.newBlockingStub(channel);
     }
 
-    /**
-     * Get the balance of the specified account on the connector.
-     *
-     * @param accountId The account ID to get the balance for.
-     * @param bearerToken Authentication bearer token.
-     * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringKitException If the given inputs were invalid.
-     */
+    @Override
     public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringKitException {
         GetBalanceRequest request = GetBalanceRequest.newBuilder()
           .setAccountId(accountId)
           .build();
 
-        return this.stub
-          .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
-          .getBalance(request);
+        try {
+            return this.balanceServiceStub
+              .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
+              .getBalance(request);
+        } catch (StatusRuntimeException e) {
+            throw new XpringKitException(String.format("Unable to get balance for account %s.  %s", accountId, e.getStatus()));
+        }
+    }
+
+    @Override
+    public CreateAccountResponse createAccount() throws XpringKitException {
+        return this.createAccount(Optional.empty(), Optional.empty());
+    }
+
+    @Override
+    public CreateAccountResponse createAccount(Optional<CreateAccountRequest> createAccountRequest, Optional<String> bearerToken) throws XpringKitException {
+        return this.createAccount(createAccountRequest.orElse(null), bearerToken.orElse(null));
+    }
+
+    @Override
+    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest, String bearerToken) throws XpringKitException {
+        try {
+            return this.accountServiceStub
+              .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
+              .createAccount(createAccountRequest);
+        } catch (StatusRuntimeException e) {
+            throw new XpringKitException("Unable to create an account. " + e.getStatus());
+        }
     }
 }
