@@ -19,8 +19,9 @@ public enum RippledFlags {
     /**
      * Check if the given flag is present in the given flags.
      *
-     * @param flag: The flag to check the presence of.
-     * @param flags: The flags to check
+     * @param flag The flag to check the presence of.
+     * @param flags The flags to check
+     * @return A boolean indicating if the flag was present.
      */
     public static boolean check(RippledFlags flag, Integer flags) {
         return (flag.value & flags) == flag.value;
