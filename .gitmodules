@@ -8,6 +8,3 @@
 	path = rippled
 	url = https://github.com/ripple/rippled
 	branch = develop
-[submodule "hermes-ilp"]
-	path = hermes-ilp
-	url = https://github.com/xpring-eng/hermes-ilp.git
