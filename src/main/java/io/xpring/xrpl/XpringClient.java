@@ -19,7 +19,7 @@ public class XpringClient {
      * @param grpcURL The remote URL to use for gRPC calls.
      */
     public XpringClient(String grpcURL) {
-        this(grpcURL,false);
+        this(grpcURL, false);
     }
 
     /**
