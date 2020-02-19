@@ -38,7 +38,7 @@ public class IlpIntegrationTests {
     .withNetworkAliases("connector-host"); // Need this so hermes can communicate with the connector container
 
   @ClassRule
-  public static GenericContainer hermesNode = new GenericContainer<>("interledger4j/hermes-server:xpring4j-hermes") // FIXME use nightly
+  public static GenericContainer hermesNode = new GenericContainer<>("interledger4j/hermes-server:xpring4j-hermes")
     .withExposedPorts(HERMES_PORT)
     .withNetwork(network)
     .withEnv("interledger.connector.connector-url", "http://connector-host:" + CONNECTOR_PORT);
