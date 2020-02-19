@@ -8,9 +8,10 @@ import org.interledger.spsp.server.grpc.SendPaymentResponse;
 import io.xpring.xrpl.XpringKitException;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 /**
- * An common interface shared between XpringClient and the internal hierarchy of decorators.
+ * An common interface shared between IlpClient and the internal hierarchy of decorators.
  */
 public interface IlpClientDecorator {
 
@@ -23,84 +24,25 @@ public interface IlpClientDecorator {
      */
     CreateAccountResponse createAccount() throws XpringKitException;
 
-    /**
-     * Create an account on the connector.
-     * bearerToken will be generated.
-     *
-     * @param accountId : Account Id of the created account
-     * @param assetCode : Asset code of the account
-     * @param assetScale : Asset scale of the account
-     * @param description : Description of the account
-     * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
-     * @throws XpringKitException If the given inputs were invalid or account creation failed.
-     */
-    CreateAccountResponse createAccount(String accountId,
-                                        String assetCode,
-                                        Integer assetScale,
-                                        String description) throws XpringKitException;
-
-    /**
-     * Create an account on the connector.
-     * bearerToken and accountId will be generated.
-     *
-     * @param assetCode : Asset code of the account
-     * @param assetScale : Asset scale of the account
-     * @param description : Description of the account
-     * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
-     * @throws XpringKitException If the given inputs were invalid or account creation failed.
-     */
-    CreateAccountResponse createAccount(String assetCode,
-                                        Integer assetScale,
-                                        String description) throws XpringKitException;
-
-    /**
-     * Create an account on the connector.
-     * bearerToken and accountId will be generated.
-     * description will default to empty.
-     *
-     * @param assetCode : Asset code of the account
-     * @param assetScale : Asset scale of the account
-     * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
-     * @throws XpringKitException If the given inputs were invalid or account creation failed.
-     */
-    CreateAccountResponse createAccount(String assetCode,
-                                        Integer assetScale) throws XpringKitException;
-
-    /**
-     * Create an account on the connector.
-     * Description will default to empty.
-     *
-     * @param bearerToken : Auth token.  If empty, a simple auth token will be generated for you
-     *
-     * @param accountId : Account Id of the created account
-     * @param assetCode : Asset code of the account
-     * @param assetScale : Asset scale of the account
-     * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
-     * @throws XpringKitException If the given inputs were invalid or account creation failed.
-     */
-    CreateAccountResponse createAccount(String bearerToken,
-                                        String accountId,
-                                        String assetCode,
-                                        Integer assetScale) throws XpringKitException;
 
     /**
      * Create an account on the connector.
      *
-     * @param bearerToken : Optional auth token.  If empty, a simple auth token will be generated for you
      *
-     * @param accountId : Optional account Id.  If empty, an account ID will be generated for you
-     * @param assetCode : Optional asset code.  If empty, defaults to "XRP"
-     * @param assetScale : Optional asset scale.  If empty, defaults to 9
-     * @param description : Optional description.
-     * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
+     * @param createAccountRequest @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
+     * @param bearerToken
      * @throws XpringKitException If the given inputs were invalid or account creation failed.
      */
-    CreateAccountResponse createAccount(String bearerToken,
-                                        String accountId,
-                                        String assetCode,
-                                        Integer assetScale,
-                                        String description) throws XpringKitException;
+    CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringKitException;
 
+    /**
+     * Gets account details for the given account ID
+     *
+     * @param accountId
+     * @param bearerToken
+     * @return
+     * @throws XpringKitException
+     */
     GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringKitException;
 
     /**
@@ -113,6 +55,15 @@ public interface IlpClientDecorator {
      */
     GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringKitException;
 
+    /**
+     * Send a payment from the given accountId to the destinationPaymentPointer payment pointer
+     * @param destinationPaymentPointer : payment pointer of the receiver
+     * @param amount : Amount to send
+     * @param accountId : accountId of the sender
+     * @param bearerToken : auth token of the sender
+     * @return
+     * @throws XpringKitException
+     */
     SendPaymentResponse sendPayment(String destinationPaymentPointer,
                                     long amount,
                                     String accountId,

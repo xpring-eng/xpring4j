@@ -16,6 +16,8 @@ import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
+import java.util.Optional;
+
 public class IlpIntegrationTests {
 
   /**
@@ -69,21 +71,29 @@ public class IlpIntegrationTests {
 
   @Test
   public void populatedCreateAccount() throws XpringKitException {
-    CreateAccountResponse response = client.createAccount("blahblahblah", "foo", "XRP", 6);
-    assertThat(response.getAccountId()).isEqualTo("foo");
-    assertThat(response.getAssetCode()).isEqualTo("XRP");
+    CreateAccountRequest createAccountRequest = CreateAccountRequest.builder("USD", 6)
+      .accountId("baz")
+      .description("test account")
+      .build();
+    CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.of("password"));
+    assertThat(response.getAccountId()).isEqualTo("baz");
+    assertThat(response.getAssetCode()).isEqualTo("USD");
     assertThat(response.getAssetScale()).isEqualTo(6);
-    assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/foo");
+    assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/baz");
     assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
     assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).isEqualTo("blahblahblah");
+    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).isEqualTo("password");
   }
 
   @Test
   public void createAccountNoAuthYesRequest() throws XpringKitException {
-    CreateAccountResponse response = client.createAccount("bar", "XRP", 6, "Fake account");
+    CreateAccountRequest createAccountRequest = CreateAccountRequest.builder("USD", 6)
+      .accountId("bar")
+      .description("test account")
+      .build();
+    CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
     assertThat(response.getAccountId()).isEqualTo("bar");
-    assertThat(response.getAssetCode()).isEqualTo("XRP");
+    assertThat(response.getAssetCode()).isEqualTo("USD");
     assertThat(response.getAssetScale()).isEqualTo(6);
     assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/bar");
     assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
@@ -93,9 +103,11 @@ public class IlpIntegrationTests {
 
   @Test
   public void createAccountNoAuthNoAccountId() throws XpringKitException {
-    CreateAccountResponse response = client.createAccount("XRP", 6);
+    CreateAccountRequest createAccountRequest = CreateAccountRequest.builder("USD", 6)
+      .build();
+    CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
     assertThat(response.getAccountId()).startsWith("user_");
-    assertThat(response.getAssetCode()).isEqualTo("XRP");
+    assertThat(response.getAssetCode()).isEqualTo("USD");
     assertThat(response.getAssetScale()).isEqualTo(6);
     assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/" + response.getAccountId());
     assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());

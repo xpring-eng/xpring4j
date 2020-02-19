@@ -95,54 +95,27 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
     @Override
     public CreateAccountResponse createAccount() throws XpringKitException {
-        return this.createAccount(Optional.empty(),
-          Optional.empty(),
-          Optional.empty(),
-          Optional.empty(),
-          Optional.empty());
+        return this.createAccount(CreateAccountRequest.newBuilder().build(), Optional.empty());
     }
+
 
     @Override
-    public CreateAccountResponse createAccount(String accountId, String assetCode, Integer assetScale, String description) throws XpringKitException {
-        return createAccount(Optional.empty(), Optional.of(accountId), Optional.of(assetCode), Optional.of(assetScale), Optional.of(description));
-    }
-
-    @Override
-    public CreateAccountResponse createAccount(String assetCode, Integer assetScale, String description) throws XpringKitException {
-        return createAccount(Optional.empty(), Optional.empty(), Optional.of(assetCode), Optional.of(assetScale), Optional.of(description));
-    }
-
-    @Override
-    public CreateAccountResponse createAccount(String assetCode, Integer assetScale) throws XpringKitException {
-        return createAccount(Optional.empty(), Optional.empty(), Optional.of(assetCode), Optional.of(assetScale), Optional.empty());
-    }
-
-    @Override
-    public CreateAccountResponse createAccount(String bearerToken, String accountId, String assetCode, Integer assetScale, String description) throws XpringKitException {
-        return createAccount(Optional.of(bearerToken), Optional.of(accountId), Optional.of(assetCode), Optional.of(assetScale), Optional.of(description));
-    }
-
-    @Override
-    public CreateAccountResponse createAccount(String bearerToken, String accountId, String assetCode, Integer assetScale) throws XpringKitException {
-        return createAccount(Optional.of(bearerToken), Optional.of(accountId), Optional.of(assetCode), Optional.of(assetScale), Optional.empty());
-    }
-
-    private CreateAccountResponse createAccount(Optional<String> bearerToken,
-                                                Optional<String> accountId,
-                                                Optional<String> assetCode,
-                                                Optional<Integer> assetScale,
-                                                Optional<String> description) throws XpringKitException {
-        CreateAccountRequest request = CreateAccountRequest.newBuilder()
-          .setAccountId(accountId.orElse(""))
-          .setAssetCode(assetCode.orElse(""))
-          .setAssetScale(assetScale.orElse(0))
-          .setDescription(description.orElse(""))
+    public CreateAccountResponse createAccount(io.xpring.ilp.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringKitException {
+        CreateAccountRequest createAccountRequestGrpc = CreateAccountRequest.newBuilder()
+          .setAccountId(createAccountRequest.accountId())
+          .setAssetCode(createAccountRequest.assetCode())
+          .setAssetScale(createAccountRequest.assetScale())
+          .setDescription(createAccountRequest.description())
           .build();
+        return createAccount(createAccountRequestGrpc, bearerToken);
+    }
+
+    private CreateAccountResponse createAccount(CreateAccountRequest createAccountRequestGrpc, Optional<String> bearerToken) throws XpringKitException {
 
         try {
             return this.accountServiceStub
               .withCallCredentials(bearerToken.map(IlpJwtCallCredentials::build).orElse(null))
-              .createAccount(request);
+              .createAccount(createAccountRequestGrpc);
         } catch (StatusRuntimeException e) {
             throw new XpringKitException("Unable to create an account. " + e.getStatus());
         }

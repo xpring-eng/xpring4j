@@ -155,25 +155,34 @@ public class DefaultIlpClientTest {
   @Test
   public void populatedCreateIlpAccountTest() throws IOException, XpringKitException {
     DefaultIlpClient client = getClient();
-    CreateAccountResponse createAccountResponse = client.createAccount("gobbledygook",
-      "foo",
-      "XRP",
-      9);
+
+    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+      .accountId("foo")
+      .description("test account")
+      .build();
+    CreateAccountResponse createAccountResponse = client.createAccount(createAccountRequest, Optional.of("password"));
     assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
   }
 
   @Test
   public void createAccountNoAuthYesRequest() throws XpringKitException, IOException {
+    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+      .accountId("foo")
+      .description("test account")
+      .build();
     DefaultIlpClient client = getClient();
-    CreateAccountResponse response = client.createAccount("bar", "XRP", 6, "Fake account");
-    assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
+    CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
+    assertThat(response).isEqualTo(this.createAccountResponse);
   }
 
   @Test
   public void createAccountNoAuthNoAccountId() throws XpringKitException, IOException {
     DefaultIlpClient client = getClient();
-    CreateAccountResponse response = client.createAccount("XRP", 6);
-    assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
+
+    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+      .build();
+    CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
+    assertThat(response).isEqualTo(this.createAccountResponse);
   }
 
 
