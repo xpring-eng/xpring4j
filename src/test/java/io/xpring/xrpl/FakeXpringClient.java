@@ -1,8 +1,6 @@
 package io.xpring.xrpl;
 
 
-import io.xpring.proto.Transaction;
-
 import java.math.BigInteger;
 
 /**
@@ -31,7 +29,7 @@ public class FakeXpringClient implements  XpringClientDecorator {
     }
 
     @Override
-    public BigInteger getBalance(String xrplAccountAddress) throws XpringKitException {
+    public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
         return this.getBalanceValue;
     }
 
@@ -41,7 +39,7 @@ public class FakeXpringClient implements  XpringClientDecorator {
     }
 
     @Override
-    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringKitException {
+    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
         return this.sendValue;
     }
 
