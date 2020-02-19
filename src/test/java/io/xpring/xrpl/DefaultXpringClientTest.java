@@ -13,6 +13,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
+import io.xpring.xrpl.XpringKitException;	
 import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo;
 import rpc.v1.FeeOuterClass.Fee;
