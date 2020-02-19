@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,9 +15,14 @@ import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo;
+import rpc.v1.FeeOuterClass.Fee;
+import rpc.v1.FeeOuterClass.GetFeeRequest;
+import rpc.v1.FeeOuterClass.GetFeeResponse;
 import rpc.v1.LedgerObjects.AccountRoot;
 import rpc.v1.MetaOuterClass.Meta;
 import rpc.v1.MetaOuterClass.TransactionResult;
+import rpc.v1.Submit.SubmitTransactionRequest;
+import rpc.v1.Submit.SubmitTransactionResponse;
 import rpc.v1.Tx;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
@@ -80,8 +86,16 @@ public class DefaultXpringClientTest {
     private static final String TRANSACTION_BLOB = "DEADBEEF";
     private static final String GENERIC_ERROR = "Mocked network error";
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
-    private static final String TRANSACTION_STATUS_FAILURE = "tecFAILURE";
+    private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
+            "tefFAILURE",
+            "tecCLAIM",
+            "telBAD_PUBLIC_KEY",
+            "temBAD_FEE",
+            "terRETRY"
+    };
     private static final String TRANSACTION_HASH = "DEADBEEF";
+    private static final long MINIMUM_FEE = 12;
+    private static final int LAST_LEDGER_SEQUENCE = 20;
 
     /** The seed for a wallet with funds on the XRP Ledger test net. */
     private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
@@ -118,7 +132,9 @@ public class DefaultXpringClientTest {
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
                 accountInfoResult,
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
 
         // WHEN the balance is retrieved THEN an error is thrown.
@@ -126,19 +142,25 @@ public class DefaultXpringClientTest {
         client.getBalance(XRPL_ADDRESS);
     }
 
+
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringException {
-        // GIVEN a XpringClient which will return an unvalidated transaction with a failed code.
-        DefaultXpringClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_FAILURE))
-        );
+        // Iterate over different types of transaction status codes which represent failures.
+        for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
+            // GIVEN a XpringClient which will return an unvalidated transaction with a failed code.
+            DefaultXpringClient client = getClient(
+                    GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                    GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode)),
+                    GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+            );
 
-        // WHEN the transaction status is retrieved.
-        io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+            // WHEN the transaction status is retrieved.
+            io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
 
-        // THEN the status is PENDING.
-        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
+            // THEN the status is PENDING.
+            assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
+        }
     }
 
     @Test
@@ -146,7 +168,9 @@ public class DefaultXpringClientTest {
         // GIVEN a XpringClient which will return an unvalidated transaction with a success code.
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS))
+                GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
 
         // WHEN the transaction status is retrieved.
@@ -158,26 +182,32 @@ public class DefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException, XpringException {
-        // GIVEN a XpringClient which will return an validated transaction with a failed code.
-        DefaultXpringClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_FAILURE))
-        );
+        // Iterate over different types of transaction status codes which represent failures.
+        for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
+            // GIVEN a XpringClient which will return an validated transaction with a failed code.
+            DefaultXpringClient client = getClient(
+                    GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                    GRPCResult.ok(makeTransactionStatus(true, transactionFailureCode)),
+                    GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+            );
 
-        // WHEN the transaction status is retrieved.
-        io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+            // WHEN the transaction status is retrieved.
+            io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
 
-        // THEN the status is FAILED.
-        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.FAILED);
+            // THEN the status is FAILED.
+            assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.FAILED);
+        }
     }
 
     @Test
     public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringException {
         // GIVEN a XpringClient which will return an validated transaction with a success code.
-        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
 
         // WHEN the transaction status is retrieved.
@@ -190,15 +220,93 @@ public class DefaultXpringClientTest {
     @Test
     public void transactionStatusWithNodeError() throws IOException, XpringException {
         // GIVEN a XpringClient which will error when a transaction status is requested..
-        io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.error(GENERIC_ERROR)
+                GRPCResult.error(GENERIC_ERROR),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
 
         // WHEN the transaction status is retrieved THEN an error is thrown..
         expectedException.expect(Exception.class);
         client.getTransactionStatus(TRANSACTION_HASH);
+    }
+
+    @Test
+    public void submitTransactionTest() throws IOException, XpringKitException {
+        // GIVEN a XpringClient with mocked networking which will succeed.
+        DefaultXpringClient client = getClient();
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN a transaction is sent.
+        String transactionHash = client.send(AMOUNT, XRPL_ADDRESS, wallet);
+
+        // THEN the transaction hash is the same as the hash of the mocked transaction blob in the response.
+        assertThat(transactionHash).isEqualTo(TRANSACTION_HASH.toLowerCase());
+    }
+
+    @Test
+    public void submitTransactionWithClassicAddress() throws IOException, XpringKitException {
+        // GIVEN a classic address.
+        DefaultXpringClient client = getClient();
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent to the classic address THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        client.send(AMOUNT, classicAddress.address(), wallet);
+    }
+
+    @Test
+    public void submitTransactionWithFailedAccountInfo() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to return account info.
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        DefaultXpringClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+    @Test
+    public void submitTransactionWithFailedFee() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to retrieve a fee.
+        GRPCResult<GetFeeResponse> feeResult = GRPCResult.error(GENERIC_ERROR);
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                feeResult,
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+
+    @Test
+    public void submitTransactionWithFailedSubmit() throws IOException, XpringKitException {
+        // GIVEN a XpringClient which will fail to submit a transaction.
+        GRPCResult<SubmitTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                submitResult
+        );
+        Wallet wallet = new Wallet(WALLET_SEED);
+
+        // WHEN XRP is sent then THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
 
     /**
@@ -207,7 +315,9 @@ public class DefaultXpringClientTest {
     private DefaultXpringClient getClient() throws IOException {
         return getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
     }
 
@@ -217,11 +327,15 @@ public class DefaultXpringClientTest {
 
     private DefaultXpringClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
-            GRPCResult<Tx.GetTxResponse> getTxResponseResult
+            GRPCResult<Tx.GetTxResponse> getTxResponseResult,
+            GRPCResult<GetFeeResponse> getFeeResult,
+            GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
-                getTxResponseResult
+                getTxResponseResult,
+                getFeeResult,
+                submitTransactionResult
         );
 
         // Generate a unique in-process server name.
@@ -245,7 +359,9 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<Tx.GetTxResponse> getTxResponseResult
+        GRPCResult<Tx.GetTxResponse> getTxResponseResult,
+        GRPCResult<GetFeeResponse> getFeeResult,
+        GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {
@@ -268,9 +384,47 @@ public class DefaultXpringClientTest {
                             responseObserver.onCompleted();
                         }
                     }
+
+                    @Override
+                    public void getFee(GetFeeRequest request,
+                                       StreamObserver<GetFeeResponse> responseObserver) {
+                        if (getFeeResult.isError()) {
+                            responseObserver.onError(new Throwable(getFeeResult.getError()));
+                        } else {
+                            responseObserver.onNext(getFeeResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
+
+                    @Override
+                    public void submitTransaction(SubmitTransactionRequest request,
+                                                  StreamObserver<SubmitTransactionResponse> responseObserver) {
+                        if (submitTransactionResult.isError()) {
+                            responseObserver.onError(new Throwable(submitTransactionResult.getError()));
+                        } else {
+                            responseObserver.onNext(submitTransactionResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
                 }
-                )
-        );
+                ));
+    }
+
+    /**
+     * Make a SubmitSignedTransaction response protocol buffer with the given inputs.
+     */
+    private SubmitTransactionResponse makeSubmitTransactionResponse(String hash) {
+        ByteString bytes = ByteString.copyFrom(Utils.hexStringToByteArray(hash));
+        return SubmitTransactionResponse.newBuilder().setHash(bytes).build();
+    }
+
+    /**
+     * Make a GetFeeResponse protocol buffer with the given inputs.
+     */
+    private GetFeeResponse makeGetFeeResponse(long minimumFee, int lastLedgerSequence) {
+        XRPDropsAmount minimumDrops = XRPDropsAmount.newBuilder().setDrops(minimumFee).build();
+        Fee fee = Fee.newBuilder().setMinimumFee(minimumDrops).build();
+        return GetFeeResponse.newBuilder().setLedgerCurrentIndex(lastLedgerSequence).setDrops(fee).build();
     }
 
     /**

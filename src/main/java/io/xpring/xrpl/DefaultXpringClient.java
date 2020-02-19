@@ -3,11 +3,22 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.xpring.proto.SubmitSignedTransactionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rpc.v1.Amount;
 import rpc.v1.Amount.AccountAddress;
+import rpc.v1.Amount.CurrencyAmount;
+import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo.GetAccountInfoRequest;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
+import rpc.v1.FeeOuterClass.GetFeeRequest;
+import rpc.v1.FeeOuterClass.GetFeeResponse;
+import rpc.v1.LedgerObjects.AccountRoot;
+import rpc.v1.Submit.SubmitTransactionRequest;
+import rpc.v1.Submit.SubmitTransactionResponse;
+import rpc.v1.TransactionOuterClass.Transaction;
+import rpc.v1.TransactionOuterClass.Payment;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 import rpc.v1.Tx.GetTxRequest;
@@ -23,7 +34,7 @@ import java.util.Objects;
  */
 public class DefaultXpringClient implements XpringClientDecorator {
     // A margin to pad the current ledger sequence with when submitting transactions.
-    private static final int LEDGER_SEQUENCE_MARGIN = 10;
+    private static final int MAX_LEDGER_VERSION_OFFSET = 10;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -63,14 +74,11 @@ public class DefaultXpringClient implements XpringClientDecorator {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
             throw XpringException.xAddressRequiredException;
         }
+        ClassicAddress classicAddress = Utils.decodeXAddress(xrplAccountAddress);
 
-        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
-        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
+        AccountRoot accountData = this.getAccountData(classicAddress.address());
 
-        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
-
-        long drops = response.getAccountData().getBalance().getDrops();
-        return BigInteger.valueOf(drops);
+      return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
     /**
@@ -106,12 +114,67 @@ public class DefaultXpringClient implements XpringClientDecorator {
             final String destinationAddress,
             final Wallet sourceWallet
     ) throws XpringException {
-        throw XpringException.unimplemented;
+        Objects.requireNonNull(amount);
+        Objects.requireNonNull(destinationAddress);
+        Objects.requireNonNull(sourceWallet);
+
+        if (!Utils.isValidXAddress(destinationAddress)) {
+            throw XpringKitException.xAddressRequiredException;
+        }
+
+        ClassicAddress destinationClassicAddress = Utils.decodeXAddress(destinationAddress);
+        ClassicAddress sourceClassicAddress = Utils.decodeXAddress(sourceWallet.getAddress());
+
+        AccountRoot accountData = this.getAccountData(sourceClassicAddress.address());
+        XRPDropsAmount fee = this.getMinimumFee();
+        int lastValidatedLedgerSequence = this.getLatestValidatedLedgerSequence();
+
+        AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
+                .setAddress(destinationClassicAddress.address())
+                .build();
+        AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
+                .setAddress(sourceClassicAddress.address())
+                .build();
+
+        XRPDropsAmount drops = XRPDropsAmount.newBuilder().setDrops(amount.longValue()).build();
+        CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(drops).build();
+
+        Payment.Builder paymentBuilder = Payment.newBuilder()
+                .setAmount(currencyAmount)
+                .setDestination(destinationAccountAddress);
+        if (destinationClassicAddress.tag().isPresent()) {
+            paymentBuilder.setDestinationTag(destinationClassicAddress.tag().get());
+        }
+
+        Payment payment = paymentBuilder.build();
+
+        byte [] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getPublicKey());
+        int lastLedgerSequence = lastValidatedLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
+
+        Transaction transaction = Transaction.newBuilder()
+                .setAccount(sourceAccountAddress)
+                .setFee(fee)
+                .setSequence(accountData.getSequence())
+                .setPayment(payment)
+                .setLastLedgerSequence(lastLedgerSequence)
+                .setSigningPublicKey(ByteString.copyFrom(signingPublicKeyBytes))
+                .build();
+
+        byte [] signedTransaction = Signer.signTransaction(transaction, sourceWallet);
+
+        SubmitTransactionRequest request = SubmitTransactionRequest.newBuilder()
+                .setSignedTransaction(ByteString.copyFrom(signedTransaction))
+                .build();
+
+        SubmitTransactionResponse response = this.stub.submitTransaction(request);
+
+        byte [] hashBytes = response.getHash().toByteArray();
+        return Utils.byteArrayToHex(hashBytes);
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringException {
-        throw XpringException.unimplemented;
+    public int getLatestValidatedLedgerSequence() throws XpringKitException {
+        return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
     @Override
@@ -125,5 +188,23 @@ public class DefaultXpringClient implements XpringClientDecorator {
         GetTxResponse response = this.stub.getTx(request);
 
         return new RawTransactionStatus(response);
+    }
+
+    private XRPDropsAmount getMinimumFee() {
+        return this.getFeeResponse().getDrops().getMinimumFee();
+    }
+
+    private GetFeeResponse getFeeResponse() {
+        GetFeeRequest request = GetFeeRequest.newBuilder().build();
+        return this.stub.getFee(request);
+    }
+
+    private AccountRoot getAccountData(String xrplAccountAddress) {
+        AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
+        GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
+
+        GetAccountInfoResponse response = this.stub.getAccountInfo(request);
+
+        return response.getAccountData();
     }
 }
