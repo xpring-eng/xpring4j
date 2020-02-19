@@ -70,7 +70,8 @@ Xpring4j can derive a wallet from a seed or it can derive a hierarchical determi
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you can pass `null` for the derivation path and have a default path be used instead.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
+
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -85,7 +86,7 @@ Wallet hdWallet = new Wallet(mnemonic, "m/44'/144'/0'/0/1"); // Wallet with cust
 You can construct a seed based wallet by passing a base58check encoded seed string.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 Wallet seedWallet = new Wallet("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M");
 ```
@@ -99,7 +100,7 @@ Xpring4j can generate a new and random HD Wallet. The result of a wallet generat
 - A reference to the new wallet
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 // Generate a random wallet.
 WalletGenerationResult generationResult = Wallet.generateRandomWallet();
@@ -114,7 +115,7 @@ Wallet copyOfNewWallet = new Wallet(generationResult.getMnemonic(), generationRe
 A generated wallet can provide its public key, private key, and address on the XRP ledger.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -130,7 +131,7 @@ System.out.println(wallet.getPrivateKey()); // 0090802A50AA84EFB6CDB225F17C27616
 A wallet can also sign and verify arbitrary hex messages. Generally, users should use the functions on `XpringClient` to perform cryptographic functions rather than using these low level APIs.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 String message = "deadbeef";
