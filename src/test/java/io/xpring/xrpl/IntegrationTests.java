@@ -14,6 +14,9 @@ public class IntegrationTests {
     /** The XpringClient under test. */
     private XpringClient xpringClient;
 
+    /** The gRPC URL */
+    private String GRPC_URL = "grpc.xpring.tech";
+
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
 
@@ -28,7 +31,7 @@ public class IntegrationTests {
 
     @Before
     public void setUp() throws Exception {
-        this.xpringClient = new XpringClient();
+        this.xpringClient = new XpringClient(GRPC_URL);
     }
 
     @Test

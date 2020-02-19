@@ -148,7 +148,8 @@ wallet.verify(message, signature); // true
 ```java
 import io.xpring.xrpl.XpringClient;
 
-XpringClient xpringClient = new XpringClient();
+String grpcURL = "grpc.xpring.tech";
+XpringClient xpringClient = new XpringClient(grpcURL);
 ```
 
 #### Retrieving a Balance
@@ -159,7 +160,8 @@ A `XpringClient` can check the balance of an account on the XRP Ledger.
 import io.xpring.xrpl.XpringClient;
 import java.math.BigInteger;
 
-XpringClient xpringClient = new XpringClient();
+String grpcURL = "grpc.xpring.tech";
+XpringClient xpringClient = new XpringClient(grpcURL);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 BigInteger balance = xpringClient.getBalance(address);
@@ -168,7 +170,7 @@ System.out.println(balance); // Logs a balance in drops of XRP
 
 ### Checking Transaction Status
 
-A `XpringClient` can check the status of an transaction on the XRP Ledger. 
+A `XpringClient` can check the status of an transaction on the XRP Ledger.
 
 Xpring4J returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
@@ -184,7 +186,8 @@ These states are determined by the `TransactionStatus` enum.
 import io.xpring.xrpl.XpringClient;
 import io.xpring.xrpl.TransactionStatus;
 
-XpringClient xpringClient = new XpringClient();
+String grpcURL = "grpc.xpring.tech";
+XpringClient xpringClient = new XpringClient(grpcURL);
 
 String transactionHash = "2CBBD2523478848DA256F8EBFCBD490DD6048A4A5094BF8E3034F57EA6AA0522";
 TransactionStatus transactionStatus = xpringClient.xpringClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
