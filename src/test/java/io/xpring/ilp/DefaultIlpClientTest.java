@@ -22,7 +22,7 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.ilp.DefaultIlpClient;
-import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -146,14 +146,14 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void minimalCreateIlpAccountTest() throws XpringKitException, IOException {
+  public void minimalCreateIlpAccountTest() throws XpringException, IOException {
     DefaultIlpClient client = getClient();
     CreateAccountResponse createAccountResponse = client.createAccount();
     assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
   }
 
   @Test
-  public void populatedCreateIlpAccountTest() throws IOException, XpringKitException {
+  public void populatedCreateIlpAccountTest() throws IOException, XpringException {
     DefaultIlpClient client = getClient();
 
     io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
@@ -165,7 +165,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void createAccountNoAuthYesRequest() throws XpringKitException, IOException {
+  public void createAccountNoAuthYesRequest() throws XpringException, IOException {
     io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
@@ -176,7 +176,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void createAccountNoAuthNoAccountId() throws XpringKitException, IOException {
+  public void createAccountNoAuthNoAccountId() throws XpringException, IOException {
     DefaultIlpClient client = getClient();
 
     io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
@@ -187,7 +187,7 @@ public class DefaultIlpClientTest {
 
 
   @Test
-  public void getIlpBalanceTest() throws XpringKitException, IOException {
+  public void getIlpBalanceTest() throws XpringException, IOException {
     DefaultIlpClient client = getClient();
     GetBalanceResponse balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
 
@@ -195,7 +195,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void getAccountTest() throws IOException, XpringKitException {
+  public void getAccountTest() throws IOException, XpringException {
     DefaultIlpClient client = getClient();
     GetAccountResponse response = client.getAccount("foo", "gobbledygook");
 
@@ -203,7 +203,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void sendPaymentTest() throws IOException, XpringKitException {
+  public void sendPaymentTest() throws IOException, XpringException {
     DefaultIlpClient client = getClient();
     SendPaymentResponse response = client.sendPayment("$foo.dev/bar", 1000, "baz", "gobbledygook");
 

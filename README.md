@@ -70,7 +70,8 @@ Xpring4j can derive a wallet from a seed or it can derive a hierarchical determi
 A hierarchical deterministic wallet is created using a mnemonic and a derivation path. Simply pass the mnemonic and derivation path to the wallet generation function. Note that you can pass `null` for the derivation path and have a default path be used instead.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
+
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -85,7 +86,7 @@ Wallet hdWallet = new Wallet(mnemonic, "m/44'/144'/0'/0/1"); // Wallet with cust
 You can construct a seed based wallet by passing a base58check encoded seed string.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 Wallet seedWallet = new Wallet("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M");
 ```
@@ -99,7 +100,7 @@ Xpring4j can generate a new and random HD Wallet. The result of a wallet generat
 - A reference to the new wallet
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 // Generate a random wallet.
 WalletGenerationResult generationResult = Wallet.generateRandomWallet();
@@ -114,7 +115,7 @@ Wallet copyOfNewWallet = new Wallet(generationResult.getMnemonic(), generationRe
 A generated wallet can provide its public key, private key, and address on the XRP ledger.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -130,7 +131,7 @@ System.out.println(wallet.getPrivateKey()); // 0090802A50AA84EFB6CDB225F17C27616
 A wallet can also sign and verify arbitrary hex messages. Generally, users should use the functions on `XpringClient` to perform cryptographic functions rather than using these low level APIs.
 
 ```java
-import xpring.io.xrpl.Wallet;
+import io.xpring.xrpl.Wallet;
 
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 String message = "deadbeef";
@@ -148,7 +149,8 @@ wallet.verify(message, signature); // true
 ```java
 import io.xpring.xrpl.XpringClient;
 
-XpringClient xpringClient = new XpringClient();
+String grpcURL = "grpc.xpring.tech";
+XpringClient xpringClient = new XpringClient(grpcURL);
 ```
 
 #### Retrieving a Balance
@@ -159,7 +161,8 @@ A `XpringClient` can check the balance of an account on the XRP Ledger.
 import io.xpring.xrpl.XpringClient;
 import java.math.BigInteger;
 
-XpringClient xpringClient = new XpringClient();
+String grpcURL = "grpc.xpring.tech";
+XpringClient xpringClient = new XpringClient(grpcURL);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 BigInteger balance = xpringClient.getBalance(address);
@@ -168,7 +171,7 @@ System.out.println(balance); // Logs a balance in drops of XRP
 
 ### Checking Transaction Status
 
-A `XpringClient` can check the status of an transaction on the XRP Ledger. 
+A `XpringClient` can check the status of an transaction on the XRP Ledger.
 
 Xpring4J returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
@@ -184,12 +187,14 @@ These states are determined by the `TransactionStatus` enum.
 import io.xpring.xrpl.XpringClient;
 import io.xpring.xrpl.TransactionStatus;
 
-XpringClient xpringClient = new XpringClient();
+String grpcURL = "grpc.xpring.tech";
+XpringClient xpringClient = new XpringClient(grpcURL);
 
-String transactionHash = "2CBBD2523478848DA256F8EBFCBD490DD6048A4A5094BF8E3034F57EA6AA0522";
+String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
 TransactionStatus transactionStatus = xpringClient.xpringClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
-
 ```
+
+**Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
 
 #### Sending XRP
 
@@ -206,13 +211,16 @@ import io.xpring.xrpl.XpringClient;
 BigInteger amount = new BigInteger("1");
 
 // Wallet to send from.
-Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
+WalletGenerationResult walletGenerationResult = Wallet.generateRandomWallet();
+Wallet wallet = walletGenerationResult.getWallet();
 
 // Destination address.
 String destinationAddress = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 
 String transactionHash = xpringClient.send(amount, destinationAddress, wallet);
 ```
+
+**Note:** The above example will yield an "Account not found." error because the randomly generated wallet contains no XRP.
 
 ### Utilities
 

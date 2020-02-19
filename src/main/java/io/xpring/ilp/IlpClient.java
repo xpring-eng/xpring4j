@@ -6,7 +6,7 @@ import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.XpringException;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -40,9 +40,9 @@ public class IlpClient {
      * with default settings, a generated account ID, and a generated SIMPLE auth token will be generated for you
      *
      * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
-     * @throws XpringKitException If account creation failed.
+     * @throws XpringException If account creation failed.
      */
-    public CreateAccountResponse createAccount() throws XpringKitException {
+    public CreateAccountResponse createAccount() throws XpringException {
         return decoratedClient.createAccount();
     }
 
@@ -53,9 +53,9 @@ public class IlpClient {
      * @param createAccountRequest: A request object with specified account details. Note that {@link CreateAccountRequest#assetScale}
      *                           and {@link CreateAccountRequest#assetCode} MUST be specified, as guaranteed by {@link CreateAccountRequest#builder(String, Integer)}
      * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
-     * @throws XpringKitException If the given inputs were invalid or account creation failed.
+     * @throws XpringException If the given inputs were invalid or account creation failed.
      */
-    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringKitException {
+    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
         return decoratedClient.createAccount(createAccountRequest, bearerToken);
     }
 
@@ -65,9 +65,9 @@ public class IlpClient {
      * @param accountId
      * @param bearerToken
      * @return
-     * @throws XpringKitException
+     * @throws XpringException
      */
-    public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringKitException {
+    public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringException {
         return decoratedClient.getAccount(accountId, bearerToken);
     }
 
@@ -77,9 +77,9 @@ public class IlpClient {
      * @param accountId The account ID to get the balance for.
      * @param bearerToken Authentication bearer token. TODO: Probably change from string to some wrapped JWT class
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
-    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringKitException {
+    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException {
         return decoratedClient.getBalance(accountId, bearerToken);
     }
 
@@ -90,12 +90,12 @@ public class IlpClient {
      * @param accountId : accountId of the sender
      * @param bearerToken : auth token of the sender
      * @return
-     * @throws XpringKitException
+     * @throws XpringException
      */
     public SendPaymentResponse sendPayment(final String destinationPaymentPointer,
                                            final long amount,
                                            final String accountId,
-                                           final String bearerToken) throws XpringKitException {
+                                           final String bearerToken) throws XpringException {
         return decoratedClient.sendPayment(destinationPaymentPointer, amount, accountId, bearerToken);
     }
 }

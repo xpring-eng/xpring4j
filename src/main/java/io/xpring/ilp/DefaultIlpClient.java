@@ -17,7 +17,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.ilp.grpc.IlpJwtCallCredentials;
-import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,13 +89,13 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public CreateAccountResponse createAccount() throws XpringKitException {
+    public CreateAccountResponse createAccount() throws XpringException {
         return this.createAccount(CreateAccountRequest.newBuilder().build(), Optional.empty());
     }
 
 
     @Override
-    public CreateAccountResponse createAccount(io.xpring.ilp.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringKitException {
+    public CreateAccountResponse createAccount(io.xpring.ilp.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
         CreateAccountRequest createAccountRequestGrpc = CreateAccountRequest.newBuilder()
           .setAccountId(createAccountRequest.accountId())
           .setAssetCode(createAccountRequest.assetCode())
@@ -105,19 +105,19 @@ public class DefaultIlpClient implements IlpClientDecorator {
         return createAccount(createAccountRequestGrpc, bearerToken);
     }
 
-    private CreateAccountResponse createAccount(CreateAccountRequest createAccountRequestGrpc, Optional<String> bearerToken) throws XpringKitException {
+    private CreateAccountResponse createAccount(CreateAccountRequest createAccountRequestGrpc, Optional<String> bearerToken) throws XpringException {
 
         try {
             return this.accountServiceStub
               .withCallCredentials(bearerToken.map(IlpJwtCallCredentials::build).orElse(null))
               .createAccount(createAccountRequestGrpc);
         } catch (StatusRuntimeException e) {
-            throw new XpringKitException("Unable to create an account. " + e.getStatus());
+            throw new XpringException("Unable to create an account. " + e.getStatus());
         }
     }
 
     @Override
-    public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringKitException {
+    public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringException {
         try {
             return this.accountServiceStub
               .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
@@ -125,12 +125,12 @@ public class DefaultIlpClient implements IlpClientDecorator {
                 .setAccountId(accountId)
                 .build());
         } catch (StatusRuntimeException e) {
-            throw new XpringKitException("Unable to get account with id = " + accountId + ". " + e.getStatus());
+            throw new XpringException("Unable to get account with id = " + accountId + ". " + e.getStatus());
         }
     }
 
     @Override
-    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringKitException {
+    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException {
         GetBalanceRequest request = GetBalanceRequest.newBuilder()
           .setAccountId(accountId)
           .build();
@@ -140,7 +140,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
               .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
               .getBalance(request);
         } catch (StatusRuntimeException e) {
-            throw new XpringKitException(String.format("Unable to get balance for account %s.  %s", accountId, e.getStatus()));
+            throw new XpringException(String.format("Unable to get balance for account %s.  %s", accountId, e.getStatus()));
         }
     }
 
@@ -148,7 +148,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
     public SendPaymentResponse sendPayment(String destinationPaymentPointer,
                                            long amount,
                                            String accountId,
-                                           String bearerToken) throws XpringKitException {
+                                           String bearerToken) throws XpringException {
         try {
             SendPaymentRequest request = SendPaymentRequest.newBuilder()
               .setDestinationPaymentPointer(destinationPaymentPointer)
@@ -159,7 +159,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
               .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
               .sendMoney(request);
         } catch (StatusRuntimeException e) {
-            throw new XpringKitException("Unable to send payment. " + e.getStatus());
+            throw new XpringException("Unable to send payment. " + e.getStatus());
         }
     }
 }

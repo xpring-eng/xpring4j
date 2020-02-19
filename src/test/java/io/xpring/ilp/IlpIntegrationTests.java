@@ -9,7 +9,7 @@ import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import io.xpring.ilp.util.IlpConstants;
-import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class IlpIntegrationTests {
 
 
   @Test
-  public void minimalCreateAccount() throws XpringKitException {
+  public void minimalCreateAccount() throws XpringException {
 
     CreateAccountResponse response = client.createAccount();
 
@@ -70,7 +70,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void populatedCreateAccount() throws XpringKitException {
+  public void populatedCreateAccount() throws XpringException {
     CreateAccountRequest createAccountRequest = CreateAccountRequest.builder("USD", 6)
       .accountId("baz")
       .description("test account")
@@ -86,7 +86,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void createAccountNoAuthYesRequest() throws XpringKitException {
+  public void createAccountNoAuthYesRequest() throws XpringException {
     CreateAccountRequest createAccountRequest = CreateAccountRequest.builder("USD", 6)
       .accountId("bar")
       .description("test account")
@@ -102,7 +102,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void createAccountNoAuthNoAccountId() throws XpringKitException {
+  public void createAccountNoAuthNoAccountId() throws XpringException {
     CreateAccountRequest createAccountRequest = CreateAccountRequest.builder("USD", 6)
       .build();
     CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
@@ -116,7 +116,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void getAccount() throws XpringKitException {
+  public void getAccount() throws XpringException {
     CreateAccountResponse createAccountResponse = client.createAccount();
     GetAccountResponse response = client.getAccount(createAccountResponse.getAccountId(),
       createAccountResponse.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
@@ -130,7 +130,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void getBalance() throws XpringKitException {
+  public void getBalance() throws XpringException {
     CreateAccountResponse createAccountResponse = client.createAccount();
     GetBalanceResponse response = client.getBalance(createAccountResponse.getAccountId(),
       createAccountResponse.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
@@ -144,7 +144,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void sendPayment() throws XpringKitException {
+  public void sendPayment() throws XpringException {
     CreateAccountResponse sender = client.createAccount();
     CreateAccountResponse receiver = client.createAccount();
 
