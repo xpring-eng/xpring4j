@@ -13,19 +13,22 @@ public class FakeXpringClient implements  XpringClientDecorator {
     public String sendValue;
     public int latestValidatedLedgerValue;
     public RawTransactionStatus rawTransactionStatusValue;
+    public boolean accountExistsValue;
 
     public FakeXpringClient(
             BigInteger getBalanceValue,
             TransactionStatus transactionStatusValue,
             String sendValue,
             int latestValidatedLedgerValue,
-            RawTransactionStatus rawTransactionStatusValue
+            RawTransactionStatus rawTransactionStatusValue,
+            boolean accountExistsValue
     ) {
         this.getBalanceValue = getBalanceValue;
         this.transactionStatusValue = transactionStatusValue;
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
+        this.accountExistsValue = accountExistsValue;
     }
 
     @Override
@@ -51,5 +54,10 @@ public class FakeXpringClient implements  XpringClientDecorator {
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         return this.rawTransactionStatusValue;
+    }
+
+    @Override
+    public boolean accountExists(String address) {
+        return this.accountExistsValue;
     }
 }
