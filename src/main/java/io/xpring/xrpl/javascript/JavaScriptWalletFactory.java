@@ -1,13 +1,12 @@
 package io.xpring.xrpl.javascript;
 
 import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.XpringKitException;
+import io.xpring.xrpl.XpringException;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
 import java.security.SecureRandom;
-import java.util.Objects;
 
 public class JavaScriptWalletFactory {
 
@@ -62,13 +61,13 @@ public class JavaScriptWalletFactory {
      *
      * @param seed A base58check encoded seed for the wallet.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringKitException If the seed is malformed.
+     * @throws XpringException If the seed is malformed.
      * @return A new {@link JavaScriptWallet}.
      */
-    public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XpringKitException {
+    public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XpringException {
         Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed, isTest);
         if (wallet.isNull()) {
-            throw new XpringKitException("Invalid Seed");
+            throw new XpringException("Invalid Seed");
         }
         return new JavaScriptWallet(wallet);
     }
@@ -79,23 +78,23 @@ public class JavaScriptWalletFactory {
      * @param mnemonic       A space separated mnemonic.
      * @param derivationPath A derivation. If null, the default derivation path will be used.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringKitException If the mnemonic or derivation path are malformed.
+     * @throws XpringException If the mnemonic or derivation path are malformed.
      * @return A new {@link JavaScriptWallet}.
      */
-    public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath, boolean isTest) throws XpringKitException {
+    public JavaScriptWallet walletFromMnemonicAndDerivationPath(String mnemonic, String derivationPath, boolean isTest) throws XpringException {
         try {
             String normalizedDerivationPath = derivationPath != null ? derivationPath : this.getDefaultDerivationPath();
             Value wallet = this.wallet.invokeMember("generateWalletFromMnemonic", mnemonic, normalizedDerivationPath, isTest);
 
             if (wallet.isNull()) {
-                throw new XpringKitException(invalidMnemonicOrDerivationPathMessage);
+                throw new XpringException(invalidMnemonicOrDerivationPathMessage);
             }
 
             return new JavaScriptWallet(wallet);
         } catch (PolyglotException exception) {
-            throw new XpringKitException(invalidMnemonicOrDerivationPathMessage);
+            throw new XpringException(invalidMnemonicOrDerivationPathMessage);
         } catch (JavaScriptLoaderException exception) {
-            throw new XpringKitException(invalidMnemonicOrDerivationPathMessage);
+            throw new XpringException(invalidMnemonicOrDerivationPathMessage);
         }
     }
 

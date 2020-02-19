@@ -33,10 +33,6 @@ import java.util.Objects;
  * @see "https://xrpl.org"
  */
 public class DefaultXpringClient implements XpringClientDecorator {
-    // TODO: Use TLS!
-    // TODO(keefertaylor): Make this configurable.
-    public static final String XPRING_GRPC_URL = "3.14.64.116:50051";
-
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int MAX_LEDGER_VERSION_OFFSET = 10;
 
@@ -48,11 +44,9 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * No-args Constructor.
      */
-    public DefaultXpringClient() {
+    public DefaultXpringClient(String grpcURL) {
         this(ManagedChannelBuilder
-                .forTarget(XPRING_GRPC_URL)
-                // Let's use plaintext communication because we don't have certs
-                // TODO: Use TLS!
+                .forTarget(grpcURL)
                 .usePlaintext()
                 .build()
         );
@@ -74,11 +68,11 @@ public class DefaultXpringClient implements XpringClientDecorator {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringKitException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
         ClassicAddress classicAddress = Utils.decodeXAddress(xrplAccountAddress);
 
@@ -93,7 +87,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringKitException {
+    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
         Objects.requireNonNull(transactionHash);
 
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
@@ -113,19 +107,19 @@ public class DefaultXpringClient implements XpringClientDecorator {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringKitException If the given inputs were invalid.
+     * @throws XpringException If the given inputs were invalid.
      */
     public String send(
             final BigInteger amount,
             final String destinationAddress,
             final Wallet sourceWallet
-    ) throws XpringKitException {
+    ) throws XpringException {
         Objects.requireNonNull(amount);
         Objects.requireNonNull(destinationAddress);
         Objects.requireNonNull(sourceWallet);
 
         if (!Utils.isValidXAddress(destinationAddress)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
 
         ClassicAddress destinationClassicAddress = Utils.decodeXAddress(destinationAddress);
@@ -179,12 +173,12 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringKitException {
+    public int getLatestValidatedLedgerSequence() throws XpringException {
         return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
         Objects.requireNonNull(transactionHash);
 
         byte [] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
