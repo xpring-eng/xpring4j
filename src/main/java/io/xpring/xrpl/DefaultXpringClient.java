@@ -3,6 +3,8 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import io.xpring.proto.SubmitSignedTransactionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,6 +206,23 @@ public class DefaultXpringClient implements XpringClientDecorator {
         GetTxResponse response = this.stub.getTx(request);
 
         return new RawTransactionStatus(response);
+    }
+
+    @Override
+    public boolean accountExists(String address) throws XpringKitException {
+        if (!Utils.isValidXAddress(address)) {
+            throw XpringKitException.xAddressRequiredException;
+        }
+        try {
+            this.getBalance(address);
+            return true;
+        } catch (StatusRuntimeException e) {
+            if (e.getStatus() == io.grpc.Status.NOT_FOUND) {
+                // YOU ARE HERE
+            }
+        } catch (Exception e) {
+            // re-throw any other type of exception
+        }
     }
 
     private XRPDropsAmount getMinimumFee() {
