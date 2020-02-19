@@ -234,7 +234,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void submitTransactionTest() throws IOException, XpringKitException {
+    public void submitTransactionTest() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will succeed.
         DefaultXpringClient client = getClient();
         Wallet wallet = new Wallet(WALLET_SEED);
@@ -247,19 +247,19 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void submitTransactionWithClassicAddress() throws IOException, XpringKitException {
+    public void submitTransactionWithClassicAddress() throws IOException, XpringException {
         // GIVEN a classic address.
         DefaultXpringClient client = getClient();
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         Wallet wallet = new Wallet(WALLET_SEED);
 
         // WHEN XRP is sent to the classic address THEN an error is thrown.
-        expectedException.expect(XpringKitException.class);
+        expectedException.expect(XpringException.class);
         client.send(AMOUNT, classicAddress.address(), wallet);
     }
 
     @Test
-    public void submitTransactionWithFailedAccountInfo() throws IOException, XpringKitException {
+    public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XpringClient which will fail to return account info.
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
@@ -276,7 +276,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void submitTransactionWithFailedFee() throws IOException, XpringKitException {
+    public void submitTransactionWithFailedFee() throws IOException, XpringException {
         // GIVEN a XpringClient which will fail to retrieve a fee.
         GRPCResult<GetFeeResponse> feeResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
@@ -294,7 +294,7 @@ public class DefaultXpringClientTest {
 
 
     @Test
-    public void submitTransactionWithFailedSubmit() throws IOException, XpringKitException {
+    public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
         // GIVEN a XpringClient which will fail to submit a transaction.
         GRPCResult<SubmitTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(

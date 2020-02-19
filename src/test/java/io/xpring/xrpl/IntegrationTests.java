@@ -36,23 +36,23 @@ public class IntegrationTests {
     @Before
     public void setUp() throws Exception {
         this.legacyXpringClient = new XpringClient(LEGACY_GRPC_URL);
-        this.xpringClient = new XpringClient(GRCP_URL, true);
+        this.xpringClient = new XpringClient(GRPC_URL, true);
     }
 
     @Test
-    public void getBalanceTest_legacy() throws XpringKitException {
+    public void getBalanceTest_legacy() throws XpringException {
         BigInteger balance = legacyXpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getTransactionStatusTest_legacy() throws XpringKitException  {
+    public void getTransactionStatusTest_legacy() throws XpringException  {
         TransactionStatus transactionStatus = legacyXpringClient.getTransactionStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
     @Test
-    public void sendXRPTest_legacy() throws XpringKitException {
+    public void sendXRPTest_legacy() throws XpringException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = legacyXpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
