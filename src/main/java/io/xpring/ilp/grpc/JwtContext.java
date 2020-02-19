@@ -1,4 +1,4 @@
-package io.xpring.xrpl.ilp.grpc;
+package io.xpring.ilp.grpc;
 
 import io.grpc.Context;
 

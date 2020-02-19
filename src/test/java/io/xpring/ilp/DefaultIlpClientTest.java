@@ -1,4 +1,4 @@
-package io.xpring.xrpl;
+package io.xpring.ilp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.AdditionalAnswers.delegatesTo;
@@ -8,15 +8,21 @@ import org.interledger.spsp.server.grpc.AccountServiceGrpc;
 import org.interledger.spsp.server.grpc.BalanceServiceGrpc;
 import org.interledger.spsp.server.grpc.CreateAccountRequest;
 import org.interledger.spsp.server.grpc.CreateAccountResponse;
+import org.interledger.spsp.server.grpc.GetAccountRequest;
+import org.interledger.spsp.server.grpc.GetAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceRequest;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
+import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
+import org.interledger.spsp.server.grpc.SendPaymentRequest;
+import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
-import io.xpring.xrpl.ilp.DefaultIlpClient;
+import io.xpring.ilp.DefaultIlpClient;
+import io.xpring.xrpl.XpringKitException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,9 +30,43 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * Unit tests for {@link io.xpring.xrpl.ilp.DefaultIlpClient}
+ * Represents the result of a gRPC network call for an object of type T or an error.
+ */
+class GRPCResult<T> {
+  private Optional<T> value;
+  private Optional<String> error;
+
+  private GRPCResult(T value, String error) {
+    this.value = Optional.ofNullable(value);
+    this.error = Optional.ofNullable(error);
+  }
+
+  public static <U> GRPCResult<U> ok(U value) {
+    return new GRPCResult<>(value, null);
+  }
+
+  public static <U> GRPCResult<U> error(String error) {
+    return new GRPCResult<>(null, error);
+  }
+
+  public boolean isError() {
+    return error.isPresent();
+  }
+
+  public T getValue() {
+    return value.get();
+  }
+
+  public String getError() {
+    return error.get();
+  }
+}
+
+/**
+ * Unit tests for {@link io.xpring.ilp.DefaultIlpClient}
  */
 public class DefaultIlpClientTest {
 
@@ -35,6 +75,8 @@ public class DefaultIlpClientTest {
 
   private GetBalanceResponse getBalanceResponse;
   private CreateAccountResponse createAccountResponse;
+  private SendPaymentResponse sendPaymentResponse;
+  private GetAccountResponse getAccountResponse;
 
   @Before
   public void setUp() throws IOException {
@@ -73,7 +115,34 @@ public class DefaultIlpClientTest {
       .setPaymentPointer("$xpring.money.dev/foo")
       .build();
 
+    getAccountResponse = GetAccountResponse.newBuilder()
+      .setAccountRelationship("CHILD")
+      .setAssetCode("XRP")
+      .setAssetScale(9)
+      .putAllCustomSettings(customSettings)
+      .setAccountId("foo")
+      .setDescription("")
+      .setLinkType("ILP_OVER_HTTP")
+      .setIsConnectionInitiator(true)
+      .setIlpAddressSegment("foo")
+      .setBalanceSettings(GetAccountResponse.BalanceSettings.newBuilder().build())
+      .setIsChildAccount(true)
+      .setIsInternal(false)
+      .setIsSendRoutes(true)
+      .setIsReceiveRoutes(false)
+      .setMaxPacketsPerSecond(0)
+      .setIsParentAccount(false)
+      .setIsPeerAccount(false)
+      .setIsPeerOrParentAccount(false)
+      .setPaymentPointer("$xpring.money.dev/foo")
+      .build();
 
+    sendPaymentResponse = SendPaymentResponse.newBuilder()
+      .setOriginalAmount(1000)
+      .setAmountDelivered(1000)
+      .setAmountSent(1000)
+      .setSuccessfulPayment(true)
+      .build();
   }
 
   @Test
@@ -86,16 +155,27 @@ public class DefaultIlpClientTest {
   @Test
   public void populatedCreateIlpAccountTest() throws IOException, XpringKitException {
     DefaultIlpClient client = getClient();
-
-    CreateAccountRequest request = CreateAccountRequest.newBuilder()
-      .setAccountId("foo")
-      .setAssetCode("XRP")
-      .setAssetScale(9)
-      .build();
-
-    CreateAccountResponse createAccountResponse = client.createAccount(request, "gobbledygook");
+    CreateAccountResponse createAccountResponse = client.createAccount("gobbledygook",
+      "foo",
+      "XRP",
+      9);
     assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
   }
+
+  @Test
+  public void createAccountNoAuthYesRequest() throws XpringKitException, IOException {
+    DefaultIlpClient client = getClient();
+    CreateAccountResponse response = client.createAccount("bar", "XRP", 6, "Fake account");
+    assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
+  }
+
+  @Test
+  public void createAccountNoAuthNoAccountId() throws XpringKitException, IOException {
+    DefaultIlpClient client = getClient();
+    CreateAccountResponse response = client.createAccount("XRP", 6);
+    assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
+  }
+
 
   @Test
   public void getIlpBalanceTest() throws XpringKitException, IOException {
@@ -105,13 +185,31 @@ public class DefaultIlpClientTest {
     assertThat(balanceResponse).isEqualTo(this.getBalanceResponse);
   }
 
+  @Test
+  public void getAccountTest() throws IOException, XpringKitException {
+    DefaultIlpClient client = getClient();
+    GetAccountResponse response = client.getAccount("foo", "gobbledygook");
+
+    assertThat(response).isEqualTo(this.getAccountResponse);
+  }
+
+  @Test
+  public void sendPaymentTest() throws IOException, XpringKitException {
+    DefaultIlpClient client = getClient();
+    SendPaymentResponse response = client.sendPayment("$foo.dev/bar", 1000, "baz", "gobbledygook");
+
+    assertThat(response).isEqualTo(this.sendPaymentResponse);
+  }
+
   /**
    * Convenience method to get a IlpClient which has successful network calls.
    */
   private DefaultIlpClient getClient() throws IOException {
     return getClient(
       GRPCResult.ok(getBalanceResponse),
-      GRPCResult.ok(createAccountResponse)
+      GRPCResult.ok(createAccountResponse),
+      GRPCResult.ok(sendPaymentResponse),
+      GRPCResult.ok(getAccountResponse)
     );
   }
 
@@ -120,15 +218,20 @@ public class DefaultIlpClientTest {
    */
 
   private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse> getBalanceResult,
-                                     GRPCResult<CreateAccountResponse> createAccountResponse) throws IOException {
+                                     GRPCResult<CreateAccountResponse> createAccountResponse,
+                                     GRPCResult<SendPaymentResponse> sendPaymentResponse,
+                                     GRPCResult<GetAccountResponse> getAccountResponse) throws IOException {
 
     BalanceServiceGrpc.BalanceServiceImplBase balanceServiceImpl = getBalanceService(
       getBalanceResult
     );
 
     AccountServiceGrpc.AccountServiceImplBase accountServiceImpl = getAccountService(
-      createAccountResponse
+      createAccountResponse,
+      getAccountResponse
     );
+
+    IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpServiceImpl = ilpOverHttpService(sendPaymentResponse);
 
     // Generate a unique in-process server name.
     String serverName = InProcessServerBuilder.generateName();
@@ -139,6 +242,7 @@ public class DefaultIlpClientTest {
       .directExecutor()
       .addService(balanceServiceImpl)
       .addService(accountServiceImpl)
+      .addService(ilpOverHttpServiceImpl)
       .build()
       .start());
 
@@ -148,6 +252,21 @@ public class DefaultIlpClientTest {
 
     // Create a new XpringClient using the in-process channel;
     return new DefaultIlpClient(channel);
+  }
+
+  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(GRPCResult<SendPaymentResponse> sendPaymentResponse) {
+    return mock(IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase.class, delegatesTo(
+      new IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase() {
+        @Override
+        public void sendMoney(SendPaymentRequest request, StreamObserver<SendPaymentResponse> responseObserver) {
+          if (sendPaymentResponse.isError()) {
+            responseObserver.onError(new Throwable(sendPaymentResponse.getError()));
+          } else {
+            responseObserver.onNext(sendPaymentResponse.getValue());
+            responseObserver.onCompleted();
+          }
+        }
+      }));
   }
 
   /**
@@ -174,7 +293,8 @@ public class DefaultIlpClientTest {
    * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
    */
   private AccountServiceGrpc.AccountServiceImplBase getAccountService(
-    GRPCResult<CreateAccountResponse> createAccountResponse
+    GRPCResult<CreateAccountResponse> createAccountResponse,
+    GRPCResult<GetAccountResponse> getAccountResponse
   ) {
     return mock(AccountServiceGrpc.AccountServiceImplBase.class, delegatesTo(
       new AccountServiceGrpc.AccountServiceImplBase() {
@@ -184,6 +304,16 @@ public class DefaultIlpClientTest {
             responseObserver.onError(new Throwable(createAccountResponse.getError()));
           } else {
             responseObserver.onNext(createAccountResponse.getValue());
+            responseObserver.onCompleted();
+          }
+        }
+
+        @Override
+        public void getAccount(GetAccountRequest request, StreamObserver<GetAccountResponse> responseObserver) {
+          if (getAccountResponse.isError()) {
+            responseObserver.onError(new Throwable(getAccountResponse.getError()));
+          } else {
+            responseObserver.onNext(getAccountResponse.getValue());
             responseObserver.onCompleted();
           }
         }
