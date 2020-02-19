@@ -62,4 +62,9 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringKitException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
     }
+
+    @Override
+    public boolean accountExists(String address) throws XpringKitException {
+        return this.decoratedClient.accountExists(address);
+    }
 }
