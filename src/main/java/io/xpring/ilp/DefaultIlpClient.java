@@ -28,12 +28,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 /**
- * A client that can get balances on a connector and send ILP payments.
- *
- * NOTE: This is where we'll interact with the generated client from (maybe) Swagger.
- * {@link IlpClient} should use this as its decorated client so that it can hide the implementation details
- * of the client
- *
+ * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
  */
 public class DefaultIlpClient implements IlpClientDecorator {
 

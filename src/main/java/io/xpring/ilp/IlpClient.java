@@ -12,8 +12,7 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 /**
- * A client that can get balances on a connector and send ILP payments.
- *
+ * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
  */
 public class IlpClient {
     private IlpClientDecorator decoratedClient;
@@ -51,7 +50,9 @@ public class IlpClient {
      * Create an account on the connector.
      *
      *
-     * @param createAccountRequest@return A {@link CreateAccountResponse} containing the account settings that were created on the connector
+     * @param createAccountRequest: A request object with specified account details. Note that {@link CreateAccountRequest#assetScale}
+     *                           and {@link CreateAccountRequest#assetCode} MUST be specified, as guaranteed by {@link CreateAccountRequest#builder(String, Integer)}
+     * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
      * @throws XpringKitException If the given inputs were invalid or account creation failed.
      */
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringKitException {
