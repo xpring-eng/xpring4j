@@ -119,7 +119,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
         Objects.requireNonNull(sourceWallet);
 
         if (!Utils.isValidXAddress(destinationAddress)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
 
         ClassicAddress destinationClassicAddress = Utils.decodeXAddress(destinationAddress);
@@ -173,7 +173,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringKitException {
+    public int getLatestValidatedLedgerSequence() throws XpringException {
         return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
