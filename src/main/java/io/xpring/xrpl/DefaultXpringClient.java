@@ -217,11 +217,12 @@ public class DefaultXpringClient implements XpringClientDecorator {
             this.getBalance(address);
             return true;
         } catch (StatusRuntimeException e) {
-            if (e.getStatus() == io.grpc.Status.NOT_FOUND) {
-                // YOU ARE HERE
+            if (e.getStatus().getCode() == io.grpc.Status.NOT_FOUND.getCode()) {
+                return false;
             }
+            throw e; // re-throw if code other than NOT_FOUND
         } catch (Exception e) {
-            // re-throw any other type of exception
+            throw e; // re-throw any other type of exception
         }
     }
 
