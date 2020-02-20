@@ -271,9 +271,10 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>io.xpring.proto</exclude>
-                        <inclNoLocationClasses>false</inclNoLocationClasses>
+                        <exclude>io/xpring/proto/**</exclude>
+                        <exclude>io/xpring/xrpl/javascript/JavaScriptLoader.java</exclude>
                     </excludes>
+                    <inclNoLocationClasses>false</inclNoLocationClasses>
                 </configuration>
                 <executions>
                     <execution>
