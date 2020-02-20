@@ -27,7 +27,20 @@ Before being considered for review or merging, each pull request must:
 
 ## Building The Library
 
-The library should build and pass all tests. The [protocol buffer compiler](https://github.com/protocolbuffers/protobuf) needs to be installed in order to generate protobufs.
+The protocol buffer compiler (protoc) needs to be installed in order to generate protobufs.
+```shell
+# Install Protocol Buffer Compiler
+
+# OSX
+$ brew install protobuf
+
+# Linux
+$ sudo apt install protobuf-compiler
+
+# Otherwise, see: https://github.com/protocolbuffers/protobuf#protocol-compiler-installation
+```
+
+The library should build and pass all tests. 
 
 ```shell
 # Clone repository
