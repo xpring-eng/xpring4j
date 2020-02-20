@@ -11,12 +11,14 @@ We're thrilled you're interested and your help is greatly appreciated. Contribut
 Xpring4J is a Java library that is shipped as a consumable artifact in Maven Central..
 
 This library relies depends on both:
+
 - [Xpring Common JS](http://github.com/xpring-eng/xpring-common-js): Common code shared across Xpring SDK in JavaScript.
 - [Xpring Common Protocol Buffers](http://github.com/xpring-eng/xpring-common-protocol-buffers): Common protocol buffers shared across Xpring SDK.
 
 ## Requirements for a Successful Pull Request
 
 Before being considered for review or merging, each pull request must:
+
 - Pass continuous integration tests.
 - Update documentation for any new features.
 - Be free of lint errors. Please run `checkstyle` before sending a pull request.
@@ -25,12 +27,28 @@ Before being considered for review or merging, each pull request must:
 
 ## Building The Library
 
-The library should build and pass all tests.
+The protocol buffer compiler (protoc) needs to be installed in order to generate protobufs.
+```shell
+# Install Protocol Buffer Compiler
+
+# OSX
+$ brew install protobuf
+
+# Linux
+$ sudo apt install protobuf-compiler
+
+# Otherwise, see: https://github.com/protocolbuffers/protobuf#protocol-compiler-installation
+```
+
+The library should build and pass all tests. 
 
 ```shell
 # Clone repository
 $ git clone https://github.com/xpring-eng/xpring4j.git
 $ cd xpring4j
+
+# Update submodules
+$ git submodule update --init --recursive
 
 # Run tests.
 $ mvn clean test
