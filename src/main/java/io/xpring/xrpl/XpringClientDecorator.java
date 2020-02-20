@@ -59,7 +59,7 @@ public interface XpringClientDecorator {
      * Check if an address exists on the XRP Ledger.
      *
      * @param address The address to check the existence of.
-     * @returns A boolean if the account is on the blockchain.
+     * @return A boolean if the account is on the blockchain.
      */
     boolean accountExists(String address) throws XpringException;
 }
