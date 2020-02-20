@@ -17,6 +17,10 @@ public class IntegrationTests {
     /** The rippled XpringClient under test. */
     private XpringClient xpringClient;
 
+    /** The gRPC URL */
+    private String LEGACY_GRPC_URL = "grpc.xpring.tech";
+    private String GRPC_URL = "3.14.64.116:50051";
+
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
 
@@ -31,24 +35,24 @@ public class IntegrationTests {
 
     @Before
     public void setUp() throws Exception {
-        this.legacyXpringClient = new XpringClient();
-        this.xpringClient = new XpringClient(true);
+        this.legacyXpringClient = new XpringClient(LEGACY_GRPC_URL);
+        this.xpringClient = new XpringClient(GRPC_URL, true);
     }
 
     @Test
-    public void getBalanceTest_legacy() throws XpringKitException {
+    public void getBalanceTest_legacy() throws XpringException {
         BigInteger balance = legacyXpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getTransactionStatusTest_legacy() throws XpringKitException  {
+    public void getTransactionStatusTest_legacy() throws XpringException  {
         TransactionStatus transactionStatus = legacyXpringClient.getTransactionStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
     @Test
-    public void sendXRPTest_legacy() throws XpringKitException {
+    public void sendXRPTest_legacy() throws XpringException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = legacyXpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
@@ -56,19 +60,19 @@ public class IntegrationTests {
     }
 
     @Test
-    public void getBalanceTest() throws XpringKitException {
+    public void getBalanceTest() throws XpringException {
         BigInteger balance = xpringClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getTransactionStatusTest() throws XpringKitException  {
+    public void getTransactionStatusTest() throws XpringException {
         TransactionStatus transactionStatus = xpringClient.getTransactionStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
     @Test
-    public void sendXRPTesty() throws XpringKitException {
+    public void sendXRPTest() throws XpringException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
