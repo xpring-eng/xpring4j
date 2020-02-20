@@ -18,9 +18,9 @@ public class Wallet {
      * Initialize a new wallet from a seed.
      *
      * @param seed A base58check encoded seed for the wallet.
-     * @throws XpringKitException If the seed is malformed.
+     * @throws XpringException If the seed is malformed.
      */
-    public Wallet(String seed) throws XpringKitException {
+    public Wallet(String seed) throws XpringException {
         this(seed, false);
     }
 
@@ -29,9 +29,9 @@ public class Wallet {
      *
      * @param seed A base58check encoded seed for the wallet.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringKitException If the seed is malformed.
+     * @throws XpringException If the seed is malformed.
      */
-    public Wallet(String seed, boolean isTest) throws XpringKitException {
+    public Wallet(String seed, boolean isTest) throws XpringException {
         this.javaScriptWallet = JavaScriptWalletFactory.get().walletFromSeed(seed, isTest);
     }
 
@@ -40,9 +40,9 @@ public class Wallet {
      *
      * @param mnemonic       A space separated mnemonic.
      * @param derivationPath A derivation. If null, the default derivation path will be used.
-     * @throws XpringKitException If the mnemonic or derivation path are malformed.
+     * @throws XpringException If the mnemonic or derivation path are malformed.
      */
-    public Wallet(String mnemonic, String derivationPath) throws XpringKitException {
+    public Wallet(String mnemonic, String derivationPath) throws XpringException {
         this(mnemonic, derivationPath, false);
     }
 
@@ -52,9 +52,9 @@ public class Wallet {
      * @param mnemonic       A space separated mnemonic.
      * @param derivationPath A derivation. If null, the default derivation path will be used.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringKitException If the mnemonic or derivation path are malformed.
+     * @throws XpringException If the mnemonic or derivation path are malformed.
      */
-    public Wallet(String mnemonic, String derivationPath, boolean isTest) throws XpringKitException {
+    public Wallet(String mnemonic, String derivationPath, boolean isTest) throws XpringException {
         this.javaScriptWallet = JavaScriptWalletFactory.get().walletFromMnemonicAndDerivationPath(mnemonic,
             derivationPath, isTest);
     }
@@ -63,9 +63,9 @@ public class Wallet {
      * Generate a random Wallet.
      *
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
-     * @throws XpringKitException If wallet generation fails.
+     * @throws XpringException If wallet generation fails.
      */
-    public static WalletGenerationResult generateRandomWallet() throws XpringKitException {
+    public static WalletGenerationResult generateRandomWallet() throws XpringException {
         return generateRandomWallet(false);
     }
 
@@ -74,9 +74,9 @@ public class Wallet {
      *
      * @param isTest Whether the address is for use on a test network.
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
-     * @throws XpringKitException If wallet generation fails.
+     * @throws XpringException If wallet generation fails.
      */
-    public static WalletGenerationResult generateRandomWallet(boolean isTest) throws XpringKitException {
+    public static WalletGenerationResult generateRandomWallet(boolean isTest) throws XpringException {
             JavaScriptWalletGenerationResult javaScriptWalletGenerationResult = JavaScriptWalletFactory.get()
             .generateRandomWallet(isTest);
 
@@ -114,9 +114,9 @@ public class Wallet {
      *
      * @param input The input to sign as a hexadecimal string.
      * @return A hexadecimal encoded signature.
-     * @throws XpringKitException If the input is malformed.
+     * @throws XpringException If the input is malformed.
      */
-    public String sign(String input) throws XpringKitException {
+    public String sign(String input) throws XpringException {
         return javaScriptWallet.sign(input);
     }
 
