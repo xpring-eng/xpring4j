@@ -315,11 +315,22 @@ public class DefaultXpringClientTest {
         // GIVEN a DefaultXpringClient with mocked networking which will succeed.
         DefaultXpringClient client = getClient();
 
-        // WHEN the balance is retrieved.
+        // WHEN the account is checked
         boolean exists = client.accountExists(XRPL_ADDRESS);
 
-        // THEN the balance returned is the the same as the mocked response.
+        // THEN the existence of the account is the the same as the mocked response.
         assertThat(exists).isEqualTo(true);
+    }
+
+    @Test
+    public void accountExistsWithClassicAddressTest() throws IOException, XpringKitException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        DefaultXpringClient client = getClient();
+
+        // WHEN the existence of the account is checked for the classic address THEN an error is thrown.
+        expectedException.expect(XpringKitException.class);
+        client.accountExists(classicAddress.address());
     }
 
     /**
