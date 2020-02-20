@@ -419,7 +419,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:-UseJVMCICompiler --module-path=${compiler.dir}
+                            <argLine>-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler --module-path=${compiler.dir}
                                 --upgrade-module-path=${compiler.dir}/compiler.jar</argLine>
                         </configuration>
                     </plugin>
