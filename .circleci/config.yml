@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:11-jdk
+      - image: circleci/openjdk:11-jdk-buster
 
     working_directory: ~/repo
 
@@ -28,5 +28,17 @@ jobs:
             sudo mv protoc-gen-grpc-web /usr/local/bin/
             chmod +x /usr/local/bin/protoc-gen-grpc-web
 
+      # Restore the saved cache after the first run or if `pom.xml` has changed. Read about caching dependencies:
+      # https://circleci.com/docs/2.0/caching/
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}
+
       - run: mvn clean verify jacoco:report
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+
       - run: bash <(curl -s https://codecov.io/bash)
