@@ -34,7 +34,10 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
 
-      - run: mvn clean verify jacoco:report
+      - run:
+          command: |
+            mvn clean compile
+            mvn verify jacoco:report
 
       - save_cache: # saves the project dependencies
           paths:
