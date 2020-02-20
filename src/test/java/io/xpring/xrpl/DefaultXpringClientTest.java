@@ -310,6 +310,18 @@ public class DefaultXpringClientTest {
         client.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
 
+    @Test
+    public void accountExistsTest() throws IOException, XpringKitException {
+        // GIVEN a DefaultXpringClient with mocked networking which will succeed.
+        DefaultXpringClient client = getClient();
+
+        // WHEN the balance is retrieved.
+        BigInteger balance = client.getBalance(XRPL_ADDRESS);
+
+        // THEN the balance returned is the the same as the mocked response.
+        assertThat(balance).isEqualTo(BigInteger.valueOf(DROPS_OF_XRP_IN_ACCOUNT));
+    }
+
     /**
      * Convenience method to get a XpringClient which has successful network calls.
      */
