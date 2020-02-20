@@ -316,10 +316,10 @@ public class DefaultXpringClientTest {
         DefaultXpringClient client = getClient();
 
         // WHEN the balance is retrieved.
-        BigInteger balance = client.getBalance(XRPL_ADDRESS);
+        boolean exists = client.accountExists(XRPL_ADDRESS);
 
         // THEN the balance returned is the the same as the mocked response.
-        assertThat(balance).isEqualTo(BigInteger.valueOf(DROPS_OF_XRP_IN_ACCOUNT));
+        assertThat(exists).isEqualTo(true);
     }
 
     /**
