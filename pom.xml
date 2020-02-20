@@ -272,6 +272,7 @@
                 <configuration>
                     <excludes>
                         <exclude>io.xpring.proto</exclude>
+                        <inclNoLocationClasses>false</inclNoLocationClasses>
                     </excludes>
                 </configuration>
                 <executions>
