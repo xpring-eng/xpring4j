@@ -10,6 +10,7 @@ import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import io.xpring.ilp.util.IlpConstants;
 import io.xpring.xrpl.XpringException;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -52,6 +53,12 @@ public class IlpIntegrationTests {
   public void setUp() {
     client = new IlpClient(hermesNode.getContainerIpAddress() + ":" + hermesNode.getMappedPort(HERMES_PORT));
     paymentPointerBase = "$money.ilpv4.dev";
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    connectorNode.stop();
+    hermesNode.stop();
   }
 
 

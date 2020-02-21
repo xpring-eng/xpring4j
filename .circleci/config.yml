@@ -13,9 +13,6 @@ jobs:
       TERM: dumb
 
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "7d:e4:9c:6e:f5:30:0a:f0:16:0d:80:1e:73:7c:88:c2"
       - checkout
 
       - run:
@@ -31,5 +28,28 @@ jobs:
             sudo mv protoc-gen-grpc-web /usr/local/bin/
             chmod +x /usr/local/bin/protoc-gen-grpc-web
 
-      - run: mvn clean verify jacoco:report
+      - run:
+          name: "Build And Run Unit Tests"
+          command: mvn clean install -DskipITs
+
+  ilp_integration_tests:
+    working_directory: ~/repo
+
+    # Need to run in a VM so TestContainers will work
+    machine:
+      image: ubuntu-1604:201903-01
+
+    environment:
+      MAVEN_OPTS: -Xmx4096m
+      JAVA_HOME: /usr/lib/jvm/jdk1.8.0/
+
+    steps:
+      - checkout
+      # gets the project dependencies and installs sub-module deps
+      - run:
+          name: Install Connector Dependencies
+          command: mvn dependency:go-offline -DskipTests -DskipITs install
+      - run:
+          name: "Run ILP Integration Tests"
+          command: mvn clean verify jacoco:report -DskipTests -PintegrationTests
       - run: bash <(curl -s https://codecov.io/bash)
