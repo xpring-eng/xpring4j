@@ -53,3 +53,13 @@ jobs:
           name: "Run ILP Integration Tests"
           command: mvn clean verify jacoco:report -DskipTests -PintegrationTests
       - run: bash <(curl -s https://codecov.io/bash)
+
+workflows:
+  version: 2
+
+  commit:
+    jobs:
+      - build
+      - ilp_integration_tests:
+          requires:
+            - build
