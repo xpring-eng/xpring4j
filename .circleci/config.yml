@@ -50,7 +50,7 @@ jobs:
           command: |
             git submodule init
             git submodule update
-            - protobuf/install
+      - protobuf/install
       - run:
           name: "Install protoc plugin"
           command: |
