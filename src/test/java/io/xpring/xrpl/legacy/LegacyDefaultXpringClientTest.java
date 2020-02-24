@@ -2,7 +2,11 @@ package io.xpring.xrpl.legacy;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.xpring.proto.*;
+import io.xpring.proto.TransactionStatus;
+import io.xpring.xrpl.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -12,10 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.xpring.xrpl.XpringException;
-import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.ClassicAddress;
-import io.xpring.xrpl.Wallet;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -326,6 +326,64 @@ public class LegacyDefaultXpringClientTest {
         // WHEN the transaction status is retrieved THEN an error is thrown..
         expectedException.expect(Exception.class);
         client.getTransactionStatus(TRANSACTION_HASH);
+    }
+
+    @Test
+    public void accountExistsTest() throws IOException, XpringException {
+        // GIVEN a DefaultXpringClient with mocked networking which will succeed.
+        LegacyDefaultXpringClient client = getClient();
+
+        // WHEN the account is checked
+        boolean exists = client.accountExists(XRPL_ADDRESS);
+
+        // THEN the existence of the account is the the same as the mocked response.
+        assertThat(exists).isEqualTo(true);
+    }
+
+    @Test
+    public void accountExistsWithClassicAddressTest() throws IOException, XpringException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        LegacyDefaultXpringClient client = getClient();
+
+        // WHEN the existence of the account is checked for the classic address THEN an error is thrown.
+        expectedException.expect(XpringException.class);
+        client.accountExists(classicAddress.address());
+    }
+
+    @Test
+    public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
+        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
+        GRPCResult<rpc.v1.AccountInfo.GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        DefaultXpringClient client = getClient(
+                accountInfoResult,
+                io.xpring.xrpl.GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                io.xpring.xrpl.GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                io.xpring.xrpl.GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the existence of the account is checked
+        boolean exists = client.accountExists(XRPL_ADDRESS);
+        // THEN false is returned.
+        assertThat(exists).isEqualTo(false);
+    }
+
+    @Test
+    public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
+        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
+        io.xpring.xrpl.GRPCResult<rpc.v1.AccountInfo.GetAccountInfoResponse> accountInfoResult = io.xpring.xrpl.GRPCResult.error(notFoundError);
+        DefaultXpringClient client = getClient(
+                accountInfoResult,
+                io.xpring.xrpl.GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                io.xpring.xrpl.GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                io.xpring.xrpl.GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the existence of the account is checked THEN the error is re-thrown.
+        expectedException.expect(StatusRuntimeException.class);
+        client.getBalance(XRPL_ADDRESS);
     }
 
     /**
