@@ -337,6 +337,22 @@ public class DefaultXpringClientTest {
         client.accountExists(classicAddress.address());
     }
 
+    @Test
+    public void accountExistsTestWithFailedAccountInfo() throws IOException, XpringKitException {
+        // YOU ARE HERE
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        DefaultXpringClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the balance is retrieved THEN an error is thrown.
+        expectedException.expect(Exception.class);
+        client.getBalance(XRPL_ADDRESS);
+    }
     /**
      * Convenience method to get a XpringClient which has successful network calls.
      */
