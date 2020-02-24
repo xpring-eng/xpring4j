@@ -311,7 +311,7 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void accountExistsTest() throws IOException, XpringKitException {
+    public void accountExistsTest() throws IOException, XpringException {
         // GIVEN a DefaultXpringClient with mocked networking which will succeed.
         DefaultXpringClient client = getClient();
 
@@ -323,20 +323,20 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void accountExistsWithClassicAddressTest() throws IOException, XpringKitException {
+    public void accountExistsWithClassicAddressTest() throws IOException, XpringException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         DefaultXpringClient client = getClient();
 
         // WHEN the existence of the account is checked for the classic address THEN an error is thrown.
-        expectedException.expect(XpringKitException.class);
+        expectedException.expect(XpringException.class);
         client.accountExists(classicAddress.address());
     }
 
     @Test
-    public void accountExistsTestWithFailedAccountInfo() throws IOException, XpringKitException {
-        // YOU ARE HERE
+    public void accountExistsTestWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
+
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXpringClient client = getClient(
                 accountInfoResult,

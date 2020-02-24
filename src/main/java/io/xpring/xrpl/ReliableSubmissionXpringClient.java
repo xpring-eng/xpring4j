@@ -62,7 +62,7 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public boolean accountExists(String address) throws XpringKitException {
+    public boolean accountExists(String address) throws XpringException {
         return this.decoratedClient.accountExists(address);
     }
 }

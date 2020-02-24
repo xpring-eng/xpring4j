@@ -209,9 +209,9 @@ public class DefaultXpringClient implements XpringClientDecorator {
     }
 
     @Override
-    public boolean accountExists(String address) throws XpringKitException {
+    public boolean accountExists(String address) throws XpringException {
         if (!Utils.isValidXAddress(address)) {
-            throw XpringKitException.xAddressRequiredException;
+            throw XpringException.xAddressRequiredException;
         }
         try {
             this.getBalance(address);
