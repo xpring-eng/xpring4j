@@ -26,6 +26,7 @@ import rpc.v1.Tx.GetTxResponse;
 
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -61,6 +62,21 @@ public class DefaultXpringClient implements XpringClientDecorator {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
         this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            channel.shutdown();
+            try {
+                channel.awaitTermination(5, TimeUnit.SECONDS);
+            }
+            catch (Exception timedOutException) {
+                try {
+                    channel.shutdownNow();
+                }
+                catch (Exception e) {
+                    // nothing more can be done
+                }
+            }
+        }));
     }
 
     /**
@@ -78,7 +94,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         AccountRoot accountData = this.getAccountData(classicAddress.address());
 
-      return BigInteger.valueOf(accountData.getBalance().getDrops());
+        return BigInteger.valueOf(accountData.getBalance().getDrops());
     }
 
     /**
