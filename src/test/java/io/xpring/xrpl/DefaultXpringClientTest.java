@@ -7,6 +7,8 @@ import io.grpc.stub.StreamObserver;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import io.grpc.testing.GrpcCleanupRule;
 import io.grpc.inprocess.InProcessServerBuilder;
 import static org.mockito.Mockito.mock;
@@ -334,10 +336,10 @@ public class DefaultXpringClientTest {
     }
 
     @Test
-    public void accountExistsTestWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
-
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+    public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
+        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
         DefaultXpringClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -345,10 +347,29 @@ public class DefaultXpringClientTest {
                 GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
         );
 
-        // WHEN the balance is retrieved THEN an error is thrown.
-        expectedException.expect(Exception.class);
+        // WHEN the existence of the account is checked
+        boolean exists = client.accountExists(XRPL_ADDRESS);
+        // THEN false is returned.
+        assertThat(exists).isEqualTo(false);
+    }
+
+    @Test
+    public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
+        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        DefaultXpringClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the existence of the account is checked THEN the error is re-thrown.
+        expectedException.expect(StatusRuntimeException.class);
         client.getBalance(XRPL_ADDRESS);
     }
+
     /**
      * Convenience method to get a XpringClient which has successful network calls.
      */
