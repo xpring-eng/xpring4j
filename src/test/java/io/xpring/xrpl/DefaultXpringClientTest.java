@@ -85,7 +85,7 @@ public class DefaultXpringClientTest {
     /** Mocked values in responses from the gRPC server. */
     private static final long DROPS_OF_XRP_IN_ACCOUNT = 10;
     private static final String TRANSACTION_BLOB = "DEADBEEF";
-    private static final String GENERIC_ERROR = "Mocked network error";
+    private static final Throwable GENERIC_ERROR = new Throwable("Mocked network error");
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
     private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
             "tefFAILURE",
