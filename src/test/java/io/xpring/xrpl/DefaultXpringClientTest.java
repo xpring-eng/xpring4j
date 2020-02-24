@@ -38,9 +38,9 @@ import java.util.Optional;
  */
 class GRPCResult<T> {
     private Optional<T> value;
-    private Optional<String> error;
+    private Optional<Throwable> error;
 
-    private GRPCResult(T value, String error) {
+    private GRPCResult(T value, Throwable error) {
         this.value = Optional.ofNullable(value);
         this.error = Optional.ofNullable(error);
     }
@@ -49,7 +49,7 @@ class GRPCResult<T> {
         return new GRPCResult<>(value, null);
     }
 
-    public static <U> GRPCResult<U> error(String error) {
+    public static <U> GRPCResult<U> error(Throwable error) {
         return new GRPCResult<>(null, error);
     }
 
@@ -61,7 +61,7 @@ class GRPCResult<T> {
         return value.get();
     }
 
-    public String getError() {
+    public Throwable getError() {
         return error.get();
     }
 }
