@@ -369,7 +369,7 @@ public class DefaultXpringClientTest {
                     @Override
                     public void getAccountInfo(AccountInfo.GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
                         if (getAccountInfoResult.isError()) {
-                            responseObserver.onError(new Throwable(getAccountInfoResult.getError()));
+                            responseObserver.onError(getAccountInfoResult.getError());
                         } else {
                             responseObserver.onNext(getAccountInfoResult.getValue());
                             responseObserver.onCompleted();
@@ -379,7 +379,7 @@ public class DefaultXpringClientTest {
                     @Override
                     public void getTx(Tx.GetTxRequest request, StreamObserver<Tx.GetTxResponse> responseObserver) {
                         if (getTxResponseResult.isError()) {
-                            responseObserver.onError(new Throwable(getTxResponseResult.getError()));
+                            responseObserver.onError(getTxResponseResult.getError());
                         } else {
                             responseObserver.onNext(getTxResponseResult.getValue());
                             responseObserver.onCompleted();
@@ -390,7 +390,7 @@ public class DefaultXpringClientTest {
                     public void getFee(GetFeeRequest request,
                                        StreamObserver<GetFeeResponse> responseObserver) {
                         if (getFeeResult.isError()) {
-                            responseObserver.onError(new Throwable(getFeeResult.getError()));
+                            responseObserver.onError(getFeeResult.getError());
                         } else {
                             responseObserver.onNext(getFeeResult.getValue());
                             responseObserver.onCompleted();
@@ -401,7 +401,7 @@ public class DefaultXpringClientTest {
                     public void submitTransaction(SubmitTransactionRequest request,
                                                   StreamObserver<SubmitTransactionResponse> responseObserver) {
                         if (submitTransactionResult.isError()) {
-                            responseObserver.onError(new Throwable(submitTransactionResult.getError()));
+                            responseObserver.onError(submitTransactionResult.getError());
                         } else {
                             responseObserver.onNext(submitTransactionResult.getValue());
                             responseObserver.onCompleted();
