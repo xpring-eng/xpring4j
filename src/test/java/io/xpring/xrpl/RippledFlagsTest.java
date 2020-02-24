@@ -16,7 +16,7 @@ public class RippledFlagsTest {
     }
 
     @Test
-    public void testCheckDoesNotContainsValue() {
+    public void testCheckDoesNotContainValue() {
         // GIVEN a set of flags that does not contain the tfPartialPayment flag.
         Integer flags = 1 | 4; // 1 and 4 are arbitrarily chosen numbers.
 
