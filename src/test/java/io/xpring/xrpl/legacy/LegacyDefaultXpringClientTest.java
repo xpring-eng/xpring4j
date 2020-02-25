@@ -355,12 +355,13 @@ public class LegacyDefaultXpringClientTest {
     public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
-        GRPCResult<rpc.v1.AccountInfo.GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
-        DefaultXpringClient client = getClient(
+        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(notFoundError);
+        LegacyDefaultXpringClient client = getClient(
                 accountInfoResult,
-                io.xpring.xrpl.GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                io.xpring.xrpl.GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                io.xpring.xrpl.GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence()),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
         );
 
         // WHEN the existence of the account is checked
@@ -370,20 +371,40 @@ public class LegacyDefaultXpringClientTest {
     }
 
     @Test
-    public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
+    public void accountExistsTestWithUnknownError() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
-        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
-        io.xpring.xrpl.GRPCResult<rpc.v1.AccountInfo.GetAccountInfoResponse> accountInfoResult = io.xpring.xrpl.GRPCResult.error(notFoundError);
-        DefaultXpringClient client = getClient(
+        StatusRuntimeException unknownError = new StatusRuntimeException(Status.UNKNOWN);
+        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(unknownError);
+        LegacyDefaultXpringClient client = getClient(
                 accountInfoResult,
-                io.xpring.xrpl.GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                io.xpring.xrpl.GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                io.xpring.xrpl.GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence()),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
         );
 
-        // WHEN the existence of the account is checked THEN the error is re-thrown.
+        // WHEN the existence of the account is checked
+        boolean exists = client.accountExists(XRPL_ADDRESS);
+        // THEN false is returned. (Legacy protobufs return UNKNOWN error code in case of now found account info)
+        assertThat(exists).isEqualTo(false);
+    }
+
+    @Test
+    public void accountExistsTestWithCancelledError() throws IOException, XpringException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ CANCELLED error code.
+        StatusRuntimeException cancelledError = new StatusRuntimeException(Status.CANCELLED);
+        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(cancelledError);
+        LegacyDefaultXpringClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
+                GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
+                GRPCResult.ok(makeLedgerSequence()),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS))
+        );
+
+        // WHEN the existence of the account is checked THEN the error is re-thrown
         expectedException.expect(StatusRuntimeException.class);
-        client.getBalance(XRPL_ADDRESS);
+        client.accountExists(XRPL_ADDRESS);
     }
 
     /**
