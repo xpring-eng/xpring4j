@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version 2.0.0 - Feb 24, 2020
 
-### rippled support
+### rippled Support
 
 This release adds support for the new rippled protocol buffers and adds browser compatibility support.
 
@@ -24,6 +24,6 @@ This release contains some breaking changes that fix and productionize this libr
 
 Additionally, exceptions were mistakenly named `XpringKitException`, which was a reference to the Swift variant of this library. This is a simple rename, no functionality is added, changed or removed.
 
-### Breaking Changes
+#### Breaking Changes
 - Renamed `XpringKitException` to `XpringException`. XpringKit is the name of the Swift flavor of the Xpring SDK.
 - Require a gRPC parameter in XpringClient's initializer. A default value is no longer provided. 
