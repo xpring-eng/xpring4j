@@ -349,6 +349,7 @@ public class DefaultXpringClientTest {
 
         // WHEN the existence of the account is checked
         boolean exists = client.accountExists(XRPL_ADDRESS);
+
         // THEN false is returned.
         assertThat(exists).isEqualTo(false);
     }
