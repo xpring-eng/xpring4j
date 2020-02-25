@@ -72,10 +72,14 @@ public class IntegrationTests {
     }
 
     @Test
-    public void sendXRPTest() throws XpringException {
-        Wallet wallet = new Wallet(WALLET_SEED);
+    public void accountExistsTest_legacy() throws XpringException {
+        boolean exists = legacyXpringClient.accountExists(XRPL_ADDRESS);
+        assertThat(exists).isEqualTo(true);
+    }
 
-        String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
-        assertThat(transactionHash).isNotNull();
+    @Test
+    public void accountExistsTest() throws XpringException {
+        boolean exists = xpringClient.accountExists(XRPL_ADDRESS);
+        assertThat(exists).isEqualTo(true);
     }
 }
