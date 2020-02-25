@@ -26,9 +26,9 @@ import java.util.Optional;
  */
 class GRPCResult<T> {
     private Optional<T> value;
-    private Optional<String> error;
+    private Optional<Throwable> error;
 
-    private GRPCResult(T value, String error) {
+    private GRPCResult(T value, Throwable error) {
         this.value = Optional.ofNullable(value);
         this.error = Optional.ofNullable(error);
     }
@@ -37,7 +37,7 @@ class GRPCResult<T> {
         return new GRPCResult<>(value, null);
     }
 
-    public static <U> GRPCResult<U> error(String error) {
+    public static <U> GRPCResult<U> error(Throwable error) {
         return new GRPCResult<>(null, error);
     }
 
@@ -49,7 +49,7 @@ class GRPCResult<T> {
         return value.get();
     }
 
-    public String getError() {
+    public Throwable getError() {
         return error.get();
     }
 }
@@ -74,7 +74,7 @@ public class LegacyDefaultXpringClientTest {
     private static final String DROPS_OF_XRP_IN_ACCOUNT = "10";
     private static final String DROPS_OF_XRP_FOR_FEE = "20";
     private static final String TRANSACTION_BLOB = "DEADBEEF";
-    private static final String GENERIC_ERROR = "Mocked network error";
+    private static final Throwable GENERIC_ERROR = new Throwable("Mocked network error");
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
     private static final String TRANSACTION_HASH = "DEADBEEF";
     private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
@@ -328,6 +328,7 @@ public class LegacyDefaultXpringClientTest {
         client.getTransactionStatus(TRANSACTION_HASH);
     }
 
+
     /**
      * Convenience method to get a XpringClient which has successful network calls.
      */
@@ -373,7 +374,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getAccountInfo(io.xpring.proto.GetAccountInfoRequest request,
                                                io.grpc.stub.StreamObserver<io.xpring.proto.AccountInfo> responseObserver) {
                         if (accountInfoResult.isError()) {
-                            responseObserver.onError(new Throwable(accountInfoResult.getError()));
+                            responseObserver.onError(accountInfoResult.getError());
                         } else {
                             responseObserver.onNext(accountInfoResult.getValue());
                             responseObserver.onCompleted();
@@ -384,7 +385,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getFee(io.xpring.proto.GetFeeRequest request,
                                        io.grpc.stub.StreamObserver<io.xpring.proto.Fee> responseObserver) {
                         if (feeResult.isError()) {
-                            responseObserver.onError(new Throwable(feeResult.getError()));
+                            responseObserver.onError(feeResult.getError());
                         } else {
                             responseObserver.onNext(feeResult.getValue());
                             responseObserver.onCompleted();
@@ -395,7 +396,7 @@ public class LegacyDefaultXpringClientTest {
                     public void submitSignedTransaction(io.xpring.proto.SubmitSignedTransactionRequest request,
                                                         io.grpc.stub.StreamObserver<io.xpring.proto.SubmitSignedTransactionResponse> responseObserver) {
                         if (submitResult.isError()) {
-                            responseObserver.onError(new Throwable(submitResult.getError()));
+                            responseObserver.onError(submitResult.getError());
                         } else {
                             responseObserver.onNext(submitResult.getValue());
                             responseObserver.onCompleted();
@@ -406,7 +407,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getLatestValidatedLedgerSequence(io.xpring.proto.GetLatestValidatedLedgerSequenceRequest request,
                                                                  io.grpc.stub.StreamObserver<io.xpring.proto.LedgerSequence> responseObserver) {
                         if (latestValidatedLedgerSequenceResult.isError()) {
-                            responseObserver.onError(new Throwable(latestValidatedLedgerSequenceResult.getError()));
+                            responseObserver.onError(latestValidatedLedgerSequenceResult.getError());
                         } else {
                             responseObserver.onNext(latestValidatedLedgerSequenceResult.getValue());
                             responseObserver.onCompleted();
@@ -417,7 +418,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getTransactionStatus(io.xpring.proto.GetTransactionStatusRequest request,
                                                      io.grpc.stub.StreamObserver<io.xpring.proto.TransactionStatus> responseObserver) {
                         if (transactionStatusResult.isError()) {
-                            responseObserver.onError(new Throwable(transactionStatusResult.getError()));
+                            responseObserver.onError(transactionStatusResult.getError());
                         } else {
                             responseObserver.onNext(transactionStatusResult.getValue());
                             responseObserver.onCompleted();
