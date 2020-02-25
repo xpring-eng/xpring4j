@@ -73,6 +73,7 @@ public class XpringClient {
     ) throws XpringException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
     }
+
     /**
      * Check if an address exists on the XRP Ledger.
      *
