@@ -16,6 +16,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
+import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.Wallet;
 
 import java.io.IOException;
 import java.math.BigInteger;

@@ -74,6 +74,7 @@ public class IntegrationTests {
     @Test
     public void sendXRPTest() throws XpringException {
         Wallet wallet = new Wallet(WALLET_SEED);
+
         String transactionHash = xpringClient.send(AMOUNT, XRPL_ADDRESS, wallet);
         assertThat(transactionHash).isNotNull();
     }
