@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.Executor;
 
 /**
- * TODO: Depend on this from hermes?
+ * TODO (nkramer44): Investigate if this class can be replaced by depending on Hermes and using IlpJwtCallCredentials
+ *                    implemented there.
  */
 public class IlpJwtCallCredentials extends CallCredentials {
   private static Logger LOGGER = LoggerFactory.getLogger(IlpJwtCallCredentials.class);

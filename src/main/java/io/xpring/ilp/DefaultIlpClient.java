@@ -13,6 +13,7 @@ import org.interledger.spsp.server.grpc.SendPaymentRequest;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.primitives.UnsignedLong;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -42,8 +43,8 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
         try {
             // Make sure that the configuration file exists
-            URL res = DefaultIlpClient.class.getClassLoader().getResource(propertiesFileName);
-            InputStream inputStream = new FileInputStream(res.getFile());
+            URL resource = DefaultIlpClient.class.getClassLoader().getResource(propertiesFileName);
+            InputStream inputStream = new FileInputStream(resource.getFile());
             // load the properties file
             properties.load(inputStream);
 
@@ -65,18 +66,18 @@ public class DefaultIlpClient implements IlpClientDecorator {
         this(ManagedChannelBuilder
           .forTarget(XPRING_ILP_GRPC_URL)
           // Let's use plaintext communication because we don't have certs
-          // TODO: Use TLS!
+          // TODO (nkramer44): Use TLS!
           .usePlaintext()
           .build()
         );
     }
 
     @VisibleForTesting
-    public DefaultIlpClient(String grpcUrl) {
+    protected DefaultIlpClient(String grpcUrl) {
         this(ManagedChannelBuilder
           .forTarget(grpcUrl)
           // Let's use plaintext communication because we don't have certs
-          // TODO: Use TLS!
+          // TODO (nkrmaer44): Use TLS!
           .usePlaintext()
           .build()
         );
@@ -146,14 +147,14 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
     @Override
     public SendPaymentResponse sendPayment(String destinationPaymentPointer,
-                                           long amount,
+                                           UnsignedLong amount,
                                            String accountId,
                                            String bearerToken) throws XpringException {
         try {
             SendPaymentRequest request = SendPaymentRequest.newBuilder()
               .setDestinationPaymentPointer(destinationPaymentPointer)
               .setAccountId(accountId)
-              .setAmount(amount)
+              .setAmount(amount.longValue())
               .build();
             return ilpOverHttpServiceStub
               .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))

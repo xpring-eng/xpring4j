@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
+import io.xpring.GRPCResult;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,7 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.xpring.xrpl.XpringException;	
+import io.xpring.xrpl.XpringException;
 import rpc.v1.Amount.XRPDropsAmount;
 import rpc.v1.AccountInfo;
 import rpc.v1.FeeOuterClass.Fee;
@@ -31,40 +32,6 @@ import rpc.v1.AccountInfo.GetAccountInfoResponse;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Optional;
-
-
-/**
- * Represents the result of a gRPC network call for an object of type T or an error.
- */
-class GRPCResult<T> {
-    private Optional<T> value;
-    private Optional<String> error;
-
-    private GRPCResult(T value, String error) {
-        this.value = Optional.ofNullable(value);
-        this.error = Optional.ofNullable(error);
-    }
-
-    public static <U> GRPCResult<U> ok(U value) {
-        return new GRPCResult<>(value, null);
-    }
-
-    public static <U> GRPCResult<U> error(String error) {
-        return new GRPCResult<>(null, error);
-    }
-
-    public boolean isError() {
-        return error.isPresent();
-    }
-
-    public T getValue() {
-        return value.get();
-    }
-
-    public String getError() {
-        return error.get();
-    }
-}
 
 /**
  * Unit tests for {@link DefaultXpringClient}.

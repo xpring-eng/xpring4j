@@ -30,7 +30,8 @@ jobs:
 
       - run:
           name: "Build And Run Unit Tests"
-          command: mvn clean install -DskipITs
+          command: mvn clean install -DskipITs jacoco:report
+      - run: bash <(curl -s https://codecov.io/bash)
 
   ilp_integration_tests:
     working_directory: ~/repo
@@ -64,7 +65,6 @@ jobs:
       - run:
           name: "Run ILP Integration Tests"
           command: mvn clean verify jacoco:report -DskipTests -PintegrationTests
-      - run: bash <(curl -s https://codecov.io/bash)
 
 workflows:
   version: 2

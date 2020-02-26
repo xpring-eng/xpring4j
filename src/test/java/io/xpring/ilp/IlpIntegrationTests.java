@@ -8,7 +8,8 @@ import org.interledger.spsp.server.grpc.GetAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
-import io.xpring.ilp.util.IlpConstants;
+import com.google.common.primitives.UnsignedLong;
+import io.xpring.ilp.util.IlpAuthConstants;
 import io.xpring.xrpl.XpringException;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,9 +23,17 @@ import java.util.Optional;
 public class IlpIntegrationTests {
 
   /**
-   * Connector fields
+   * Hermes and Connector TestContainers fields.
+   *
+   * These tests will run instances of Hermes and the Java Connector inside of Docker containers.
+   * TestContainers maps a random machine port to the port exposed within each Docker container,
+   * and in order for two applications running within containers to speak to each other, they both
+   * need to be aware of which port was mapped by TestContainers, and they both need to expose those ports to
+   * the other container.
+   *
+   * By placing both TestContainers within the same {@link Network}, the containers do not need to speak
+   * to each other on the mapped ports, but instead can use the internal Docker ports.
    */
-  // This should allow hermes to talk to the connector without exposing any ports
   private static final Network network = Network.newNetwork();
 
   private static final int CONNECTOR_PORT = 8080;
@@ -32,14 +41,19 @@ public class IlpIntegrationTests {
   private static final int HERMES_PORT = 6565;
 
   /**
-   *  Start up a connector from the nightly docker image
+   *  Start up a connector from the java-ilpv4-connector:0.2.0 docker image.
+   *  Make sure to update this image version when upgrading connector dependencies in the SDK
    */
   @ClassRule
-  public static GenericContainer connectorNode = new GenericContainer<>("interledger4j/java-ilpv4-connector:0.2.0") // FIXME use nightly
+  public static GenericContainer connectorNode = new GenericContainer<>("interledger4j/java-ilpv4-connector:0.2.0")
     .withExposedPorts(CONNECTOR_PORT)
     .withNetwork(network)
-    .withNetworkAliases("connector-host"); // Need this so hermes can communicate with the connector container
+    .withNetworkAliases("connector-host"); // This will give Hermes a consistent host on the connector container to talk to
 
+  /**
+   * Start up Hermes from the hermes-server:xpring4j-hermes docker image
+   * Make sure to update this image version when upgrading the Hermes submodule in the SDK
+   */
   @ClassRule
   public static GenericContainer hermesNode = new GenericContainer<>("interledger4j/hermes-server:xpring4j-hermes")
     .withExposedPorts(HERMES_PORT)
@@ -61,7 +75,6 @@ public class IlpIntegrationTests {
     hermesNode.stop();
   }
 
-
   @Test
   public void minimalCreateAccount() throws XpringException {
 
@@ -71,9 +84,9 @@ public class IlpIntegrationTests {
     assertThat(response.getAssetCode()).isEqualTo("XRP");
     assertThat(response.getAssetScale()).isEqualTo(9);
     assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/" + response.getAccountId());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().doesNotStartWith("enc:jks");
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpAuthConstants.AuthType.SIMPLE.toString());
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().doesNotStartWith("enc:jks");
   }
 
   @Test
@@ -87,9 +100,9 @@ public class IlpIntegrationTests {
     assertThat(response.getAssetCode()).isEqualTo("USD");
     assertThat(response.getAssetScale()).isEqualTo(6);
     assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/baz");
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).isEqualTo("password");
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpAuthConstants.AuthType.SIMPLE.toString());
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).isEqualTo("password");
   }
 
   @Test
@@ -103,9 +116,9 @@ public class IlpIntegrationTests {
     assertThat(response.getAssetCode()).isEqualTo("USD");
     assertThat(response.getAssetScale()).isEqualTo(6);
     assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/bar");
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().doesNotStartWith("enc:jks");
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpAuthConstants.AuthType.SIMPLE.toString());
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().doesNotStartWith("enc:jks");
   }
 
   @Test
@@ -117,30 +130,30 @@ public class IlpIntegrationTests {
     assertThat(response.getAssetCode()).isEqualTo("USD");
     assertThat(response.getAssetScale()).isEqualTo(6);
     assertThat(response.getPaymentPointer()).isEqualTo(paymentPointerBase + "/" + response.getAccountId());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().doesNotStartWith("enc:jks");
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpAuthConstants.AuthType.SIMPLE.toString());
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().isNotEmpty();
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).asString().doesNotStartWith("enc:jks");
   }
 
   @Test
   public void getAccount() throws XpringException {
     CreateAccountResponse createAccountResponse = client.createAccount();
     GetAccountResponse response = client.getAccount(createAccountResponse.getAccountId(),
-      createAccountResponse.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
+      createAccountResponse.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
 
     assertThat(response.getAccountId()).isEqualTo(createAccountResponse.getAccountId());
     assertThat(response.getAssetCode()).isEqualTo(createAccountResponse.getAssetCode());
     assertThat(response.getAssetScale()).isEqualTo(createAccountResponse.getAssetScale());
     assertThat(response.getPaymentPointer()).isEqualTo(createAccountResponse.getPaymentPointer());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpConstants.AuthType.SIMPLE.toString());
-    assertThat(response.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).startsWith("enc:jks");
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_AUTH_TYPE)).isEqualTo(IlpAuthConstants.AuthType.SIMPLE.toString());
+    assertThat(response.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)).startsWith("enc:jks");
   }
 
   @Test
   public void getBalance() throws XpringException {
     CreateAccountResponse createAccountResponse = client.createAccount();
     GetBalanceResponse response = client.getBalance(createAccountResponse.getAccountId(),
-      createAccountResponse.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
+      createAccountResponse.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
 
     assertThat(response.getAccountId()).isEqualTo(createAccountResponse.getAccountId());
     assertThat(response.getAssetCode()).isEqualTo(createAccountResponse.getAssetCode());
@@ -156,9 +169,9 @@ public class IlpIntegrationTests {
     CreateAccountResponse receiver = client.createAccount();
 
     SendPaymentResponse response = client.sendPayment(receiver.getPaymentPointer(),
-      10,
+      UnsignedLong.valueOf(10),
       sender.getAccountId(),
-      sender.getCustomSettingsMap().get(IlpConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
+      sender.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
 
     SendPaymentResponse expected = SendPaymentResponse.newBuilder()
       .setOriginalAmount(10)

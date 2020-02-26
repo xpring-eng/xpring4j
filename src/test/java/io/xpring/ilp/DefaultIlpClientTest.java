@@ -16,11 +16,13 @@ import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
 import org.interledger.spsp.server.grpc.SendPaymentRequest;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
+import com.google.common.primitives.UnsignedLong;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
+import io.xpring.GRPCResult;
 import io.xpring.ilp.DefaultIlpClient;
 import io.xpring.xrpl.XpringException;
 import org.junit.Before;
@@ -31,39 +33,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-/**
- * Represents the result of a gRPC network call for an object of type T or an error.
- */
-class GRPCResult<T> {
-  private Optional<T> value;
-  private Optional<String> error;
-
-  private GRPCResult(T value, String error) {
-    this.value = Optional.ofNullable(value);
-    this.error = Optional.ofNullable(error);
-  }
-
-  public static <U> GRPCResult<U> ok(U value) {
-    return new GRPCResult<>(value, null);
-  }
-
-  public static <U> GRPCResult<U> error(String error) {
-    return new GRPCResult<>(null, error);
-  }
-
-  public boolean isError() {
-    return error.isPresent();
-  }
-
-  public T getValue() {
-    return value.get();
-  }
-
-  public String getError() {
-    return error.get();
-  }
-}
 
 /**
  * Unit tests for {@link io.xpring.ilp.DefaultIlpClient}
@@ -205,7 +174,10 @@ public class DefaultIlpClientTest {
   @Test
   public void sendPaymentTest() throws IOException, XpringException {
     DefaultIlpClient client = getClient();
-    SendPaymentResponse response = client.sendPayment("$foo.dev/bar", 1000, "baz", "gobbledygook");
+    SendPaymentResponse response = client.sendPayment("$foo.dev/bar",
+      UnsignedLong.valueOf(1000),
+      "baz",
+      "gobbledygook");
 
     assertThat(response).isEqualTo(this.sendPaymentResponse);
   }

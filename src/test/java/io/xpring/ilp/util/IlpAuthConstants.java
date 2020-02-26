@@ -1,6 +1,13 @@
 package io.xpring.ilp.util;
 
-public class IlpConstants {
+import org.interledger.spsp.server.grpc.CreateAccountResponse;
+
+/**
+ * Defines the keys that will be present in {@link CreateAccountResponse#getCustomSettingsMap()}.
+ *
+ * These keys follow a hierarchical dot-notation format, and mirror the keys created on the Java connector exactly.
+ */
+public class IlpAuthConstants {
 
   public static String DOT = ".";
   public static String ILP_OVER_HTTP = "ilpOverHttp";
