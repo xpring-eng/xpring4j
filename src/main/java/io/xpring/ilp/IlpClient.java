@@ -18,14 +18,8 @@ import java.util.Optional;
  * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
  */
 public class IlpClient {
-    private IlpClientDecorator decoratedClient;
 
-    /**
-     * Initialize a new client with default options.
-     */
-    public IlpClient() {
-        this.decoratedClient = new DefaultIlpClient();
-    }
+    private IlpClientDecorator decoratedClient;
 
     /**
      * Initialize a new client with a configured URL

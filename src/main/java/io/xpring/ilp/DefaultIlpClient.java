@@ -33,56 +33,29 @@ import java.util.Properties;
  */
 public class DefaultIlpClient implements IlpClientDecorator {
 
-    private static String XPRING_ILP_GRPC_URL;
     private static final Logger logger = LoggerFactory.getLogger(DefaultIlpClient.class);
-
-    // Bring in configuration properties such as GRPC url
-    static {
-        String propertiesFileName = "client.properties";
-        Properties properties = new Properties();
-
-        try {
-            // Make sure that the configuration file exists
-            URL resource = DefaultIlpClient.class.getClassLoader().getResource(propertiesFileName);
-            InputStream inputStream = new FileInputStream(resource.getFile());
-            // load the properties file
-            properties.load(inputStream);
-
-            XPRING_ILP_GRPC_URL = properties.getProperty("ilp.grpc.url");
-        } catch (Exception e) {
-            logger.info(String.format("Problem loading config file named %s. Using default configuration.", propertiesFileName));
-            XPRING_ILP_GRPC_URL = "http://localhost:6565";
-        }
-    };
 
     private final BalanceServiceGrpc.BalanceServiceBlockingStub balanceServiceStub;
     private final AccountServiceGrpc.AccountServiceBlockingStub accountServiceStub;
     private final IlpOverHttpServiceGrpc.IlpOverHttpServiceBlockingStub ilpOverHttpServiceStub;
 
     /**
-     * No-args Constructor.
+     * Initialize a new client with a configured URL
+     * @param grpcUrl : The gRPC URL exposed by Hermes
      */
-    public DefaultIlpClient() {
-        this(ManagedChannelBuilder
-          .forTarget(XPRING_ILP_GRPC_URL)
-          // Let's use plaintext communication because we don't have certs
-          // TODO (nkramer44): Use TLS!
-          .usePlaintext()
-          .build()
-        );
-    }
-
-    @VisibleForTesting
     protected DefaultIlpClient(String grpcUrl) {
         this(ManagedChannelBuilder
           .forTarget(grpcUrl)
-          // Let's use plaintext communication because we don't have certs
-          // TODO (nkrmaer44): Use TLS!
           .usePlaintext()
           .build()
         );
     }
 
+    /**
+     * Required-args Constructor, currently for testing.
+     *
+     * @param channel A {@link ManagedChannel}.
+     */
     public DefaultIlpClient(final ManagedChannel channel) {
         this.balanceServiceStub = BalanceServiceGrpc.newBlockingStub(channel);
         this.accountServiceStub = AccountServiceGrpc.newBlockingStub(channel);
