@@ -52,7 +52,7 @@ public class DefaultXpringClientTest {
     /** Mocked values in responses from the gRPC server. */
     private static final long DROPS_OF_XRP_IN_ACCOUNT = 10;
     private static final String TRANSACTION_BLOB = "DEADBEEF";
-    private static final String GENERIC_ERROR = "Mocked network error";
+    private static final Throwable GENERIC_ERROR = new Throwable("Mocked network error");
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
     private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
             "tefFAILURE",
@@ -336,7 +336,7 @@ public class DefaultXpringClientTest {
                     @Override
                     public void getAccountInfo(AccountInfo.GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
                         if (getAccountInfoResult.isError()) {
-                            responseObserver.onError(new Throwable(getAccountInfoResult.getError()));
+                            responseObserver.onError(getAccountInfoResult.getError());
                         } else {
                             responseObserver.onNext(getAccountInfoResult.getValue());
                             responseObserver.onCompleted();
@@ -346,7 +346,7 @@ public class DefaultXpringClientTest {
                     @Override
                     public void getTx(Tx.GetTxRequest request, StreamObserver<Tx.GetTxResponse> responseObserver) {
                         if (getTxResponseResult.isError()) {
-                            responseObserver.onError(new Throwable(getTxResponseResult.getError()));
+                            responseObserver.onError(getTxResponseResult.getError());
                         } else {
                             responseObserver.onNext(getTxResponseResult.getValue());
                             responseObserver.onCompleted();
@@ -357,7 +357,7 @@ public class DefaultXpringClientTest {
                     public void getFee(GetFeeRequest request,
                                        StreamObserver<GetFeeResponse> responseObserver) {
                         if (getFeeResult.isError()) {
-                            responseObserver.onError(new Throwable(getFeeResult.getError()));
+                            responseObserver.onError(getFeeResult.getError());
                         } else {
                             responseObserver.onNext(getFeeResult.getValue());
                             responseObserver.onCompleted();
@@ -368,7 +368,7 @@ public class DefaultXpringClientTest {
                     public void submitTransaction(SubmitTransactionRequest request,
                                                   StreamObserver<SubmitTransactionResponse> responseObserver) {
                         if (submitTransactionResult.isError()) {
-                            responseObserver.onError(new Throwable(submitTransactionResult.getError()));
+                            responseObserver.onError(submitTransactionResult.getError());
                         } else {
                             responseObserver.onNext(submitTransactionResult.getValue());
                             responseObserver.onCompleted();
