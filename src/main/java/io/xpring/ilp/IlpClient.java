@@ -5,6 +5,7 @@ import org.interledger.spsp.server.grpc.GetAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
+import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.primitives.UnsignedLong;
 import io.grpc.ExperimentalApi;
@@ -21,7 +22,6 @@ public class IlpClient {
 
     /**
      * Initialize a new client with default options.
-     *
      */
     public IlpClient() {
         this.decoratedClient = new DefaultIlpClient();
@@ -30,7 +30,6 @@ public class IlpClient {
     /**
      * Initialize a new client with a configured URL
      * @param grpcUrl : The gRPC URL exposed by Hermes
-     *
      */
     public IlpClient(String grpcUrl) {
         this.decoratedClient = new DefaultIlpClient(grpcUrl);
@@ -38,17 +37,22 @@ public class IlpClient {
 
     /**
      * Create an account on the connector.  Because no settings or auth were passed in, an account
-     * with default settings, a generated account ID, and a generated SIMPLE auth token will be generated for you
+     * with default settings, a generated account ID, and a generated SIMPLE auth token will be generated for you.
+     *
+     * This method is currently in Beta and is likely to change or be removed.
      *
      * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
      * @throws XpringException If account creation failed.
      */
+    @Beta
     public CreateAccountResponse createAccount() throws XpringException {
         return decoratedClient.createAccount();
     }
 
     /**
      * Create an account on the connector.
+     *
+     * This method is currently in Beta and is likely to change or be removed.
      *
      * @param createAccountRequest: A request object with specified account details. Note that {@link CreateAccountRequest#assetScale}
      *                           and {@link CreateAccountRequest#assetCode} MUST be specified, as guaranteed by {@link CreateAccountRequest#builder(String, Integer)}
@@ -57,6 +61,7 @@ public class IlpClient {
      * @return A {@link CreateAccountResponse} containing the account settings that were created on the connector
      * @throws XpringException If the given inputs were invalid or account creation failed.
      */
+    @Beta
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
         return decoratedClient.createAccount(createAccountRequest, bearerToken);
     }
@@ -64,11 +69,14 @@ public class IlpClient {
     /**
      * Gets account details for the given account ID
      *
+     * This method is currently in Beta and is likely to change or be removed.
+     *
      * @param accountId: Unique Identifier of this account.
      * @param bearerToken: Authentication token to access the account.
      * @return A {@link GetAccountResponse} with account details and settings.
      * @throws XpringException if the given inputs were invalid, the account doesn't exist, or something else went wrong
      */
+    @Beta
     public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringException {
         return decoratedClient.getAccount(accountId, bearerToken);
     }
