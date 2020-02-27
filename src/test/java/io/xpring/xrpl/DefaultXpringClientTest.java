@@ -24,7 +24,10 @@ import rpc.v1.MetaOuterClass.Meta;
 import rpc.v1.MetaOuterClass.TransactionResult;
 import rpc.v1.Submit.SubmitTransactionRequest;
 import rpc.v1.Submit.SubmitTransactionResponse;
-import rpc.v1.Tx;
+import rpc.v1.TransactionOuterClass.Payment;
+import rpc.v1.TransactionOuterClass.Transaction;
+import rpc.v1.Tx.GetTxRequest;
+import rpc.v1.Tx.GetTxResponse;
 import rpc.v1.XRPLedgerAPIServiceGrpc;
 import rpc.v1.AccountInfo.GetAccountInfoResponse;
 
@@ -219,6 +222,52 @@ public class DefaultXpringClientTest {
     }
 
     @Test
+    public void transactionStatusWithUnsupportedTransactionType() throws IOException, XpringException {
+        // GIVEN a XpringClient which will return a non-payment type transaction.
+        Transaction transaction = Transaction.newBuilder().clearPayment().build();
+        GetTxResponse getTxResponse = GetTxResponse.newBuilder().setTransaction(transaction).build();
+
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(getTxResponse),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+
+
+        // THEN the status is UNKNOWN.
+        assertThat(transactionStatus).isEqualTo(TransactionStatus.UNKNOWN);
+    }
+
+    @Test
+    public void transactionStatusWithPartialPayment() throws IOException, XpringException {
+        // GIVEN a XpringClient which will return a non-payment type transaction.
+        Payment payment = Payment.newBuilder().build();
+        Transaction transaction = Transaction.newBuilder()
+                .setPayment(payment)
+                .setFlags(RippledFlags.TF_PARTIAL_PAYMENT.value)
+                .build();
+        GetTxResponse getTxResponse = GetTxResponse.newBuilder().setTransaction(transaction).build();
+
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(getTxResponse),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+
+
+        // THEN the status is UNKNOWN.
+        assertThat(transactionStatus).isEqualTo(TransactionStatus.UNKNOWN);
+    }
+
+    @Test
     public void transactionStatusWithNodeError() throws IOException, XpringException {
         // GIVEN a XpringClient which will error when a transaction status is requested..
         DefaultXpringClient client = getClient(
@@ -328,7 +377,7 @@ public class DefaultXpringClientTest {
 
     private DefaultXpringClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
-            GRPCResult<Tx.GetTxResponse> getTxResponseResult,
+            GRPCResult<GetTxResponse> getTxResponseResult,
             GRPCResult<GetFeeResponse> getFeeResult,
             GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) throws IOException {
@@ -360,7 +409,7 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<Tx.GetTxResponse> getTxResponseResult,
+        GRPCResult<GetTxResponse> getTxResponseResult,
         GRPCResult<GetFeeResponse> getFeeResult,
         GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) {
@@ -377,7 +426,7 @@ public class DefaultXpringClientTest {
                     }
 
                     @Override
-                    public void getTx(Tx.GetTxRequest request, StreamObserver<Tx.GetTxResponse> responseObserver) {
+                    public void getTx(GetTxRequest request, StreamObserver<GetTxResponse> responseObserver) {
                         if (getTxResponseResult.isError()) {
                             responseObserver.onError(new Throwable(getTxResponseResult.getError()));
                         } else {
@@ -440,12 +489,15 @@ public class DefaultXpringClientTest {
     /**
      * Make a GetTxResponse.
      */
-    private Tx.GetTxResponse makeTransactionStatus(Boolean validated, String result) {
+    private GetTxResponse makeTransactionStatus(Boolean validated, String result) {
         TransactionResult transactionResult = TransactionResult.newBuilder()
                 .setResult(result)
                 .build();
         Meta meta = Meta.newBuilder().setTransactionResult(transactionResult).build();
 
-        return Tx.GetTxResponse.newBuilder().setValidated(validated).setMeta(meta).build();
+        Payment payment = Payment.newBuilder().build();
+        Transaction transaction = Transaction.newBuilder().setPayment(payment).build();
+
+        return GetTxResponse.newBuilder().setValidated(validated).setMeta(meta).setTransaction(transaction).build();
     }
 }

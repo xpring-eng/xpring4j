@@ -108,6 +108,10 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
 
+        if (!transactionStatus.isFullPayment()) {
+            return TransactionStatus.UNKNOWN;
+        }
+
         // Return PENDING if the transaction is not validated.
         if (!transactionStatus.getValidated()) {
             return TransactionStatus.PENDING;
