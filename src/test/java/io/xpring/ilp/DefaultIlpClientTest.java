@@ -23,7 +23,6 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.GRPCResult;
-import io.xpring.ilp.DefaultIlpClient;
 import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -116,69 +115,99 @@ public class DefaultIlpClientTest {
 
   @Test
   public void minimalCreateIlpAccountTest() throws XpringException, IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
+
+    // WHEN an account is created with no parameters
     CreateAccountResponse createAccountResponse = client.createAccount();
+
+    // THEN the account settings returned are equal to the mocked response
     assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
   }
 
   @Test
   public void populatedCreateIlpAccountTest() throws IOException, XpringException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
 
+    // WHEN an account is created with ALL parameters set
     io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
       .build();
     CreateAccountResponse createAccountResponse = client.createAccount(createAccountRequest, Optional.of("password"));
+
+    // THEN the account settings returned are equal to the mocked response
     assertThat(createAccountResponse).isEqualTo(this.createAccountResponse);
   }
 
   @Test
   public void createAccountNoAuthYesRequest() throws XpringException, IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
+    DefaultIlpClient client = getClient();
+
+    // WHEN an account is created with a populated request but without an auth token
     io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
       .build();
-    DefaultIlpClient client = getClient();
     CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
+
+    // THEN the account settings returned are equal to the mocked response
     assertThat(response).isEqualTo(this.createAccountResponse);
   }
 
   @Test
   public void createAccountNoAuthNoAccountId() throws XpringException, IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
 
+    // WHEN an account is created with no auth token and no accountId
     io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
       .build();
     CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
+
+    // THEN the account settings returned are equal to the mocked response
     assertThat(response).isEqualTo(this.createAccountResponse);
   }
 
 
   @Test
   public void getIlpBalanceTest() throws XpringException, IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
+
+    // WHEN the balance is retrieved for "bob"
     GetBalanceResponse balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
 
+    // THEN the balance response is equal to the mocked response
     assertThat(balanceResponse).isEqualTo(this.getBalanceResponse);
   }
 
   @Test
   public void getAccountTest() throws IOException, XpringException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
+
+    // WHEN an account is retrieved
     GetAccountResponse response = client.getAccount("foo", "gobbledygook");
 
+    // THEN the account settings returned are equal to the mocked response
     assertThat(response).isEqualTo(this.getAccountResponse);
   }
 
   @Test
   public void sendPaymentTest() throws IOException, XpringException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
+
+    // WHEN a payment is sent
     SendPaymentResponse response = client.sendPayment("$foo.dev/bar",
       UnsignedLong.valueOf(1000),
       "baz",
       "gobbledygook");
 
+    // THEN the payment result is equal to the mocked response
     assertThat(response).isEqualTo(this.sendPaymentResponse);
   }
 
@@ -197,7 +226,6 @@ public class DefaultIlpClientTest {
   /**
    * Return a IlpClient which returns the given results for network calls.
    */
-
   private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse> getBalanceResult,
                                      GRPCResult<CreateAccountResponse> createAccountResponse,
                                      GRPCResult<SendPaymentResponse> sendPaymentResponse,
