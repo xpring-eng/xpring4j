@@ -244,7 +244,7 @@ public class DefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithPartialPayment() throws IOException, XpringException {
-        // GIVEN a XpringClient which will return a non-payment type transaction.
+        // GIVEN a XpringClient which will return a partial payment type transaction.
         Payment payment = Payment.newBuilder().build();
         Transaction transaction = Transaction.newBuilder()
                 .setPayment(payment)
