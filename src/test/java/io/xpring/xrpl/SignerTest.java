@@ -5,10 +5,10 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import org.xrpl.org.xrpl.rpc.v1.*;
-import org.xrpl.org.xrpl.rpc.v1.Common.*;
-import org.xrpl.org.xrpl.rpc.v1.Common.Account;
-import org.xrpl.org.xrpl.rpc.v1.Common.Amount;
+import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Common.*;
+import org.xrpl.rpc.v1.Common.Account;
+import org.xrpl.rpc.v1.Common.Amount;
 
 import static org.junit.Assert.assertArrayEquals;
 

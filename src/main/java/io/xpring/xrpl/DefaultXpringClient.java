@@ -5,11 +5,11 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xrpl.org.xrpl.rpc.v1.*;
-import org.xrpl.org.xrpl.rpc.v1.Common.*;
-import org.xrpl.org.xrpl.rpc.v1.Common.Account;
-import org.xrpl.org.xrpl.rpc.v1.Common.Amount;
-import org.xrpl.org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
+import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Common.*;
+import org.xrpl.rpc.v1.Common.Account;
+import org.xrpl.rpc.v1.Common.Amount;
+import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
 import java.util.Objects;

@@ -1,7 +1,7 @@
 package io.xpring.xrpl;
 
 import io.xpring.proto.TransactionStatus;
-import org.xrpl.org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.GetTransactionResponse;
 
 /** Encapsulates fields of a raw transaction status which is returned by the XRP Ledger. */
 public class RawTransactionStatus {
