@@ -15,20 +15,9 @@ import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.xpring.xrpl.XpringException;
-import rpc.v1.Amount.XRPDropsAmount;
-import rpc.v1.AccountInfo;
-import rpc.v1.FeeOuterClass.Fee;
-import rpc.v1.FeeOuterClass.GetFeeRequest;
-import rpc.v1.FeeOuterClass.GetFeeResponse;
-import rpc.v1.LedgerObjects.AccountRoot;
-import rpc.v1.MetaOuterClass.Meta;
-import rpc.v1.MetaOuterClass.TransactionResult;
-import rpc.v1.Submit.SubmitTransactionRequest;
-import rpc.v1.Submit.SubmitTransactionResponse;
-import rpc.v1.Tx;
-import rpc.v1.XRPLedgerAPIServiceGrpc;
-import rpc.v1.AccountInfo.GetAccountInfoResponse;
-
+import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Common.*;
+import org.xrpl.rpc.v1.Common.Amount;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -295,13 +284,13 @@ public class DefaultXpringClientTest {
 
     private DefaultXpringClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
-            GRPCResult<Tx.GetTxResponse> getTxResponseResult,
+            GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
             GRPCResult<GetFeeResponse> getFeeResult,
             GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
-                getTxResponseResult,
+                GetTransactionResponseResult,
                 getFeeResult,
                 submitTransactionResult
         );
@@ -327,14 +316,14 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<Tx.GetTxResponse> getTxResponseResult,
+        GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
         GRPCResult<GetFeeResponse> getFeeResult,
         GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {
                     @Override
-                    public void getAccountInfo(AccountInfo.GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
+                    public void getAccountInfo(GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
                         if (getAccountInfoResult.isError()) {
                             responseObserver.onError(getAccountInfoResult.getError());
                         } else {
@@ -344,11 +333,11 @@ public class DefaultXpringClientTest {
                     }
 
                     @Override
-                    public void getTx(Tx.GetTxRequest request, StreamObserver<Tx.GetTxResponse> responseObserver) {
-                        if (getTxResponseResult.isError()) {
-                            responseObserver.onError(getTxResponseResult.getError());
+                    public void getTransaction(GetTransactionRequest request, StreamObserver<GetTransactionResponse> responseObserver) {
+                        if (GetTransactionResponseResult.isError()) {
+                            responseObserver.onError(new Throwable(GetTransactionResponseResult.getError()));
                         } else {
-                            responseObserver.onNext(getTxResponseResult.getValue());
+                            responseObserver.onNext(GetTransactionResponseResult.getValue());
                             responseObserver.onCompleted();
                         }
                     }
@@ -392,27 +381,30 @@ public class DefaultXpringClientTest {
     private GetFeeResponse makeGetFeeResponse(long minimumFee, int lastLedgerSequence) {
         XRPDropsAmount minimumDrops = XRPDropsAmount.newBuilder().setDrops(minimumFee).build();
         Fee fee = Fee.newBuilder().setMinimumFee(minimumDrops).build();
-        return GetFeeResponse.newBuilder().setLedgerCurrentIndex(lastLedgerSequence).setDrops(fee).build();
+        return GetFeeResponse.newBuilder().setLedgerCurrentIndex(lastLedgerSequence).setFee(fee).build();
     }
 
     /**
      * Make an GetAccountInfoResponse protocol buffer with the given balance.
      */
     private GetAccountInfoResponse makeGetAccountInfoResponse(long balance) {
-        XRPDropsAmount accountBalance = XRPDropsAmount.newBuilder().setDrops(balance).build();
+        XRPDropsAmount xrpAccountBalance = XRPDropsAmount.newBuilder().setDrops(balance).build();
+        CurrencyAmount currencyAccountBalance = CurrencyAmount.newBuilder().setXrpAmount(xrpAccountBalance).build();
+        Balance accountBalance = Balance.newBuilder().setValue(currencyAccountBalance).build();
+
         AccountRoot accountData = AccountRoot.newBuilder().setBalance(accountBalance).build();
         return GetAccountInfoResponse.newBuilder().setAccountData(accountData).build();
     }
 
     /**
-     * Make a GetTxResponse.
+     * Make a GetTransactionResponse.
      */
-    private Tx.GetTxResponse makeTransactionStatus(Boolean validated, String result) {
+    private GetTransactionResponse makeTransactionStatus(Boolean validated, String result) {
         TransactionResult transactionResult = TransactionResult.newBuilder()
                 .setResult(result)
                 .build();
         Meta meta = Meta.newBuilder().setTransactionResult(transactionResult).build();
 
-        return Tx.GetTxResponse.newBuilder().setValidated(validated).setMeta(meta).build();
+        return GetTransactionResponse.newBuilder().setValidated(validated).setMeta(meta).build();
     }
 }
