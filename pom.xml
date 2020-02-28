@@ -325,28 +325,10 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>Compile rippled protocol buffers - only account </id>
+                        <id>Compile rippled protocol buffers</id>
                         <configuration>
                             <clearOutputDirectory>false</clearOutputDirectory>
                             <protoSourceRoot>${project.basedir}/rippled/src/ripple/proto</protoSourceRoot>
-                        </configuration>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>compile-custom</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>Compile rippled protocol buffers - Exclude common </id>
-                        <configuration>
-                            <clearOutputDirectory>false</clearOutputDirectory>
-                            <protoSourceRoot>${project.basedir}/rippled/src/ripple/proto</protoSourceRoot>
-                            <excludes>
-                                <exclude>org/xrpl/rpc/v1/amount.proto</exclude>
-                                <exclude>org/xrpl/rpc/v1/account.proto</exclude>
-                                <exclude>org/xrpl/rpc/v1/common.proto</exclude>
-                            </excludes>
-                            <writeDescriptorSet>true</writeDescriptorSet>
                         </configuration>
                         <goals>
                             <goal>compile</goal>
