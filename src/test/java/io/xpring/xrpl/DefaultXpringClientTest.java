@@ -27,9 +27,9 @@ import java.util.Optional;
  */
 class GRPCResult<T> {
     private Optional<T> value;
-    private Optional<String> error;
+    private Optional<Throwable> error;
 
-    private GRPCResult(T value, String error) {
+    private GRPCResult(T value, Throwable error) {
         this.value = Optional.ofNullable(value);
         this.error = Optional.ofNullable(error);
     }
@@ -38,7 +38,7 @@ class GRPCResult<T> {
         return new GRPCResult<>(value, null);
     }
 
-    public static <U> GRPCResult<U> error(String error) {
+    public static <U> GRPCResult<U> error(Throwable error) {
         return new GRPCResult<>(null, error);
     }
 
@@ -50,7 +50,7 @@ class GRPCResult<T> {
         return value.get();
     }
 
-    public String getError() {
+    public Throwable getError() {
         return error.get();
     }
 }
@@ -74,7 +74,7 @@ public class DefaultXpringClientTest {
     /** Mocked values in responses from the gRPC server. */
     private static final long DROPS_OF_XRP_IN_ACCOUNT = 10;
     private static final String TRANSACTION_BLOB = "DEADBEEF";
-    private static final String GENERIC_ERROR = "Mocked network error";
+    private static final Throwable GENERIC_ERROR = new Throwable("Mocked network error");
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
     private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
             "tefFAILURE",
@@ -358,7 +358,7 @@ public class DefaultXpringClientTest {
                     @Override
                     public void getAccountInfo(GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
                         if (getAccountInfoResult.isError()) {
-                            responseObserver.onError(new Throwable(getAccountInfoResult.getError()));
+                            responseObserver.onError(getAccountInfoResult.getError());
                         } else {
                             responseObserver.onNext(getAccountInfoResult.getValue());
                             responseObserver.onCompleted();
@@ -379,7 +379,7 @@ public class DefaultXpringClientTest {
                     public void getFee(GetFeeRequest request,
                                        StreamObserver<GetFeeResponse> responseObserver) {
                         if (getFeeResult.isError()) {
-                            responseObserver.onError(new Throwable(getFeeResult.getError()));
+                            responseObserver.onError(getFeeResult.getError());
                         } else {
                             responseObserver.onNext(getFeeResult.getValue());
                             responseObserver.onCompleted();
@@ -390,7 +390,7 @@ public class DefaultXpringClientTest {
                     public void submitTransaction(SubmitTransactionRequest request,
                                                   StreamObserver<SubmitTransactionResponse> responseObserver) {
                         if (submitTransactionResult.isError()) {
-                            responseObserver.onError(new Throwable(submitTransactionResult.getError()));
+                            responseObserver.onError(submitTransactionResult.getError());
                         } else {
                             responseObserver.onNext(submitTransactionResult.getValue());
                             responseObserver.onCompleted();
