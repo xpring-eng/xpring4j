@@ -10,7 +10,7 @@ import java.math.BigInteger;
 /**
  * Integration tests for Xpring4J.
  */
-public class IntegrationTests {
+public class XpringClientIntegrationTests {
     /** The legacy XpringClient under test. */
     private XpringClient legacyXpringClient;
 
