@@ -1,7 +1,7 @@
 package io.xpring.xrpl;
 
 import java.math.BigInteger;
-import io.xpring.xrpl.legacy.LegacyDefaultXpringClient;
+import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
