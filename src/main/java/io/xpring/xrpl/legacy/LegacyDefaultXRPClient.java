@@ -8,7 +8,7 @@ import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XpringClientDecorator;
+import io.xpring.xrpl.XRPClientDecorator;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
