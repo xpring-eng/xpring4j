@@ -10,9 +10,9 @@ public enum RippledFlags {
     TF_PARTIAL_PAYMENT(131072);
 
     /** The value of the flag. */
-    public final Integer value;
+    public final int value;
 
-    RippledFlags(Integer value) {
+    RippledFlags(int value) {
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public enum RippledFlags {
      * @param flags The flags to check
      * @return A boolean indicating if the flag was present.
      */
-    public static boolean check(RippledFlags flag, Integer flags) {
+    public static boolean check(RippledFlags flag, int flags) {
         return (flag.value & flags) == flag.value;
     }
 }
