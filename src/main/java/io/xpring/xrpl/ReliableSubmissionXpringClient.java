@@ -60,4 +60,9 @@ public class ReliableSubmissionXpringClient implements XpringClientDecorator {
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
     }
+
+    @Override
+    public Transaction[] getTransactionHistory(String address) throws XpringException {
+        return this.decoratedClient.getTransactionHistory(address);
+    }
 }

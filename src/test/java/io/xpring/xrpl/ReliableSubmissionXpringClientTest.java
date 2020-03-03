@@ -36,6 +36,9 @@ public class ReliableSubmissionXpringClientTest {
                     setLastLedgerSequence(LAST_LEDGER_SEQUENCE).
                     build()
     );
+    private static final Transaction [] DEFAULT_TRANSACTION_HISTORY_VALUE = {
+            ImmutableTransaction.builder().build()
+    };
 
     FakeXpringClient fakeXpringClient;
     ReliableSubmissionXpringClient reliableSubmissionXpringClient;
@@ -49,7 +52,8 @@ public class ReliableSubmissionXpringClientTest {
                 DEFAULT_TRANSACTION_STATUS_VALUE,
                 DEFAULT_SEND_VALUE,
                 DEFAULT_LATEST_LEDGER_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE
+                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
+                DEFAULT_TRANSACTION_HISTORY_VALUE
         );
 
         this.reliableSubmissionXpringClient = new ReliableSubmissionXpringClient(fakeXpringClient);
@@ -90,6 +94,15 @@ public class ReliableSubmissionXpringClientTest {
 
         // THEN the result is returned unaltered.
         assertThat(transactionStatus).isEqualTo(DEFAULT_RAW_TRANSACTION_STATUS_VALUE);
+    }
+
+    @Test
+    public void testGetRawTransactionHistory() throws XpringException {
+        // GIVEN a `ReliableSubmissionClient` decorating a FakeXpringClient WHEN transaction history is retrieved
+        Transaction [] transactionHistory = reliableSubmissionXpringClient.getTransactionHistory(XRPL_ADDRESS);
+
+        // THEN the result is returned unaltered.
+        assertThat(transactionHistory).isEqualTo(DEFAULT_TRANSACTION_HISTORY_VALUE);
     }
 
     @Test(timeout=10000)

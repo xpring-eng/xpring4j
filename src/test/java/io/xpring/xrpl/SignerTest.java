@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.Common.*;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.Amount;

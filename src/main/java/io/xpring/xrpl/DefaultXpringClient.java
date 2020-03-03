@@ -6,14 +6,17 @@ import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.Common.*;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.Amount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -204,6 +207,41 @@ public class DefaultXpringClient implements XpringClientDecorator {
         return new RawTransactionStatus(response);
     }
 
+    /**
+     * Retrieve the transaction history for an address.
+     *
+     * @param address: The address to retrieve transaction history for.
+     * @return: An array of {@link io.xpring.xrpl.Transaction}s for the account.
+     * @throws XpringException If the given inputs were invalid.
+     */
+    @Override
+    public io.xpring.xrpl.Transaction [] getTransactionHistory(String address) throws XpringException {
+        Objects.requireNonNull(address);
+
+        if (!Utils.isValidXAddress(address)) {
+            throw XpringException.xAddressRequiredException;
+        }
+
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        AccountAddress account = AccountAddress.newBuilder().setAddress(address).build();
+        GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
+                .setAccount(account)
+                .build();
+
+        GetAccountTransactionHistoryResponse response = this.stub.getAccountTransactionHistory(request);
+
+        List<GetTransactionResponse> getTransactionResponseList = response.getTransactionsList();
+
+        List<ImmutableTransaction> transactionsList = getTransactionResponseList.stream()
+                .map(DefaultXpringClient::getTransactionResponseToImmutableTransaction)
+                .collect(Collectors.toList());
+
+        ImmutableTransaction [] transactions = new ImmutableTransaction[transactionsList.size()];
+        transactions = transactionsList.toArray(transactions);
+        return transactions;
+    }
+
     private XRPDropsAmount getMinimumFee() {
         return this.getFeeResponse().getFee().getMinimumFee();
     }
@@ -220,5 +258,18 @@ public class DefaultXpringClient implements XpringClientDecorator {
         GetAccountInfoResponse response = this.stub.getAccountInfo(request);
 
         return response.getAccountData();
+    }
+
+    // TODO(keefertaylor): Refactor this method to be in a common place so that tests can access it.
+    /**
+     * Convert a {@link GetTransactionResponse} to an {@link ImmutableTransaction}.
+     *
+     * @param getTransactionResponse  The input object to convert.
+     * @return The associated {@link ImmutableTransaction}.
+     */
+    private static ImmutableTransaction getTransactionResponseToImmutableTransaction(
+            GetTransactionResponse getTransactionResponse
+    ) {
+        return ImmutableTransaction.builder().build();
     }
 }

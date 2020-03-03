@@ -53,4 +53,13 @@ public interface XpringClientDecorator {
      * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
      */
     RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException;
+
+    /**
+     * Retrieve the transaction history for an address.
+     *
+     * @param address: The address to retrieve transaction history for.
+     * @return: An array of {@link Transaction}s for the account.
+     * @throws XpringException If the given inputs were invalid.
+     */
+    Transaction [] getTransactionHistory(String address) throws XpringException;
 }

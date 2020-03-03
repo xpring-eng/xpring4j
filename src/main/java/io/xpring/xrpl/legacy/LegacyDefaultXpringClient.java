@@ -5,6 +5,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.xpring.proto.*;
 import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
 import io.xpring.xrpl.RawTransactionStatus;
+import io.xpring.xrpl.Transaction;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
@@ -132,7 +133,7 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
         BigInteger currentFeeInDrops = this.getCurrentFeeInDrops();
         int lastValidatedLedgerSequence = this.getLatestValidatedLedgerSequence();
 
-        Transaction transaction = Transaction.newBuilder()
+        io.xpring.proto.Transaction transaction = io.xpring.proto.Transaction.newBuilder()
                 .setAccount(sourceWallet.getAddress())
                 .setFee(XRPAmount.newBuilder().setDrops(currentFeeInDrops.toString()).build())
                 .setSequence(accountInfo.getSequence())
@@ -197,5 +198,16 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
 
         io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
         return new RawTransactionStatus(transactionStatus);
+    }
+
+    /**
+     * Retrieve the transaction history for an address.
+     *
+     * @param address: The address to retrieve transaction history for.
+     * @return: An array of {@link io.xpring.xrpl.Transaction}s for the account.
+     * @throws XpringException If the given inputs were invalid.
+     */
+    public Transaction[] getTransactionHistory(String address) throws XpringException {
+        throw XpringException.unimplemented;
     }
 }
