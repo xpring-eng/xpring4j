@@ -178,7 +178,7 @@ public class DefaultXpringClientTest {
     public void transactionStatusWithUnsupportedTransactionType() throws IOException, XpringException {
         // GIVEN a XpringClient which will return a non-payment type transaction.
         Transaction transaction = Transaction.newBuilder().clearPayment().build();
-        GetTxResponse getTxResponse = GetTxResponse.newBuilder().setTransaction(transaction).build();
+        GetTransactionResponse getTxResponse = GetTransactionResponse.newBuilder().setTransaction(transaction).build();
 
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -199,11 +199,12 @@ public class DefaultXpringClientTest {
     public void transactionStatusWithPartialPayment() throws IOException, XpringException {
         // GIVEN a XpringClient which will return a partial payment type transaction.
         Payment payment = Payment.newBuilder().build();
+        Flags flags = Flags.newBuilder().setValue(RippledFlags.TF_PARTIAL_PAYMENT.value).build();
         Transaction transaction = Transaction.newBuilder()
                 .setPayment(payment)
-                .setFlags(RippledFlags.TF_PARTIAL_PAYMENT.value)
+                .setFlags(flags)
                 .build();
-        GetTxResponse getTxResponse = GetTxResponse.newBuilder().setTransaction(transaction).build();
+        GetTransactionResponse getTxResponse = GetTransactionResponse.newBuilder().setTransaction(transaction).build();
 
         DefaultXpringClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -362,7 +363,7 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
+        GRPCResult<GetTransactionResponse> getTransactionResponseResult,
         GRPCResult<GetFeeResponse> getFeeResult,
         GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) {
@@ -380,10 +381,10 @@ public class DefaultXpringClientTest {
 
                     @Override
                     public void getTransaction(GetTransactionRequest request, StreamObserver<GetTransactionResponse> responseObserver) {
-                        if (GetTransactionResponseResult.isError()) {
-                            responseObserver.onError(new Throwable(getTxResponseResult.getError()));
+                        if (getTransactionResponseResult.isError()) {
+                            responseObserver.onError(new Throwable(getTransactionResponseResult.getError()));
                         } else {
-                            responseObserver.onNext(GetTransactionResponseResult.getValue());
+                            responseObserver.onNext(getTransactionResponseResult.getValue());
                             responseObserver.onCompleted();
                         }
                     }
