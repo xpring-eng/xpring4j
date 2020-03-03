@@ -7,7 +7,7 @@ import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptLoader;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
-import rpc.v1.TransactionOuterClass.Transaction;
+import org.xrpl.rpc.v1.Transaction;
 
 /** Provides JavaScript based Signing functionality. */
 public class JavaScriptSigner {
