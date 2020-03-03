@@ -28,7 +28,7 @@ public class RawTransactionStatus {
      * @param getTransactionResponse The {@link GetTransactionResponse} to encapsulate.
      */
     public RawTransactionStatus(GetTransactionResponse getTransactionResponse) {
-        Transaction transaction = getTransactionResponse.getTransaction();
+        org.xrpl.rpc.v1.Transaction transaction = getTransactionResponse.getTransaction();
 
         this.validated = getTransactionResponse.getValidated();
         this.transactionStatusCode = getTransactionResponse.getMeta().getTransactionResult().getResult();

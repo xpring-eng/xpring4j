@@ -3,6 +3,7 @@ package io.xpring.xrpl;
 import io.xpring.proto.TransactionStatus;
 import org.junit.Test;
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.Common.*;
 
 import static org.junit.Assert.*;
