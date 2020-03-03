@@ -175,6 +175,53 @@ public class DefaultXpringClientTest {
     }
 
     @Test
+    public void transactionStatusWithUnsupportedTransactionType() throws IOException, XpringException {
+        // GIVEN a XpringClient which will return a non-payment type transaction.
+        Transaction transaction = Transaction.newBuilder().clearPayment().build();
+        GetTransactionResponse getTxResponse = GetTransactionResponse.newBuilder().setTransaction(transaction).build();
+
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(getTxResponse),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+
+
+        // THEN the status is UNKNOWN.
+        assertThat(transactionStatus).isEqualTo(TransactionStatus.UNKNOWN);
+    }
+
+    @Test
+    public void transactionStatusWithPartialPayment() throws IOException, XpringException {
+        // GIVEN a XpringClient which will return a partial payment type transaction.
+        Payment payment = Payment.newBuilder().build();
+        Flags flags = Flags.newBuilder().setValue(RippledFlags.TF_PARTIAL_PAYMENT.value).build();
+        Transaction transaction = Transaction.newBuilder()
+                .setPayment(payment)
+                .setFlags(flags)
+                .build();
+        GetTransactionResponse getTxResponse = GetTransactionResponse.newBuilder().setTransaction(transaction).build();
+
+        DefaultXpringClient client = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(getTxResponse),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+
+
+        // THEN the status is UNKNOWN.
+        assertThat(transactionStatus).isEqualTo(TransactionStatus.UNKNOWN);
+    }
+
+    @Test
     public void transactionStatusWithNodeError() throws IOException, XpringException {
         // GIVEN a XpringClient which will error when a transaction status is requested..
         DefaultXpringClient client = getClient(
@@ -316,7 +363,7 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
+        GRPCResult<GetTransactionResponse> getTransactionResponseResult,
         GRPCResult<GetFeeResponse> getFeeResult,
         GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) {
@@ -334,10 +381,10 @@ public class DefaultXpringClientTest {
 
                     @Override
                     public void getTransaction(GetTransactionRequest request, StreamObserver<GetTransactionResponse> responseObserver) {
-                        if (GetTransactionResponseResult.isError()) {
-                            responseObserver.onError(new Throwable(GetTransactionResponseResult.getError()));
+                        if (getTransactionResponseResult.isError()) {
+                            responseObserver.onError(new Throwable(getTransactionResponseResult.getError()));
                         } else {
-                            responseObserver.onNext(GetTransactionResponseResult.getValue());
+                            responseObserver.onNext(getTransactionResponseResult.getValue());
                             responseObserver.onCompleted();
                         }
                     }
@@ -405,6 +452,9 @@ public class DefaultXpringClientTest {
                 .build();
         Meta meta = Meta.newBuilder().setTransactionResult(transactionResult).build();
 
-        return GetTransactionResponse.newBuilder().setValidated(validated).setMeta(meta).build();
+        Payment payment = Payment.newBuilder().build();
+        Transaction transaction = Transaction.newBuilder().setPayment(payment).build();
+
+        return GetTransactionResponse.newBuilder().setValidated(validated).setMeta(meta).setTransaction(transaction).build();
     }
 }
