@@ -1,8 +1,7 @@
 package io.xpring.xrpl;
 
 import io.xpring.proto.TransactionStatus;
-import rpc.v1.TransactionOuterClass.Transaction;
-import rpc.v1.Tx.GetTxResponse;
+import org.xrpl.rpc.v1.*;
 
 /** Encapsulates fields of a raw transaction status which is returned by the XRP Ledger. */
 public class RawTransactionStatus {
@@ -24,19 +23,19 @@ public class RawTransactionStatus {
     }
 
     /**
-     * Create a new RawTransactionStatus from a {@link GetTxResponse} protocol buffer.
+     * Create a new RawTransactionStatus from a {@link GetTransactionResponse} protocol buffer.
      *
-     * @param getTxResponse The {@link GetTxResponse} to encapsulate.
+     * @param getTransactionResponse The {@link GetTransactionResponse} to encapsulate.
      */
-    public RawTransactionStatus(GetTxResponse getTxResponse) {
-        Transaction transaction = getTxResponse.getTransaction();
+    public RawTransactionStatus(GetTransactionResponse getTransactionResponse) {
+        Transaction transaction = getTransactionResponse.getTransaction();
 
-        this.validated = getTxResponse.getValidated();
-        this.transactionStatusCode = getTxResponse.getMeta().getTransactionResult().getResult();
-        this.lastLedgerSequence = transaction.getLastLedgerSequence();
+        this.validated = getTransactionResponse.getValidated();
+        this.transactionStatusCode = getTransactionResponse.getMeta().getTransactionResult().getResult();
+        this.lastLedgerSequence = transaction.getLastLedgerSequence().getValue();
 
         boolean isPayment = transaction.hasPayment();
-        int flags = transaction.getFlags();
+        int flags = transaction.getFlags().getValue();
 
         boolean isPartialPayment = RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags);
 

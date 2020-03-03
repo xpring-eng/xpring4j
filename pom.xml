@@ -16,10 +16,11 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <grpc.version>1.27.1</grpc.version>
+        <grpc.version>1.27.2</grpc.version>
         <protobuf.version>3.11.4</protobuf.version>
         <slf4j.version>1.7.30</slf4j.version>
         <graalvm.version>20.0.0</graalvm.version>
+        <testcontainers.version>1.12.5</testcontainers.version>
         <!-- org.apache.maven.plugins:maven-checkstyle-plugin -->
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <checkstyle.violationSeverity>error</checkstyle.violationSeverity>
@@ -27,6 +28,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!--    mvn clean install = run UT and IT    -->
+        <!--    mvn clean install -DskipTests = don't run UT or IT    -->
+        <!--    mvn clean install -DskipITs = run UT but NOT IT    -->
+        <!--    mvn clean install -DskipTests -PintegrationTests = run IT but NOT UT    -->
+        <skipITs>false</skipITs>
     </properties>
 
     <scm>
@@ -125,6 +132,11 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -191,7 +203,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -203,6 +215,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${testcontainers.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -245,7 +263,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>8.29</version>
+                        <version>8.30</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -263,7 +281,35 @@
                 <version>2.22.2</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
+                    <excludes>
+                        <exclude>**/IlpIntegrationTests.java</exclude>
+                    </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <skipITs>${skipITs}</skipITs>
+                    <argLine>${failsafe.argLine}</argLine>
+                    <includes>
+                        <include>**/IlpIntegrationTests.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/DefaultIlpClientTest.java</exclude>
+                        <exclude>**/xrpl*/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -336,6 +382,18 @@
                             <goal>test-compile</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>Compile Hermes protocol buffers</id>
+                        <configuration>
+                            <clearOutputDirectory>false</clearOutputDirectory>
+                            <protoSourceRoot>${project.basedir}/hermes-ilp/protocol-buffers/proto</protoSourceRoot>
+                        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -399,6 +457,38 @@
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>integrationTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.0.0-M4</version>
+                        <configuration>
+                            <skipITs>false</skipITs>
+                            <argLine>${failsafe.argLine}</argLine>
+                            <includes>
+                                <include>**/IlpIntegrationTests.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/DefaultIlpClientTest.java</exclude>
+                                <exclude>**/xrpl*/**</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-tests</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
                                 </goals>
                             </execution>
                         </executions>

@@ -2,7 +2,7 @@ package io.xpring.xrpl;
 
 import io.xpring.xrpl.javascript.JavaScriptSigner;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
-import rpc.v1.TransactionOuterClass.Transaction;
+import org.xrpl.rpc.v1.Transaction;
 
 
 public class Signer {

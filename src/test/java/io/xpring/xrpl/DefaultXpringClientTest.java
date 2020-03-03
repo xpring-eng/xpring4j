@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
+import io.xpring.GRPCResult;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,61 +14,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.xpring.xrpl.XpringException;	
-import rpc.v1.Amount.XRPDropsAmount;
-import rpc.v1.AccountInfo;
-import rpc.v1.FeeOuterClass.Fee;
-import rpc.v1.FeeOuterClass.GetFeeRequest;
-import rpc.v1.FeeOuterClass.GetFeeResponse;
-import rpc.v1.LedgerObjects.AccountRoot;
-import rpc.v1.MetaOuterClass.Meta;
-import rpc.v1.MetaOuterClass.TransactionResult;
-import rpc.v1.Submit.SubmitTransactionRequest;
-import rpc.v1.Submit.SubmitTransactionResponse;
-import rpc.v1.TransactionOuterClass.Payment;
-import rpc.v1.TransactionOuterClass.Transaction;
-import rpc.v1.Tx.GetTxRequest;
-import rpc.v1.Tx.GetTxResponse;
-import rpc.v1.XRPLedgerAPIServiceGrpc;
-import rpc.v1.AccountInfo.GetAccountInfoResponse;
-
+import io.xpring.xrpl.XpringException;
+import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Common.*;
+import org.xrpl.rpc.v1.Common.Amount;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Optional;
-
-
-/**
- * Represents the result of a gRPC network call for an object of type T or an error.
- */
-class GRPCResult<T> {
-    private Optional<T> value;
-    private Optional<String> error;
-
-    private GRPCResult(T value, String error) {
-        this.value = Optional.ofNullable(value);
-        this.error = Optional.ofNullable(error);
-    }
-
-    public static <U> GRPCResult<U> ok(U value) {
-        return new GRPCResult<>(value, null);
-    }
-
-    public static <U> GRPCResult<U> error(String error) {
-        return new GRPCResult<>(null, error);
-    }
-
-    public boolean isError() {
-        return error.isPresent();
-    }
-
-    public T getValue() {
-        return value.get();
-    }
-
-    public String getError() {
-        return error.get();
-    }
-}
 
 /**
  * Unit tests for {@link DefaultXpringClient}.
@@ -88,7 +41,7 @@ public class DefaultXpringClientTest {
     /** Mocked values in responses from the gRPC server. */
     private static final long DROPS_OF_XRP_IN_ACCOUNT = 10;
     private static final String TRANSACTION_BLOB = "DEADBEEF";
-    private static final String GENERIC_ERROR = "Mocked network error";
+    private static final Throwable GENERIC_ERROR = new Throwable("Mocked network error");
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
     private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
             "tefFAILURE",
@@ -377,13 +330,13 @@ public class DefaultXpringClientTest {
 
     private DefaultXpringClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
-            GRPCResult<GetTxResponse> getTxResponseResult,
+            GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
             GRPCResult<GetFeeResponse> getFeeResult,
             GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
-                getTxResponseResult,
+                GetTransactionResponseResult,
                 getFeeResult,
                 submitTransactionResult
         );
@@ -409,16 +362,16 @@ public class DefaultXpringClientTest {
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<GetTxResponse> getTxResponseResult,
+        GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
         GRPCResult<GetFeeResponse> getFeeResult,
         GRPCResult<SubmitTransactionResponse> submitTransactionResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {
                     @Override
-                    public void getAccountInfo(AccountInfo.GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
+                    public void getAccountInfo(GetAccountInfoRequest request, StreamObserver<GetAccountInfoResponse> responseObserver) {
                         if (getAccountInfoResult.isError()) {
-                            responseObserver.onError(new Throwable(getAccountInfoResult.getError()));
+                            responseObserver.onError(getAccountInfoResult.getError());
                         } else {
                             responseObserver.onNext(getAccountInfoResult.getValue());
                             responseObserver.onCompleted();
@@ -426,11 +379,11 @@ public class DefaultXpringClientTest {
                     }
 
                     @Override
-                    public void getTx(GetTxRequest request, StreamObserver<GetTxResponse> responseObserver) {
-                        if (getTxResponseResult.isError()) {
+                    public void getTransaction(GetTransactionRequest request, StreamObserver<GetTransactionResponse> responseObserver) {
+                        if (GetTransactionResponseResult.isError()) {
                             responseObserver.onError(new Throwable(getTxResponseResult.getError()));
                         } else {
-                            responseObserver.onNext(getTxResponseResult.getValue());
+                            responseObserver.onNext(GetTransactionResponseResult.getValue());
                             responseObserver.onCompleted();
                         }
                     }
@@ -439,7 +392,7 @@ public class DefaultXpringClientTest {
                     public void getFee(GetFeeRequest request,
                                        StreamObserver<GetFeeResponse> responseObserver) {
                         if (getFeeResult.isError()) {
-                            responseObserver.onError(new Throwable(getFeeResult.getError()));
+                            responseObserver.onError(getFeeResult.getError());
                         } else {
                             responseObserver.onNext(getFeeResult.getValue());
                             responseObserver.onCompleted();
@@ -450,7 +403,7 @@ public class DefaultXpringClientTest {
                     public void submitTransaction(SubmitTransactionRequest request,
                                                   StreamObserver<SubmitTransactionResponse> responseObserver) {
                         if (submitTransactionResult.isError()) {
-                            responseObserver.onError(new Throwable(submitTransactionResult.getError()));
+                            responseObserver.onError(submitTransactionResult.getError());
                         } else {
                             responseObserver.onNext(submitTransactionResult.getValue());
                             responseObserver.onCompleted();
@@ -474,22 +427,25 @@ public class DefaultXpringClientTest {
     private GetFeeResponse makeGetFeeResponse(long minimumFee, int lastLedgerSequence) {
         XRPDropsAmount minimumDrops = XRPDropsAmount.newBuilder().setDrops(minimumFee).build();
         Fee fee = Fee.newBuilder().setMinimumFee(minimumDrops).build();
-        return GetFeeResponse.newBuilder().setLedgerCurrentIndex(lastLedgerSequence).setDrops(fee).build();
+        return GetFeeResponse.newBuilder().setLedgerCurrentIndex(lastLedgerSequence).setFee(fee).build();
     }
 
     /**
      * Make an GetAccountInfoResponse protocol buffer with the given balance.
      */
     private GetAccountInfoResponse makeGetAccountInfoResponse(long balance) {
-        XRPDropsAmount accountBalance = XRPDropsAmount.newBuilder().setDrops(balance).build();
+        XRPDropsAmount xrpAccountBalance = XRPDropsAmount.newBuilder().setDrops(balance).build();
+        CurrencyAmount currencyAccountBalance = CurrencyAmount.newBuilder().setXrpAmount(xrpAccountBalance).build();
+        Balance accountBalance = Balance.newBuilder().setValue(currencyAccountBalance).build();
+
         AccountRoot accountData = AccountRoot.newBuilder().setBalance(accountBalance).build();
         return GetAccountInfoResponse.newBuilder().setAccountData(accountData).build();
     }
 
     /**
-     * Make a GetTxResponse.
+     * Make a GetTransactionResponse.
      */
-    private GetTxResponse makeTransactionStatus(Boolean validated, String result) {
+    private GetTransactionResponse makeTransactionStatus(Boolean validated, String result) {
         TransactionResult transactionResult = TransactionResult.newBuilder()
                 .setResult(result)
                 .build();
@@ -498,6 +454,6 @@ public class DefaultXpringClientTest {
         Payment payment = Payment.newBuilder().build();
         Transaction transaction = Transaction.newBuilder().setPayment(payment).build();
 
-        return GetTxResponse.newBuilder().setValidated(validated).setMeta(meta).setTransaction(transaction).build();
+        return GetTransactionResponse.newBuilder().setValidated(validated).setMeta(meta).setTransaction(transaction).build();
     }
 }
