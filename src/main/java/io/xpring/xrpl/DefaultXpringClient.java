@@ -87,6 +87,9 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * Retrieve the transaction status for a given transaction hash.
      *
+     * Note: This API will return UNKNOWN for any transaction that is not a Payment transaction or has the
+     * tfPartialPayment flag set.
+     *
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */

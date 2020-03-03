@@ -34,7 +34,7 @@ Xpring4j is available as a Java library from Maven Central. Simply add the follo
 
 Xpring SDK needs to communicate with a rippled node which has gRPC enabled. Consult the [rippled documentation](https://github.com/ripple/rippled#build-from-source) for details on how to build your own node.
 
-To get developers started right away, Xpring currently hosts nodes. These nodes are provided on a best effort basis, and may be subject to downtime. 
+To get developers started right away, Xpring currently hosts nodes. These nodes are provided on a best effort basis, and may be subject to downtime.
 
 ```
 # TestNet
@@ -168,13 +168,13 @@ System.out.println(balance); // Logs a balance in drops of XRP
 
 ### Checking Transaction Status
 
-A `XpringClient` can check the status of an transaction on the XRP Ledger.
+A `XpringClient` can check the status of an payment on the XRP Ledger. This API is only compatible with [payment transactions](https://xrpl.org/payment.html) which do not have the [partial payment flag](https://xrpl.org/payment.html#payment-flags) set. 
 
 Xpring4J returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
 - `FAILED:` The transaction was successfully validated but not applied to the XRP Ledger. Or the operation will never be validated.
 - `PENDING`: The transaction has not yet been validated, but may be validated in the future.
-- `UNKNOWN`: The transaction status could not be determined.
+- `UNKNOWN`: The transaction status could not be determined or the transaction hash referenced a non-payment transaction.
 
 **Note:** For more information, see [Reliable Transaction Submission](https://xrpl.org/reliable-transaction-submission.html) and [Transaction Results](https://xrpl.org/transaction-results.html).
 
