@@ -233,13 +233,9 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         List<GetTransactionResponse> getTransactionResponseList = response.getTransactionsList();
 
-        List<ImmutableTransaction> transactionsList = getTransactionResponseList.stream()
+        return getTransactionResponseList.stream()
                 .map(DefaultXpringClient::getTransactionResponseToImmutableTransaction)
-                .collect(Collectors.toList());
-
-        ImmutableTransaction [] transactions = new ImmutableTransaction[transactionsList.size()];
-        transactions = transactionsList.toArray(transactions);
-        return transactions;
+                .toArray(size -> new ImmutableTransaction[size]);
     }
 
     private XRPDropsAmount getMinimumFee() {
