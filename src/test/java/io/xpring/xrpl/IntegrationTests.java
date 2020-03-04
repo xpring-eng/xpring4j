@@ -31,7 +31,7 @@ public class IntegrationTests {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     /** Hash of a successful transaction. */
-    private static final String TRANSACTION_HASH = "4E732C5748DE722C7598CEB76350FCD6269ACBE5D641A5BCF0721150EF6E2C9F";
+    private static final String TRANSACTION_HASH = "24E31668208A3165E6C702CDA66425808EAD670EABCBFA6C4403FFA93500D486";
 
     @Before
     public void setUp() throws Exception {
