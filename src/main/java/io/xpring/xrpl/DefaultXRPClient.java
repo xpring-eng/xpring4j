@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @see "https://xrpl.org"
  */
-public class DefaultXpringClient implements XpringClientDecorator {
+public class DefaultXRPClient implements XRPClientDecorator {
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int MAX_LEDGER_VERSION_OFFSET = 10;
 
@@ -32,7 +32,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * No-args Constructor.
      */
-    public DefaultXpringClient(String grpcURL) {
+    public DefaultXRPClient(String grpcURL) {
         this(ManagedChannelBuilder
                 .forTarget(grpcURL)
                 .usePlaintext()
@@ -45,7 +45,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
      *
      * @param channel A {@link ManagedChannel}.
      */
-    DefaultXpringClient(final ManagedChannel channel) {
+    DefaultXRPClient(final ManagedChannel channel) {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
         this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
