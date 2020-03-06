@@ -23,17 +23,17 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 /**
- * Unit tests for {@link DefaultXpringClient}.
+ * Unit tests for {@link DefaultXRPClient}.
  */
-public class DefaultXpringClientTest {
+public class DefaultXRPClientTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
-    /** The DefaultXpringClient under test. */
-    private DefaultXpringClient client;
+    /** The DefaultXRPClient under test. */
+    private DefaultXRPClient client;
 
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
@@ -62,8 +62,8 @@ public class DefaultXpringClientTest {
 
     @Test
     public void getBalanceTest() throws IOException, XpringException {
-        // GIVEN a DefaultXpringClient with mocked networking which will succeed.
-        DefaultXpringClient client = getClient();
+        // GIVEN a DefaultXRPClient with mocked networking which will succeed.
+        DefaultXRPClient client = getClient();
 
         // WHEN the balance is retrieved.
         BigInteger balance = client.getBalance(XRPL_ADDRESS);
@@ -76,7 +76,7 @@ public class DefaultXpringClientTest {
     public void getBalanceWithClassicAddressTest() throws IOException, XpringException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
-        DefaultXpringClient client = getClient();
+        DefaultXRPClient client = getClient();
 
         // WHEN the balance for the classic address is retrieved THEN an error is thrown.
         expectedException.expect(XpringException.class);
@@ -85,9 +85,9 @@ public class DefaultXpringClientTest {
 
     @Test
     public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
+        // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
-        DefaultXpringClient client = getClient(
+        DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -104,8 +104,8 @@ public class DefaultXpringClientTest {
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-            // GIVEN a XpringClient which will return an unvalidated transaction with a failed code.
-            DefaultXpringClient client = getClient(
+            // GIVEN a XRPClient which will return an unvalidated transaction with a failed code.
+            DefaultXRPClient client = getClient(
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode)),
                     GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -122,8 +122,8 @@ public class DefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XpringException {
-        // GIVEN a XpringClient which will return an unvalidated transaction with a success code.
-        DefaultXpringClient client = getClient(
+        // GIVEN a XRPClient which will return an unvalidated transaction with a success code.
+        DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -141,8 +141,8 @@ public class DefaultXpringClientTest {
     public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException, XpringException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-            // GIVEN a XpringClient which will return an validated transaction with a failed code.
-            DefaultXpringClient client = getClient(
+            // GIVEN a XRPClient which will return an validated transaction with a failed code.
+            DefaultXRPClient client = getClient(
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeTransactionStatus(true, transactionFailureCode)),
                     GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -159,8 +159,8 @@ public class DefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringException {
-        // GIVEN a XpringClient which will return an validated transaction with a success code.
-        DefaultXpringClient client = getClient(
+        // GIVEN a XRPClient which will return an validated transaction with a success code.
+        DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -176,8 +176,8 @@ public class DefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithNodeError() throws IOException, XpringException {
-        // GIVEN a XpringClient which will error when a transaction status is requested..
-        DefaultXpringClient client = getClient(
+        // GIVEN a XRPClient which will error when a transaction status is requested..
+        DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.error(GENERIC_ERROR),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -191,8 +191,8 @@ public class DefaultXpringClientTest {
 
     @Test
     public void submitTransactionTest() throws IOException, XpringException {
-        // GIVEN a XpringClient with mocked networking which will succeed.
-        DefaultXpringClient client = getClient();
+        // GIVEN a XRPClient with mocked networking which will succeed.
+        DefaultXRPClient client = getClient();
         Wallet wallet = new Wallet(WALLET_SEED);
 
         // WHEN a transaction is sent.
@@ -205,7 +205,7 @@ public class DefaultXpringClientTest {
     @Test
     public void submitTransactionWithClassicAddress() throws IOException, XpringException {
         // GIVEN a classic address.
-        DefaultXpringClient client = getClient();
+        DefaultXRPClient client = getClient();
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -216,9 +216,9 @@ public class DefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to return account info.
+        // GIVEN a XRPClient which will fail to return account info.
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
-        DefaultXpringClient client = getClient(
+        DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -233,9 +233,9 @@ public class DefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to retrieve a fee.
+        // GIVEN a XRPClient which will fail to retrieve a fee.
         GRPCResult<GetFeeResponse> feeResult = GRPCResult.error(GENERIC_ERROR);
-        DefaultXpringClient client = getClient(
+        DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 feeResult,
@@ -251,9 +251,9 @@ public class DefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to submit a transaction.
+        // GIVEN a XRPClient which will fail to submit a transaction.
         GRPCResult<SubmitTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
-        DefaultXpringClient client = getClient(
+        DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -267,9 +267,9 @@ public class DefaultXpringClientTest {
     }
 
     /**
-     * Convenience method to get a XpringClient which has successful network calls.
+     * Convenience method to get a XRPClient which has successful network calls.
      */
-    private DefaultXpringClient getClient() throws IOException {
+    private DefaultXRPClient getClient() throws IOException {
         return getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -279,10 +279,10 @@ public class DefaultXpringClientTest {
     }
 
     /**
-     * Return a XpringClient which returns the given results for network calls.
+     * Return a XRPClient which returns the given results for network calls.
      */
 
-    private DefaultXpringClient getClient(
+    private DefaultXRPClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
             GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
             GRPCResult<GetFeeResponse> getFeeResult,
@@ -306,8 +306,8 @@ public class DefaultXpringClientTest {
         ManagedChannel channel = grpcCleanup.register(
                 InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-        // Create a new XpringClient using the in-process channel;
-        return new DefaultXpringClient(channel);
+        // Create a new XRPClient using the in-process channel;
+        return new DefaultXRPClient(channel);
     }
 
 

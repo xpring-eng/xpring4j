@@ -125,7 +125,7 @@ System.out.println(wallet.getPrivateKey()); // 0090802A50AA84EFB6CDB225F17C27616
 
 #### Signing / Verifying
 
-A wallet can also sign and verify arbitrary hex messages. Generally, users should use the functions on `XpringClient` to perform cryptographic functions rather than using these low level APIs.
+A wallet can also sign and verify arbitrary hex messages. Generally, users should use the functions on `XRPClient` to perform cryptographic functions rather than using these low level APIs.
 
 ```java
 import io.xpring.xrpl.Wallet;
@@ -139,36 +139,36 @@ String signature = wallet.sign(message);
 wallet.verify(message, signature); // true
 ```
 
-### XpringClient
+### XRPClient
 
-`XpringClient` is a gateway into the XRP Ledger. `XpringClient` is initialized with a single parameter, which is the URL of the remote adapter (see [Server-Side Component][#server-side-component]).
+`XRPClient` is a gateway into the XRP Ledger. `XRPClient` is initialized with a single parameter, which is the URL of the remote adapter (see [Server-Side Component][#server-side-component]).
 
 ```java
-import io.xpring.xrpl.XpringClient;
+import io.xpring.xrpl.XRPClient;
 
 String grpcURL = "alpha.test.xrp.xpring.io:50051"; // TestNet URL, use alpha.xrp.xpring.io:50051 for MainNet
-XpringClient xpringClient = new XpringClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL, true);
 ```
 
 #### Retrieving a Balance
 
-A `XpringClient` can check the balance of an account on the XRP Ledger.
+An `XRPClient` can check the balance of an account on the XRP Ledger.
 
 ```java
-import io.xpring.xrpl.XpringClient;
+import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
 
 String grpcURL = "alpha.test.xrp.xpring.io:50051"; // TestNet URL, use alpha.xrp.xpring.io:50051 for MainNet
-XpringClient xpringClient = new XpringClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL, true);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
-BigInteger balance = xpringClient.getBalance(address);
+BigInteger balance = xrpClient.getBalance(address);
 System.out.println(balance); // Logs a balance in drops of XRP
 ```
 
 ### Checking Transaction Status
 
-A `XpringClient` can check the status of an transaction on the XRP Ledger.
+An `XRPClient` can check the status of an transaction on the XRP Ledger.
 
 Xpring4J returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
@@ -181,28 +181,28 @@ Xpring4J returns the following transaction states:
 These states are determined by the `TransactionStatus` enum.
 
 ```java
-import io.xpring.xrpl.XpringClient;
+import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.TransactionStatus;
 
 String grpcURL = "alpha.test.xrp.xpring.io:50051"; // TestNet URL, use alpha.xrp.xpring.io:50051 for MainNet
-XpringClient xpringClient = new XpringClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL, true);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
-TransactionStatus transactionStatus = xpringClient.xpringClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
+TransactionStatus transactionStatus = xrpClient.xrpClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
 ```
 
 **Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
 
 #### Sending XRP
 
-A `XpringClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) on the XRP Ledger.
+An `XRPClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) on the XRP Ledger.
 
 **Note:** The payment operation will block the calling thread until the operation reaches a definitive and irreversible success or failure state.
 
 ```java
 import java.math.BigInteger;
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XpringClient;
+import io.xpring.xrpl.XRPClient;
 
 // Amount of XRP to send.
 BigInteger amount = new BigInteger("1");
@@ -214,7 +214,7 @@ Wallet wallet = walletGenerationResult.getWallet();
 // Destination address.
 String destinationAddress = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 
-String transactionHash = xpringClient.send(amount, destinationAddress, wallet);
+String transactionHash = xrpClient.send(amount, destinationAddress, wallet);
 ```
 
 **Note:** The above example will yield an "Account not found." error because the randomly generated wallet contains no XRP.
