@@ -8,7 +8,7 @@ import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
  *
  * @see "https://xrpl.org"
  */
-public class XpringClient {
+public class XRPClient {
     private XRPClientDecorator decoratedClient;
 
     /**
@@ -18,7 +18,7 @@ public class XpringClient {
      *
      * @param grpcURL The remote URL to use for gRPC calls.
      */
-    public XpringClient(String grpcURL) {
+    public XRPClient(String grpcURL) {
         this(grpcURL, false);
     }
 
@@ -29,7 +29,7 @@ public class XpringClient {
      *
      * @param grpcURL The remote URL to use for gRPC calls.
      */
-    public XpringClient(String grpcURL, boolean useNewProtocolBuffers) {
+    public XRPClient(String grpcURL, boolean useNewProtocolBuffers) {
         XRPClientDecorator defaultXRPClient = useNewProtocolBuffers ?
                 new DefaultXRPClient(grpcURL) :
                 new LegacyDefaultXRPClient(grpcURL);

@@ -2,10 +2,10 @@ package io.xpring.xrpl;
 
 import java.math.BigInteger;
 
-public class ReliableSubmissionXpringClient implements XpringClientDecorator {
-    XpringClientDecorator decoratedClient;
+public class ReliableSubmissionXRPClient implements XRPClientDecorator {
+    XRPClientDecorator decoratedClient;
 
-    public ReliableSubmissionXpringClient(XpringClientDecorator decoratedClient) {
+    public ReliableSubmissionXRPClient(XRPClientDecorator decoratedClient) {
         this.decoratedClient = decoratedClient;
     }
 
