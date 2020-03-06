@@ -6,9 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Changed
-- Renamed `XpringClient` to `XRPClient` which should be used going forward. 
-(`XpringClient` class still exists and will be deprecated in the future.)
+
+## 2.2.0 - March 6, 2020
+
+This release contains new functionality for InterLedger Protocol (ILP) in the `ILPClient` class. 
+
+This release also deprecates `XpringClient` and creates a new class called `XRPClient` with the same API. Clients should move to using `XRPClient` at their convenience. 
+
+### Added
+- `XRPClient` is a renamed version of XpringClient to better clarify the class's role in the SDK
+- `ILPClient` is a new class for interacting with the ILP Network.
+
+### Deprecated
+- The `XpringClient` class is deprecated. Please use `XRPClient` instead.
 
 ## 2.1.0 - Feb 28, 2020
 
