@@ -17,7 +17,7 @@ public interface CreateAccountRequest {
   }
 
   /**
-   * A unique identifier for this account. For example, <tt>alice</tt> or <tt>123456789</tt>.
+   * A unique identifier for this account. For example, {@code alice} or {@code 123456789}.
    * If no accountId is specified here, an accountId will be generated automatically for this account.
    */
   @Value.Default
