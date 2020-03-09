@@ -11,7 +11,7 @@ public class PayIDUtils {
      * Parse a PayID to a payment pointer object
      *
      * @param payID The input payID..
-     * @returns A PaymentPointer object if the input was valid, otherwise undefined.
+     * @return A PaymentPointer object if the input was valid, otherwise undefined.
      */
     public static PaymentPointer parsePayID(String payID) {
         try {
