@@ -131,7 +131,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN an account is created with ALL parameters set
-    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+    io.xpring.ilp.model.CreateAccountRequest createAccountRequest = io.xpring.ilp.model.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
       .build();
@@ -147,7 +147,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN an account is created with a populated request but without an auth token
-    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+    io.xpring.ilp.model.CreateAccountRequest createAccountRequest = io.xpring.ilp.model.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
       .build();
@@ -163,7 +163,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN an account is created with no auth token and no accountId
-    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+    io.xpring.ilp.model.CreateAccountRequest createAccountRequest = io.xpring.ilp.model.CreateAccountRequest.builder("USD", 6)
       .build();
     CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
 

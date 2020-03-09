@@ -80,7 +80,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
 
     @Override
-    public CreateAccountResponse createAccount(io.xpring.ilp.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
+    public CreateAccountResponse createAccount(io.xpring.ilp.model.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
         CreateAccountRequest createAccountRequestGrpc = CreateAccountRequest.newBuilder()
           .setAccountId(createAccountRequest.accountId())
           .setAssetCode(createAccountRequest.assetCode())
