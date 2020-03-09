@@ -226,10 +226,12 @@ public class IlpIntegrationTests {
     CreateAccountResponse receiver = client.createAccount();
 
     // WHEN a payment is sent from the sender to the receiver
-    SendPaymentResponse response = client.sendPayment(receiver.getPaymentPointer(),
+    SendPaymentResponse response = client.sendPayment(
       UnsignedLong.valueOf(10),
+      receiver.getPaymentPointer(),
       sender.getAccountId(),
-      sender.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
+      sender.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)
+    );
 
     SendPaymentResponse expected = SendPaymentResponse.newBuilder()
       .setOriginalAmount(10)
