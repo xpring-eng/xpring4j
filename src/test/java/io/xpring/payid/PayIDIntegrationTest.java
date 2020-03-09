@@ -16,7 +16,6 @@ public class PayIDIntegrationTest {
     @Test
     public void testResolveToXRP() throws PayIDException {
         String xrpAddress = payIDClient.resolveToXRPAddress(PAY_ID);
-
         assertEquals(xrpAddress, "r9wmZ8Ctfdcr9gctT7LresUve7vs14ADcz");
     }
 

@@ -1,6 +1,6 @@
 package io.xpring.payid;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -15,14 +15,14 @@ public class PayIDClient {
     private OkHttpClient httpClient;
 
     /** A JSON Decoder. */
-    private Gson jsonDecoder;
+    private ObjectMapper jsonDecoder;
 
     /**
      * Initialize a new PayIDClient.
      */
     public PayIDClient() {
         this.httpClient = new OkHttpClient();
-        this.jsonDecoder = new Gson();
+        this.jsonDecoder = new ObjectMapper();
     }
 
     /**
@@ -47,10 +47,10 @@ public class PayIDClient {
                 .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            PayIDResponse responseJSON = this.jsonDecoder.fromJson(response.body().string(), PayIDResponse.class);
-            return responseJSON.address;
+            PayIDResponse responseJSON = this.jsonDecoder.readValue(response.body().string(), PayIDResponse.class);
+            return responseJSON.address();
         } catch (Exception e) {
-            throw new PayIDException("Unable to connect to server.");
+            throw new PayIDException("Unknown error " + e.getMessage());
         }
     }
 }
