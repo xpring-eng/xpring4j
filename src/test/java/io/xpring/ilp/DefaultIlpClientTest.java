@@ -202,8 +202,9 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN a payment is sent
-    SendPaymentResponse response = client.sendPayment("$foo.dev/bar",
+    SendPaymentResponse response = client.sendPayment(
       UnsignedLong.valueOf(1000),
+      "$foo.dev/bar",
       "baz",
       "gobbledygook");
 
