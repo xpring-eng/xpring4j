@@ -3,10 +3,10 @@ package io.xpring.ilp;
 import org.interledger.spsp.server.grpc.CreateAccountResponse;
 import org.interledger.spsp.server.grpc.GetAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
-import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
-import com.google.common.primitives.UnsignedLong;
 import io.xpring.ilp.model.CreateAccountRequest;
+import io.xpring.ilp.model.PaymentRequest;
+import io.xpring.ilp.model.PaymentResponse;
 import io.xpring.xrpl.XpringException;
 
 import java.math.BigInteger;
@@ -62,17 +62,13 @@ public interface IlpClientDecorator {
     /**
      * Send a payment from the given accountId to the destinationPaymentPointer payment pointer
      *
-     * @param amount : Amount to send
-     * @param destinationPaymentPointer : payment pointer of the receiver
-     * @param senderAccountId : accountId of the sender
+     * @param paymentRequest a {@link PaymentRequest} with parameters used to send a payment
      * @param bearerToken : auth token of the sender
-     * @return A {@link SendPaymentResponse} with details about the payment. Note that this method will not
+     * @return A {@link PaymentResponse} with details about the payment. Note that this method will not
      *          necessarily throw an exception if the payment failed. Payment status can be checked in
-     *          {@link SendPaymentResponse#getSuccessfulPayment()}
+     *          {@link PaymentResponse#successfulPayment()}
      * @throws XpringException If the given inputs were invalid.
      */
-    SendPaymentResponse sendPayment(final UnsignedLong amount,
-                                    final String destinationPaymentPointer,
-                                    final String senderAccountId,
-                                    final String bearerToken) throws XpringException;
+    PaymentResponse sendPayment(final PaymentRequest paymentRequest,
+                                final String bearerToken) throws XpringException;
 }

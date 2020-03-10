@@ -12,11 +12,12 @@ import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
 import org.interledger.spsp.server.grpc.SendPaymentRequest;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
-import com.google.common.primitives.UnsignedLong;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.ilp.grpc.IlpJwtCallCredentials;
+import io.xpring.ilp.model.PaymentRequest;
+import io.xpring.ilp.model.PaymentResponse;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,19 +131,19 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public SendPaymentResponse sendPayment(final UnsignedLong amount,
-                                           final String destinationPaymentPointer,
-                                           final String senderAccountId,
-                                           final String bearerToken) throws XpringException {
+    public PaymentResponse sendPayment(final PaymentRequest paymentRequest,
+                                       final String bearerToken) throws XpringException {
         try {
-            SendPaymentRequest request = SendPaymentRequest.newBuilder()
-              .setDestinationPaymentPointer(destinationPaymentPointer)
-              .setAccountId(senderAccountId)
-              .setAmount(amount.longValue())
-              .build();
-            return ilpOverHttpServiceStub
-              .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
-              .sendMoney(request);
+            // Convert paymentRequest to a protobuf object
+            SendPaymentRequest request = paymentRequest.toProto();
+
+            SendPaymentResponse protoResponse =
+              ilpOverHttpServiceStub
+                .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
+                .sendMoney(request);
+
+            return PaymentResponse.from(protoResponse);
+
         } catch (StatusRuntimeException e) {
             throw new XpringException("Unable to send payment. " + e.getStatus());
         }
