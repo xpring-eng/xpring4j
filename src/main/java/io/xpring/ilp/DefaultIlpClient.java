@@ -130,14 +130,14 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public SendPaymentResponse sendPayment(String destinationPaymentPointer,
-                                           UnsignedLong amount,
-                                           String accountId,
-                                           String bearerToken) throws XpringException {
+    public SendPaymentResponse sendPayment(final UnsignedLong amount,
+                                           final String destinationPaymentPointer,
+                                           final String senderAccountId,
+                                           final String bearerToken) throws XpringException {
         try {
             SendPaymentRequest request = SendPaymentRequest.newBuilder()
               .setDestinationPaymentPointer(destinationPaymentPointer)
-              .setAccountId(accountId)
+              .setAccountId(senderAccountId)
               .setAmount(amount.longValue())
               .build();
             return ilpOverHttpServiceStub
