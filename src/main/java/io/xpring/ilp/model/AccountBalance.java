@@ -10,10 +10,10 @@ import java.math.BigInteger;
  * Response object for requests to get an account's balance
  */
 @Value.Immutable
-public interface AccountBalanceResponse {
+public interface AccountBalance {
 
-  static ImmutableAccountBalanceResponse.Builder builder() {
-    return ImmutableAccountBalanceResponse.builder();
+  static ImmutableAccountBalance.Builder builder() {
+    return ImmutableAccountBalance.builder();
   }
 
   /**
@@ -68,13 +68,13 @@ public interface AccountBalanceResponse {
   BigInteger prepaidAmount();
 
   /**
-   * Constructs an {@link AccountBalanceResponse} from a {@link GetBalanceResponse}
+   * Constructs an {@link AccountBalance} from a {@link GetBalanceResponse}
    *
    * @param getBalanceResponse a {@link GetBalanceResponse} (protobuf object) whose field values will be used
-   *                           to construct an {@link AccountBalanceResponse}
-   * @return an {@link AccountBalanceResponse} with its fields set via the analogous protobuf fields.
+   *                           to construct an {@link AccountBalance}
+   * @return an {@link AccountBalance} with its fields set via the analogous protobuf fields.
    */
-  static AccountBalanceResponse from(GetBalanceResponse getBalanceResponse) {
+  static AccountBalance from(GetBalanceResponse getBalanceResponse) {
     return builder()
       .assetCode(getBalanceResponse.getAssetCode())
       .assetScale(getBalanceResponse.getAssetScale())

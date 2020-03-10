@@ -5,11 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.interledger.spsp.server.grpc.CreateAccountResponse;
 import org.interledger.spsp.server.grpc.GetAccountResponse;
-import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.primitives.UnsignedLong;
-import io.xpring.ilp.model.AccountBalanceResponse;
+import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.CreateAccountRequest;
 import io.xpring.ilp.util.IlpAuthConstants;
 import io.xpring.xrpl.XpringException;
@@ -202,7 +201,7 @@ public class IlpIntegrationTests {
     CreateAccountResponse createAccountResponse = client.createAccount();
 
     // WHEN a balance is retrieved
-    AccountBalanceResponse response = client.getBalance(createAccountResponse.getAccountId(),
+    AccountBalance response = client.getBalance(createAccountResponse.getAccountId(),
       createAccountResponse.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
 
     // THEN the accountId associated with the balance is equal to the created accountId

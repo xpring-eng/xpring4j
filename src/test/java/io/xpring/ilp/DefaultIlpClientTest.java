@@ -23,7 +23,7 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.GRPCResult;
-import io.xpring.ilp.model.AccountBalanceResponse;
+import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -179,7 +179,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN the balance is retrieved for "bob"
-    AccountBalanceResponse balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
+    AccountBalance balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
 
     // THEN the balance response is equal to the mocked response
     assertThat(balanceResponse.accountId()).isEqualTo(this.getBalanceResponse.getAccountId());
