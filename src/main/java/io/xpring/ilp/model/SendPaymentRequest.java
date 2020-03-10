@@ -14,6 +14,15 @@ public interface SendPaymentRequest {
   }
 
   /**
+   * The amount to send.  This amount is denominated in the asset code and asset scale of the sender's account
+   * on the connector.  For example, if the account has an asset code of "USD" and an asset scale of 9,
+   * a payment request of 100 units would send 100 nano-dollars.
+   *
+   * @return the amount to send to the recipient, denominated in the sender's account asset code and scale
+   */
+  UnsignedLong amount();
+
+  /**
    * A payment pointer is a standardized identifier for payment accounts.
    * This payment pointer will be the identifier for the account of the recipient of this payment on the ILP
    * network.
@@ -25,12 +34,8 @@ public interface SendPaymentRequest {
   String destinationPaymentPointer();
 
   /**
-   * The amount to send.  This amount is denominated in the asset code and asset scale of the sender's account
-   * on the connector.  For example, if the account has an asset code of "USD" and an asset scale of 9,
-   * a payment request of 100 units would send 100 nano-dollars.
-   *
-   * @return the amount to send to the recipient, denominated in the sender's account asset code and scale
+   * @return The accountID of the sender.
    */
-  UnsignedLong amount();
+  String senderAccountId();
 
 }
