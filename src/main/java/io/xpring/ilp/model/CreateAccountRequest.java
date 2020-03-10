@@ -1,4 +1,4 @@
-package io.xpring.ilp;
+package io.xpring.ilp.model;
 
 import org.immutables.value.Value;
 
