@@ -7,6 +7,7 @@ import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.annotations.Beta;
 import com.google.common.primitives.UnsignedLong;
+import io.xpring.ilp.model.AccountBalanceResponse;
 import io.xpring.ilp.model.CreateAccountRequest;
 import io.xpring.xrpl.XpringException;
 
@@ -82,7 +83,7 @@ public class IlpClient {
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
-    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException {
+    public AccountBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException {
         return decoratedClient.getBalance(accountId, bearerToken);
     }
 

@@ -9,6 +9,7 @@ import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.primitives.UnsignedLong;
+import io.xpring.ilp.model.AccountBalanceResponse;
 import io.xpring.ilp.model.CreateAccountRequest;
 import io.xpring.ilp.util.IlpAuthConstants;
 import io.xpring.xrpl.XpringException;
@@ -201,21 +202,21 @@ public class IlpIntegrationTests {
     CreateAccountResponse createAccountResponse = client.createAccount();
 
     // WHEN a balance is retrieved
-    GetBalanceResponse response = client.getBalance(createAccountResponse.getAccountId(),
+    AccountBalanceResponse response = client.getBalance(createAccountResponse.getAccountId(),
       createAccountResponse.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN));
 
     // THEN the accountId associated with the balance is equal to the created accountId
-    assertThat(response.getAccountId()).isEqualTo(createAccountResponse.getAccountId());
+    assertThat(response.accountId()).isEqualTo(createAccountResponse.getAccountId());
     // AND the assetCode the balance is denominated in is equal to the created assetCode
-    assertThat(response.getAssetCode()).isEqualTo(createAccountResponse.getAssetCode());
+    assertThat(response.assetCode()).isEqualTo(createAccountResponse.getAssetCode());
     // AND the assetScale the balance is denominated in is equal to the created assetScale
-    assertThat(response.getAssetScale()).isEqualTo(createAccountResponse.getAssetScale());
+    assertThat(response.assetScale()).isEqualTo(createAccountResponse.getAssetScale());
     // AND the net balance is 0
-    assertThat(response.getNetBalance()).isEqualTo(0);
+    assertThat(response.netBalance()).isEqualTo(0);
     // AND the clearing balance is 0
-    assertThat(response.getClearingBalance()).isEqualTo(0);
+    assertThat(response.clearingBalance()).isEqualTo(0);
     // AND the prepaid amount is 0
-    assertThat(response.getPrepaidAmount()).isEqualTo(0);
+    assertThat(response.prepaidAmount()).isEqualTo(0);
   }
 
   @Test

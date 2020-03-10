@@ -23,6 +23,7 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.GRPCResult;
+import io.xpring.ilp.model.AccountBalanceResponse;
 import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,7 +53,7 @@ public class DefaultIlpClientTest {
       .setAccountId("bob")
       .setAssetCode("XRP")
       .setAssetScale(9)
-      .setNetBalance(1000)
+      .setNetBalance(110) // clearing + prepaid
       .setClearingBalance(10)
       .setPrepaidAmount(100)
       .build();
@@ -178,10 +179,15 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN the balance is retrieved for "bob"
-    GetBalanceResponse balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
+    AccountBalanceResponse balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
 
     // THEN the balance response is equal to the mocked response
-    assertThat(balanceResponse).isEqualTo(this.getBalanceResponse);
+    assertThat(balanceResponse.accountId()).isEqualTo(this.getBalanceResponse.getAccountId());
+    assertThat(balanceResponse.assetCode()).isEqualTo(this.getBalanceResponse.getAssetCode());
+    assertThat(balanceResponse.assetScale()).isEqualTo(this.getBalanceResponse.getAssetScale());
+    assertThat(balanceResponse.clearingBalance()).isEqualTo(this.getBalanceResponse.getClearingBalance());
+    assertThat(balanceResponse.prepaidAmount()).isEqualTo(this.getBalanceResponse.getPrepaidAmount());
+    assertThat(balanceResponse.netBalance()).isEqualTo(this.getBalanceResponse.getNetBalance());
   }
 
   @Test
