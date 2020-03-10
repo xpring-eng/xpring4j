@@ -1,10 +1,13 @@
 package io.xpring.ilp.model;
 
+import org.interledger.spsp.server.grpc.GetBalanceResponse;
+
 import org.immutables.value.Value;
+
 import java.math.BigInteger;
 
 /**
- * An immutable interface containing the different balances of an account on a connector.
+ * Response object for requests to get an account's balance
  */
 @Value.Immutable
 public interface AccountBalance {
@@ -17,6 +20,20 @@ public interface AccountBalance {
    * @return The accountId for this account balance.
    */
   String accountId();
+
+  /**
+   * Currency code or other asset identifier that this account's balances will be denominated in
+   */
+  String assetCode();
+
+  /**
+   * Interledger amounts are integers, but most currencies are typically represented as # fractional units, e.g. cents.
+   * This property defines how many Interledger units make # up one regular unit. For dollars, this would usually be set
+   * to 9, so that Interledger # amounts are expressed in nano-dollars.
+   *
+   * @return an int representing this account's asset scale.
+   */
+  int assetScale();
 
   /**
    * The amount of units representing the aggregate position this Connector operator holds with the account owner. A
@@ -49,4 +66,21 @@ public interface AccountBalance {
    * prepaid with this Connector.
    */
   BigInteger prepaidAmount();
+
+  /**
+   * Constructs an {@link AccountBalance} from a {@link GetBalanceResponse}
+   *
+   * @param getBalanceResponse a {@link GetBalanceResponse} (protobuf object) whose field values will be used
+   *                           to construct an {@link AccountBalance}
+   * @return an {@link AccountBalance} with its fields set via the analogous protobuf fields.
+   */
+  static AccountBalance from(GetBalanceResponse getBalanceResponse) {
+    return builder()
+      .assetCode(getBalanceResponse.getAssetCode())
+      .assetScale(getBalanceResponse.getAssetScale())
+      .accountId(getBalanceResponse.getAccountId())
+      .clearingBalance(BigInteger.valueOf(getBalanceResponse.getClearingBalance()))
+      .prepaidAmount(BigInteger.valueOf(getBalanceResponse.getPrepaidAmount()))
+      .build();
+  }
 }
