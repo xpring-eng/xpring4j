@@ -24,7 +24,7 @@ import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.GRPCResult;
 import io.xpring.ilp.model.PaymentRequest;
-import io.xpring.ilp.model.PaymentResponse;
+import io.xpring.ilp.model.PaymentResult;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.junit.Before;
@@ -217,7 +217,7 @@ public class DefaultIlpClientTest {
       .destinationPaymentPointer("$foo.dev/bar")
       .senderAccountId("baz")
       .build();
-    PaymentResponse response = client.sendPayment(paymentRequest, "gobbledygook");
+    PaymentResult response = client.sendPayment(paymentRequest, "gobbledygook");
 
     // THEN the payment result is equal to the mocked response
     assertThat(response.originalAmount().longValue()).isEqualTo(this.sendPaymentResponse.getOriginalAmount());

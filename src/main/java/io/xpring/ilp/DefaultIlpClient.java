@@ -17,7 +17,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.ilp.grpc.IlpJwtCallCredentials;
 import io.xpring.ilp.model.PaymentRequest;
-import io.xpring.ilp.model.PaymentResponse;
+import io.xpring.ilp.model.PaymentResult;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
@@ -135,8 +135,8 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public PaymentResponse sendPayment(final PaymentRequest paymentRequest,
-                                       final String bearerToken) throws XpringException {
+    public PaymentResult sendPayment(final PaymentRequest paymentRequest,
+                                     final String bearerToken) throws XpringException {
         try {
             // Convert paymentRequest to a protobuf object
             SendPaymentRequest request = paymentRequest.toProto();
@@ -146,7 +146,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
                 .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
                 .sendMoney(request);
 
-            return PaymentResponse.from(protoResponse);
+            return PaymentResult.from(protoResponse);
 
         } catch (StatusRuntimeException e) {
             throw new XpringException("Unable to send payment. " + e.getStatus());

@@ -5,13 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.interledger.spsp.server.grpc.CreateAccountResponse;
 import org.interledger.spsp.server.grpc.GetAccountResponse;
-import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.primitives.UnsignedLong;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.CreateAccountRequest;
 import io.xpring.ilp.model.PaymentRequest;
-import io.xpring.ilp.model.PaymentResponse;
+import io.xpring.ilp.model.PaymentResult;
 import io.xpring.ilp.util.IlpAuthConstants;
 import io.xpring.xrpl.XpringException;
 import org.junit.AfterClass;
@@ -235,12 +234,12 @@ public class IlpIntegrationTests {
       .senderAccountId(sender.getAccountId())
       .build();
 
-    PaymentResponse response = client.sendPayment(
+    PaymentResult response = client.sendPayment(
       paymentRequest,
       sender.getCustomSettingsMap().get(IlpAuthConstants.HTTP_INCOMING_SIMPLE_AUTH_TOKEN)
     );
 
-    PaymentResponse expected = PaymentResponse.builder()
+    PaymentResult expected = PaymentResult.builder()
       .originalAmount(UnsignedLong.valueOf(10))
       .amountSent(UnsignedLong.valueOf(10))
       .amountDelivered(UnsignedLong.valueOf(10))
