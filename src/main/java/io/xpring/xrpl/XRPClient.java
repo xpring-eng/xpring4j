@@ -38,7 +38,7 @@ public class XRPClient {
 
     /**
      * Get the balance of the specified account on the XRP Ledger.
-     *
+     **
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringException If the given inputs were invalid.
@@ -48,13 +48,32 @@ public class XRPClient {
     }
 
     /**
-     * Retrieve the transaction status for a given transaction hash.
+     * Retrieve the transaction status for a Payment given transaction hash.
+     *
+     * Note: This method will only work for Payment type transactions which do not have the tf_partial_payment attribute set.
+     * See: https://xrpl.org/payment.html#payment-flags
      *
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+        return decoratedClient.getPaymentStatus(transactionHash);
+    }
+
+    /**
+     * Retrieve the transaction status for a Payment given transaction hash.
+     *
+     * @deprecated Please use `getPaymentStatus` instead.
+     *
+     * Note: This method will only work for Payment type transactions which do not have the tf_partial_payment attribute set.
+     * See: https://xrpl.org/payment.html#payment-flags
+     *
+     * @param transactionHash The hash of the transaction.
+     * @return The status of the given transaction.
+     */
+    @Deprecated
     public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
-        return decoratedClient.getTransactionStatus(transactionHash);
+        return this.getPaymentStatus(transactionHash);
     }
 
     /**

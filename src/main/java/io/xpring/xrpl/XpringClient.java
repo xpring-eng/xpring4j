@@ -6,8 +6,11 @@ import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
 /**
  * A client that can submit transactions to the XRP Ledger.
  *
+ * @deprecated Please use {@link XRPClient} instead.
+ *
  * @see "https://xrpl.org"
  */
+@Deprecated
 public class XpringClient {
     private XRPClientDecorator decoratedClient;
 
@@ -54,7 +57,7 @@ public class XpringClient {
      * @return The status of the given transaction.
      */
     public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
-        return decoratedClient.getTransactionStatus(transactionHash);
+        return decoratedClient.getPaymentStatus(transactionHash);
     }
 
     /**

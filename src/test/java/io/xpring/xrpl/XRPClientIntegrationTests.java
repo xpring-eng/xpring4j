@@ -46,8 +46,8 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void getTransactionStatusTest_legacy() throws XpringException  {
-        TransactionStatus transactionStatus = legacyXRPClient.getTransactionStatus(TRANSACTION_HASH);
+    public void getPaymentStatusTest_legacy() throws XpringException  {
+        TransactionStatus transactionStatus = legacyXRPClient.getPaymentStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
@@ -66,8 +66,8 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void getTransactionStatusTest() throws XpringException {
-        TransactionStatus transactionStatus = xrpClient.getTransactionStatus(TRANSACTION_HASH);
+    public void getPaymentStatusTest() throws XpringException {
+        TransactionStatus transactionStatus = xrpClient.getPaymentStatus(TRANSACTION_HASH);
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
