@@ -2,7 +2,6 @@ package io.xpring.ilp;
 
 import org.interledger.spsp.server.grpc.CreateAccountResponse;
 import org.interledger.spsp.server.grpc.GetAccountResponse;
-import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.primitives.UnsignedLong;
