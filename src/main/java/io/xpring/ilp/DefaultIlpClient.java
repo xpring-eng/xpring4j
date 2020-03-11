@@ -17,6 +17,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.ilp.grpc.IlpJwtCallCredentials;
+import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,15 +116,18 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException {
+    public AccountBalance getBalance(final String accountId, final String bearerToken) throws XpringException {
         GetBalanceRequest request = GetBalanceRequest.newBuilder()
           .setAccountId(accountId)
           .build();
 
         try {
-            return this.balanceServiceStub
+            GetBalanceResponse response = this.balanceServiceStub
               .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
               .getBalance(request);
+
+            // Convert protobuf response to AccountBalanceResponse
+            return AccountBalance.from(response);
         } catch (StatusRuntimeException e) {
             throw new XpringException(String.format("Unable to get balance for account %s.  %s", accountId, e.getStatus()));
         }
