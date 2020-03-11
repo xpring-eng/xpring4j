@@ -268,7 +268,7 @@ public class DefaultIlpClientTest {
     ManagedChannel channel = grpcCleanup.register(
       InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-    // Create a new XpringClient using the in-process channel;
+    // Create a new XRPClient using the in-process channel;
     return new DefaultIlpClient(channel);
   }
 
