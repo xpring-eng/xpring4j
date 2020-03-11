@@ -34,14 +34,14 @@ Xpring4j is available as a Java library from Maven Central. Simply add the follo
 
 Xpring SDK needs to communicate with a rippled node which has gRPC enabled. Consult the [rippled documentation](https://github.com/ripple/rippled#build-from-source) for details on how to build your own node.
 
-To get developers started right away, Xpring currently hosts nodes. These nodes are provided on a best effort basis, and may be subject to downtime. 
+To get developers started right away, Xpring currently provides nodes:
 
 ```
 # TestNet
-alpha.test.xrp.xpring.io:50051
+test.xrp.xpring.io:50051
 
 # MainNet
-alpha.xrp.xpring.io:50051
+main.xrp.xpring.io:50051
 ```
 
 ## Usage
@@ -146,7 +146,7 @@ wallet.verify(message, signature); // true
 ```java
 import io.xpring.xrpl.XRPClient;
 
-String grpcURL = "alpha.test.xrp.xpring.io:50051"; // TestNet URL, use alpha.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
 XRPClient xrpClient = new XRPClient(grpcURL, true);
 ```
 
@@ -158,7 +158,7 @@ An `XRPClient` can check the balance of an account on the XRP Ledger.
 import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
 
-String grpcURL = "alpha.test.xrp.xpring.io:50051"; // TestNet URL, use alpha.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
 XRPClient xrpClient = new XRPClient(grpcURL, true);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
@@ -184,7 +184,7 @@ These states are determined by the `TransactionStatus` enum.
 import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.TransactionStatus;
 
-String grpcURL = "alpha.test.xrp.xpring.io:50051"; // TestNet URL, use alpha.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
 XRPClient xrpClient = new XRPClient(grpcURL, true);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
@@ -203,6 +203,9 @@ An `XRPClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) 
 import java.math.BigInteger;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClient;
+
+String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
+XRPClient xrpClient = new XRPClient(grpcURL, true);
 
 // Amount of XRP to send.
 BigInteger amount = new BigInteger("1");

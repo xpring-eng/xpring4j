@@ -19,7 +19,7 @@ public class XpringClientIntegrationTests {
 
     /** The gRPC URL */
     private String LEGACY_GRPC_URL = "grpc.xpring.tech";
-    private String GRPC_URL = "3.14.64.116:50051";
+    private String GRPC_URL = "test.xrp.xpring.io:50051";
 
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
@@ -31,7 +31,7 @@ public class XpringClientIntegrationTests {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     /** Hash of a successful transaction. */
-    private static final String TRANSACTION_HASH = "24E31668208A3165E6C702CDA66425808EAD670EABCBFA6C4403FFA93500D486";
+    private static final String TRANSACTION_HASH = "6D9B6CDA7F6752548800C4FC14A037B8DAC2EF47E61028793768766EAB7FC81B";
 
     @Before
     public void setUp() throws Exception {
