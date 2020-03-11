@@ -2,10 +2,11 @@ package io.xpring.ilp;
 
 import org.interledger.spsp.server.grpc.CreateAccountResponse;
 import org.interledger.spsp.server.grpc.GetAccountResponse;
-import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.primitives.UnsignedLong;
+import io.xpring.ilp.model.AccountBalance;
+import io.xpring.ilp.model.CreateAccountRequest;
 import io.xpring.xrpl.XpringException;
 
 import java.math.BigInteger;
@@ -56,22 +57,22 @@ public interface IlpClientDecorator {
      * @return A {@link BigInteger} with the number of drops in this account.
      * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
-    GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException;
+    AccountBalance getBalance(final String accountId, final String bearerToken) throws XpringException;
 
     /**
      * Send a payment from the given accountId to the destinationPaymentPointer payment pointer
      *
-     * @param destinationPaymentPointer : payment pointer of the receiver
      * @param amount : Amount to send
-     * @param accountId : accountId of the sender
+     * @param destinationPaymentPointer : payment pointer of the receiver
+     * @param senderAccountId : accountId of the sender
      * @param bearerToken : auth token of the sender
      * @return A {@link SendPaymentResponse} with details about the payment. Note that this method will not
      *          necessarily throw an exception if the payment failed. Payment status can be checked in
      *          {@link SendPaymentResponse#getSuccessfulPayment()}
      * @throws XpringException If the given inputs were invalid.
      */
-    SendPaymentResponse sendPayment(String destinationPaymentPointer,
-                                    UnsignedLong amount,
-                                    String accountId,
-                                    String bearerToken) throws XpringException;
+    SendPaymentResponse sendPayment(final UnsignedLong amount,
+                                    final String destinationPaymentPointer,
+                                    final String senderAccountId,
+                                    final String bearerToken) throws XpringException;
 }

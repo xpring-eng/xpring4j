@@ -23,6 +23,7 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.GRPCResult;
+import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,13 +49,15 @@ public class DefaultIlpClientTest {
 
   @Before
   public void setUp() throws IOException {
+    int clearingBalance = 10;
+    int prepaidAmount = 100;
     getBalanceResponse = GetBalanceResponse.newBuilder()
       .setAccountId("bob")
       .setAssetCode("XRP")
       .setAssetScale(9)
-      .setNetBalance(1000)
-      .setClearingBalance(10)
-      .setPrepaidAmount(100)
+      .setNetBalance(clearingBalance + prepaidAmount)
+      .setClearingBalance(clearingBalance)
+      .setPrepaidAmount(prepaidAmount)
       .build();
 
     Map<String, String> customSettings = new HashMap<>();
@@ -131,7 +134,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN an account is created with ALL parameters set
-    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+    io.xpring.ilp.model.CreateAccountRequest createAccountRequest = io.xpring.ilp.model.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
       .build();
@@ -147,7 +150,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN an account is created with a populated request but without an auth token
-    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+    io.xpring.ilp.model.CreateAccountRequest createAccountRequest = io.xpring.ilp.model.CreateAccountRequest.builder("USD", 6)
       .accountId("foo")
       .description("test account")
       .build();
@@ -163,7 +166,7 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN an account is created with no auth token and no accountId
-    io.xpring.ilp.CreateAccountRequest createAccountRequest = io.xpring.ilp.CreateAccountRequest.builder("USD", 6)
+    io.xpring.ilp.model.CreateAccountRequest createAccountRequest = io.xpring.ilp.model.CreateAccountRequest.builder("USD", 6)
       .build();
     CreateAccountResponse response = client.createAccount(createAccountRequest, Optional.empty());
 
@@ -178,10 +181,15 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN the balance is retrieved for "bob"
-    GetBalanceResponse balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
+    AccountBalance balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
 
     // THEN the balance response is equal to the mocked response
-    assertThat(balanceResponse).isEqualTo(this.getBalanceResponse);
+    assertThat(balanceResponse.accountId()).isEqualTo(this.getBalanceResponse.getAccountId());
+    assertThat(balanceResponse.assetCode()).isEqualTo(this.getBalanceResponse.getAssetCode());
+    assertThat(balanceResponse.assetScale()).isEqualTo(this.getBalanceResponse.getAssetScale());
+    assertThat(balanceResponse.clearingBalance()).isEqualTo(this.getBalanceResponse.getClearingBalance());
+    assertThat(balanceResponse.prepaidAmount()).isEqualTo(this.getBalanceResponse.getPrepaidAmount());
+    assertThat(balanceResponse.netBalance()).isEqualTo(this.getBalanceResponse.getNetBalance());
   }
 
   @Test
@@ -202,8 +210,9 @@ public class DefaultIlpClientTest {
     DefaultIlpClient client = getClient();
 
     // WHEN a payment is sent
-    SendPaymentResponse response = client.sendPayment("$foo.dev/bar",
+    SendPaymentResponse response = client.sendPayment(
       UnsignedLong.valueOf(1000),
+      "$foo.dev/bar",
       "baz",
       "gobbledygook");
 
