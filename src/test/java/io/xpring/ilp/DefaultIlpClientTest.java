@@ -51,13 +51,15 @@ public class DefaultIlpClientTest {
 
   @Before
   public void setUp() throws IOException {
+    int clearingBalance = 10;
+    int prepaidAmount = 100;
     getBalanceResponse = GetBalanceResponse.newBuilder()
       .setAccountId("bob")
       .setAssetCode("XRP")
       .setAssetScale(9)
-      .setNetBalance(110) // clearing + prepaid
-      .setClearingBalance(10)
-      .setPrepaidAmount(100)
+      .setNetBalance(clearingBalance + prepaidAmount)
+      .setClearingBalance(clearingBalance)
+      .setPrepaidAmount(prepaidAmount)
       .build();
 
     Map<String, String> customSettings = new HashMap<>();
