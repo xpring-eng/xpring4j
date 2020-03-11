@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Removed
+
+- `XpringClient` is removed from XpringKit. This class has been deprecated since 1.5.0. Clients should use `XRPClient` instead.
+
 ## 2.2.0 - March 6, 2020
 
 This release contains new functionality for InterLedger Protocol (ILP) in the `ILPClient` class. 
