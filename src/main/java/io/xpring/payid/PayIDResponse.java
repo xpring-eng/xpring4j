@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.immutables.value.Value;
 
-
 /**
  * Represents a response from the Pay ID Service.
  */
@@ -16,3 +15,4 @@ public interface PayIDResponse {
     /** @return The address represented by this response. */
     public String address();
 }
+ 
