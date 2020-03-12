@@ -8,7 +8,7 @@ import io.xpring.xrpl.XpringException;
 import java.math.BigInteger;
 
 /**
- * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
+ * A client that can get balances and send ILP payments on a connector.
  */
 public class IlpClient {
 
