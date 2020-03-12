@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
+ * A client that can get balances and send ILP payments on a connector.
  */
 public class DefaultIlpClient implements IlpClientDecorator {
 
