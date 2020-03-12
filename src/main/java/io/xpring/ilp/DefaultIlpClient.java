@@ -27,14 +27,13 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
+ * A client that can get balances and send ILP payments on a connector.
  */
 public class DefaultIlpClient implements IlpClientDecorator {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultIlpClient.class);
 
     private final BalanceServiceGrpc.BalanceServiceBlockingStub balanceServiceStub;
-    private final AccountServiceGrpc.AccountServiceBlockingStub accountServiceStub;
     private final IlpOverHttpServiceGrpc.IlpOverHttpServiceBlockingStub ilpOverHttpServiceStub;
 
     /**
@@ -56,7 +55,6 @@ public class DefaultIlpClient implements IlpClientDecorator {
      */
     public DefaultIlpClient(final ManagedChannel channel) {
         this.balanceServiceStub = BalanceServiceGrpc.newBlockingStub(channel);
-        this.accountServiceStub = AccountServiceGrpc.newBlockingStub(channel);
         this.ilpOverHttpServiceStub = IlpOverHttpServiceGrpc.newBlockingStub(channel);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -73,47 +71,6 @@ public class DefaultIlpClient implements IlpClientDecorator {
                 }
             }
         }));
-    }
-
-    @Override
-    public CreateAccountResponse createAccount() throws XpringException {
-        return this.createAccount(CreateAccountRequest.newBuilder().build(), Optional.empty());
-    }
-
-
-    @Override
-    public CreateAccountResponse createAccount(io.xpring.ilp.model.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
-        CreateAccountRequest createAccountRequestGrpc = CreateAccountRequest.newBuilder()
-          .setAccountId(createAccountRequest.accountId())
-          .setAssetCode(createAccountRequest.assetCode())
-          .setAssetScale(createAccountRequest.assetScale())
-          .setDescription(createAccountRequest.description())
-          .build();
-        return createAccount(createAccountRequestGrpc, bearerToken);
-    }
-
-    private CreateAccountResponse createAccount(CreateAccountRequest createAccountRequestGrpc, Optional<String> bearerToken) throws XpringException {
-
-        try {
-            return this.accountServiceStub
-              .withCallCredentials(bearerToken.map(IlpJwtCallCredentials::build).orElse(null))
-              .createAccount(createAccountRequestGrpc);
-        } catch (StatusRuntimeException e) {
-            throw new XpringException("Unable to create an account. " + e.getStatus());
-        }
-    }
-
-    @Override
-    public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringException {
-        try {
-            return this.accountServiceStub
-              .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
-              .getAccount(GetAccountRequest.newBuilder()
-                .setAccountId(accountId)
-                .build());
-        } catch (StatusRuntimeException e) {
-            throw new XpringException("Unable to get account with id = " + accountId + ". " + e.getStatus());
-        }
     }
 
     @Override
