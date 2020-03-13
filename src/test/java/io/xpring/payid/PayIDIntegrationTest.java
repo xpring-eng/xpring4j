@@ -11,7 +11,7 @@ public class PayIDIntegrationTest {
     private PayIDClient payIDClient = new PayIDClient();
 
     /** A Pay ID to resolve. */
-    private static final String PAY_ID = "$doug.purdy.im";
+    private static final String PAY_ID = "$doug.purdy.im"; // "$stage.xpring.money/hansbergren";
 
     @Test
     public void testResolveToXRP() throws PayIDException {
