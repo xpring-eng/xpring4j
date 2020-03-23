@@ -4,17 +4,17 @@ package io.xpring.payid;
  * Possible networks to resolve.
  */
 public enum XRPLNetwork {
-    Dev("devnet"),
+    DEV("devnet"),
     TEST("testnet"),
     MAIN("mainnet");
 
-    private String contentType;
+    private String networkName;
 
-    XRPLNetwork(String contentType) {
-        this.contentType = contentType;
+    XRPLNetwork(String networkName) {
+        this.networkName = networkName;
     }
 
-    public String getContentType() {
-        return contentType;
+    public String getNetworkName() {
+        return networkName;
     }
 }

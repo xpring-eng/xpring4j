@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * Implements interaction with a PayID service.
- * @warning This class is experimental and should not be used in production applications.
+ * Warning:  This class is experimental and should not be used in production applications.
  */
 public class PayIDClient {
     /**
@@ -46,7 +46,7 @@ public class PayIDClient {
      * @param payID The payID to resolve for an address.
      * @return An XRP address representing the given PayID.
      */
-    public String resolveToXRPAddress(String payID) throws PayIDException {
+    public String xrpAddressForPayID(String payID) throws PayIDException {
         PaymentPointer paymentPointer = PayIDUtils.parsePayID(payID);
         if (paymentPointer == null) {
             throw PayIDException.invalidPaymentPointerExpection;
@@ -57,9 +57,8 @@ public class PayIDClient {
 
         String path = paymentPointer.path().substring(1);
         final String[] localVarAccepts = {
-                "application/xrpl-" + this.network.getContentType() + "+json"
+                "application/xrpl-" + this.network.getNetworkName() + "+json"
         };
-
 
         // NOTE: Swagger produces a higher level client that does not require this level of configuration,
         // however access to Accept headers is not available unless we access the underlying class.
@@ -93,10 +92,13 @@ public class PayIDClient {
             ApiResponse<PaymentInformation> response = apiClient.execute(call, localVarReturnType);
             PaymentInformation result = response.getData();
             return result.getAddressDetails().getAddress();
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#getUserAndHost");
-            e.printStackTrace();
-            return null;
+        } catch (ApiException exception) {
+            int code = exception.getCode();
+            if (code == 404) {
+                throw new PayIDException(PayIDExceptionType.MAPPING_NOT_FOUND, "Could not resolve " + payID + " on network " + this.network.getNetworkName());
+            } else {
+                throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
+            }
         }
     }
 }
