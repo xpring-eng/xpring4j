@@ -53,7 +53,7 @@ public class PayIDClient {
         }
 
         ApiClient apiClient = new ApiClient();
-        apiClient.setBasePath("https://" + paymentPointer.host());
+        apiClient.setBasePath("http://" + paymentPointer.host());
 
         String path = paymentPointer.path().substring(1);
         final String[] localVarAccepts = {
