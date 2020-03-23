@@ -30,7 +30,7 @@ jobs:
 
       - run:
           name: "Build And Run Unit Tests"
-          command: mvn clean install -DskipITs jacoco:report
+          command: mvn clean install -DskipITs jacoco:report -Dtest=PayIDClientTest
       - run: bash <(curl -s https://codecov.io/bash)
 
   ilp_integration_tests:
