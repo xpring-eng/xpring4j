@@ -158,7 +158,7 @@ wallet.verify(message, signature); // true
 import io.xpring.xrpl.XRPClient;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL);
 ```
 
 #### Retrieving a Balance
@@ -170,7 +170,7 @@ import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 BigInteger balance = xrpClient.getBalance(address);
@@ -196,7 +196,7 @@ import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.TransactionStatus;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
 TransactionStatus transactionStatus = xrpClient.xrpClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
