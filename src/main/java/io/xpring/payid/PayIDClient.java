@@ -68,7 +68,7 @@ public class PayIDClient {
 
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath("https://" + paymentPointer.host());
-        apiClient.setVerifyingSsl(false);
+        apiClient.setVerifyingSsl(disableSSLVerification);
 
         String path = paymentPointer.path().substring(1);
         final String[] localVarAccepts = {
