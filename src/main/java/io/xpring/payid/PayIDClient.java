@@ -28,6 +28,10 @@ public class PayIDClient {
      */
     private XRPLNetwork network;
 
+    /**
+     * Whether to disable SSL Verification.
+     */
+    private boolean disableSSLVerification;
 
     /**
      * Initialize a new PayIDClient.
@@ -36,6 +40,16 @@ public class PayIDClient {
      */
     public PayIDClient(XRPLNetwork network) {
         this.network = network;
+        this.disableSSLVerification = false;
+    }
+
+    /**
+     * Set whether to enable or disable SSL verification.
+     *
+     * Exposed for testing purposes.
+     */
+    public void setDisableSSLVerification(boolean disableSSLVerification) {
+        this.disableSSLVerification = disableSSLVerification;
     }
 
     /**
@@ -53,7 +67,8 @@ public class PayIDClient {
         }
 
         ApiClient apiClient = new ApiClient();
-        apiClient.setBasePath("http://" + paymentPointer.host());
+        apiClient.setBasePath("https://" + paymentPointer.host());
+        apiClient.setVerifyingSsl(false);
 
         String path = paymentPointer.path().substring(1);
         final String[] localVarAccepts = {

@@ -4,13 +4,15 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class PayIDClientTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(80); //wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().httpsPort(443));
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -30,8 +32,9 @@ public class PayIDClientTest {
     @Test
     public void testXRPAddressForPayIDSuccess() throws PayIDException {
         // GIVEN a PayID client, valid PayID and mocked networking to return a match for the PayID.
-        String payID = "$localhost:" + wireMockRule.port() + "/georgewashington";
+        String payID = "$localhost/georgewashington";
         PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+        client.setDisableSSLVerification(true);
         String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
         stubFor(get(urlEqualTo("/georgewashington"))
@@ -50,8 +53,9 @@ public class PayIDClientTest {
     @Test
     public void testXRPAddressForPayIDMatchNotFound() throws PayIDException {
         // GIVEN a PayID client, valid PayID and mocked networking to return a 404 for the payID.
-        String payID = "$xpring.money/georgewashington";
+        String payID = "$localhost/georgewashington";
         PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+        client.setDisableSSLVerification(true);
         String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
         stubFor(get(urlEqualTo("/georgewashington"))
@@ -67,8 +71,9 @@ public class PayIDClientTest {
     @Test
     public void testXRPAddressForPayIDBadMIMEType() throws PayIDException {
         // GIVEN a PayID client, valid PayID and mocked networking to return a 415 for the payID.
-        String payID = "$xpring.money/georgewashington";
+        String payID = "$localhost/georgewashington";
         PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+        client.setDisableSSLVerification(true);
         String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
         stubFor(get(urlEqualTo("/georgewashington"))
@@ -84,8 +89,9 @@ public class PayIDClientTest {
     @Test
     public void testXRPAddressForPayIDServerFailure() throws PayIDException {
         // GIVEN a PayID client, valid PayID and mocked networking to return a 415 for the payID.
-        String payID = "$xpring.money/georgewashington";
+        String payID = "$localhost/georgewashington";
         PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+        client.setDisableSSLVerification(true);
         String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
         stubFor(get(urlEqualTo("/georgewashington"))
