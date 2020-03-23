@@ -35,8 +35,8 @@ public class XRPClientIntegrationTests {
 
     @Before
     public void setUp() throws Exception {
-        this.legacyXRPClient = new XRPClient(LEGACY_GRPC_URL);
-        this.xrpClient = new XRPClient(GRPC_URL, true);
+        this.legacyXRPClient = new XRPClient(LEGACY_GRPC_URL, false);
+        this.xrpClient = new XRPClient(GRPC_URL);
     }
 
     @Test

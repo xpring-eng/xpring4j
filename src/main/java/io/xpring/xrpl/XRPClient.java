@@ -14,12 +14,12 @@ public class XRPClient {
     /**
      * Initialize a new client.
      *
-     * The client will use the legacy implementation of protocol buffers.
+     * The client will use the rippled implementation of protocol buffers.
      *
      * @param grpcURL The remote URL to use for gRPC calls.
      */
     public XRPClient(String grpcURL) {
-        this(grpcURL, false);
+        this(grpcURL, true);
     }
 
     /**
