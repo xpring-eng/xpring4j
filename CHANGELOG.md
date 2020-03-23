@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Deprecated
 - `getTransactionStatus` is deprecated. Please use `getPaymentStatus` instead.
 
+## Changed
+- `XRPClient` now uses [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254) rather than the legacy API. Users who wish to use the legacy API should pass `false` for `useNewProtocolBuffers` in the constructor.
+
 ## 2.2.0 - March 6, 2020
 
 This release contains new functionality for InterLedger Protocol (ILP) in the `ILPClient` class. 

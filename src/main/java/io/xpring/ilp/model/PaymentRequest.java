@@ -6,11 +6,10 @@ import org.immutables.value.Value;
 /**
  * An immutable interface which can be used to send a payment request to a connector
  */
-@Value.Immutable
-public interface SendPaymentRequest {
+public interface PaymentRequest {
 
-  static ImmutableSendPaymentRequest.Builder builder() {
-    return ImmutableSendPaymentRequest.builder();
+  static ImmutablePaymentRequest.Builder builder() {
+    return ImmutablePaymentRequest.builder();
   }
 
   /**
@@ -38,4 +37,24 @@ public interface SendPaymentRequest {
    */
   String senderAccountId();
 
+  /**
+   * Constructs a {@link PaymentRequest} (non-proto) from a {@link org.interledger.spsp.server.grpc.SendPaymentRequest}
+   *
+   * @return A {@link org.interledger.spsp.server.grpc.SendPaymentRequest} populated with the analogous fields in
+   *          a {@link PaymentRequest}
+   */
+  org.interledger.spsp.server.grpc.SendPaymentRequest toProto();
+
+  @Value.Immutable
+  abstract class AbstractPaymentRequest implements PaymentRequest {
+
+    @Override
+    public org.interledger.spsp.server.grpc.SendPaymentRequest toProto() {
+      return org.interledger.spsp.server.grpc.SendPaymentRequest.newBuilder()
+        .setAmount(this.amount().longValue())
+        .setDestinationPaymentPointer(this.destinationPaymentPointer())
+        .setAccountId(this.senderAccountId())
+        .build();
+    }
+  }
 }
