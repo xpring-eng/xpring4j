@@ -77,6 +77,7 @@ public class PayIDClient {
 
         // NOTE: Swagger produces a higher level client that does not require this level of configuration,
         // however access to Accept headers is not available unless we access the underlying class.
+        // TODO(keefertaylor): Factor this out to a helper function to make it clear which inputs matter.
 
         String localVarPath = "/{path}"
                 .replaceAll("\\{" + "path" + "\\}", apiClient.escapeString(path.toString()));
