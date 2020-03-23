@@ -43,7 +43,6 @@ public class DefaultIlpClient implements IlpClientDecorator {
     protected DefaultIlpClient(String grpcUrl) {
         this(ManagedChannelBuilder
           .forTarget(grpcUrl)
-          .usePlaintext()
           .build()
         );
     }
