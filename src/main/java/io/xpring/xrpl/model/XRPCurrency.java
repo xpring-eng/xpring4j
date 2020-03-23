@@ -1,7 +1,6 @@
 package io.xpring.xrpl.model;
 
-import com.oracle.truffle.js.runtime.array.TypedArray;
-import io.xpring.xrpl.model.ImmutableXRPCurrency;
+import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.Currency;
 import org.immutables.value.Value;
 
@@ -24,7 +23,7 @@ public interface XRPCurrency {
     /**
      * @return 160 bit currency code. 20 bytes
      */
-    TypedArray.Uint8Array code();
+    ByteString code();
 
     static XRPCurrency from(Currency currency) {
         return builder()
