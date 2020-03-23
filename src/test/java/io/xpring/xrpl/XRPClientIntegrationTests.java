@@ -19,7 +19,7 @@ public class XRPClientIntegrationTests {
 
     /** The gRPC URL */
     private String LEGACY_GRPC_URL = "grpc.xpring.tech";
-    private String GRPC_URL = "3.14.64.116:50051";
+    private String GRPC_URL = "test.xrp.xpring.io:50051";
 
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
@@ -35,8 +35,8 @@ public class XRPClientIntegrationTests {
 
     @Before
     public void setUp() throws Exception {
-        this.legacyXRPClient = new XRPClient(LEGACY_GRPC_URL);
-        this.xrpClient = new XRPClient(GRPC_URL, true);
+        this.legacyXRPClient = new XRPClient(LEGACY_GRPC_URL, false);
+        this.xrpClient = new XRPClient(GRPC_URL);
     }
 
     @Test

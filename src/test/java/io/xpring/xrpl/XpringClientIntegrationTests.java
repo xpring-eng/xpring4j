@@ -19,7 +19,7 @@ public class XpringClientIntegrationTests {
 
     /** The gRPC URL */
     private String LEGACY_GRPC_URL = "grpc.xpring.tech";
-    private String GRPC_URL = "3.14.64.116:50051";
+    private String GRPC_URL = "test.xrp.xpring.io";
 
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
