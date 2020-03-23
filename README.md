@@ -315,7 +315,7 @@ import io.xpring.ilp.model.AccountBalance;
 String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 
-AccountBalance balance = ilpClient.getBalance("demo_user", "password"); // Just a demo user on Testnet
+AccountBalance balance = ilpClient.getBalance("demo_user", "2S1PZh3fEKnKg"); // Just a demo user on Testnet
 System.out.println("Net balance was " + balance.netBalance() + " with asset scale " + balance.assetScale());
 ```
 
@@ -337,7 +337,7 @@ PaymentRequest paymentRequest = PaymentRequest.builder()
   .senderAccountId("demo_user")
   .build();
 
-PaymentResponse payment = ilpClient.sendPayment(paymentRequest, "password");
+PaymentResponse payment = ilpClient.sendPayment(paymentRequest, "2S1PZh3fEKnKg");
 ```
 
 # Contributing
