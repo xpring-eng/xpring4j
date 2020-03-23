@@ -188,6 +188,18 @@
             <artifactId>threetenbp</artifactId>
             <version>${threetenbp-version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.24.1</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -512,6 +524,8 @@
                             <apiPackage>io.xpring.payid.generated.api</apiPackage>
                             <invokerPackage>io.xpring.payid.generated</invokerPackage>
                             <modelPackage>io.xpring.payid.generated.model</modelPackage>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
                             <configOptions>
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                             </configOptions>
