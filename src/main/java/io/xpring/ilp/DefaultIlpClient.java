@@ -12,11 +12,13 @@ import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
 import org.interledger.spsp.server.grpc.SendPaymentRequest;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
-import com.google.common.primitives.UnsignedLong;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.ilp.grpc.IlpJwtCallCredentials;
+import io.xpring.ilp.model.PaymentRequest;
+import io.xpring.ilp.model.PaymentResult;
+import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +27,13 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A client that can create accounts, get accounts, get balances, and send ILP payments on a connector.
+ * A client that can get balances and send ILP payments on a connector.
  */
 public class DefaultIlpClient implements IlpClientDecorator {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultIlpClient.class);
 
     private final BalanceServiceGrpc.BalanceServiceBlockingStub balanceServiceStub;
-    private final AccountServiceGrpc.AccountServiceBlockingStub accountServiceStub;
     private final IlpOverHttpServiceGrpc.IlpOverHttpServiceBlockingStub ilpOverHttpServiceStub;
 
     /**
@@ -54,7 +55,6 @@ public class DefaultIlpClient implements IlpClientDecorator {
      */
     public DefaultIlpClient(final ManagedChannel channel) {
         this.balanceServiceStub = BalanceServiceGrpc.newBlockingStub(channel);
-        this.accountServiceStub = AccountServiceGrpc.newBlockingStub(channel);
         this.ilpOverHttpServiceStub = IlpOverHttpServiceGrpc.newBlockingStub(channel);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -74,75 +74,37 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public CreateAccountResponse createAccount() throws XpringException {
-        return this.createAccount(CreateAccountRequest.newBuilder().build(), Optional.empty());
-    }
-
-
-    @Override
-    public CreateAccountResponse createAccount(io.xpring.ilp.CreateAccountRequest createAccountRequest, Optional<String> bearerToken) throws XpringException {
-        CreateAccountRequest createAccountRequestGrpc = CreateAccountRequest.newBuilder()
-          .setAccountId(createAccountRequest.accountId())
-          .setAssetCode(createAccountRequest.assetCode())
-          .setAssetScale(createAccountRequest.assetScale())
-          .setDescription(createAccountRequest.description())
-          .build();
-        return createAccount(createAccountRequestGrpc, bearerToken);
-    }
-
-    private CreateAccountResponse createAccount(CreateAccountRequest createAccountRequestGrpc, Optional<String> bearerToken) throws XpringException {
-
-        try {
-            return this.accountServiceStub
-              .withCallCredentials(bearerToken.map(IlpJwtCallCredentials::build).orElse(null))
-              .createAccount(createAccountRequestGrpc);
-        } catch (StatusRuntimeException e) {
-            throw new XpringException("Unable to create an account. " + e.getStatus());
-        }
-    }
-
-    @Override
-    public GetAccountResponse getAccount(String accountId, String bearerToken) throws XpringException {
-        try {
-            return this.accountServiceStub
-              .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
-              .getAccount(GetAccountRequest.newBuilder()
-                .setAccountId(accountId)
-                .build());
-        } catch (StatusRuntimeException e) {
-            throw new XpringException("Unable to get account with id = " + accountId + ". " + e.getStatus());
-        }
-    }
-
-    @Override
-    public GetBalanceResponse getBalance(final String accountId, final String bearerToken) throws XpringException {
+    public AccountBalance getBalance(final String accountId, final String bearerToken) throws XpringException {
         GetBalanceRequest request = GetBalanceRequest.newBuilder()
           .setAccountId(accountId)
           .build();
 
         try {
-            return this.balanceServiceStub
+            GetBalanceResponse response = this.balanceServiceStub
               .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
               .getBalance(request);
+
+            // Convert protobuf response to AccountBalanceResponse
+            return AccountBalance.from(response);
         } catch (StatusRuntimeException e) {
             throw new XpringException(String.format("Unable to get balance for account %s.  %s", accountId, e.getStatus()));
         }
     }
 
     @Override
-    public SendPaymentResponse sendPayment(String destinationPaymentPointer,
-                                           UnsignedLong amount,
-                                           String accountId,
-                                           String bearerToken) throws XpringException {
+    public PaymentResult sendPayment(final PaymentRequest paymentRequest,
+                                     final String bearerToken) throws XpringException {
         try {
-            SendPaymentRequest request = SendPaymentRequest.newBuilder()
-              .setDestinationPaymentPointer(destinationPaymentPointer)
-              .setAccountId(accountId)
-              .setAmount(amount.longValue())
-              .build();
-            return ilpOverHttpServiceStub
-              .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
-              .sendMoney(request);
+            // Convert paymentRequest to a protobuf object
+            SendPaymentRequest request = paymentRequest.toProto();
+
+            SendPaymentResponse protoResponse =
+              ilpOverHttpServiceStub
+                .withCallCredentials(IlpJwtCallCredentials.build(bearerToken))
+                .sendMoney(request);
+
+            return PaymentResult.from(protoResponse);
+
         } catch (StatusRuntimeException e) {
             throw new XpringException("Unable to send payment. " + e.getStatus());
         }

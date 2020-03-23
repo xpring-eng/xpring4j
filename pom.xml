@@ -16,11 +16,11 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <grpc.version>1.27.2</grpc.version>
+        <grpc.version>1.28.0</grpc.version>
         <protobuf.version>3.11.4</protobuf.version>
         <slf4j.version>1.7.30</slf4j.version>
         <graalvm.version>20.0.0</graalvm.version>
-        <testcontainers.version>1.12.5</testcontainers.version>
+        <testcontainers.version>1.13.0</testcontainers.version>
         <!-- org.apache.maven.plugins:maven-checkstyle-plugin -->
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <checkstyle.violationSeverity>error</checkstyle.violationSeverity>
@@ -137,6 +137,11 @@
             <artifactId>testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.interledger</groupId>
+            <artifactId>spsp-core</artifactId>
+            <version>1.1.1</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -203,7 +208,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.3.0</version>
+                <version>3.3.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -412,7 +417,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
                 <configuration>
                     <excludePackageNames>
                         io.xpring.proto, org.xrpl.rpc.v1, org.interledger.spsp.server.grpc
