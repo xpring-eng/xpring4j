@@ -26,12 +26,11 @@ public interface XRPCurrency {
     ByteString code();
 
     static XRPCurrency from(Currency currency) {
-        if (currency.getName().isEmpty()) {
+        if (currency == null) {
             return null;
         }
-        if (currency.getCode().isEmpty()) {
+        if (currency.getName().isEmpty() || currency.getCode().isEmpty()) {
             return null;
-
         }
         return builder()
                 .name(currency.getName())

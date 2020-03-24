@@ -68,6 +68,7 @@ public class FakeXRPProtobufs {
     // PathElement proto
     static Payment.PathElement pathElement = Payment.PathElement.newBuilder()
                                             .setAccount(accountAddress)
+                                            .setCurrency(currency)
                                             .setIssuer(accountAddress_issuer)
                                             .build();
 
