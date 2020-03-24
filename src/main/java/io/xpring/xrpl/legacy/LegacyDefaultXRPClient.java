@@ -94,12 +94,12 @@ public class LegacyDefaultXRPClient implements XRPClientDecorator {
     }
 
     /**
-     * Retrieve the transaction status for a given transaction hash.
+     * Retrieve the transaction status for a Payment given transaction hash.
      *
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getTransactionStatus(String transactionHash) {
+    public TransactionStatus getPaymentStatus(String transactionHash) {
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
 
         // Return PENDING if the transaction is not validated.

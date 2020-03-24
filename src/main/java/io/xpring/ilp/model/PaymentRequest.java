@@ -1,5 +1,7 @@
 package io.xpring.ilp.model;
 
+import org.interledger.spsp.server.grpc.SendPaymentRequest;
+
 import com.google.common.primitives.UnsignedLong;
 import org.immutables.value.Value;
 
@@ -38,19 +40,19 @@ public interface PaymentRequest {
   String senderAccountId();
 
   /**
-   * Constructs a {@link PaymentRequest} (non-proto) from a {@link org.interledger.spsp.server.grpc.SendPaymentRequest}
+   * Constructs a {@link PaymentRequest} (non-proto) from a {@link SendPaymentRequest}
    *
-   * @return A {@link org.interledger.spsp.server.grpc.SendPaymentRequest} populated with the analogous fields in
+   * @return A {@link SendPaymentRequest} populated with the analogous fields in
    *          a {@link PaymentRequest}
    */
-  org.interledger.spsp.server.grpc.SendPaymentRequest toProto();
+  SendPaymentRequest toProto();
 
   @Value.Immutable
   abstract class AbstractPaymentRequest implements PaymentRequest {
 
     @Override
-    public org.interledger.spsp.server.grpc.SendPaymentRequest toProto() {
-      return org.interledger.spsp.server.grpc.SendPaymentRequest.newBuilder()
+    public SendPaymentRequest toProto() {
+      return SendPaymentRequest.newBuilder()
         .setAmount(this.amount().longValue())
         .setDestinationPaymentPointer(this.destinationPaymentPointer())
         .setAccountId(this.senderAccountId())
