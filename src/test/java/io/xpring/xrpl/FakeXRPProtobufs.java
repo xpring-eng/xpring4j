@@ -75,11 +75,11 @@ public class FakeXRPProtobufs {
     static Payment.Path emptyPath = Payment.Path.newBuilder().build();
 
     static Payment.Path pathWithOneElement = Payment.Path.newBuilder()
-                                            .setElements(0, pathElement)
+                                            .addElements(pathElement)
                                             .build();
     static Payment.Path pathWithThreeElements = Payment.Path.newBuilder()
-                                            .setElements(0, pathElement)
-                                            .setElements(1, pathElement)
-                                            .setElements(2, pathElement)
+                                            .addElements(pathElement)
+                                            .addElements(pathElement)
+                                            .addElements(pathElement)
                                             .build();
 }
