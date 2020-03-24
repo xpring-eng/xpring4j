@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executor;
 
+/**
+ * An extension of {@link CallCredentials} which provides a convenient way to
+ * add an Authorization metadata header, and ensures every bearer token
+ * going over the wire is prefixed with 'Bearer '
+ */
 public class IlpCredentials extends CallCredentials {
 
   public static final String BEARER_SPACE = "Bearer ";
@@ -21,6 +26,12 @@ public class IlpCredentials extends CallCredentials {
     this.accessToken = accessToken;
   }
 
+  /**
+   * Static initializer which enforces that the accessToken does not start with 'Bearer '.
+   *
+   * @param accessToken Caller's access token, which can not start with 'Bearer '
+   * @return An instance of {@link IlpCredentials}
+   */
   public static IlpCredentials build(String accessToken) {
     Preconditions.checkArgument(
       !accessToken.startsWith(BEARER_SPACE),
@@ -41,6 +52,12 @@ public class IlpCredentials extends CallCredentials {
   @Override
   public void thisUsesUnstableApi() {}
 
+  /**
+   * Adds an Authorization header to the request Metadata, prepending 'Bearer ' to the access token
+   *
+   * @param applier A {@link io.grpc.CallCredentials.MetadataApplier}
+   * @param accessToken An access token that does not start with 'Bearer '
+   */
   protected void applyToken(MetadataApplier applier, String accessToken) {
     Metadata metadata = new Metadata();
     metadata.put(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER), BEARER_SPACE + accessToken);

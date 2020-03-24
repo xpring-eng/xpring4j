@@ -6,7 +6,6 @@ import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
 import org.interledger.spsp.server.grpc.SendPaymentRequest;
 import org.interledger.spsp.server.grpc.SendPaymentResponse;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -17,7 +16,6 @@ import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.TimeUnit;
 
 /**
