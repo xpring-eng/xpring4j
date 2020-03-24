@@ -12,7 +12,7 @@ public class ProtocolBufferConversionTest {
         // GIVEN a Currency protocol buffer with a code and a name.
         Currency currencyProto = FakeXRPProtobufs.currency;
 
-        // WHEN the protocol buffer is converted to a native Typescript type.
+        // WHEN the protocol buffer is converted to a native Java type.
         XRPCurrency xrpCurrency = XRPCurrency.from(currencyProto);
 
         // THEN the currency converted as expected.
