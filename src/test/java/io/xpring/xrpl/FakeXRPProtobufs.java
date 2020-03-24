@@ -1,7 +1,6 @@
 package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.*;
-import io.xpring.xrpl.model.XRPCurrency;
 
 import java.io.UnsupportedEncodingException;
 
