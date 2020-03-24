@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+#### Added
+- A new `getPaymentStatus` is added which retrieves the status of payment transactions.
+
+#### Deprecated
+- `getTransactionStatus` is deprecated. Please use `getPaymentStatus` instead.
+
 ### Removed
 
 - `XpringClient` is removed from XpringKit. This class has been deprecated since 1.5.0. Clients should use `XRPClient` instead.
