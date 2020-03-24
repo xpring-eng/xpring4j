@@ -20,9 +20,9 @@ public interface XRPPathElement {
 
     static XRPPathElement from(PathElement pathElement) {
         return builder()
-                .account(pathElement.getAccount())
-                .currency(pathElement.getCurrency())
-                .issuer(pathElement.getIssuer())
+                .account(pathElement.getAccount().getAddress())
+                .currency(XRPCurrency.from(pathElement.getCurrency()))
+                .issuer(pathElement.getIssuer().getAddress())
                 .build();
     }
 }
