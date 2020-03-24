@@ -10,8 +10,6 @@ public class FakeXRPProtobufs {
     static String testCurrencyName = "currencyName";
     static ByteString testCurrencyCode;
 
-    // TODO(amiecorso): not sure if this is the correct way to construct a ByteString...
-    // trying to create equivalent of new Uint8Array([1, 2, 3]) in JS
     static {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
@@ -26,7 +24,6 @@ public class FakeXRPProtobufs {
     static String testAddress = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
     static String testDestination = "XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H";
 
-    // TODO(amiecorso): following two ByteStrings correct??
     static ByteString testPublicKey;
     static {
         try {
@@ -35,6 +32,7 @@ public class FakeXRPProtobufs {
             e.printStackTrace();
         }
     }
+
     static ByteString testTransactionSignature;
     static {
         try {

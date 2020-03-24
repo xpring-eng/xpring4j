@@ -9,20 +9,20 @@ import java.math.BigInteger;
  */
 public class FakeXRPClient implements  XRPClientDecorator {
     public BigInteger getBalanceValue;
-    public TransactionStatus transactionStatusValue;
+    public TransactionStatus paymentStatusValue;
     public String sendValue;
     public int latestValidatedLedgerValue;
     public RawTransactionStatus rawTransactionStatusValue;
 
     public FakeXRPClient(
             BigInteger getBalanceValue,
-            TransactionStatus transactionStatusValue,
+            TransactionStatus paymentStatusValue,
             String sendValue,
             int latestValidatedLedgerValue,
             RawTransactionStatus rawTransactionStatusValue
     ) {
         this.getBalanceValue = getBalanceValue;
-        this.transactionStatusValue = transactionStatusValue;
+        this.paymentStatusValue = paymentStatusValue;
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
@@ -34,8 +34,8 @@ public class FakeXRPClient implements  XRPClientDecorator {
     }
 
     @Override
-    public TransactionStatus getTransactionStatus(String transactionHash) {
-        return this.transactionStatusValue;
+    public TransactionStatus getPaymentStatus(String transactionHash) {
+        return this.paymentStatusValue;
     }
 
     @Override

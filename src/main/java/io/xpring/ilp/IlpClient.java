@@ -5,7 +5,7 @@ import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
 import io.xpring.xrpl.XpringException;
 
-import java.math.BigInteger;
+import java.util.Objects;
 
 /**
  * A client that can get balances and send ILP payments on a connector.
@@ -19,15 +19,16 @@ public class IlpClient {
      * @param grpcUrl : The gRPC URL exposed by Hermes
      */
     public IlpClient(String grpcUrl) {
+        Objects.requireNonNull(grpcUrl, "grpcUrl must not be null");
         this.decoratedClient = new DefaultIlpClient(grpcUrl);
     }
 
     /**
      * Get the balance of the specified account on the connector.
      *
-     * @param accountId The account ID to get the balance for.
-     * @param bearerToken Authentication bearer token.
-     * @return A {@link BigInteger} with the number of drops in this account.
+     * @param accountId The accountId to get the balance for.
+     * @param bearerToken Access token used for authentication.
+     * @return An {@link AccountBalance} with account balances and denomination.
      * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
     public AccountBalance getBalance(final String accountId, final String bearerToken) throws XpringException {

@@ -15,8 +15,8 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
     }
 
     @Override
-    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
-        return this.decoratedClient.getTransactionStatus(transactionHash);
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+        return this.decoratedClient.getPaymentStatus(transactionHash);
     }
 
     public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
