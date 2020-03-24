@@ -198,7 +198,7 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException {
+    public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
             // GIVEN a XRPClient which will return an invalidated transaction with a failed code.
@@ -211,16 +211,16 @@ public class LegacyDefaultXRPClientTest {
                     GRPCResult.ok(transactionStatusResponse)
             );
 
-            // WHEN the transaction status is retrieved.
-            io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+            // WHEN the payment status is retrieved.
+            io.xpring.xrpl.TransactionStatus paymentStatus = client.getPaymentStatus(TRANSACTION_HASH);
 
             // THEN the status is PENDING.
-            assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
+            assertThat(paymentStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
         }
     }
 
     @Test
-    public void transactionStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException {
+    public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException {
         // GIVEN a XRPClient which will return an unvalidated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         LegacyDefaultXRPClient client = getClient(
@@ -231,15 +231,15 @@ public class LegacyDefaultXRPClientTest {
                 GRPCResult.ok(transactionStatusResponse)
         );
 
-        // WHEN the transaction status is retrieved.
-        io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+        // WHEN the payment status is retrieved.
+        io.xpring.xrpl.TransactionStatus paymentStatus = client.getPaymentStatus(TRANSACTION_HASH);
 
         // THEN the status is PENDING.
-        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
+        assertThat(paymentStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.PENDING);
     }
 
     @Test
-    public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException {
+    public void paymentStatusWithValidatedTransactionAndFailureCode() throws IOException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
             // GIVEN a XRPClient which will return an validated transaction with a failed code.
@@ -252,16 +252,16 @@ public class LegacyDefaultXRPClientTest {
                     GRPCResult.ok(transactionStatusResponse)
             );
 
-            // WHEN the transaction status is retrieved.
-            io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+            // WHEN the payment status is retrieved.
+            io.xpring.xrpl.TransactionStatus paymentStatus = client.getPaymentStatus(TRANSACTION_HASH);
 
             // THEN the status is FAILED.
-            assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.FAILED);
+            assertThat(paymentStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.FAILED);
         }
     }
 
     @Test
-    public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException {
+    public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException {
         // GIVEN a XRPClient which will return an validated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         LegacyDefaultXRPClient client = getClient(
@@ -272,15 +272,15 @@ public class LegacyDefaultXRPClientTest {
                 GRPCResult.ok(transactionStatusResponse)
         );
 
-        // WHEN the transaction status is retrieved.
-        io.xpring.xrpl.TransactionStatus transactionStatus = client.getTransactionStatus(TRANSACTION_HASH);
+        // WHEN the payment status is retrieved.
+        io.xpring.xrpl.TransactionStatus paymentStatus = client.getPaymentStatus(TRANSACTION_HASH);
 
         // THEN the status is SUCCEEDED.
-        assertThat(transactionStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.SUCCEEDED);
+        assertThat(paymentStatus).isEqualTo(io.xpring.xrpl.TransactionStatus.SUCCEEDED);
     }
 
     @Test
-    public void transactionStatusWithNodeError() throws IOException {
+    public void paymentStatusWithNodeError() throws IOException {
         // GIVEN a XRPClient which will error when a transaction status is requested..
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
         LegacyDefaultXRPClient client = getClient(
@@ -291,9 +291,9 @@ public class LegacyDefaultXRPClientTest {
                 GRPCResult.error(GENERIC_ERROR)
         );
 
-        // WHEN the transaction status is retrieved THEN an error is thrown..
+        // WHEN the payment status is retrieved THEN an error is thrown..
         expectedException.expect(Exception.class);
-        client.getTransactionStatus(TRANSACTION_HASH);
+        client.getPaymentStatus(TRANSACTION_HASH);
     }
 
 

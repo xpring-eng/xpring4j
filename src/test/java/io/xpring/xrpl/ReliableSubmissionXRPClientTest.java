@@ -66,12 +66,12 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetTransactionStatus() throws XpringException {
-        // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a transaction status is retrieved
-        TransactionStatus transactionStatus = reliableSubmissionXRPClient.getTransactionStatus(TRANSACTION_HASH);
+    public void testGetPaymentStatus() throws XpringException {
+        // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a payment status is retrieved
+        TransactionStatus paymentStatus = reliableSubmissionXRPClient.getPaymentStatus(TRANSACTION_HASH);
 
         // THEN the result is returned unaltered.
-        assertThat(transactionStatus).isEqualTo(DEFAULT_TRANSACTION_STATUS_VALUE);
+        assertThat(paymentStatus).isEqualTo(DEFAULT_TRANSACTION_STATUS_VALUE);
     }
 
     @Test

@@ -5,19 +5,17 @@ import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
 import io.xpring.xrpl.XpringException;
 
-import java.math.BigInteger;
-
 /**
- * An common interface shared between IlpClient and the internal hierarchy of decorators.
+ * A common interface shared between IlpClient and the internal hierarchy of decorators.
  */
 public interface IlpClientDecorator {
 
     /**
      * Get the balance of the specified account on the connector.
      *
-     * @param accountId The account ID to get the balance for.
-     * @param bearerToken Authentication bearer token.
-     * @return A {@link BigInteger} with the number of drops in this account.
+     * @param accountId The accountId to get the balance for.
+     * @param bearerToken Access token used for authentication.
+     * @return An {@link AccountBalance} with account balances and denomination.
      * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
     AccountBalance getBalance(final String accountId, final String bearerToken) throws XpringException;

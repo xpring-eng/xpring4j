@@ -10,11 +10,14 @@ Xpring4j is the Java client-side library of Xpring SDK.
 ## Features
 
 Xpring4j provides the following features:
-
-- Wallet generation and derivation (Seed-based or HD Wallet-based)
-- Address validation
-- Account balance retrieval
-- Sending XRP payments
+- XRP:
+    - Wallet generation and derivation (Seed-based or HD Wallet-based)
+    - Address validation
+    - Account balance retrieval
+    - Sending XRP payments
+- Interledger (ILP):
+    - Account balance retrieval
+    - Send ILP Payments
 
 ## Installation
 
@@ -26,7 +29,7 @@ Xpring4j is available as a Java library from Maven Central. Simply add the follo
 <dependency>
   <groupId>io.xpring</groupId>
   <artifactId>xpring4j</artifactId>
-  <version>1.2.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -44,7 +47,15 @@ test.xrp.xpring.io:50051
 main.xrp.xpring.io:50051
 ```
 
-## Usage
+### Hermes Node
+Xpring SDK's `IlpClient` needs to communicate with Xpring's ILP infrastructure through an instance of [Hermes](https://github.com/xpring-eng/hermes-ilp).   
+
+In order to connect to the Hermes instance that Xpring currently operates, you will need to create an ILP wallet [here](https://xpring.io/portal/ilp-wallet)
+
+Once your wallet has been created, you can use the gRPC URL specified in your wallet, as well as your **access token** to check your balance
+and send payments over ILP.
+
+## Usage: XRP
 
 **Note:** Xpring SDK only works with the X-Address format. For more information about this format, see the [Utilities section](#utilities) and <http://xrpaddress.info>.
 
@@ -168,13 +179,15 @@ System.out.println(balance); // Logs a balance in drops of XRP
 
 ### Checking Transaction Status
 
-An `XRPClient` can check the status of an transaction on the XRP Ledger.
+A `XRPClient` can check the status of an payment on the XRP Ledger.
+
+This method can only determine the status of [payment transactions](https://xrpl.org/payment.html) which do not have the partial payment flag ([tfPartialPayment](https://xrpl.org/payment.html#payment-flags)) set.
 
 Xpring4J returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
 - `FAILED:` The transaction was successfully validated but not applied to the XRP Ledger. Or the operation will never be validated.
 - `PENDING`: The transaction has not yet been validated, but may be validated in the future.
-- `UNKNOWN`: The transaction status could not be determined.
+- `UNKNOWN`: The transaction status could not be determined, the hash represented a non-payment type transaction, or the hash represented a transaction with the [tfPartialPayment](https://xrpl.org/payment.html#payment-flags) flag set.
 
 **Note:** For more information, see [Reliable Transaction Submission](https://xrpl.org/reliable-transaction-submission.html) and [Transaction Results](https://xrpl.org/transaction-results.html).
 
@@ -188,7 +201,7 @@ String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring
 XRPClient xrpClient = new XRPClient(grpcURL);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
-TransactionStatus transactionStatus = xrpClient.xrpClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
+TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash); // TransactionStatus.SUCCEEDED
 ```
 
 **Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
@@ -278,6 +291,55 @@ String xAddress = Utils.encodeXAddress(rippleClassicAddress); // X7jjQ4d6bz1qmjw
 ClassicAddressdecodedClassicAddress = Utils.decodeXAddress(xAddress);
 System.out.println(decodedClassicAddress.address()); // rnysDDrRXxz9z66DmCmfWpq4Z5s4TyUP3G
 System.out.println(decodedClassicAddress.tag()); // 12345
+```
+
+## Usage: ILP
+### IlpClient
+`IlpClient` is the main interface into the ILP network.  `IlpClient` must be initialized with the URL of a Hermes instance.
+This can be found in your [wallet](https://xpring.io/portal/ilp-wallet).
+
+All calls to `IlpClient` must pass an access token, which can be generated in your [wallet](https://xpring.io/portal/ilp-wallet). 
+
+```java
+import io.xpring.ilp.IlpClient;
+
+String grpcUrl = "hermes-envoy-test.xpring.io"; // TestNet Hermes URL
+IlpClient ilpClient = new IlpClient(grpcUrl);
+```
+
+#### Retreiving a Balance
+An `IlpClient` can check the balance of an account on a connector.
+
+```java
+import io.xpring.ilp.IlpClient;
+import io.xpring.ilp.model.AccountBalance;
+
+String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
+IlpClient ilpClient = new IlpClient(grpcUrl);
+
+AccountBalance balance = ilpClient.getBalance("demo_user", "2S1PZh3fEKnKg"); // Just a demo user on Testnet
+System.out.println("Net balance was " + balance.netBalance() + " with asset scale " + balance.assetScale());
+```
+
+#### Sending a Payment
+An `IlpClient` can send an ILP payment to another ILP address by supplying a [Payment Pointer](https://github.com/interledger/rfcs/blob/master/0026-payment-pointers/0026-payment-pointers.md)
+and a sender's account ID
+
+```java
+import io.xpring.ilp.IlpClient;
+import io.xpring.ilp.model.PaymentRequest;
+import io.xpring.ilp.model.PaymentResponse;
+
+String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
+IlpClient ilpClient = new IlpClient(grpcUrl);
+
+PaymentRequest paymentRequest = PaymentRequest.builder()
+  .amount(amountToSend)
+  .destinationPaymentPointer("$xpring.money/demo_receiver")
+  .senderAccountId("demo_user")
+  .build();
+
+PaymentResponse payment = ilpClient.sendPayment(paymentRequest, "2S1PZh3fEKnKg");
 ```
 
 # Contributing
