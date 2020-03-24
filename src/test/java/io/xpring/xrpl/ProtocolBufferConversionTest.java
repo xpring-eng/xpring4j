@@ -23,7 +23,7 @@ public class ProtocolBufferConversionTest {
 
         // THEN the currency converted as expected.
         assertThat(xrpCurrency.name()).isEqualTo(currencyProto.getName());
-        assertThat(xrpCurrency.code()).isEqualTo(currencyProto.getCode());
+        assertThat(xrpCurrency.code()).isEqualTo(currencyProto.getCode().toByteArray());
     }
 
     // PathElement
