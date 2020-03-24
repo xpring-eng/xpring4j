@@ -17,12 +17,15 @@ public interface XRPClientDecorator {
 
 
     /**
-     * Retrieve the transaction status for a given transaction hash.
+     * Retrieve the transaction status for a Payment given transaction hash.
+     *
+     * Note: This method will only work for Payment type transactions which do not have the tf_partial_payment attribute set.
+     * See: https://xrpl.org/payment.html#payment-flags
      *
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    TransactionStatus getTransactionStatus(String transactionHash) throws XpringException;
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException;
 
     /**
      * Transact XRP between two accounts on the ledger.

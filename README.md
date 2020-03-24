@@ -179,13 +179,15 @@ System.out.println(balance); // Logs a balance in drops of XRP
 
 ### Checking Transaction Status
 
-An `XRPClient` can check the status of an transaction on the XRP Ledger.
+A `XRPClient` can check the status of an payment on the XRP Ledger.
+
+This method can only determine the status of [payment transactions](https://xrpl.org/payment.html) which do not have the partial payment flag ([tfPartialPayment](https://xrpl.org/payment.html#payment-flags)) set.
 
 Xpring4J returns the following transaction states:
 - `SUCCEEDED`: The transaction was successfully validated and applied to the XRP Ledger.
 - `FAILED:` The transaction was successfully validated but not applied to the XRP Ledger. Or the operation will never be validated.
 - `PENDING`: The transaction has not yet been validated, but may be validated in the future.
-- `UNKNOWN`: The transaction status could not be determined.
+- `UNKNOWN`: The transaction status could not be determined, the hash represented a non-payment type transaction, or the hash represented a transaction with the [tfPartialPayment](https://xrpl.org/payment.html#payment-flags) flag set.
 
 **Note:** For more information, see [Reliable Transaction Submission](https://xrpl.org/reliable-transaction-submission.html) and [Transaction Results](https://xrpl.org/transaction-results.html).
 
@@ -199,7 +201,7 @@ String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring
 XRPClient xrpClient = new XRPClient(grpcURL);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
-TransactionStatus transactionStatus = xrpClient.xrpClient.getTransactionStatus(transactionHash); // TransactionStatus.SUCCEEDED
+TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash); // TransactionStatus.SUCCEEDED
 ```
 
 **Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
