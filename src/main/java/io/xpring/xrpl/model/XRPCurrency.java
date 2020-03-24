@@ -1,6 +1,5 @@
 package io.xpring.xrpl.model;
 
-import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.Currency;
 import org.immutables.value.Value;
 
@@ -23,12 +22,12 @@ public interface XRPCurrency {
     /**
      * @return 160 bit currency code. 20 bytes
      */
-    ByteString code();
+    byte[] code();
 
     static XRPCurrency from(Currency currency) {
         return builder()
                 .name(currency.getName())
-                .code(currency.getCode())
+                .code(currency.getCode().toByteArray())
                 .build();
     }
 }
