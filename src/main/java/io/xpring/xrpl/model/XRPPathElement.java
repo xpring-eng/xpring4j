@@ -20,12 +20,6 @@ public interface XRPPathElement {
     String issuer();
 
     static XRPPathElement from(PathElement pathElement) {
-        if (pathElement == null) {
-            return null;
-        }
-        if (XRPCurrency.from(pathElement.getCurrency()) == null) {
-            return null;
-        }
         return builder()
                 .account(pathElement.getAccount().getAddress())
                 .currency(XRPCurrency.from(pathElement.getCurrency()))

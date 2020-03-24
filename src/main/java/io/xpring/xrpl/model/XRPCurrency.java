@@ -26,12 +26,6 @@ public interface XRPCurrency {
     ByteString code();
 
     static XRPCurrency from(Currency currency) {
-        if (currency == null) {
-            return null;
-        }
-        if (currency.getName().isEmpty() || currency.getCode().isEmpty()) {
-            return null;
-        }
         return builder()
                 .name(currency.getName())
                 .code(currency.getCode())
