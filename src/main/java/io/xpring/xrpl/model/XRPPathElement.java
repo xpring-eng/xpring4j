@@ -1,6 +1,5 @@
 package io.xpring.xrpl.model;
 
-import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.Payment.PathElement;
 import org.immutables.value.Value;
 
