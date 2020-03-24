@@ -71,8 +71,15 @@ public class FakeXRPProtobufs {
                                             .setIssuer(accountAddress_issuer)
                                             .build();
 
-    // Path proto
-    static Payment.Path path = Payment.Path.newBuilder()
+    // Path protos
+    static Payment.Path emptyPath = Payment.Path.newBuilder().build();
+
+    static Payment.Path pathWithOneElement = Payment.Path.newBuilder()
                                             .setElements(0, pathElement)
+                                            .build();
+    static Payment.Path pathWithThreeElements = Payment.Path.newBuilder()
+                                            .setElements(0, pathElement)
+                                            .setElements(1, pathElement)
+                                            .setElements(2, pathElement)
                                             .build();
 }

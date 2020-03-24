@@ -1,6 +1,10 @@
 package io.xpring.xrpl;
 
+import static org.assertj.core.api.AssertionsForClassTypes.useDefaultDateFormatsOnly;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
+import io.xpring.xrpl.model.XRPPath;
+import io.xpring.xrpl.model.XRPPathElement;
 import org.junit.Test;
 
 import org.xrpl.rpc.v1.*;
@@ -31,82 +35,57 @@ public class ProtocolBufferConversionTest {
         Payment.PathElement testPathElementProto = FakeXRPProtobufs.pathElement;
 
         // WHEN the protocol buffer is converted to a native Java type.
+        XRPPathElement xrpPathElement = XRPPathElement.from(testPathElementProto);
 
+        // THEN the currency converted as expected.
+        assertThat(xrpPathElement.account()).isEqualTo(testPathElementProto.getAccount().getAddress());
+        assertThat(xrpPathElement.currency()).isEqualTo(XRPCurrency.from(testPathElementProto.getCurrency()));
+        assertThat(xrpPathElement.issuer()).isEqualTo(testPathElementProto.getIssuer().getAddress());
     }
 
-    it('Convert PathElement protobuf with all fields set to XRPPathElement', function(): void {
-        // GIVEN a PathElement protocol buffer with all fields set.
-    const pathElementProto = testPathElement
-
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const pathElement = XRPPathElement.from(pathElementProto)
-
-        // THEN the currency converted as expected.
-        assert.equal(
-                pathElement?.account,
-                pathElementProto.getAccount()!.getAddress(),
-    )
-        assert.deepEqual(
-                pathElement?.currency,
-                XRPCurrency.from(pathElementProto.getCurrency()!),
-    )
-        assert.equal(
-                pathElement?.issuer,
-                pathElementProto.getIssuer()!.getAddress(),
-    )
-    })
-
-    it('Convert PathElement protobuf with no fields set to XRPPathElement', function(): void {
+    @Test
+    public void convertPathElementWithNoFieldsTest() {
         // GIVEN a PathElement protocol buffer with no fields set.
-    const pathElementProto = new Payment.PathElement()
+        Payment.PathElement emptyPathElementProto = Payment.PathElement.newBuilder().build();
 
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const pathElement = XRPPathElement.from(pathElementProto)
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPathElement xrpPathElement = XRPPathElement.from(emptyPathElementProto);
 
         // THEN the currency converted as expected.
-        assert.isUndefined(pathElement?.account)
-        assert.isUndefined(pathElement?.currency)
-        assert.isUndefined(pathElement?.issuer)
-    })
+        assertThat(xrpPathElement.account()).isNull();
+        assertThat(xrpPathElement.currency()).isNull();
+        assertThat(xrpPathElement.issuer()).isNull();
+    }
 
     // Path
 
-    it('Convert Path protobuf with no paths to XRPPath', function(): void {
+    @Test
+    public void convertPathWithNoPathsTest() {
         // GIVEN a set of paths with zero path elements.
-    const pathProto = new Payment.Path()
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPath xrpPath = XRPPath.from(FakeXRPProtobufs.emptyPath);
 
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const path = XRPPath.from(pathProto)
+        // Then there are zero paths in the output.
+        assertThat(xrpPath.pathElements().size()).isZero();
+    }
 
-        // THEN there are zero paths in the output.
-        assert.equal(path?.pathElements.length, 0)
-    })
-
-    it('Convert Path protobuf with one Path to XRPPath', function(): void {
+    @Test
+    public void convertPathWithOnePathTest() {
         // GIVEN a set of paths with one path element.
-    const pathProto = new Payment.Path()
-        pathProto.addElements(testPathElement)
-
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const path = XRPPath.from(pathProto)
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPath xrpPath = XRPPath.from(FakeXRPProtobufs.pathWithOneElement);
 
         // THEN there is one path in the output.
-        assert.equal(path?.pathElements.length, 1)
-    })
+        assertThat(xrpPath.pathElements().size()).isOne();
+    }
 
-    it('Convert Path protobuf with many Paths to XRPPath', function(): void {
+    @Test
+    public void convertPathWithManyPathsTest() {
         // GIVEN a set of paths with three path elements.
-    const pathProto = new Payment.Path()
-        pathProto.setElementsList([
-                testPathElement,
-                testPathElement,
-                testPathElement,
-    ])
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPath xrpPath = XRPPath.from(FakeXRPProtobufs.pathWithThreeElements);
 
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const path = XRPPath.from(pathProto)
-
-        // THEN there are multiple paths in the output.
-        assert.equal(path?.pathElements.length, 3)
-    })
+        // THEN there are three paths in the output.
+        assertThat(xrpPath.pathElements().size()).isEqualTo(3);
+    }
 }
