@@ -51,9 +51,9 @@ public class ProtocolBufferConversionTest {
         XRPPathElement xrpPathElement = XRPPathElement.from(emptyPathElementProto);
 
         // THEN the currency converted as expected.
-        assertThat(xrpPathElement.account()).isNull();
+        assertThat(xrpPathElement.account()).isEmpty();
         assertThat(xrpPathElement.currency()).isNull();
-        assertThat(xrpPathElement.issuer()).isNull();
+        assertThat(xrpPathElement.issuer()).isEmpty();
     }
 
     // Path
