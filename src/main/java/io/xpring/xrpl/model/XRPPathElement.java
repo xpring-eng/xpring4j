@@ -23,13 +23,13 @@ public interface XRPPathElement {
         if (pathElement == null) {
             return null;
         }
-        if (XRPCurrency.from(pathElement.getCurrency()) != null) {
-            return builder()
-                    .account(pathElement.getAccount().getAddress())
-                    .currency(XRPCurrency.from(pathElement.getCurrency()))
-                    .issuer(pathElement.getIssuer().getAddress())
-                    .build();
+        if (XRPCurrency.from(pathElement.getCurrency()) == null) {
+            return null;
         }
-        return null;
+        return builder()
+                .account(pathElement.getAccount().getAddress())
+                .currency(XRPCurrency.from(pathElement.getCurrency()))
+                .issuer(pathElement.getIssuer().getAddress())
+                .build();
     }
 }
