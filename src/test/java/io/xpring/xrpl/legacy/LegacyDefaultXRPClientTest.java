@@ -2,6 +2,7 @@ package io.xpring.xrpl.legacy;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.GRPCResult;
 import io.xpring.proto.*;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,50 +23,17 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 /**
- * Represents the result of a gRPC network call for an object of type T or an error.
+ * Unit tests for {@link io.xpring.xrpl.DefaultXRPClient}.
  */
-class GRPCResult<T> {
-    private Optional<T> value;
-    private Optional<String> error;
-
-    private GRPCResult(T value, String error) {
-        this.value = Optional.ofNullable(value);
-        this.error = Optional.ofNullable(error);
-    }
-
-    public static <U> GRPCResult<U> ok(U value) {
-        return new GRPCResult<>(value, null);
-    }
-
-    public static <U> GRPCResult<U> error(String error) {
-        return new GRPCResult<>(null, error);
-    }
-
-    public boolean isError() {
-        return error.isPresent();
-    }
-
-    public T getValue() {
-        return value.get();
-    }
-
-    public String getError() {
-        return error.get();
-    }
-}
-
-/**
- * Unit tests for {@link DefaultXpringClient}.
- */
-public class LegacyDefaultXpringClientTest {
+public class LegacyDefaultXRPClientTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
-    /** The DefaultXpringClient under test. */
-    private LegacyDefaultXpringClient client;
+    /** The DefaultXRPClient under test. */
+    private LegacyDefaultXRPClient client;
 
     /** An address on the XRP Ledger. */
     private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
@@ -74,7 +42,7 @@ public class LegacyDefaultXpringClientTest {
     private static final String DROPS_OF_XRP_IN_ACCOUNT = "10";
     private static final String DROPS_OF_XRP_FOR_FEE = "20";
     private static final String TRANSACTION_BLOB = "DEADBEEF";
-    private static final String GENERIC_ERROR = "Mocked network error";
+    private static final Throwable GENERIC_ERROR = new Throwable("Mocked network error");
     private static final String TRANSACTION_STATUS_SUCCESS = "tesSUCCESS";
     private static final String TRANSACTION_HASH = "DEADBEEF";
     private static final String [] TRANSACTION_FAILURE_STATUS_CODES = {
@@ -93,8 +61,8 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void getBalanceTest() throws IOException, XpringException {
-        // GIVEN a DefaultXpringClient with mocked networking which will succeed.
-        LegacyDefaultXpringClient client = getClient();
+        // GIVEN a DefaultXRPClient with mocked networking which will succeed.
+        LegacyDefaultXRPClient client = getClient();
 
         // WHEN the balance is retrieved.
         BigInteger balance = client.getBalance(XRPL_ADDRESS);
@@ -107,7 +75,7 @@ public class LegacyDefaultXpringClientTest {
     public void getBalanceWithClassicAddressTest() throws IOException, XpringException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
-        LegacyDefaultXpringClient client = getClient();
+        LegacyDefaultXRPClient client = getClient();
 
         // WHEN the balance for the classic address is retrieved THEN an error is thrown.
         expectedException.expect(XpringException.class);
@@ -116,9 +84,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info.
+        // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
         GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -133,8 +101,8 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void submitTransactionTest() throws IOException, XpringException {
-        // GIVEN a XpringClient with mocked networking which will succeed.
-        LegacyDefaultXpringClient client = getClient();
+        // GIVEN a XRPClient with mocked networking which will succeed.
+        LegacyDefaultXRPClient client = getClient();
         Wallet wallet = new Wallet(WALLET_SEED);
 
         // WHEN a transaction is sent.
@@ -148,7 +116,7 @@ public class LegacyDefaultXpringClientTest {
     @Test
     public void submitTransactionWithClassicAddress() throws IOException, XpringException {
         // GIVEN a classic address.
-        LegacyDefaultXpringClient client = getClient();
+        LegacyDefaultXRPClient client = getClient();
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -159,9 +127,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to return account info.
+        // GIVEN a XRPClient which will fail to return account info.
         GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -177,9 +145,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to retrieve a fee.
+        // GIVEN a XRPClient which will fail to retrieve a fee.
         GRPCResult<Fee> feeResult = GRPCResult.error(GENERIC_ERROR);
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 feeResult,
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -195,9 +163,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedLatestValidatedLedgerSequence() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to retrieve a fee.
+        // GIVEN a XRPClient which will fail to retrieve a fee.
         GRPCResult<LedgerSequence> ledgerSequence = GRPCResult.error(GENERIC_ERROR);
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -213,9 +181,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
-        // GIVEN a XpringClient which will fail to submit a transaction.
+        // GIVEN a XRPClient which will fail to submit a transaction.
         GRPCResult<SubmitSignedTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 submitResult,
@@ -233,9 +201,9 @@ public class LegacyDefaultXpringClientTest {
     public void transactionStatusWithUnvalidatedTransactionAndFailureCode() throws IOException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-            // GIVEN a XpringClient which will return an invalidated transaction with a failed code.
+            // GIVEN a XRPClient which will return an invalidated transaction with a failed code.
             io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(transactionFailureCode).build();
-            LegacyDefaultXpringClient client = getClient(
+            LegacyDefaultXRPClient client = getClient(
                     GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                     GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -253,9 +221,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException {
-        // GIVEN a XpringClient which will return an unvalidated transaction with a success code.
+        // GIVEN a XRPClient which will return an unvalidated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(false).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -274,9 +242,9 @@ public class LegacyDefaultXpringClientTest {
     public void transactionStatusWithValidatedTransactionAndFailureCode() throws IOException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-            // GIVEN a XpringClient which will return an validated transaction with a failed code.
+            // GIVEN a XRPClient which will return an validated transaction with a failed code.
             io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(transactionFailureCode).build();
-            LegacyDefaultXpringClient client = getClient(
+            LegacyDefaultXRPClient client = getClient(
                     GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                     GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -294,9 +262,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithValidatedTransactionAndSuccessCode() throws IOException {
-        // GIVEN a XpringClient which will return an validated transaction with a success code.
+        // GIVEN a XRPClient which will return an validated transaction with a success code.
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -313,9 +281,9 @@ public class LegacyDefaultXpringClientTest {
 
     @Test
     public void transactionStatusWithNodeError() throws IOException {
-        // GIVEN a XpringClient which will error when a transaction status is requested..
+        // GIVEN a XRPClient which will error when a transaction status is requested..
         io.xpring.proto.TransactionStatus transactionStatusResponse = io.xpring.proto.TransactionStatus.newBuilder().setValidated(true).setTransactionStatusCode(TRANSACTION_STATUS_SUCCESS).build();
-        LegacyDefaultXpringClient client = getClient(
+        LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
                 GRPCResult.ok(makeSubmitSignedTransactionResponse(TRANSACTION_BLOB)),
@@ -328,10 +296,11 @@ public class LegacyDefaultXpringClientTest {
         client.getTransactionStatus(TRANSACTION_HASH);
     }
 
+
     /**
-     * Convenience method to get a XpringClient which has successful network calls.
+     * Convenience method to get a XRPClient which has successful network calls.
      */
-    private LegacyDefaultXpringClient getClient() throws IOException {
+    private LegacyDefaultXRPClient getClient() throws IOException {
         return getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -342,10 +311,10 @@ public class LegacyDefaultXpringClientTest {
     }
 
     /**
-     * Return a XpringClient which returns the given results for network calls.
+     * Return a XRPClient which returns the given results for network calls.
      */
 
-    private LegacyDefaultXpringClient getClient(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult, GRPCResult<LedgerSequence> latestValidatedLedgerSequenceResult, GRPCResult<io.xpring.proto.TransactionStatus> transactionStatusResult) throws IOException {
+    private LegacyDefaultXRPClient getClient(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult, GRPCResult<LedgerSequence> latestValidatedLedgerSequenceResult, GRPCResult<io.xpring.proto.TransactionStatus> transactionStatusResult) throws IOException {
         XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl = getService(accountInfoResult, feeResult, submitResult, latestValidatedLedgerSequenceResult, transactionStatusResult);
 
         // Generate a unique in-process server name.
@@ -359,8 +328,8 @@ public class LegacyDefaultXpringClientTest {
         ManagedChannel channel = grpcCleanup.register(
                 InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-        // Create a new XpringClient using the in-process channel;
-        return new LegacyDefaultXpringClient(channel);
+        // Create a new XRPClient using the in-process channel;
+        return new LegacyDefaultXRPClient(channel);
     }
 
     /**
@@ -373,7 +342,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getAccountInfo(io.xpring.proto.GetAccountInfoRequest request,
                                                io.grpc.stub.StreamObserver<io.xpring.proto.AccountInfo> responseObserver) {
                         if (accountInfoResult.isError()) {
-                            responseObserver.onError(new Throwable(accountInfoResult.getError()));
+                            responseObserver.onError(accountInfoResult.getError());
                         } else {
                             responseObserver.onNext(accountInfoResult.getValue());
                             responseObserver.onCompleted();
@@ -384,7 +353,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getFee(io.xpring.proto.GetFeeRequest request,
                                        io.grpc.stub.StreamObserver<io.xpring.proto.Fee> responseObserver) {
                         if (feeResult.isError()) {
-                            responseObserver.onError(new Throwable(feeResult.getError()));
+                            responseObserver.onError(feeResult.getError());
                         } else {
                             responseObserver.onNext(feeResult.getValue());
                             responseObserver.onCompleted();
@@ -395,7 +364,7 @@ public class LegacyDefaultXpringClientTest {
                     public void submitSignedTransaction(io.xpring.proto.SubmitSignedTransactionRequest request,
                                                         io.grpc.stub.StreamObserver<io.xpring.proto.SubmitSignedTransactionResponse> responseObserver) {
                         if (submitResult.isError()) {
-                            responseObserver.onError(new Throwable(submitResult.getError()));
+                            responseObserver.onError(submitResult.getError());
                         } else {
                             responseObserver.onNext(submitResult.getValue());
                             responseObserver.onCompleted();
@@ -406,7 +375,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getLatestValidatedLedgerSequence(io.xpring.proto.GetLatestValidatedLedgerSequenceRequest request,
                                                                  io.grpc.stub.StreamObserver<io.xpring.proto.LedgerSequence> responseObserver) {
                         if (latestValidatedLedgerSequenceResult.isError()) {
-                            responseObserver.onError(new Throwable(latestValidatedLedgerSequenceResult.getError()));
+                            responseObserver.onError(latestValidatedLedgerSequenceResult.getError());
                         } else {
                             responseObserver.onNext(latestValidatedLedgerSequenceResult.getValue());
                             responseObserver.onCompleted();
@@ -417,7 +386,7 @@ public class LegacyDefaultXpringClientTest {
                     public void getTransactionStatus(io.xpring.proto.GetTransactionStatusRequest request,
                                                      io.grpc.stub.StreamObserver<io.xpring.proto.TransactionStatus> responseObserver) {
                         if (transactionStatusResult.isError()) {
-                            responseObserver.onError(new Throwable(transactionStatusResult.getError()));
+                            responseObserver.onError(transactionStatusResult.getError());
                         } else {
                             responseObserver.onNext(transactionStatusResult.getValue());
                             responseObserver.onCompleted();

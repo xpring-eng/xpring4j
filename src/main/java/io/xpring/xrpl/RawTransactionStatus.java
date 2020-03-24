@@ -1,13 +1,14 @@
 package io.xpring.xrpl;
 
 import io.xpring.proto.TransactionStatus;
-import rpc.v1.Tx.GetTxResponse;
+import org.xrpl.rpc.v1.*;
 
 /** Encapsulates fields of a raw transaction status which is returned by the XRP Ledger. */
 public class RawTransactionStatus {
     private boolean validated;
     private String transactionStatusCode;
     private int lastLedgerSequence;
+    private boolean isFullPayment;
 
     /**
      * Create a new RawTransactionStatus from a {@link TransactionStatus} protocol buffer.
@@ -18,17 +19,27 @@ public class RawTransactionStatus {
         this.validated = transactionStatus.getValidated();
         this.transactionStatusCode = transactionStatus.getTransactionStatusCode();
         this.lastLedgerSequence = transactionStatus.getLastLedgerSequence();
+        this.isFullPayment = true;
     }
 
     /**
-     * Create a new RawTransactionStatus from a {@link GetTxResponse} protocol buffer.
+     * Create a new RawTransactionStatus from a {@link GetTransactionResponse} protocol buffer.
      *
-     * @param getTxResponse The {@link GetTxResponse} to encapsulate.
+     * @param getTransactionResponse The {@link GetTransactionResponse} to encapsulate.
      */
-    public RawTransactionStatus(GetTxResponse getTxResponse) {
-        this.validated = getTxResponse.getValidated();
-        this.transactionStatusCode = getTxResponse.getMeta().getTransactionResult().getResult();
-        this.lastLedgerSequence = getTxResponse.getTransaction().getLastLedgerSequence();
+    public RawTransactionStatus(GetTransactionResponse getTransactionResponse) {
+        Transaction transaction = getTransactionResponse.getTransaction();
+
+        this.validated = getTransactionResponse.getValidated();
+        this.transactionStatusCode = getTransactionResponse.getMeta().getTransactionResult().getResult();
+        this.lastLedgerSequence = transaction.getLastLedgerSequence().getValue();
+
+        boolean isPayment = transaction.hasPayment();
+        int flags = transaction.getFlags().getValue();
+
+        boolean isPartialPayment = RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags);
+
+        this.isFullPayment = isPayment && !isPartialPayment;
     }
 
     /**
@@ -51,4 +62,9 @@ public class RawTransactionStatus {
     public int getLastLedgerSequence() {
         return this.lastLedgerSequence;
     }
+
+    /**
+     * Returns whether the transaction represnented by this status is a full payment.
+     */
+    public boolean isFullPayment() { return this.isFullPayment; }
 }

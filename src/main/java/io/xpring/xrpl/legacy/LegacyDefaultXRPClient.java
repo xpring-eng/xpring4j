@@ -8,20 +8,21 @@ import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XpringClientDecorator;
+import io.xpring.xrpl.XRPClientDecorator;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
  *
  * @see "https://xrpl.org"
  */
-public class LegacyDefaultXpringClient implements XpringClientDecorator {
+public class LegacyDefaultXRPClient implements XRPClientDecorator {
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int LEDGER_SEQUENCE_MARGIN = 10;
 
@@ -33,7 +34,7 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
     /**
      * No-args Constructor.
      */
-    public LegacyDefaultXpringClient(String grpcURL) {
+    public LegacyDefaultXRPClient(String grpcURL) {
         this(ManagedChannelBuilder
             .forTarget(grpcURL)
             .usePlaintext()
@@ -46,10 +47,25 @@ public class LegacyDefaultXpringClient implements XpringClientDecorator {
      *
      * @param channel A {@link ManagedChannel}.
      */
-    LegacyDefaultXpringClient(final ManagedChannel channel) {
+    LegacyDefaultXRPClient(final ManagedChannel channel) {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
         this.stub = XRPLedgerAPIGrpc.newBlockingStub(channel);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            channel.shutdown();
+            try {
+                channel.awaitTermination(5, TimeUnit.SECONDS);
+            }
+            catch (Exception timedOutException) {
+                try {
+                    channel.shutdownNow();
+                }
+                catch (Exception e) {
+                    // nothing more can be done
+                }
+            }
+        }));
     }
 
     /**

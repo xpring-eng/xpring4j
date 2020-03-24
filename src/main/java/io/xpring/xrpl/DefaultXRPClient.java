@@ -3,36 +3,24 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.xpring.proto.SubmitSignedTransactionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rpc.v1.Amount;
-import rpc.v1.Amount.AccountAddress;
-import rpc.v1.Amount.CurrencyAmount;
-import rpc.v1.Amount.XRPDropsAmount;
-import rpc.v1.AccountInfo.GetAccountInfoRequest;
-import rpc.v1.AccountInfo.GetAccountInfoResponse;
-import rpc.v1.FeeOuterClass.GetFeeRequest;
-import rpc.v1.FeeOuterClass.GetFeeResponse;
-import rpc.v1.LedgerObjects.AccountRoot;
-import rpc.v1.Submit.SubmitTransactionRequest;
-import rpc.v1.Submit.SubmitTransactionResponse;
-import rpc.v1.TransactionOuterClass.Transaction;
-import rpc.v1.TransactionOuterClass.Payment;
-import rpc.v1.XRPLedgerAPIServiceGrpc;
-import rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
-import rpc.v1.Tx.GetTxRequest;
-import rpc.v1.Tx.GetTxResponse;
+import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Common.*;
+import org.xrpl.rpc.v1.Common.Account;
+import org.xrpl.rpc.v1.Common.Amount;
+import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
  *
  * @see "https://xrpl.org"
  */
-public class DefaultXpringClient implements XpringClientDecorator {
+public class DefaultXRPClient implements XRPClientDecorator {
     // A margin to pad the current ledger sequence with when submitting transactions.
     private static final int MAX_LEDGER_VERSION_OFFSET = 10;
 
@@ -44,7 +32,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * No-args Constructor.
      */
-    public DefaultXpringClient(String grpcURL) {
+    public DefaultXRPClient(String grpcURL) {
         this(ManagedChannelBuilder
                 .forTarget(grpcURL)
                 .usePlaintext()
@@ -57,10 +45,25 @@ public class DefaultXpringClient implements XpringClientDecorator {
      *
      * @param channel A {@link ManagedChannel}.
      */
-    DefaultXpringClient(final ManagedChannel channel) {
+    DefaultXRPClient(final ManagedChannel channel) {
         // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
         // stub, or an async stub with Future are always possible.
         this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            channel.shutdown();
+            try {
+                channel.awaitTermination(5, TimeUnit.SECONDS);
+            }
+            catch (Exception timedOutException) {
+                try {
+                    channel.shutdownNow();
+                }
+                catch (Exception e) {
+                    // nothing more can be done
+                }
+            }
+        }));
     }
 
     /**
@@ -78,7 +81,7 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         AccountRoot accountData = this.getAccountData(classicAddress.address());
 
-      return BigInteger.valueOf(accountData.getBalance().getDrops());
+        return BigInteger.valueOf(accountData.getBalance().getValue().getXrpAmount().getDrops());
     }
 
     /**
@@ -103,18 +106,18 @@ public class DefaultXpringClient implements XpringClientDecorator {
     /**
      * Transact XRP between two accounts on the ledger.
      *
-     * @param amount The number of drops of XRP to send.
+     * @param drops The number of drops of XRP to send.
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
      * @throws XpringException If the given inputs were invalid.
      */
     public String send(
-            final BigInteger amount,
+            final BigInteger drops,
             final String destinationAddress,
             final Wallet sourceWallet
     ) throws XpringException {
-        Objects.requireNonNull(amount);
+        Objects.requireNonNull(drops);
         Objects.requireNonNull(destinationAddress);
         Objects.requireNonNull(sourceWallet);
 
@@ -136,28 +139,39 @@ public class DefaultXpringClient implements XpringClientDecorator {
                 .setAddress(sourceClassicAddress.address())
                 .build();
 
-        XRPDropsAmount drops = XRPDropsAmount.newBuilder().setDrops(amount.longValue()).build();
-        CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(drops).build();
+        XRPDropsAmount dropsAmount = XRPDropsAmount.newBuilder().setDrops(drops.longValue()).build();
+        CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(dropsAmount).build();
+        Amount amount = Amount.newBuilder().setValue(currencyAmount).build();
+        Destination destination = Destination.newBuilder().setValue(destinationAccountAddress).build();
 
         Payment.Builder paymentBuilder = Payment.newBuilder()
-                .setAmount(currencyAmount)
-                .setDestination(destinationAccountAddress);
+                .setAmount(amount)
+                .setDestination(destination);
         if (destinationClassicAddress.tag().isPresent()) {
-            paymentBuilder.setDestinationTag(destinationClassicAddress.tag().get());
+            DestinationTag destinationTag = DestinationTag.newBuilder()
+                    .setValue(destinationClassicAddress.tag().get())
+                    .build();
+            paymentBuilder.setDestinationTag(destinationTag);
         }
 
         Payment payment = paymentBuilder.build();
 
         byte [] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getPublicKey());
-        int lastLedgerSequence = lastValidatedLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
+        int lastLedgerSequenceInt = lastValidatedLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
+
+        Account sourceAccount = Account.newBuilder().setValue(sourceAccountAddress).build();
+        LastLedgerSequence lastLedgerSequence = LastLedgerSequence.newBuilder().setValue(lastLedgerSequenceInt).build();
+        SigningPublicKey signingPublicKey = SigningPublicKey.newBuilder()
+                .setValue(ByteString.copyFrom(signingPublicKeyBytes))
+                .build();
 
         Transaction transaction = Transaction.newBuilder()
-                .setAccount(sourceAccountAddress)
+                .setAccount(sourceAccount)
                 .setFee(fee)
                 .setSequence(accountData.getSequence())
                 .setPayment(payment)
                 .setLastLedgerSequence(lastLedgerSequence)
-                .setSigningPublicKey(ByteString.copyFrom(signingPublicKeyBytes))
+                .setSigningPublicKey(signingPublicKey)
                 .build();
 
         byte [] signedTransaction = Signer.signTransaction(transaction, sourceWallet);
@@ -183,15 +197,15 @@ public class DefaultXpringClient implements XpringClientDecorator {
 
         byte [] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
         ByteString transactionHashByteString = ByteString.copyFrom(transactionHashBytes);
-        GetTxRequest request = GetTxRequest.newBuilder().setHash(transactionHashByteString).build();
+        GetTransactionRequest request = GetTransactionRequest.newBuilder().setHash(transactionHashByteString).build();
 
-        GetTxResponse response = this.stub.getTx(request);
+        GetTransactionResponse response = this.stub.getTransaction(request);
 
         return new RawTransactionStatus(response);
     }
 
     private XRPDropsAmount getMinimumFee() {
-        return this.getFeeResponse().getDrops().getMinimumFee();
+        return this.getFeeResponse().getFee().getMinimumFee();
     }
 
     private GetFeeResponse getFeeResponse() {

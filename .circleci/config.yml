@@ -35,9 +35,8 @@ jobs:
             - v1-dependencies-{{ checksum "pom.xml" }}
 
       - run:
-          command: |
-            mvn clean compile
-            mvn verify jacoco:report
+          name: "Build And Run Unit Tests"
+          command: mvn clean install -DskipITs jacoco:report
 
       - save_cache: # saves the project dependencies
           paths:
@@ -45,3 +44,46 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       - run: bash <(curl -s https://codecov.io/bash)
+
+  ilp_integration_tests:
+    working_directory: ~/repo
+
+    # Need to run in a VM so TestContainers will work
+    machine:
+      image: ubuntu-1604:201903-01
+
+    environment:
+      MAVEN_OPTS: -Xmx4096m
+      JAVA_HOME: /usr/lib/jvm/jdk1.8.0/
+
+    steps:
+      - checkout
+      - run:
+          name: "Pull Submodules"
+          command: |
+            git submodule init
+            git submodule update
+      - protobuf/install
+      - run:
+          name: "Install protoc plugin"
+          command: |
+            curl -L https://github.com/grpc/grpc-web/releases/download/1.0.7/protoc-gen-grpc-web-1.0.7-linux-x86_64 --output protoc-gen-grpc-web
+            sudo mv protoc-gen-grpc-web /usr/local/bin/
+            chmod +x /usr/local/bin/protoc-gen-grpc-web
+      # gets the project dependencies and installs sub-module deps
+      - run:
+          name: Install Connector Dependencies
+          command: mvn dependency:go-offline -DskipTests -DskipITs install
+      - run:
+          name: "Run ILP Integration Tests"
+          command: mvn clean verify jacoco:report -DskipTests -PintegrationTests
+
+workflows:
+  version: 2
+
+  commit:
+    jobs:
+      - build
+      - ilp_integration_tests:
+          requires:
+            - build

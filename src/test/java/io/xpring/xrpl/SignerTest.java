@@ -5,12 +5,10 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import rpc.v1.Amount;
-import rpc.v1.Amount.AccountAddress;
-import rpc.v1.Amount.CurrencyAmount;
-import rpc.v1.Amount.XRPDropsAmount;
-import rpc.v1.TransactionOuterClass.Payment;
-import rpc.v1.TransactionOuterClass.Transaction;
+import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Common.*;
+import org.xrpl.rpc.v1.Common.Account;
+import org.xrpl.rpc.v1.Common.Amount;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -20,15 +18,20 @@ public class SignerTest {
         // GIVEN a wallet, a transaction and an expected serialized and signed output.
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
 
-        int sequence = 1;
+        int sequenceInt = 1;
         XRPDropsAmount feeAmount = XRPDropsAmount.newBuilder().setDrops(10).build();
         XRPDropsAmount sendAmount = XRPDropsAmount.newBuilder().setDrops(1000).build();
         AccountAddress senderAddress = AccountAddress.newBuilder().setAddress("X7vjQVCddnQ7GCESYnYR3EdpzbcoAMbPw7s2xv8YQs94tv4").build();
         AccountAddress destinationAddress = AccountAddress.newBuilder().setAddress("XVPcpSm47b1CZkf5AkKM9a84dQHe3m4sBhsrA4XtnBECTAc").build();
         CurrencyAmount paymentAmount = CurrencyAmount.newBuilder().setXrpAmount(sendAmount).build();
-        Payment payment = Payment.newBuilder().setDestination(destinationAddress).setAmount(paymentAmount).build();
+        Destination destination = Destination.newBuilder().setValue(destinationAddress).build();
+        Amount amount = Amount.newBuilder().setValue(paymentAmount).build();
+        Account account = Account.newBuilder().setValue(senderAddress).build();
+        Sequence sequence = Sequence.newBuilder().setValue(sequenceInt).build();
+
+        Payment payment = Payment.newBuilder().setDestination(destination).setAmount(amount).build();
         Transaction transaction = Transaction.newBuilder()
-                .setAccount(senderAddress)
+                .setAccount(account)
                 .setFee(feeAmount)
                 .setSequence(sequence)
                 .setPayment(payment)
