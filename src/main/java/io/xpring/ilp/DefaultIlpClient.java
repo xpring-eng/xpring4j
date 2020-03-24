@@ -1,11 +1,6 @@
 package io.xpring.ilp;
 
-import org.interledger.spsp.server.grpc.AccountServiceGrpc;
 import org.interledger.spsp.server.grpc.BalanceServiceGrpc;
-import org.interledger.spsp.server.grpc.CreateAccountRequest;
-import org.interledger.spsp.server.grpc.CreateAccountResponse;
-import org.interledger.spsp.server.grpc.GetAccountRequest;
-import org.interledger.spsp.server.grpc.GetAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceRequest;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
@@ -16,14 +11,13 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.ilp.grpc.IlpJwtCallCredentials;
+import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.ilp.model.AccountBalance;
 import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
