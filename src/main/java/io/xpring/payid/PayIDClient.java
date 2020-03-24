@@ -63,7 +63,7 @@ public class PayIDClient {
     public String xrpAddressForPayID(String payID) throws PayIDException {
         PaymentPointer paymentPointer = PayIDUtils.parsePayID(payID);
         if (paymentPointer == null) {
-            throw PayIDException.invalidPaymentPointerExpection;
+            throw PayIDException.invalidPaymentPointerException;
         }
 
         ApiClient apiClient = new ApiClient();

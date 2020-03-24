@@ -2,7 +2,7 @@ package io.xpring.payid;
 
 public class PayIDException extends Exception {
     /** Static exception for when a classic address is passed to an X-Address API. */
-    public static PayIDException invalidPaymentPointerExpection =
+    public static PayIDException invalidPaymentPointerException =
             new PayIDException(PayIDExceptionType.INVALID_PAYMENT_POINTER, "Invalid Payment Pointer");
 
     /** The type of exception. */
