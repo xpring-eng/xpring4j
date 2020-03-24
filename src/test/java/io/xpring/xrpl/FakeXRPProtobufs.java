@@ -78,6 +78,7 @@ public class FakeXRPProtobufs {
     static Payment.Path pathWithOneElement = Payment.Path.newBuilder()
                                             .addElements(pathElement)
                                             .build();
+
     static Payment.Path pathWithThreeElements = Payment.Path.newBuilder()
                                             .addElements(pathElement)
                                             .addElements(pathElement)
