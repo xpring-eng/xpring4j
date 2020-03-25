@@ -12,7 +12,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class PayIDClientTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort());
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
