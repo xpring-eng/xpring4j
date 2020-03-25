@@ -1,6 +1,7 @@
 package io.xpring.payid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
 import io.xpring.payid.generated.*;
 import okhttp3.OkHttpClient;
@@ -48,6 +49,7 @@ public class PayIDClient {
      *
      * Exposed for testing purposes.
      */
+    @VisibleForTesting
     public void setEnableSSLVerification(boolean enableSSLVerification) {
         this.enableSSLVerification = enableSSLVerification;
     }
