@@ -3,8 +3,6 @@ package io.xpring.xrpl.model;
 import org.xrpl.rpc.v1.Payment.PathElement;
 import org.immutables.value.Value;
 
-import java.util.Optional;
-
 /**
  * A path step in an XRP Ledger Path.
  * @see "https://xrpl.org/paths.html#path-steps"
