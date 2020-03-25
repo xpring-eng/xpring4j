@@ -7,18 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 3.0.0 - March 24, 2020
 #### Added
 - A new `getPaymentStatus` is added which retrieves the status of payment transactions.
 
 #### Deprecated
 - `getTransactionStatus` is deprecated. Please use `getPaymentStatus` instead.
 
-### Removed
+#### Removed
 
 - `XpringClient` is removed from XpringKit. This class has been deprecated since 1.5.0. Clients should use `XRPClient` instead.
 
-## Changed
+#### Changed
 - `XRPClient` now uses [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254) rather than the legacy API. Users who wish to use the legacy API should pass `false` for `useNewProtocolBuffers` in the constructor.
+- Introduces a breaking change to `IlpClient` API.
+	- `IlpClient.getBalance` now returns an `AccountBalance` instead of a protobuf generated `GetBalanceResponse`.
+	- `IlpClient.sendPayment` now consumes a `PaymentRequest` instead of individual parameters, and now returns a `PaymentResult` instead of a protobuf generated `SendPaymentResponse`
 
 ## 2.2.0 - March 6, 2020
 
