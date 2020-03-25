@@ -53,4 +53,33 @@ public class FakeXRPProtobufs {
                                             .setName(testCurrencyName)
                                             .setCode(testCurrencyCode)
                                             .build();
+
+    // AccountAddress protos
+    static AccountAddress accountAddress = AccountAddress.newBuilder()
+                                            .setAddress("r123")
+                                            .build();
+
+    static AccountAddress accountAddress_issuer = AccountAddress.newBuilder()
+                                            .setAddress("r456")
+                                            .build();
+
+    // PathElement proto
+    static Payment.PathElement pathElement = Payment.PathElement.newBuilder()
+                                            .setAccount(accountAddress)
+                                            .setCurrency(currency)
+                                            .setIssuer(accountAddress_issuer)
+                                            .build();
+
+    // Path protos
+    static Payment.Path emptyPath = Payment.Path.newBuilder().build();
+
+    static Payment.Path pathWithOneElement = Payment.Path.newBuilder()
+                                            .addElements(pathElement)
+                                            .build();
+
+    static Payment.Path pathWithThreeElements = Payment.Path.newBuilder()
+                                            .addElements(pathElement)
+                                            .addElements(pathElement)
+                                            .addElements(pathElement)
+                                            .build();
 }
