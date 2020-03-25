@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.xrpl.model.XRPPath;
 import io.xpring.xrpl.model.XRPPathElement;
+
 import org.junit.Test;
 
 import org.xrpl.rpc.v1.*;
