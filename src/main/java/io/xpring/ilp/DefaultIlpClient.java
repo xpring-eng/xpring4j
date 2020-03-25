@@ -30,7 +30,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
     /**
      * Initialize a new client with a configured URL
-     * @param grpcUrl : The gRPC URL exposed by Hermes
+     * @param grpcUrl The gRPC URL exposed by Hermes
      */
     protected DefaultIlpClient(String grpcUrl) {
         this(ManagedChannelBuilder
@@ -77,11 +77,11 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
             // Convert protobuf response to AccountBalanceResponse
             return AccountBalance.from(response);
-        } catch (StatusRuntimeException e) {
-            throw new XpringException(String.format("Unable to get balance for account %s.  %s", accountId, e.getStatus()));
-        } catch (IllegalArgumentException e) {
+        } catch (StatusRuntimeException statusRuntimeException) {
+            throw new XpringException(String.format("Unable to get balance for account %s.  %s", accountId, statusRuntimeException.getStatus()));
+        } catch (IllegalArgumentException illegalArgumentException) {
             // accessToken started with "Bearer "
-            throw new XpringException(e.getMessage());
+            throw new XpringException(illegalArgumentException.getMessage());
         }
     }
 
@@ -99,11 +99,11 @@ public class DefaultIlpClient implements IlpClientDecorator {
 
             return PaymentResult.from(protoResponse);
 
-        } catch (StatusRuntimeException e) {
-            throw new XpringException("Unable to send payment. " + e.getStatus());
-        } catch (IllegalArgumentException e) {
+        } catch (StatusRuntimeException statusRuntimeException) {
+            throw new XpringException("Unable to send payment. " + statusRuntimeException.getStatus());
+        } catch (IllegalArgumentException illegalArgumentException) {
             // accessToken started with "Bearer "
-            throw new XpringException(e.getMessage());
+            throw new XpringException(illegalArgumentException.getMessage());
         }
     }
 }

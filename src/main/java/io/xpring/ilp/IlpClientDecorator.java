@@ -24,7 +24,7 @@ public interface IlpClientDecorator {
      * Send a payment from the given accountId to the destinationPaymentPointer payment pointer
      *
      * @param paymentRequest a {@link PaymentRequest} with parameters used to send a payment
-     * @param accessToken : Access token of the sender
+     * @param accessToken Access token of the sender
      * @return A {@link PaymentResult} with details about the payment. Note that this method will not
      *          necessarily throw an exception if the payment failed. Payment status can be checked in
      *          {@link PaymentResult#successfulPayment()}
