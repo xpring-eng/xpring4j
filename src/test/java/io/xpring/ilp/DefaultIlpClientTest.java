@@ -1,6 +1,7 @@
 package io.xpring.ilp;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 
@@ -135,6 +136,20 @@ public class DefaultIlpClientTest {
   }
 
   @Test
+  public void getIlpBalanceWithBearerTokenTest() throws IOException, XpringException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed
+    DefaultIlpClient client = getClient();
+
+    // WHEN the balance is retrieved for "bob" with an access token prefixed with "Bearer "
+    // THEN a XpringException in thrown
+    assertThrows(
+      "accessToken cannot start with \"Bearer \"",
+      XpringException.class,
+      () -> client.getBalance("bob", "Bearer bob")
+    );
+  }
+
+  @Test
   public void sendPaymentTest() throws IOException, XpringException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
@@ -152,6 +167,26 @@ public class DefaultIlpClientTest {
     assertThat(response.amountDelivered().longValue()).isEqualTo(this.sendPaymentResponse.getAmountDelivered());
     assertThat(response.amountSent().longValue()).isEqualTo(this.sendPaymentResponse.getAmountSent());
     assertThat(response.successfulPayment()).isEqualTo(this.sendPaymentResponse.getSuccessfulPayment());
+  }
+
+  @Test
+  public void sendPaymentWithBearerTokenTest() throws IOException, XpringException {
+    // GIVEN a DefaultIlpClient with mocked networking which will succeed
+    DefaultIlpClient client = getClient();
+
+    // WHEN a payment is sent with an access token prefixed with "Bearer "
+    // THEN a XpringException in thrown
+    PaymentRequest paymentRequest = PaymentRequest.builder()
+      .amount(UnsignedLong.valueOf(1000))
+      .destinationPaymentPointer("$foo.dev/bar")
+      .senderAccountId("baz")
+      .build();
+
+    assertThrows(
+      "accessToken cannot start with \"Bearer \"",
+      XpringException.class,
+      () -> client.sendPayment(paymentRequest, "Bearer bob")
+    );
   }
 
   /**
