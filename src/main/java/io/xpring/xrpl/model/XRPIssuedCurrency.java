@@ -15,19 +15,16 @@ public interface XRPIssuedCurrency {
     }
 
     /**
-     *
      * @return The currency used to value the amount.
      */
     XRPCurrency currency();
 
     /**
-     *
      * @return The value of the amount, 8 bytes.
      */
     BigInteger value();
 
     /**
-     *
      * @return Unique account address of the entity issuing the currency.
      */
     String issuer();

@@ -88,4 +88,8 @@ public class ProtocolBufferConversionTest {
         // THEN there are three paths in the output.
         assertThat(xrpPath.pathElements().size()).isEqualTo(3);
     }
+
+    // IssuedCurrency
+
+
 }
