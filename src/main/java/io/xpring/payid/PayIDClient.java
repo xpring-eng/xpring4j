@@ -81,8 +81,7 @@ public class PayIDClient {
         // however access to Accept headers is not available unless we access the underlying class.
         // TODO(keefertaylor): Factor this out to a helper function to make it clear which inputs matter.
 
-        String localVarPath = "/{path}"
-                .replaceAll("\\{" + "path" + "\\}", apiClient.escapeString(path.toString()));
+        String localVarPath = "/" + apiClient.escapeString(path.toString());
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
