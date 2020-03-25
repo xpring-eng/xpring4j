@@ -20,7 +20,7 @@ public interface XRPIssuedCurrency {
     XRPCurrency currency();
 
     /**
-     * @return The value of the amount, 8 bytes.
+     * @return The value of the amount.
      */
     BigInteger value();
 
@@ -39,7 +39,7 @@ public interface XRPIssuedCurrency {
 
         return builder()
                 .currency(XRPCurrency.from(issuedCurrency.getCurrency()))
-                .value(new BigInteger(issuedCurrency.getValue()))
+                .value(value)
                 .issuer(issuedCurrency.getIssuer().getAddress())
                 .build();
     }
