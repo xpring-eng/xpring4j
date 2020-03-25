@@ -1,10 +1,8 @@
 package io.xpring.xrpl.model;
+
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
-import org.immutables.value.Value;
-import org.xrpl.rpc.v1.Payment;
-
 import java.math.BigInteger;
-
+import org.immutables.value.Value;
 
 /**
  * An issued currency on the XRP Ledger
