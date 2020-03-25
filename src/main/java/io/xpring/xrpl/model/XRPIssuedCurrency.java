@@ -30,6 +30,13 @@ public interface XRPIssuedCurrency {
     String issuer();
 
     static XRPIssuedCurrency from(IssuedCurrencyAmount issuedCurrency) {
+        BigInteger value;
+        try {
+            value = new BigInteger((issuedCurrency.getValue()));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+
         return builder()
                 .currency(XRPCurrency.from(issuedCurrency.getCurrency()))
                 .value(new BigInteger(issuedCurrency.getValue()))
