@@ -16,13 +16,15 @@ public interface XRPCurrencyAmount {
 
     /**
      *
-     * @return
+     * @return An amount of XRP, specified in drops.
+     * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
     String drops();
 
     /**
      *
-     * @return
+     * @return An amount of an issued currency.
+     * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
     XRPIssuedCurrency issuedCurrency();
 
