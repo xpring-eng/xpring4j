@@ -134,6 +134,7 @@ public class ProtocolBufferConversionTest {
         assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
     }
 
+    @Test
     public void convertCurrencyAmountWithIssuedCurrency() {
         // GIVEN a currency amount protocol buffer with an issued currency amount.
         // WHEN the protocol buffer is converted to a native Java type.

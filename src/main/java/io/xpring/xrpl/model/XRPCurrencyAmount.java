@@ -18,7 +18,7 @@ public interface XRPCurrencyAmount {
     }
 
     /**
-     *
+     * TODO(amiecorso) figure out how to make these types Optional
      * @return An amount of XRP, specified in drops.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
