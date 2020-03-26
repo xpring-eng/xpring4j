@@ -119,4 +119,51 @@ public class ProtocolBufferConversionTest {
         // THEN the result is null
         assertThat(xrpIssuedCurrency).isNull();
     }
+
+
+    // CurrencyAmount
+
+    it('Convert CurrencyAmount with drops', function(): void {
+        // GIVEN a currency amount protocol buffer with an XRP amount.
+    const drops = '10'
+    const currencyAmountProto = new CurrencyAmount()
+    const xrpDropsAmountProto = new XRPDropsAmount()
+        xrpDropsAmountProto.setDrops(drops)
+        currencyAmountProto.setXrpAmount(xrpDropsAmountProto)
+
+        // WHEN the protocol buffer is converted to a native TypeScript type.
+    const currencyAmount = XRPCurrencyAmount.from(currencyAmountProto)
+
+        // THEN the result has drops set and no issued amount.
+        assert.isUndefined(currencyAmount?.issuedCurrency)
+        assert.equal(currencyAmount?.drops, drops)
+    })
+
+    it('Convert CurrencyAmount with Issued Currency', function(): void {
+        // GIVEN a currency amount protocol buffer with an issued currency amount.
+    const currencyAmountProto = new CurrencyAmount()
+        currencyAmountProto.setIssuedCurrencyAmount(testIssuedCurrency)
+
+        // WHEN the protocol buffer is converted to a native TypeScript type.
+    const currencyAmount = XRPCurrencyAmount.from(currencyAmountProto)
+
+        // THEN the result has an issued currency set and no drops amount.
+        assert.deepEqual(
+                currencyAmount?.issuedCurrency,
+                XRPIssuedCurrency.from(testIssuedCurrency),
+    )
+        assert.isUndefined(currencyAmount?.drops)
+    })
+
+    it('Convert CurrencyAmount with bad inputs', function(): void {
+        // GIVEN a currency amount protocol buffer with no amounts
+    const currencyAmountProto = new CurrencyAmount()
+        currencyAmountProto.setIssuedCurrencyAmount(testInvalidIssuedCurrency)
+
+        // WHEN the protocol buffer is converted to a native TypeScript type.
+    const currencyAmount = XRPCurrencyAmount.from(currencyAmountProto)
+
+        // THEN the result is empty
+        assert.isUndefined(currencyAmount)
+    })
 }
