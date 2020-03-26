@@ -2,14 +2,11 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.xrpl.model.XRPIssuedCurrency;
-import io.xpring.xrpl.model.XRPPath;
-import io.xpring.xrpl.model.XRPPathElement;
+import io.xpring.xrpl.model.*;
 
 import org.junit.Test;
 
 import org.xrpl.rpc.v1.*;
-import io.xpring.xrpl.model.XRPCurrency;
 
 import java.math.BigInteger;
 
@@ -123,47 +120,40 @@ public class ProtocolBufferConversionTest {
 
     // CurrencyAmount
 
-    it('Convert CurrencyAmount with drops', function(): void {
+    @Test
+    public void convertCurrencyAmountWithDropsTest() {
         // GIVEN a currency amount protocol buffer with an XRP amount.
-    const drops = '10'
-    const currencyAmountProto = new CurrencyAmount()
-    const xrpDropsAmountProto = new XRPDropsAmount()
-        xrpDropsAmountProto.setDrops(drops)
-        currencyAmountProto.setXrpAmount(xrpDropsAmountProto)
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.dropsCurrencyAmount);
 
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const currencyAmount = XRPCurrencyAmount.from(currencyAmountProto)
+        // Then the result has drops set and an empty issued currency.
+        assertThat(xrpCurrencyAmount.drops())
+                .isEqualTo(Long.toString(FakeXRPProtobufs.dropsCurrencyAmount.getXrpAmount().getDrops()));
+//        assertThat(xrpCurrencyAmount.issuedCurrency())
+//                .isEqualTo(XRPIssuedCurrency.from(IssuedCurrencyAmount.newBuilder().build()));
+        assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
+    }
 
-        // THEN the result has drops set and no issued amount.
-        assert.isUndefined(currencyAmount?.issuedCurrency)
-        assert.equal(currencyAmount?.drops, drops)
-    })
-
-    it('Convert CurrencyAmount with Issued Currency', function(): void {
+    public void convertCurrencyAmountWithIssuedCurrency() {
         // GIVEN a currency amount protocol buffer with an issued currency amount.
-    const currencyAmountProto = new CurrencyAmount()
-        currencyAmountProto.setIssuedCurrencyAmount(testIssuedCurrency)
-
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const currencyAmount = XRPCurrencyAmount.from(currencyAmountProto)
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount);
 
         // THEN the result has an issued currency set and no drops amount.
-        assert.deepEqual(
-                currencyAmount?.issuedCurrency,
-                XRPIssuedCurrency.from(testIssuedCurrency),
-    )
-        assert.isUndefined(currencyAmount?.drops)
-    })
+        assertThat(xrpCurrencyAmount.drops()).isNull();
+        assertThat(xrpCurrencyAmount.issuedCurrency())
+                .isEqualTo(XRPIssuedCurrency.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount.getIssuedCurrencyAmount()));
+    }
 
-    it('Convert CurrencyAmount with bad inputs', function(): void {
+    @Test
+    public void convertCurrencyAmountWithBadInputsTest() {
         // GIVEN a currency amount protocol buffer with no amounts
-    const currencyAmountProto = new CurrencyAmount()
-        currencyAmountProto.setIssuedCurrencyAmount(testInvalidIssuedCurrency)
+        CurrencyAmount emptyCurrencyAmount = CurrencyAmount.newBuilder().build();
 
-        // WHEN the protocol buffer is converted to a native TypeScript type.
-    const currencyAmount = XRPCurrencyAmount.from(currencyAmountProto)
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(emptyCurrencyAmount);
 
-        // THEN the result is empty
-        assert.isUndefined(currencyAmount)
-    })
+        // THEN the result is null
+        assertThat(xrpCurrencyAmount).isNull();
+    }
 }

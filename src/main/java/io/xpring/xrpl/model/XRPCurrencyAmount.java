@@ -3,6 +3,9 @@ package io.xpring.xrpl.model;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
+import org.xrpl.rpc.v1.XRPDropsAmount;
+
+import java.util.Optional;
 
 /**
  * An amount of currency on the XRP Ledger
@@ -19,7 +22,7 @@ public interface XRPCurrencyAmount {
      * @return An amount of XRP, specified in drops.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-    String drops();
+     String drops();
 
     /**
      *
@@ -36,7 +39,7 @@ public interface XRPCurrencyAmount {
                 if (issuedCurrencyAmount!= null) {
                     XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
                     if (xrpIssuedCurrency != null) {
-                        return builder().drops(null).issuedCurrency(xrpIssuedCurrency).build();
+                        return builder().drops("").issuedCurrency(xrpIssuedCurrency).build();
                     }
                 }
                 // if AmountCase is ISSUED_CURRENCY_AMOUNT, we must be able to convert this to an XRPIssuedCurrency
@@ -45,7 +48,9 @@ public interface XRPCurrencyAmount {
             case XRP_AMOUNT: {
                 long numeric_drops = currencyAmount.getXrpAmount().getDrops();
                 String drops = Long.toString(numeric_drops);
-                return builder().drops(drops).issuedCurrency(null).build();
+                return builder().drops(drops)
+                                .issuedCurrency(XRPIssuedCurrency.from(IssuedCurrencyAmount.newBuilder().build()))
+                                .build();
             }
             default:
                 return null;
