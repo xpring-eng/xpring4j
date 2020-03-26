@@ -113,6 +113,7 @@ public class FakeXRPProtobufs {
                                                                             .setValue(testInvalidIssuedCurrencyValue)
                                                                             .build();
 
+    // Invalid CurrencyAmount proto
     static CurrencyAmount invalidCurrencyAmount = CurrencyAmount.newBuilder()
                                                                 .setIssuedCurrencyAmount(invalidIssuedCurrencyAmount)
                                                                 .build();
