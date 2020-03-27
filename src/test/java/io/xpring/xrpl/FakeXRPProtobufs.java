@@ -3,12 +3,16 @@ import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /** Common set of fake objects - protobuf and native Java conversions - for testing */
 public class FakeXRPProtobufs {
     // primitive test values
     static String testCurrencyName = "currencyName";
     static ByteString testCurrencyCode;
+
+    static String fakeAddress1 = "r123";
+    static String fakeAddress2 = "r456";
 
     static {
         try {
@@ -22,6 +26,7 @@ public class FakeXRPProtobufs {
     static String testInvalidIssuedCurrencyValue = "xrp"; // non-numeric
     static long testDrops = 10;
 
+    static int testDestinationTag = 2;
     /**
      * will use in future fake objects
      */
@@ -61,11 +66,11 @@ public class FakeXRPProtobufs {
 
     // AccountAddress protos
     static AccountAddress accountAddress = AccountAddress.newBuilder()
-                                                        .setAddress("r123")
+                                                        .setAddress(fakeAddress1)
                                                         .build();
 
     static AccountAddress accountAddress_issuer = AccountAddress.newBuilder()
-                                                                .setAddress("r456")
+                                                                .setAddress(fakeAddress2)
                                                                 .build();
 
     // PathElement proto
@@ -102,6 +107,57 @@ public class FakeXRPProtobufs {
     static CurrencyAmount issuedCurrencyCurrencyAmount = CurrencyAmount.newBuilder()
                                                                         .setIssuedCurrencyAmount(issuedCurrencyAmount)
                                                                         .build();
+
+    // Payment protos
+        // Amount
+    static Common.Amount amount = Common.Amount.newBuilder().setValue(issuedCurrencyCurrencyAmount).build();
+
+        // Destination
+    static Common.Destination destination = Common.Destination.newBuilder().setValue(accountAddress).build();
+
+        // DestinationTag
+    static Common.DestinationTag destinationTag = Common.DestinationTag.newBuilder()
+                                                                        .setValue(testDestinationTag).build();
+
+        // DeliverMin
+    static Common.DeliverMin deliverMin = Common.DeliverMin.newBuilder().setValue(dropsCurrencyAmount).build();
+
+        // InvoiceID
+    static Common.InvoiceID invoiceID = Common.InvoiceID.newBuilder().setValue(testCurrencyCode).build();
+
+        // Paths
+    static AccountAddress accountAddress_456 = AccountAddress.newBuilder().setAddress("r456").build();
+    static AccountAddress accountAddress_789 = AccountAddress.newBuilder().setAddress("r789").build();
+    static AccountAddress accountAddress_abc = AccountAddress.newBuilder().setAddress("rabc").build();
+
+    static Payment.PathElement pathElement_456 = Payment.PathElement.newBuilder()
+                                                                    .setAccount(accountAddress_456).build();
+    static Payment.PathElement pathElement_789 = Payment.PathElement.newBuilder()
+                                                                    .setAccount(accountAddress_789).build();
+    static Payment.PathElement pathElement_abc = Payment.PathElement.newBuilder()
+                                                                    .setAccount(accountAddress_abc).build();
+
+
+    static Payment.Path pathProtoOneElement = Payment.Path.newBuilder().addElements(pathElement_456).build();
+    static Payment.Path pathProtoTwoElements = Payment.Path.newBuilder()
+                                                            .addElements(pathElement_789)
+                                                            .addElements(pathElement_abc)
+                                                            .build();
+
+        // SendMax
+    static Common.SendMax sendMax = Common.SendMax.newBuilder().setValue(dropsCurrencyAmount).build();
+
+        // finally, populate Payment
+    static Payment paymentWithAllFieldsSet = Payment.newBuilder()
+                .setAmount(amount)
+                .setDestination(destination)
+                .setDestinationTag(destinationTag)
+                .setDeliverMin(deliverMin)
+                .setInvoiceId(invoiceID)
+                .setPaths(0, pathProtoOneElement)
+                .setPaths(1, pathProtoTwoElements)
+                .setSendMax(sendMax)
+                .build();
 
     // INVALID OBJECTS ===============================================================
 
