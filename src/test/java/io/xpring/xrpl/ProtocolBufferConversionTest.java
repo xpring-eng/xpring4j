@@ -190,7 +190,7 @@ public class ProtocolBufferConversionTest {
         XRPPayment xrpPayment = XRPPayment.from(paymentProto);
 
         // THEN the result is as expected.
-        assertThat(xrpPayment.amount()).isEqualTo(paymentProto.getAmount().getValue());
+        assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
 //        assertThat(xrpPayment.destination())
 //                .isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
 //        assertThat(xrpPayment.destinationTag()).isNull();

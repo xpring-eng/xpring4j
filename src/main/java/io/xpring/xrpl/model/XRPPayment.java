@@ -30,7 +30,7 @@ public interface XRPPayment {
     /**
      * @return (Optional) Arbitrary tag that identifies the reason for the payment.
      */
-    @Nullable int destinationTag();
+    @Nullable Integer destinationTag();
 
     /**
      * @return (Optional) Minimum amount of destination currency this transaction should deliver.
@@ -60,24 +60,48 @@ public interface XRPPayment {
 
         // destination is required
         String destination = payment.getDestination().getValue().getAddress();
-        if (destination.isEmpty() ) { return null; }
+        if (destination.isEmpty()) { return null; }
 
-        int destinationTag = payment.getDestinationTag().getValue();
+        Integer destinationTag;
+        if (payment.hasDestinationTag()) {
+            destinationTag = payment.getDestinationTag().getValue();
+        } else {
+            destinationTag = null;
+        }
 
         // If the deliverMin field is set, it must be able to be transformed into an XRPCurrencyAmount.
-        XRPCurrencyAmount deliverMin = XRPCurrencyAmount.from(payment.getDeliverMin().getValue());
-        if (deliverMin == null) { return null; }
+        XRPCurrencyAmount deliverMin;
+        if (payment.hasDeliverMin()) {
+            deliverMin = XRPCurrencyAmount.from(payment.getDeliverMin().getValue());
+            if (deliverMin == null) { return null; }
+        } else {
+            deliverMin = null;
+        }
 
-        byte[] invoiceID = payment.getInvoiceId().getValue().toByteArray();
+        byte[] invoiceID;
+        if (payment.hasInvoiceId()) {
+            invoiceID = payment.getInvoiceId().getValue().toByteArray();
+        } else {
+            invoiceID = null;
+        }
 
         List<XRPPath> paths = payment.getPathsList()
                                      .stream()
                                      .map(path -> XRPPath.from(path))
                                      .collect(Collectors.toList());
+        if (paths.isEmpty()) {
+            paths = null;
+        }
 
         // If the sendMax field is set, it must be able to be transformed into an XRPCurrencyAmount.
-        XRPCurrencyAmount sendMax = XRPCurrencyAmount.from(payment.getSendMax().getValue());
-        if (sendMax == null) { return null; }
+        XRPCurrencyAmount sendMax;
+        if (payment.hasSendMax()) {
+            sendMax = XRPCurrencyAmount.from(payment.getSendMax().getValue());
+            if (sendMax == null) { return null; }
+        } else {
+            sendMax = null;
+        }
+
 
 
         return builder()
