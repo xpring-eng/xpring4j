@@ -3,10 +3,8 @@ package io.xpring.xrpl.model;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
-import org.xrpl.rpc.v1.XRPDropsAmount;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * An amount of currency on the XRP Ledger
