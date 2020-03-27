@@ -154,8 +154,8 @@ public class FakeXRPProtobufs {
                                                     .setDestinationTag(destinationTag)
                                                     .setDeliverMin(deliverMin)
                                                     .setInvoiceId(invoiceID)
-                                                    .setPaths(0, pathProtoOneElement)
-                                                    .setPaths(1, pathProtoTwoElements)
+                                                    .addPaths(pathProtoOneElement)
+                                                    .addPaths(pathProtoTwoElements)
                                                     .setSendMax(sendMax)
                                                     .build();
 

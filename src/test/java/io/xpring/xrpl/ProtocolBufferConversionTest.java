@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.xrpl.rpc.v1.*;
 
 import java.math.BigInteger;
+import java.util.stream.Collectors;
 
 public class ProtocolBufferConversionTest {
 
@@ -156,9 +157,28 @@ public class ProtocolBufferConversionTest {
         assertThat(xrpCurrencyAmount).isNull();
     }
 
+    // Payment
+
     @Test
     public void convertPaymentWithAllFieldsSetTest() {
+        // GIVEN a payment protocol buffer with all fields set.
+        Payment paymentProto = FakeXRPProtobufs.paymentWithAllFieldsSet;
 
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPayment xrpPayment = XRPPayment.from(paymentProto);
+
+        // THEN the result is as expected.
+        assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
+        assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
+        assertThat(xrpPayment.destinationTag()).isEqualTo(paymentProto.getDestinationTag().getValue());
+        assertThat(xrpPayment.deliverMin()).isEqualTo(paymentProto.getDestinationTag().getValue());
+        assertThat(xrpPayment.invoiceID()).isEqualTo(paymentProto.getInvoiceId().getValue());
+        assertThat(xrpPayment.paths())
+                .isEqualTo(paymentProto.getPathsList()
+                                        .stream()
+                                        .map(path -> XRPPath.from(path))
+                                        .collect(Collectors.toList()));
+        assertThat(xrpPayment.sendMax()).isEqualTo(paymentProto.getSendMax().getValue());
     }
 
     @Test
