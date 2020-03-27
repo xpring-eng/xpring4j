@@ -149,15 +149,21 @@ public class FakeXRPProtobufs {
 
         // finally, populate Payment
     static Payment paymentWithAllFieldsSet = Payment.newBuilder()
-                .setAmount(amount)
-                .setDestination(destination)
-                .setDestinationTag(destinationTag)
-                .setDeliverMin(deliverMin)
-                .setInvoiceId(invoiceID)
-                .setPaths(0, pathProtoOneElement)
-                .setPaths(1, pathProtoTwoElements)
-                .setSendMax(sendMax)
-                .build();
+                                                    .setAmount(amount)
+                                                    .setDestination(destination)
+                                                    .setDestinationTag(destinationTag)
+                                                    .setDeliverMin(deliverMin)
+                                                    .setInvoiceId(invoiceID)
+                                                    .setPaths(0, pathProtoOneElement)
+                                                    .setPaths(1, pathProtoTwoElements)
+                                                    .setSendMax(sendMax)
+                                                    .build();
+
+    static Payment paymentWithMandatoryFieldsSet = Payment.newBuilder()
+                                                        .setAmount(amount)
+                                                        .setDestination(destination)
+                                                        .build();
+
 
     // INVALID OBJECTS ===============================================================
 
@@ -172,4 +178,34 @@ public class FakeXRPProtobufs {
     static CurrencyAmount invalidCurrencyAmount = CurrencyAmount.newBuilder()
                                                                 .setIssuedCurrencyAmount(invalidIssuedCurrencyAmount)
                                                                 .build();
+
+    // Invalid Amount proto
+    static Common.Amount invalidAmount = Common.Amount.newBuilder().setValue(invalidCurrencyAmount).build();
+
+    // Invalid DeliverMin proto
+    static Common.DeliverMin invalidDeliverMin = Common.DeliverMin.newBuilder().setValue(invalidCurrencyAmount).build();
+
+    // Invalid SendMax proto
+    static Common.SendMax invalidSendMax = Common.SendMax.newBuilder().setValue(invalidCurrencyAmount).build();
+
+    // Invalid Payment protos
+        // invalid amount field
+    static Payment invalidPaymentBadAmount = Payment.newBuilder()
+                                                    .setAmount(invalidAmount)
+                                                    .setDestination(destination)
+                                                    .build();
+
+        // invalid deliverMin field
+    static Payment invalidPaymentBadDeliverMin = Payment.newBuilder()
+                                                        .setAmount(amount)
+                                                        .setDestination(destination)
+                                                        .setDeliverMin(invalidDeliverMin)
+                                                        .build();
+
+        // invalid sendMax field
+    static Payment invalidPaymentBadSendMax = Payment.newBuilder()
+                                                    .setAmount(amount)
+                                                    .setDestination(destination)
+                                                    .setSendMax(invalidSendMax)
+                                                    .build();
 }
