@@ -1,10 +1,11 @@
 package io.xpring.xrpl.model;
 
 import org.xrpl.rpc.v1.Payment;
-import org.immutables.value.Value;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.immutables.value.Value;
+import javax.annotation.Nullable;
 
 /**
  * A payment on the XRP Ledger.
@@ -29,28 +30,28 @@ public interface XRPPayment {
     /**
      * @return (Optional) Arbitrary tag that identifies the reason for the payment.
      */
-    int destinationTag();
+    @Nullable int destinationTag();
 
     /**
      * @return (Optional) Minimum amount of destination currency this transaction should deliver.
      */
-    XRPCurrencyAmount deliverMin();
+    @Nullable XRPCurrencyAmount deliverMin();
 
     /**
      * @return (Optional) Arbitrary 256-bit hash representing a specific reason or identifier for this payment.
      */
-    byte[] invoiceID();
+    @Nullable byte[] invoiceID();
 
     /**
      * @return (Optional) Array of payment paths to be used for this transaction.
      * Must be omitted for XRP-to-XRP transactions.
      */
-    List<XRPPath> paths();
+    @Nullable List<XRPPath> paths();
 
     /**
      * @return (Optional) Highest amount of source currency this transaction is allowed to cost.
      */
-    XRPCurrencyAmount sendMax();
+    @Nullable XRPCurrencyAmount sendMax();
 
     static XRPPayment from(Payment payment) {
         // amount is required
