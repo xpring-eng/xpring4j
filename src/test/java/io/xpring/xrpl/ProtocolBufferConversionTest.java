@@ -133,7 +133,7 @@ public class ProtocolBufferConversionTest {
     }
 
     @Test
-    public void convertCurrencyAmountWithIssuedCurrency() {
+    public void convertCurrencyAmountWithIssuedCurrencyTest() {
         // GIVEN a currency amount protocol buffer with an issued currency amount.
         // WHEN the protocol buffer is converted to a native Java type.
         XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount);
@@ -154,5 +154,32 @@ public class ProtocolBufferConversionTest {
 
         // THEN the result is null
         assertThat(xrpCurrencyAmount).isNull();
+    }
+
+    @Test
+    public void convertPaymentWithAllFieldsSetTest() {
+
+    }
+
+    @Test
+    public void convertPaymentWithMandatoryFieldsSetTest() {
+
+    }
+
+    @Test
+    public void convertPaymentWithBadAmountFieldTest() {
+
+
+    }
+
+    @Test
+    public void convertPaymentWithBadDeliverMinFieldTest() {
+
+    }
+
+    @Test
+    public void convertPaymentWithBadSendMaxFieldTest() {
+
+
     }
 }
