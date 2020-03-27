@@ -59,8 +59,10 @@ public interface XRPPayment {
         if (amount == null) { return null; }
 
         // destination is required
+        if (!payment.hasDestination() || payment.getDestination().getValue().getAddress().isEmpty()) {
+            return null;
+        }
         String destination = payment.getDestination().getValue().getAddress();
-        if (destination.isEmpty()) { return null; }
 
         Integer destinationTag;
         if (payment.hasDestinationTag()) {
@@ -101,8 +103,6 @@ public interface XRPPayment {
         } else {
             sendMax = null;
         }
-
-
 
         return builder()
                 .amount(amount)

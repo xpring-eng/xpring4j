@@ -202,18 +202,31 @@ public class ProtocolBufferConversionTest {
 
     @Test
     public void convertPaymentWithBadAmountFieldTest() {
+        // GIVEN a payment protocol buffer with an invalid amount field.
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPayment xrpPayment = XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadAmount);
 
-
+        // THEN the result is null.
+        assertThat(xrpPayment).isNull();
     }
 
     @Test
     public void convertPaymentWithBadDeliverMinFieldTest() {
+        // GIVEN a payment protocol buffer with an invalid deliverMin field.
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPayment xrpPayment = XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadDeliverMin);
 
+        // THEN the result is null.
+        assertThat(xrpPayment).isNull();
     }
 
     @Test
     public void convertPaymentWithBadSendMaxFieldTest() {
+        // GIVEN a payment protocol buffer with an invalid sendMax field.
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPPayment xrpPayment = XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadSendMax);
 
-
+        // THEN the result is null.
+        assertThat(xrpPayment).isNull();
     }
 }
