@@ -5,6 +5,7 @@ import org.immutables.value.Value;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -18,18 +19,16 @@ public interface XRPCurrencyAmount {
     }
 
     /**
-     * TODO(amiecorso) figure out how to make these types Optional
      * @return An amount of XRP, specified in drops.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-     String drops();
+     @Nullable String drops();
 
     /**
-     *
      * @return An amount of an issued currency.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-    XRPIssuedCurrency issuedCurrency();
+    @Nullable XRPIssuedCurrency issuedCurrency();
 
     static XRPCurrencyAmount from(CurrencyAmount currencyAmount) {
         switch (currencyAmount.getAmountCase()) {
@@ -39,7 +38,7 @@ public interface XRPCurrencyAmount {
                 if (issuedCurrencyAmount!= null) {
                     XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
                     if (xrpIssuedCurrency != null) {
-                        return builder().drops("").issuedCurrency(xrpIssuedCurrency).build();
+                        return builder().issuedCurrency(xrpIssuedCurrency).build();
                     }
                 }
                 // if AmountCase is ISSUED_CURRENCY_AMOUNT, we must be able to convert this to an XRPIssuedCurrency
@@ -49,9 +48,9 @@ public interface XRPCurrencyAmount {
                 long numeric_drops = currencyAmount.getXrpAmount().getDrops();
                 String drops = Long.toString(numeric_drops);
                 return builder().drops(drops)
-                                .issuedCurrency(XRPIssuedCurrency.from(IssuedCurrencyAmount.newBuilder().build()))
                                 .build();
             }
+            // if no AmountCase is set (e.g. empty CurrencyAmount protobuf was passed to constructor)
             default:
                 return null;
         }

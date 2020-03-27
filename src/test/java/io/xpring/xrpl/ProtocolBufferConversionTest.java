@@ -129,9 +129,7 @@ public class ProtocolBufferConversionTest {
         // Then the result has drops set and an empty issued currency.
         assertThat(xrpCurrencyAmount.drops())
                 .isEqualTo(Long.toString(FakeXRPProtobufs.dropsCurrencyAmount.getXrpAmount().getDrops()));
-//        assertThat(xrpCurrencyAmount.issuedCurrency())
-//                .isEqualTo(XRPIssuedCurrency.from(IssuedCurrencyAmount.newBuilder().build()));
-//        assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
+        assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
     }
 
     @Test
