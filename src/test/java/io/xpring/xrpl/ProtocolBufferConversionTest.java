@@ -191,14 +191,13 @@ public class ProtocolBufferConversionTest {
 
         // THEN the result is as expected.
         assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
-//        assertThat(xrpPayment.destination())
-//                .isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
-//        assertThat(xrpPayment.destinationTag()).isNull();
-//        assertThat(xrpPayment.destinationTag()).isNull();
-//        assertThat(xrpPayment.deliverMin()).isNull();
-//        assertThat(xrpPayment.invoiceID()).isNull();
-//        assertThat(xrpPayment.paths()).isNull();
-//        assertThat(xrpPayment.sendMax()).isNull();
+        assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
+        assertThat(xrpPayment.destinationTag()).isNull();
+        assertThat(xrpPayment.destinationTag()).isNull();
+        assertThat(xrpPayment.deliverMin()).isNull();
+        assertThat(xrpPayment.invoiceID()).isNull();
+        assertThat(xrpPayment.paths()).isNull();
+        assertThat(xrpPayment.sendMax()).isNull();
     }
 
     @Test
