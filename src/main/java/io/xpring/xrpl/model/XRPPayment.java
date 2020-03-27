@@ -3,7 +3,6 @@ package io.xpring.xrpl.model;
 import org.xrpl.rpc.v1.Payment;
 import org.immutables.value.Value;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public interface XRPPayment {
      * @return (Optional) Array of payment paths to be used for this transaction.
      * Must be omitted for XRP-to-XRP transactions.
      */
-    Array<XRPPath> paths();
+    List<XRPPath> paths();
 
     /**
      * @return (Optional) Highest amount of source currency this transaction is allowed to cost.
