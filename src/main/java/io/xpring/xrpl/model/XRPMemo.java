@@ -1,7 +1,10 @@
 package io.xpring.xrpl.model;
 
+import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.Memo;
 import org.immutables.value.Value;
+
+import javax.annotation.Nullable;
 
 /**
  * Represents a memo on the XRPLedger.
@@ -16,25 +19,43 @@ public interface XRPMemo {
     /**
      * @return Arbitrary hex value, conventionally containing the content of the memo.
      */
-    byte[] data();
+    @Nullable  byte[] data();
 
     /**
      * @return Hex value representing characters allowed in URLs.
      * Conventionally containing information on how the memo is encoded, for example as a MIME type.
      */
-    byte[] format();
+    @Nullable byte[] format();
 
     /**
      * @return Hex value representing characters allowed in URLs.
      * Conventionally, a unique relation (according to RFC 5988) that defines the format of this memo.
      */
-    byte[] type();
+    @Nullable byte[] type();
 
     static XRPMemo from(Memo memo) {
+        byte[] data;
+        byte[] format;
+        byte[] type;
+        if (memo.getMemoData().getValue() == ByteString.EMPTY) {
+            data = null;
+        } else {
+            data = memo.getMemoType().getValue().toByteArray();
+        }
+        if (memo.getMemoFormat().getValue() == ByteString.EMPTY) {
+            format = memo.getMemoFormat().getValue().toByteArray();
+        } else {
+            format = null;
+        }
+        if (memo.getMemoType().getValue() == ByteString.EMPTY) {
+            type = memo.getMemoType().toByteArray();
+        } else {
+            type = null;
+        }
         return XRPMemo.builder()
-                    .data(memo.getMemoData().getValue().toByteArray())
-                    .format(memo.getMemoFormat().getValue().toByteArray())
-                    .type(memo.getMemoType().toByteArray())
+                    .data(data)
+                    .format(format)
+                    .type(type)
                     .build();
     }
 }

@@ -229,4 +229,20 @@ public class ProtocolBufferConversionTest {
         // THEN the result is null.
         assertThat(xrpPayment).isNull();
     }
+
+    // Memo
+
+    @Test
+    public void convertMemoWithAllFieldsSetTest() {
+        // GIVEN a memo with all fields set.
+        // WHEN the protocol buffer is converted to a native Java type
+        // THEN all fields are present and set correctly.
+    }
+
+    @Test
+    public void convertMemoWithNoFieldsSetTest() {
+        // GIVEN a memo with no fields set.
+        // WHEN the protocol buffer is converted to a native Java type
+        // THEN all fields are null.
+    }
 }
