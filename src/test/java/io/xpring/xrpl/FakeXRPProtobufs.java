@@ -27,6 +27,32 @@ public class FakeXRPProtobufs {
     static long testDrops = 10;
 
     static int testDestinationTag = 2;
+
+    static ByteString memoDataBytes;
+    static ByteString memoFormatBytes;
+    static ByteString memoTypeBytes;
+
+    static {
+        try {
+            memoDataBytes = ByteString.copyFrom("123", "Utf8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+    static {
+        try {
+            memoFormatBytes = ByteString.copyFrom("456", "Utf8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+    static {
+        try {
+            memoTypeBytes = ByteString.copyFrom("789", "Utf8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * will use in future fake objects
      */
@@ -164,6 +190,23 @@ public class FakeXRPProtobufs {
                                                         .setDestination(destination)
                                                         .build();
 
+
+    // Memo protos
+    static Common.MemoData memoData = Common.MemoData.newBuilder()
+                                                    .setValue(memoDataBytes)
+                                                    .build();
+    static Common.MemoFormat memoFormat = Common.MemoFormat.newBuilder()
+                                                        .setValue(memoFormatBytes)
+                                                        .build();
+    static Common.MemoType memoType = Common.MemoType.newBuilder()
+                                                    .setValue(memoTypeBytes)
+                                                    .build();
+
+    static Memo memoWithAllFieldsSet = Memo.newBuilder()
+                                            .setMemoData(memoData)
+                                            .setMemoFormat(memoFormat)
+                                            .setMemoType(memoType)
+                                            .build();
 
     // INVALID OBJECTS ===============================================================
 
