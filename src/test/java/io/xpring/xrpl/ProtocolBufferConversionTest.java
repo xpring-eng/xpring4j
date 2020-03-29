@@ -235,14 +235,28 @@ public class ProtocolBufferConversionTest {
     @Test
     public void convertMemoWithAllFieldsSetTest() {
         // GIVEN a memo with all fields set.
+        Memo memoProto = FakeXRPProtobufs.memoWithAllFieldsSet;
+
         // WHEN the protocol buffer is converted to a native Java type
+        XRPMemo xrpMemo = XRPMemo.from(memoProto);
+
         // THEN all fields are present and set correctly.
+        assertThat(xrpMemo.data()).isEqualTo(memoProto.getMemoData().getValue().toByteArray());
+        assertThat(xrpMemo.format()).isEqualTo(memoProto.getMemoFormat().getValue().toByteArray());
+        assertThat(xrpMemo.data()).isEqualTo(memoProto.getMemoType().getValue().toByteArray());
     }
 
     @Test
     public void convertMemoWithNoFieldsSetTest() {
         // GIVEN a memo with no fields set.
+        Memo memoProto = Memo.newBuilder().build();
+
         // WHEN the protocol buffer is converted to a native Java type
+        XRPMemo xrpMemo = XRPMemo.from(memoProto);
+
         // THEN all fields are null.
+        assertThat(xrpMemo.data()).isNull();
+        assertThat(xrpMemo.format()).isNull();
+        assertThat(xrpMemo.type()).isNull();
     }
 }

@@ -40,17 +40,17 @@ public interface XRPMemo {
         if (memo.getMemoData().getValue() == ByteString.EMPTY) {
             data = null;
         } else {
-            data = memo.getMemoType().getValue().toByteArray();
+            data = memo.getMemoData().getValue().toByteArray();
         }
         if (memo.getMemoFormat().getValue() == ByteString.EMPTY) {
-            format = memo.getMemoFormat().getValue().toByteArray();
-        } else {
             format = null;
+        } else {
+            format = memo.getMemoFormat().getValue().toByteArray();
         }
         if (memo.getMemoType().getValue() == ByteString.EMPTY) {
-            type = memo.getMemoType().toByteArray();
-        } else {
             type = null;
+        } else {
+            type = memo.getMemoType().toByteArray();
         }
         return XRPMemo.builder()
                     .data(data)
