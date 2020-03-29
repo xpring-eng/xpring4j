@@ -50,7 +50,7 @@ public interface XRPMemo {
         if (memo.getMemoType().getValue() == ByteString.EMPTY) {
             type = null;
         } else {
-            type = memo.getMemoType().toByteArray();
+            type = memo.getMemoType().getValue().toByteArray();
         }
         return XRPMemo.builder()
                     .data(data)

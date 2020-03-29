@@ -243,7 +243,7 @@ public class ProtocolBufferConversionTest {
         // THEN all fields are present and set correctly.
         assertThat(xrpMemo.data()).isEqualTo(memoProto.getMemoData().getValue().toByteArray());
         assertThat(xrpMemo.format()).isEqualTo(memoProto.getMemoFormat().getValue().toByteArray());
-        assertThat(xrpMemo.data()).isEqualTo(memoProto.getMemoType().getValue().toByteArray());
+        assertThat(xrpMemo.type()).isEqualTo(memoProto.getMemoType().getValue().toByteArray());
     }
 
     @Test
