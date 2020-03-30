@@ -33,8 +33,14 @@ public interface XRPCurrencyAmount {
             // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
             case ISSUED_CURRENCY_AMOUNT: {
                 IssuedCurrencyAmount issuedCurrencyAmount = currencyAmount.getIssuedCurrencyAmount();
-                if (issuedCurrencyAmount!= null) {
-                    XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
+                XRPIssuedCurrency xrpIssuedCurrency;
+                if (issuedCurrencyAmount != null) {
+                    try {
+                        xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
+                    } catch (NumberFormatException error) {
+                        // If the IssuedCurrency can't be converted to an XRPIssuedCurrency, re-throw
+                        throw error;
+                    }
                     if (xrpIssuedCurrency != null) {
                         return builder().issuedCurrency(xrpIssuedCurrency).build();
                     }
@@ -43,8 +49,8 @@ public interface XRPCurrencyAmount {
                 return null;
             }
             case XRP_AMOUNT: {
-                long numeric_drops = currencyAmount.getXrpAmount().getDrops();
-                String drops = Long.toString(numeric_drops);
+                long numericDrops = currencyAmount.getXrpAmount().getDrops();
+                String drops = Long.toString(numericDrops);
                 return builder().drops(drops)
                                 .build();
             }
