@@ -4,13 +4,18 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.xrpl.model.*;
 
+import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.rules.ExpectedException;
 import org.xrpl.rpc.v1.*;
 
 import java.math.BigInteger;
 
 public class ProtocolBufferConversionTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     // Currency
 
@@ -111,10 +116,9 @@ public class ProtocolBufferConversionTest {
     public void convertIssuedCurrencyWithBadValueTest() {
         // GIVEN an issued currency protocol buffer with a non numeric value
         // WHEN the protocol buffer is converted to a native Java type.
-        XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(FakeXRPProtobufs.invalidIssuedCurrencyAmount);
-
-        // THEN the result is null
-        assertThat(xrpIssuedCurrency).isNull();
+        // Then a NumberFormatException is thrown.
+        expectedException.expect(NumberFormatException.class);
+        XRPIssuedCurrency.from(FakeXRPProtobufs.invalidIssuedCurrencyAmount);
     }
 
 
