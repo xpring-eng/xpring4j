@@ -43,8 +43,8 @@ public interface XRPCurrencyAmount {
                 return null;
             }
             case XRP_AMOUNT: {
-                long numeric_drops = currencyAmount.getXrpAmount().getDrops();
-                String drops = Long.toString(numeric_drops);
+                long numericDrops = currencyAmount.getXrpAmount().getDrops();
+                String drops = Long.toString(numericDrops);
                 return builder().drops(drops)
                                 .build();
             }
