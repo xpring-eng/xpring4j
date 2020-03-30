@@ -12,6 +12,8 @@ import org.xrpl.rpc.v1.*;
 
 import java.math.BigInteger;
 
+import java.math.BigInteger;
+
 public class ProtocolBufferConversionTest {
 
     @Rule
@@ -120,7 +122,6 @@ public class ProtocolBufferConversionTest {
         expectedException.expect(NumberFormatException.class);
         XRPIssuedCurrency.from(FakeXRPProtobufs.invalidIssuedCurrencyAmount);
     }
-
 
     // CurrencyAmount
 
