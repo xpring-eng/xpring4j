@@ -4,7 +4,6 @@ import org.xrpl.rpc.v1.*;
 import org.xrpl.rpc.v1.Signer;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 /** Common set of fake objects - protobuf and native Java conversions - for testing */
 public class FakeXRPProtobufs {
