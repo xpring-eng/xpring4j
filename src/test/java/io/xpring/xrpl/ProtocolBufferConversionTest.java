@@ -159,4 +159,14 @@ public class ProtocolBufferConversionTest {
         // THEN the result is null
         assertThat(xrpCurrencyAmount).isNull();
     }
+
+    @Test
+    public void convertCurrencyAmountWithInvalidIssuedCurrencyTest() {
+        // GIVEN a currency amount protocol buffer with an invalid issued currency
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.invalidCurrencyAmount);
+
+        // THEN the result is null.
+        assertThat(xrpCurrencyAmount).isNull();
+    }
 }
