@@ -119,7 +119,7 @@ public class ProtocolBufferConversionTest {
     public void convertIssuedCurrencyWithBadValueTest() {
         // GIVEN an issued currency protocol buffer with a non numeric value
         // WHEN the protocol buffer is converted to a native Java type.
-        // Then a NumberFormatException is thrown.
+        // THEN a NumberFormatException is thrown.
         expectedException.expect(NumberFormatException.class);
         XRPIssuedCurrency.from(FakeXRPProtobufs.invalidIssuedCurrencyAmount);
     }
@@ -132,7 +132,7 @@ public class ProtocolBufferConversionTest {
         // WHEN the protocol buffer is converted to a native Java type.
         XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.dropsCurrencyAmount);
 
-        // Then the result has drops set and an empty issued currency.
+        // THEN the result has drops set and an empty issued currency.
         assertThat(xrpCurrencyAmount.drops())
                 .isEqualTo(Long.toString(FakeXRPProtobufs.dropsCurrencyAmount.getXrpAmount().getDrops()));
         assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
@@ -166,7 +166,7 @@ public class ProtocolBufferConversionTest {
     public void convertCurrencyAmountWithInvalidIssuedCurrencyTest() {
         // GIVEN a currency amount protocol buffer with an invalid issued currency
         // WHEN the protocol buffer is converted to a native Java type.
-        // Then a NumberFormatException is re-thrown.
+        // THEN a NumberFormatException is re-thrown.
         expectedException.expect(NumberFormatException.class);
         XRPCurrencyAmount.from(FakeXRPProtobufs.invalidCurrencyAmount);
     }
@@ -218,30 +218,27 @@ public class ProtocolBufferConversionTest {
     public void convertPaymentWithBadAmountFieldTest() {
         // GIVEN a payment protocol buffer with an invalid amount field.
         // WHEN the protocol buffer is converted to a native Java type.
-        XRPPayment xrpPayment = XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadAmount);
-
-        // THEN the result is null.
-        assertThat(xrpPayment).isNull();
+        // THEN a NumberFormatException is re-thrown.
+        expectedException.expect(NumberFormatException.class);
+        XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadAmount);
     }
 
     @Test
     public void convertPaymentWithBadDeliverMinFieldTest() {
         // GIVEN a payment protocol buffer with an invalid deliverMin field.
         // WHEN the protocol buffer is converted to a native Java type.
-        XRPPayment xrpPayment = XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadDeliverMin);
-
-        // THEN the result is null.
-        assertThat(xrpPayment).isNull();
+        // THEN a NumberFormatException is re-thrown.
+        expectedException.expect(NumberFormatException.class);
+        XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadDeliverMin);
     }
 
     @Test
     public void convertPaymentWithBadSendMaxFieldTest() {
         // GIVEN a payment protocol buffer with an invalid sendMax field.
         // WHEN the protocol buffer is converted to a native Java type.
-        XRPPayment xrpPayment = XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadSendMax);
-
-        // THEN the result is null.
-        assertThat(xrpPayment).isNull();
+        // THEN a NumberFormatException is re-thrown.
+        expectedException.expect(NumberFormatException.class);
+        XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadSendMax);
     }
 
     // Memo
