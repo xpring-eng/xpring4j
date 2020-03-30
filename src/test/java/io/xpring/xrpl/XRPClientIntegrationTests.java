@@ -31,7 +31,7 @@ public class XRPClientIntegrationTests {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     /** Hash of a successful transaction. */
-    private static final String TRANSACTION_HASH = "A040256A283FA2DC1E732AF70D24DC289E6BE8B9782917F0A7FDCB23D0B48F70";
+    private static final String TRANSACTION_HASH = "DAA9F31628C952A48DAE71829E91847BF4EF23C0FABDD7218E41836D1E68EEBD";
 
     @Before
     public void setUp() throws Exception {
