@@ -38,8 +38,8 @@ public interface XRPCurrencyAmount {
                     try {
                         xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
                     } catch (NumberFormatException error) {
-                        // If the IssuedCurrency can't be converted to an XRPIssuedCurrency, this object is invalid.
-                        return null;
+                        // If the IssuedCurrency can't be converted to an XRPIssuedCurrency, re-throw
+                        throw error;
                     }
                     if (xrpIssuedCurrency != null) {
                         return builder().issuedCurrency(xrpIssuedCurrency).build();
