@@ -7,6 +7,7 @@ import io.xpring.xrpl.model.*;
 import org.junit.Test;
 
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Signer;
 
 import java.math.BigInteger;
 import java.util.stream.Collectors;
@@ -258,5 +259,23 @@ public class ProtocolBufferConversionTest {
         assertThat(xrpMemo.data()).isNull();
         assertThat(xrpMemo.format()).isNull();
         assertThat(xrpMemo.type()).isNull();
+    }
+
+    // Signer
+
+    @Test
+    public void convertSignerWithAllFieldsSetTest() {
+        // GIVEN a Signer protocol buffer with all fields set.
+        Signer signerProto = FakeXRPProtobufs.signerWithAllFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPSigner xrpSigner = XRPSigner.from(signerProto);
+
+        // THEN all fields are present and converted correctly.
+        assertThat(xrpSigner.account()).isEqualTo(signerProto.getAccount().getValue().getAddress());
+        assertThat(xrpSigner.signingPublicKey())
+                .isEqualTo(signerProto.getSigningPublicKey().getValue().toByteArray());
+        assertThat(xrpSigner.transactionSignature())
+                .isEqualTo(signerProto.getTransactionSignature().getValue().toByteArray());
     }
 }
