@@ -33,8 +33,8 @@ public interface XRPIssuedCurrency {
         BigInteger value;
         try {
             value = new BigInteger((issuedCurrency.getValue()));
-        } catch (NumberFormatException e) {
-            return null;
+        } catch (NumberFormatException error) {
+            throw error;
         }
 
         return builder()
