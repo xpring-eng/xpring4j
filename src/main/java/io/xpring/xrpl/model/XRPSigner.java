@@ -32,22 +32,15 @@ public interface XRPSigner {
     @Nullable byte[] transactionSignature();
 
     static XRPSigner from(Signer signer) {
-        String account = signer.getAccount().getValue().getAddress();
-        byte[] signingPublicKey;
-        byte[] transactionSignature;
-        if (account.isEmpty()) {
-            account = null;
-        }
-        if (signer.getSigningPublicKey().getValue() == ByteString.EMPTY) {
-            signingPublicKey = null;
-        } else {
-            signingPublicKey = signer.getSigningPublicKey().getValue().toByteArray();
-        }
-        if (signer.getTransactionSignature().getValue() == ByteString.EMPTY) {
-            transactionSignature = null;
-        } else {
-            transactionSignature = signer.getTransactionSignature().getValue().toByteArray();
-        }
+        String address = signer.getAccount().getValue().getAddress();
+        String account = address.isEmpty() ? null : address;
+
+        ByteString publicKey = signer.getSigningPublicKey().getValue();
+        byte[] signingPublicKey = publicKey.equals(ByteString.EMPTY) ? null : publicKey.toByteArray();
+
+        ByteString txnSignature = signer.getTransactionSignature().getValue();
+        byte[] transactionSignature = txnSignature.equals(ByteString.EMPTY) ? null : txnSignature.toByteArray();
+
         return XRPSigner.builder()
                 .account(account)
                 .signingPublicKey(signingPublicKey)
