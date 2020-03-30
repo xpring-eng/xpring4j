@@ -34,24 +34,15 @@ public interface XRPMemo {
     @Nullable byte[] type();
 
     static XRPMemo from(Memo memo) {
-        byte[] data;
-        byte[] format;
-        byte[] type;
-        if (memo.getMemoData().getValue() == ByteString.EMPTY) {
-            data = null;
-        } else {
-            data = memo.getMemoData().getValue().toByteArray();
-        }
-        if (memo.getMemoFormat().getValue() == ByteString.EMPTY) {
-            format = null;
-        } else {
-            format = memo.getMemoFormat().getValue().toByteArray();
-        }
-        if (memo.getMemoType().getValue() == ByteString.EMPTY) {
-            type = null;
-        } else {
-            type = memo.getMemoType().getValue().toByteArray();
-        }
+        ByteString memoData = memo.getMemoData().getValue();
+        byte[] data = memoData.equals(ByteString.EMPTY) ? null : memoData.toByteArray();
+
+        ByteString memoFormat = memo.getMemoFormat().getValue();
+        byte[] format = memoFormat.equals(ByteString.EMPTY) ? null : memoFormat.toByteArray();
+
+        ByteString memoType = memo.getMemoType().getValue();
+        byte[] type = memoType.equals(ByteString.EMPTY) ? null : memoType.toByteArray();
+
         return XRPMemo.builder()
                     .data(data)
                     .format(format)
