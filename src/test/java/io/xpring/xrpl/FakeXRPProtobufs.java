@@ -17,8 +17,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException error) {
+            error.printStackTrace();
         }
     }
 
@@ -35,22 +35,22 @@ public class FakeXRPProtobufs {
     static {
         try {
             memoDataBytes = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException error) {
+            error.printStackTrace();
         }
     }
     static {
         try {
             memoFormatBytes = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException error) {
+            error.printStackTrace();
         }
     }
     static {
         try {
             memoTypeBytes = ByteString.copyFrom("789", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException error) {
+            error.printStackTrace();
         }
     }
 
