@@ -33,7 +33,7 @@ public interface XRPCurrencyAmount {
             // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
             case ISSUED_CURRENCY_AMOUNT: {
                 IssuedCurrencyAmount issuedCurrencyAmount = currencyAmount.getIssuedCurrencyAmount();
-                if (issuedCurrencyAmount!= null) {
+                if (issuedCurrencyAmount != null) {
                     XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
                     if (xrpIssuedCurrency != null) {
                         return builder().issuedCurrency(xrpIssuedCurrency).build();
