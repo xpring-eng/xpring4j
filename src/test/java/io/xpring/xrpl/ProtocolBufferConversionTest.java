@@ -2,15 +2,23 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.xrpl.model.XRPIssuedCurrency;
 import io.xpring.xrpl.model.XRPPath;
 import io.xpring.xrpl.model.XRPPathElement;
 
+import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.rules.ExpectedException;
 import org.xrpl.rpc.v1.*;
 import io.xpring.xrpl.model.XRPCurrency;
 
+import java.math.BigInteger;
+
 public class ProtocolBufferConversionTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     // Currency
 
@@ -87,5 +95,32 @@ public class ProtocolBufferConversionTest {
 
         // THEN there are three paths in the output.
         assertThat(xrpPath.pathElements().size()).isEqualTo(3);
+    }
+
+    // IssuedCurrency
+
+    @Test
+    public void convertIssuedCurrencyTest() {
+        // GIVEN an issued currency protocol buffer,
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(FakeXRPProtobufs.issuedCurrencyAmount);
+
+        // THEN the issued currency converted as expected.
+        assertThat(xrpIssuedCurrency.currency())
+                .isEqualTo(XRPCurrency.from(FakeXRPProtobufs.issuedCurrencyAmount.getCurrency()));
+
+        assertThat(xrpIssuedCurrency.issuer())
+                .isEqualTo(FakeXRPProtobufs.issuedCurrencyAmount.getIssuer().getAddress());
+
+        assertThat(xrpIssuedCurrency.value()).isEqualTo(new BigInteger(FakeXRPProtobufs.issuedCurrencyAmount.getValue()));
+    }
+
+    @Test
+    public void convertIssuedCurrencyWithBadValueTest() {
+        // GIVEN an issued currency protocol buffer with a non numeric value
+        // WHEN the protocol buffer is converted to a native Java type.
+        // Then a NumberFormatException is thrown.
+        expectedException.expect(NumberFormatException.class);
+        XRPIssuedCurrency.from(FakeXRPProtobufs.invalidIssuedCurrencyAmount);
     }
 }
