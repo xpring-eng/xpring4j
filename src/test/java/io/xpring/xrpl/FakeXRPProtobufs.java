@@ -332,7 +332,7 @@ public class FakeXRPProtobufs {
                                                                 .build();
 
     // Invalid Transaction due to unsupported transaction type
-    static Transaction invlidTransactionUnsupportedType = Transaction.newBuilder()
+    static Transaction invalidTransactionUnsupportedType = Transaction.newBuilder()
                                                                 .setAccount(account)
                                                                 .setFee(xrpDropsAmount)
                                                                 .setSequence(sequence)
