@@ -32,7 +32,8 @@ public interface XRPTransaction {
      * If provided, this transaction is only valid if the sending account's previously-sent
      * transaction matches the provided hash.
      */
-    @Nullable byte[] accountTransactionID();
+    @Nullable
+    byte[] accountTransactionID();
 
     /**
      * @return Integer amount of XRP, in drops, to be destroyed as a cost for distributing
@@ -43,19 +44,22 @@ public interface XRPTransaction {
     /**
      * @return (Optional) Set of bit-flags for this transaction.
      */
-    @Nullable Integer flags();
+    @Nullable
+    Integer flags();
 
     /**
      * @return (Optional; strongly recommended) Highest ledger index this transaction can appear in.
      * Specifying this field places a strict upper limit on how long the transaction can wait
      * to be validated or rejected.
      */
-    @Nullable Integer lastLedgerSequence();
+    @Nullable
+    Integer lastLedgerSequence();
 
     /**
      * @return (Optional) Additional arbitrary information used to identify this transaction.
      */
-    @Nullable List<XRPMemo> memos();
+    @Nullable
+    List<XRPMemo> memos();
 
     /**
      * @return The sequence number of the account sending the transaction.
@@ -67,7 +71,8 @@ public interface XRPTransaction {
     /**
      * @return (Optional) Array of objects that represent a multi-signature which authorizes this transaction.
      */
-    @Nullable List<XRPSigner> signers();
+    @Nullable
+    List<XRPSigner> signers();
 
     /**
      * @return Hex representation of the public key that corresponds to the private key used to sign this transaction.
@@ -80,7 +85,8 @@ public interface XRPTransaction {
      * or a sender on whose behalf this transaction is made.
      * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
      */
-    @Nullable Integer sourceTag();
+    @Nullable
+    Integer sourceTag();
 
     /**
      * @return The signature that verifies this transaction as originating from the account it says it is from.
