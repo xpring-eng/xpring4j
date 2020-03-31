@@ -78,4 +78,16 @@ public class XRPClientIntegrationTests {
         String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
         assertThat(transactionHash).isNotNull();
     }
+
+    @Test
+    public void accountExistsTest_legacy() throws XpringException {
+        boolean exists = legacyXRPClient.accountExists(XRPL_ADDRESS);
+        assertThat(exists).isEqualTo(true);
+    }
+
+    @Test
+    public void accountExistsTest() throws XpringException {
+        boolean exists = xrpClient.accountExists(XRPL_ADDRESS);
+        assertThat(exists).isEqualTo(true);
+    }
 }
