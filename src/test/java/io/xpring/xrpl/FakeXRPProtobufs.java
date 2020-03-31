@@ -195,7 +195,6 @@ public class FakeXRPProtobufs {
                                                         .setDestination(destination)
                                                         .build();
 
-
     // Memo protos
     static Common.MemoData memoData = Common.MemoData.newBuilder()
                                                     .setValue(memoDataBytes)
