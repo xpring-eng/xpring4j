@@ -85,7 +85,7 @@ public class LegacyDefaultXRPClientTest {
     @Test
     public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
-        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<AccountInfo, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -128,7 +128,7 @@ public class LegacyDefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to return account info.
-        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<AccountInfo, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -146,7 +146,7 @@ public class LegacyDefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
-        GRPCResult<Fee> feeResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<Fee, Throwable> feeResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 feeResult,
@@ -164,7 +164,7 @@ public class LegacyDefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedLatestValidatedLedgerSequence() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
-        GRPCResult<LedgerSequence> ledgerSequence = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<LedgerSequence, Throwable> ledgerSequence = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -182,7 +182,7 @@ public class LegacyDefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to submit a transaction.
-        GRPCResult<SubmitSignedTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<SubmitSignedTransactionResponse, Throwable> submitResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
                 GRPCResult.ok(makeAccountInfo(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -314,7 +314,7 @@ public class LegacyDefaultXRPClientTest {
      * Return a XRPClient which returns the given results for network calls.
      */
 
-    private LegacyDefaultXRPClient getClient(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult, GRPCResult<LedgerSequence> latestValidatedLedgerSequenceResult, GRPCResult<io.xpring.proto.TransactionStatus> transactionStatusResult) throws IOException {
+    private LegacyDefaultXRPClient getClient(GRPCResult<AccountInfo, Throwable> accountInfoResult, GRPCResult<Fee, Throwable> feeResult, GRPCResult<SubmitSignedTransactionResponse, Throwable> submitResult, GRPCResult<LedgerSequence, Throwable> latestValidatedLedgerSequenceResult, GRPCResult<io.xpring.proto.TransactionStatus, Throwable> transactionStatusResult) throws IOException {
         XRPLedgerAPIGrpc.XRPLedgerAPIImplBase serviceImpl = getService(accountInfoResult, feeResult, submitResult, latestValidatedLedgerSequenceResult, transactionStatusResult);
 
         // Generate a unique in-process server name.
@@ -335,7 +335,7 @@ public class LegacyDefaultXRPClientTest {
     /**
      * Return a XRPLedgerService implementation which returns the given results for network calls.
      */
-    private XRPLedgerAPIGrpc.XRPLedgerAPIImplBase getService(GRPCResult<AccountInfo> accountInfoResult, GRPCResult<Fee> feeResult, GRPCResult<SubmitSignedTransactionResponse> submitResult, GRPCResult<LedgerSequence> latestValidatedLedgerSequenceResult, GRPCResult<io.xpring.proto.TransactionStatus> transactionStatusResult) {
+    private XRPLedgerAPIGrpc.XRPLedgerAPIImplBase getService(GRPCResult<AccountInfo, Throwable> accountInfoResult, GRPCResult<Fee, Throwable> feeResult, GRPCResult<SubmitSignedTransactionResponse, Throwable> submitResult, GRPCResult<LedgerSequence, Throwable> latestValidatedLedgerSequenceResult, GRPCResult<io.xpring.proto.TransactionStatus, Throwable> transactionStatusResult) {
         return mock(XRPLedgerAPIGrpc.XRPLedgerAPIImplBase.class, delegatesTo(
                 new XRPLedgerAPIGrpc.XRPLedgerAPIImplBase() {
                     @Override
