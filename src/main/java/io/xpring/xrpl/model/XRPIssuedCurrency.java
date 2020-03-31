@@ -29,6 +29,15 @@ public interface XRPIssuedCurrency {
      */
     String issuer();
 
+    /**
+     * Constructs an {@link XRPIssuedCurrency} from a {@link IssuedCurrencyAmount}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/amount.proto#L28">
+     *     IssuedCurrencyAmount protocol buffer</a>
+     *
+     * @param issuedCurrency a {@link IssuedCurrencyAmount} (protobuf object) whose field values will be used
+     *                 to construct an {@link XRPIssuedCurrency}
+     * @return an {@link XRPIssuedCurrency} with its fields set via the analogous protobuf fields.
+     */
     static XRPIssuedCurrency from(IssuedCurrencyAmount issuedCurrency) {
         BigInteger value;
         try {
