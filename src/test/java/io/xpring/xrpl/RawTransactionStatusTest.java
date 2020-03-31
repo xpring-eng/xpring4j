@@ -1,6 +1,5 @@
 package io.xpring.xrpl;
 
-import io.xpring.proto.TransactionStatus;
 import org.junit.Test;
 import org.xrpl.rpc.v1.*;
 import org.xrpl.rpc.v1.Common.*;
@@ -8,18 +7,6 @@ import org.xrpl.rpc.v1.Common.*;
 import static org.junit.Assert.*;
 
 public class RawTransactionStatusTest {
-    @Test
-    public void testIsFullPaymentLegacyProto() {
-        // GIVEN a legacy transaction status protocol buffer.
-        TransactionStatus transactionStatus = TransactionStatus.newBuilder().build();
-
-        // WHEN the transaction status is wrapped into a RawTransactionStatus object.
-        RawTransactionStatus rawTransactionStatus = new RawTransactionStatus(transactionStatus);
-
-        // THEN the raw transaction status reports it is a full payment.
-        assertTrue(rawTransactionStatus.isFullPayment());
-    }
-
     @Test
     public void testIsFullPaymentNonPayment() {
         // GIVEN a getTxResponse which is not a payment.
