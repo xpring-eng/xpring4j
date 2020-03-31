@@ -205,11 +205,11 @@ public class DefaultXRPClient implements XRPClientDecorator {
         try {
             this.getBalance(address);
             return true;
-        } catch (StatusRuntimeException e) {
-            if (e.getStatus().getCode() == io.grpc.Status.NOT_FOUND.getCode()) {
+        } catch (StatusRuntimeException exception) {
+            if (exception.getStatus().getCode() == io.grpc.Status.NOT_FOUND.getCode()) {
                 return false;
             }
-            throw e; // re-throw if code other than NOT_FOUND
+            throw exception; // re-throw if code other than NOT_FOUND
         } catch (Exception exception) {
             throw exception; // re-throw any other type of exception
         }
