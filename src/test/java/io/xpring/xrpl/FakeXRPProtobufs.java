@@ -17,8 +17,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -35,22 +35,22 @@ public class FakeXRPProtobufs {
     static {
         try {
             memoDataBytes = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
     static {
         try {
             memoFormatBytes = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
     static {
         try {
             memoTypeBytes = ByteString.copyFrom("789", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -58,8 +58,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -67,8 +67,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testTransactionSignature = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -76,15 +76,12 @@ public class FakeXRPProtobufs {
     static {
         try {
             testAccountTransactionID = ByteString.copyFrom("789", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
-    static String testAddress = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
-    static String testDestination = "XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H";
     static Integer testSequence = 1;
-    static Long testFee = new Long(3);
     static Integer testFlags = 4;
     static Integer testSourceTag = 6;
     static Integer testLastLedgerSequence = 5;
@@ -255,28 +252,28 @@ public class FakeXRPProtobufs {
     static Common.SourceTag sourceTag = Common.SourceTag.newBuilder().setValue(testSourceTag).build();
 
     static Transaction transactionWithAllFieldsSet = Transaction.newBuilder()
-            .setAccount(account)
-            .setAccountTransactionId(accountTransactionID)
-            .setFee(xrpDropsAmount)
-            .setFlags(flags)
-            .setLastLedgerSequence(lastLedgerSequence)
-            .addMemos(memoWithAllFieldsSet)
-            .setSequence(sequence)
-            .addSigners(signerWithAllFieldsSet)
-            .setSigningPublicKey(signingPublicKey)
-            .setSourceTag(sourceTag)
-            .setTransactionSignature(transactionSignature)
-            .setPayment(paymentWithAllFieldsSet)
-            .build();
+                                                                .setAccount(account)
+                                                                .setAccountTransactionId(accountTransactionID)
+                                                                .setFee(xrpDropsAmount)
+                                                                .setFlags(flags)
+                                                                .setLastLedgerSequence(lastLedgerSequence)
+                                                                .addMemos(memoWithAllFieldsSet)
+                                                                .setSequence(sequence)
+                                                                .addSigners(signerWithAllFieldsSet)
+                                                                .setSigningPublicKey(signingPublicKey)
+                                                                .setSourceTag(sourceTag)
+                                                                .setTransactionSignature(transactionSignature)
+                                                                .setPayment(paymentWithAllFieldsSet)
+                                                                .build();
 
     static Transaction transactionWithOnlyMandatoryCommonFieldsSet = Transaction.newBuilder()
-            .setAccount(account)
-            .setFee(xrpDropsAmount)
-            .setSequence(sequence)
-            .setSigningPublicKey(signingPublicKey)
-            .setTransactionSignature(transactionSignature)
-            .setPayment(paymentWithAllFieldsSet)
-            .build();
+                                                                        .setAccount(account)
+                                                                        .setFee(xrpDropsAmount)
+                                                                        .setSequence(sequence)
+                                                                        .setSigningPublicKey(signingPublicKey)
+                                                                        .setTransactionSignature(transactionSignature)
+                                                                        .setPayment(paymentWithAllFieldsSet)
+                                                                        .build();
 
     // CheckCash proto
     static CheckCash checkCash = CheckCash.newBuilder().build();

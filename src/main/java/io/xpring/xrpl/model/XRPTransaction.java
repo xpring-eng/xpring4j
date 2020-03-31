@@ -116,9 +116,9 @@ public interface XRPTransaction {
     static XRPTransaction from(Transaction transaction) {
         String account = transaction.getAccount().getValue().getAddress();
 
-        ByteString accountTxnIDByteString = transaction.getAccountTransactionId().getValue();
-        byte[] accountTransactionID = accountTxnIDByteString.equals(ByteString.EMPTY) ?
-                null : accountTxnIDByteString.toByteArray();
+        ByteString accountTransactionIDByteString = transaction.getAccountTransactionId().getValue();
+        byte[] accountTransactionID = accountTransactionIDByteString.equals(ByteString.EMPTY) ?
+                null : accountTransactionIDByteString.toByteArray();
 
         Long fee = transaction.getFee().getDrops();
 
