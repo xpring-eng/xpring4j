@@ -3,8 +3,6 @@ package io.xpring.xrpl.model;
 import org.xrpl.rpc.v1.Payment.PathElement;
 import org.immutables.value.Value;
 
-import java.util.Optional;
-
 /**
  * A path step in an XRP Ledger Path.
  * @see "https://xrpl.org/paths.html#path-steps"
@@ -38,6 +36,15 @@ public interface XRPPathElement {
      */
     String issuer();
 
+    /**
+     * Constructs an {@link XRPPathElement} from a {@link org.xrpl.rpc.v1.Payment.PathElement}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L227">
+     *     PathElement protocol buffer</a>
+     *
+     * @param pathElement a {@link org.xrpl.rpc.v1.Payment.PathElement} (protobuf object) whose field values will be used
+     *                 to construct an {@link XRPPathElement}
+     * @return an {@link XRPPathElement} with its fields set via the analogous protobuf fields.
+     */
     static XRPPathElement from(PathElement pathElement) {
         return builder()
                 .account(pathElement.getAccount().getAddress())
