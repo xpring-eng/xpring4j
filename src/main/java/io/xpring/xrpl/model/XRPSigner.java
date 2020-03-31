@@ -24,13 +24,24 @@ public interface XRPSigner {
     /**
      * @return The public key used to create this signature.
      */
-    @Nullable byte[] signingPublicKey();
+    @Nullable
+    byte[] signingPublicKey();
 
     /**
      * @return A signature for this transaction, verifiable using the SigningPubKey.
      */
-    @Nullable byte[] transactionSignature();
+    @Nullable
+    byte[] transactionSignature();
 
+    /**
+     * Constructs an {@link XRPSigner} from a {@link Signer}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L90">
+     *     Signer protocol buffer</a>
+     *
+     * @param signer a {@link Signer} (protobuf object) whose field values will be used
+     *                 to construct an {@link XRPSigner}
+     * @return an {@link XRPSigner} with its fields set via the analogous protobuf fields.
+     */
     static XRPSigner from(Signer signer) {
         String address = signer.getAccount().getValue().getAddress();
         String account = address.isEmpty() ? null : address;

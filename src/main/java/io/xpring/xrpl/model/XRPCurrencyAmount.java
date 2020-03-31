@@ -1,5 +1,7 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.ilp.model.AccountBalance;
+import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
@@ -20,27 +22,32 @@ public interface XRPCurrencyAmount {
      * @return An amount of XRP, specified in drops.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-     @Nullable String drops();
+     @Nullable
+     String drops();
 
     /**
      * @return An amount of an issued currency.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-    @Nullable XRPIssuedCurrency issuedCurrency();
+    @Nullable
+    XRPIssuedCurrency issuedCurrency();
 
-    static XRPCurrencyAmount from(CurrencyAmount currencyAmount) {
+    /**
+     * Constructs an {@link XRPCurrencyAmount} from a {@link CurrencyAmount}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/amount.proto#L10">
+     *     CurrencyAmount protocol buffer</a>
+     *
+     * @param currencyAmount a {@link CurrencyAmount} (protobuf object) whose field values will be used
+     *                           to construct an {@link XRPCurrencyAmount}
+     * @return an {@link XRPCurrencyAmount} with its fields set via the analogous protobuf fields.
+     */
+    static XRPCurrencyAmount from(CurrencyAmount currencyAmount) throws NumberFormatException {
         switch (currencyAmount.getAmountCase()) {
             // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
             case ISSUED_CURRENCY_AMOUNT: {
                 IssuedCurrencyAmount issuedCurrencyAmount = currencyAmount.getIssuedCurrencyAmount();
-                XRPIssuedCurrency xrpIssuedCurrency;
                 if (issuedCurrencyAmount != null) {
-                    try {
-                        xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
-                    } catch (NumberFormatException error) {
-                        // If the IssuedCurrency can't be converted to an XRPIssuedCurrency, re-throw
-                        throw error;
-                    }
+                    XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
                     if (xrpIssuedCurrency != null) {
                         return builder().issuedCurrency(xrpIssuedCurrency).build();
                     }
