@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+#### Removed
+
+- All legacy services are removed from XpringKit. All RPC's go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
+
 ## 3.0.0 - March 24, 2020
 #### Added
 - A new `getPaymentStatus` is added which retrieves the status of payment transactions.
