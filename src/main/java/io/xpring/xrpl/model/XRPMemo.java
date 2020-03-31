@@ -33,6 +33,15 @@ public interface XRPMemo {
      */
     @Nullable byte[] type();
 
+    /**
+     * Constructs an {@link XRPMemo} from a {@link Memo}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L80">
+     *     Memo protocol buffer</a>
+     *
+     * @param memo a {@link Memo} (protobuf object) whose field values will be used
+     *                 to construct an {@link XRPMemo}
+     * @return an {@link XRPMemo} with its fields set via the analogous protobuf fields.
+     */
     static XRPMemo from(Memo memo) {
         ByteString memoData = memo.getMemoData().getValue();
         byte[] data = memoData.equals(ByteString.EMPTY) ? null : memoData.toByteArray();
