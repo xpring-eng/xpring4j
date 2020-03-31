@@ -74,5 +74,4 @@ public interface XRPClientDecorator {
      * @returns An array of transactions associated with the account.
      */
     List<XRPTransaction> paymentHistory(String address) throws XpringException;
-
 }
