@@ -1,7 +1,6 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
-import io.xpring.xrpl.RippledFlags;
 import io.xpring.xrpl.TransactionType;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
@@ -99,6 +98,15 @@ public interface XRPTransaction {
      */
     XRPPayment paymentFields();
 
+    /**
+     * Constructs an {@link XRPTransaction} from a {@link Transaction}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L13">
+     *     Transaction protocol buffer</a>
+     *
+     * @param transaction a {@link Transaction} (protobuf object) whose field values will be used
+     *                 to construct an {@link XRPTransaction}
+     * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
+     */
     static XRPTransaction from(Transaction transaction) {
         String account = transaction.getAccount().getValue().getAddress();
 
