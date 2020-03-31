@@ -303,7 +303,7 @@ public class ProtocolBufferConversionTest {
         // THEN all fields are present and converted correctly.
         assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
         assertThat(xrpTransaction.accountTransactionID())
-                .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
+                .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
         assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
         assertThat(xrpTransaction.flags()).isEqualTo(transactionProto.getFlags().getValue());
         assertThat(xrpTransaction.lastLedgerSequence()).isEqualTo(transactionProto.getLastLedgerSequence().getValue());
