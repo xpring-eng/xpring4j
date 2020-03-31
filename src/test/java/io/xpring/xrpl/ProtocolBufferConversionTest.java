@@ -372,7 +372,7 @@ public class ProtocolBufferConversionTest {
         // WHEN the protocol buffer is converted to a native Java type.
         XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
 
-        // THEN the result is nul.
+        // THEN the result is null.
         assertThat(xrpTransaction).isNull();
     }
 }
