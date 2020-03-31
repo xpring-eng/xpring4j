@@ -16,7 +16,6 @@ public class FakePayIDClient implements PayIDClientInterface {
      *
      * @param xrpAddressForPayIDResult The result that will be returned from `xrpAddressForPayID`.
      */
-    // TODO(keefertaylor): Rename `GRPCResult` to something more generic since this doesn't involve gRPC.
     public FakePayIDClient(GRPCResult<String, PayIDException> xrpAddressForPayIDResult) {
         this.xrpAddressForPayIDResult = xrpAddressForPayIDResult;
     }
