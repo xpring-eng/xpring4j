@@ -269,6 +269,15 @@ public class FakeXRPProtobufs {
             .setPayment(paymentWithAllFieldsSet)
             .build();
 
+    static Transaction transactionWithOnlyMandatoryCommonFieldsSet = Transaction.newBuilder()
+            .setAccount(account)
+            .setFee(xrpDropsAmount)
+            .setSequence(sequence)
+            .setSigningPublicKey(signingPublicKey)
+            .setTransactionSignature(transactionSignature)
+            .setPayment(paymentWithAllFieldsSet)
+            .build();
+
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
