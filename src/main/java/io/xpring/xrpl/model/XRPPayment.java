@@ -53,6 +53,15 @@ public interface XRPPayment {
      */
     @Nullable XRPCurrencyAmount sendMax();
 
+    /**
+     * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}
+     * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L224">
+     *     Payment protocol buffer</a>
+     *
+     * @param payment a {@link org.xrpl.rpc.v1.Payment} (protobuf object) whose field values will be used
+     *                 to construct an {@link XRPPayment}
+     * @return an {@link XRPPayment} with its fields set via the analogous protobuf fields.
+     */
     static XRPPayment from(Payment payment) {
         // amount is required
         XRPCurrencyAmount amount = XRPCurrencyAmount.from(payment.getAmount().getValue());
