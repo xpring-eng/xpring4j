@@ -30,28 +30,33 @@ public interface XRPPayment {
     /**
      * @return (Optional) Arbitrary tag that identifies the reason for the payment.
      */
-    @Nullable Integer destinationTag();
+    @Nullable
+    Integer destinationTag();
 
     /**
      * @return (Optional) Minimum amount of destination currency this transaction should deliver.
      */
-    @Nullable XRPCurrencyAmount deliverMin();
+    @Nullable
+    XRPCurrencyAmount deliverMin();
 
     /**
      * @return (Optional) Arbitrary 256-bit hash representing a specific reason or identifier for this payment.
      */
-    @Nullable byte[] invoiceID();
+    @Nullable
+    byte[] invoiceID();
 
     /**
      * @return (Optional) Array of payment paths to be used for this transaction.
      * Must be omitted for XRP-to-XRP transactions.
      */
-    @Nullable List<XRPPath> paths();
+    @Nullable
+    List<XRPPath> paths();
 
     /**
      * @return (Optional) Highest amount of source currency this transaction is allowed to cost.
      */
-    @Nullable XRPCurrencyAmount sendMax();
+    @Nullable
+    XRPCurrencyAmount sendMax();
 
     /**
      * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}
