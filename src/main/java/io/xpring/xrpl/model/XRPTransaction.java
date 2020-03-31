@@ -154,7 +154,6 @@ public interface XRPTransaction {
             }
         }
 
-
         return XRPTransaction.builder()
                 .account(account)
                 .accountTransactionID(accountTransactionID)
