@@ -20,13 +20,15 @@ public interface XRPCurrencyAmount {
      * @return An amount of XRP, specified in drops.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-     @Nullable String drops();
+     @Nullable
+     String drops();
 
     /**
      * @return An amount of an issued currency.
      * Mutually exclusive fields - only drops XOR issuedCurrency should be set.
      */
-    @Nullable XRPIssuedCurrency issuedCurrency();
+    @Nullable
+    XRPIssuedCurrency issuedCurrency();
 
     static XRPCurrencyAmount from(CurrencyAmount currencyAmount) {
         switch (currencyAmount.getAmountCase()) {
