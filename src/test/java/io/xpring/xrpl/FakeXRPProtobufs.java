@@ -163,7 +163,6 @@ public class FakeXRPProtobufs {
                                                         .setDestination(destination)
                                                         .build();
 
-
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
