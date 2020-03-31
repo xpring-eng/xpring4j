@@ -289,4 +289,39 @@ public class ProtocolBufferConversionTest {
         assertThat(xrpSigner.transactionSignature())
                 .isEqualTo(signerProto.getTransactionSignature().getValue().toByteArray());
     }
+
+    // Transaction
+
+    @Test
+    public void convertPaymentTransactionWithAllCommonFieldsSetTest() {
+        // GIVEN a Transaction protocol buffer with all common fields set.
+        Transaction transactionProto = FakeXRPProtobufs.transactionWithAllFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN all fields are present and converted correctly.
+        assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
+        assertThat(xrpTransaction.accountTransactionID())
+                .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
+        assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
+        assertThat(xrpTransaction.flags()).isEqualTo(transactionProto.getFlags().getValue());
+        assertThat(xrpTransaction.lastLedgerSequence()).isEqualTo(transactionProto.getLastLedgerSequence().getValue());
+        assertThat(xrpTransaction.memos()).isEqualTo(transactionProto.getMemosList()
+                .stream()
+                .map(memo -> XRPMemo.from(memo))
+                .collect(Collectors.toList()));
+        assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
+        assertThat(xrpTransaction.signers()).isEqualTo(transactionProto.getSignersList()
+                .stream()
+                .map(signer -> XRPSigner.from(signer))
+                .collect(Collectors.toList()));
+        assertThat(xrpTransaction.signingPublicKey())
+                .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
+        assertThat(xrpTransaction.sourceTag()).isEqualTo(transactionProto.getSourceTag().getValue());
+        assertThat(xrpTransaction.transactionSignature())
+                .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
+        assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
+        assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    }
 }
