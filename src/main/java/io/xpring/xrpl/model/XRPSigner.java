@@ -24,12 +24,14 @@ public interface XRPSigner {
     /**
      * @return The public key used to create this signature.
      */
-    @Nullable byte[] signingPublicKey();
+    @Nullable
+    byte[] signingPublicKey();
 
     /**
      * @return A signature for this transaction, verifiable using the SigningPubKey.
      */
-    @Nullable byte[] transactionSignature();
+    @Nullable
+    byte[] transactionSignature();
 
     /**
      * Constructs an {@link XRPSigner} from a {@link Signer}
