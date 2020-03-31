@@ -102,7 +102,9 @@ public interface XRPTransaction {
     static XRPTransaction from(Transaction transaction) {
         String account = transaction.getAccount().getValue().getAddress();
 
-        byte[] accountTransactionID = transaction.getAccountTransactionId().getValue().toByteArray();
+        ByteString accountTxnIDByteString = transaction.getAccountTransactionId().getValue();
+        byte[] accountTransactionID = accountTxnIDByteString.equals(ByteString.EMPTY) ?
+                null : accountTxnIDByteString.toByteArray();
 
         Long fee = transaction.getFee().getDrops();
 
@@ -114,6 +116,9 @@ public interface XRPTransaction {
                 .stream()
                 .map(memo -> XRPMemo.from(memo))
                 .collect(Collectors.toList());
+        if (memos.isEmpty()) {
+            memos = null;
+        }
 
         Integer sequence = transaction.getSequence().getValue();
 
@@ -121,6 +126,9 @@ public interface XRPTransaction {
                 .stream()
                 .map(signer -> XRPSigner.from(signer))
                 .collect(Collectors.toList());
+        if (signers.isEmpty()) {
+            signers = null;
+        }
 
         byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
 
