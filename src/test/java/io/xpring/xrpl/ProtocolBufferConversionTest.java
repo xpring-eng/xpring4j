@@ -2,16 +2,15 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.xrpl.model.XRPIssuedCurrency;
-import io.xpring.xrpl.model.XRPPath;
-import io.xpring.xrpl.model.XRPPathElement;
+import io.xpring.xrpl.model.*;
 
 import org.junit.Rule;
 import org.junit.Test;
 
 import org.junit.rules.ExpectedException;
 import org.xrpl.rpc.v1.*;
-import io.xpring.xrpl.model.XRPCurrency;
+
+import java.math.BigInteger;
 
 import java.math.BigInteger;
 
@@ -119,8 +118,55 @@ public class ProtocolBufferConversionTest {
     public void convertIssuedCurrencyWithBadValueTest() {
         // GIVEN an issued currency protocol buffer with a non numeric value
         // WHEN the protocol buffer is converted to a native Java type.
-        // Then a NumberFormatException is thrown.
+        // THEN a NumberFormatException is thrown.
         expectedException.expect(NumberFormatException.class);
         XRPIssuedCurrency.from(FakeXRPProtobufs.invalidIssuedCurrencyAmount);
+    }
+
+    // CurrencyAmount
+
+    @Test
+    public void convertCurrencyAmountWithDropsTest() {
+        // GIVEN a currency amount protocol buffer with an XRP amount.
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.dropsCurrencyAmount);
+
+        // THEN the result has drops set and an empty issued currency.
+        assertThat(xrpCurrencyAmount.drops())
+                .isEqualTo(Long.toString(FakeXRPProtobufs.dropsCurrencyAmount.getXrpAmount().getDrops()));
+        assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
+    }
+
+    @Test
+    public void convertCurrencyAmountWithIssuedCurrency() {
+        // GIVEN a currency amount protocol buffer with an issued currency amount.
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount);
+
+        // THEN the result has an issued currency set and no drops amount.
+        assertThat(xrpCurrencyAmount.drops()).isNull();
+        assertThat(xrpCurrencyAmount.issuedCurrency())
+                .isEqualTo(XRPIssuedCurrency.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount.getIssuedCurrencyAmount()));
+    }
+
+    @Test
+    public void convertCurrencyAmountWithBadInputsTest() {
+        // GIVEN a currency amount protocol buffer with no amounts
+        CurrencyAmount emptyCurrencyAmount = CurrencyAmount.newBuilder().build();
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(emptyCurrencyAmount);
+
+        // THEN the result is null
+        assertThat(xrpCurrencyAmount).isNull();
+    }
+
+    @Test
+    public void convertCurrencyAmountWithInvalidIssuedCurrencyTest() {
+        // GIVEN a currency amount protocol buffer with an invalid issued currency
+        // WHEN the protocol buffer is converted to a native Java type.
+        // THEN a NumberFormatException is re-thrown.
+        expectedException.expect(NumberFormatException.class);
+        XRPCurrencyAmount.from(FakeXRPProtobufs.invalidCurrencyAmount);
     }
 }

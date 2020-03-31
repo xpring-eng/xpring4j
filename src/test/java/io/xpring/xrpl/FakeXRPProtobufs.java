@@ -20,6 +20,7 @@ public class FakeXRPProtobufs {
 
     static String testIssuedCurrencyValue = "100";
     static String testInvalidIssuedCurrencyValue = "xrp"; // non-numeric
+    static long testDrops = 10;
 
     /**
      * will use in future fake objects
@@ -94,6 +95,13 @@ public class FakeXRPProtobufs {
                                                                             .setValue(testIssuedCurrencyValue)
                                                                             .build();
 
+    // CurrencyAmount protos
+    static XRPDropsAmount xrpDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDrops).build();
+    static CurrencyAmount dropsCurrencyAmount = CurrencyAmount.newBuilder().setXrpAmount(xrpDropsAmount).build();
+
+    static CurrencyAmount issuedCurrencyCurrencyAmount = CurrencyAmount.newBuilder()
+                                                                        .setIssuedCurrencyAmount(issuedCurrencyAmount)
+                                                                        .build();
 
     // INVALID OBJECTS ===============================================================
 
@@ -104,4 +112,8 @@ public class FakeXRPProtobufs {
                                                                             .setValue(testInvalidIssuedCurrencyValue)
                                                                             .build();
 
+    // Invalid CurrencyAmount proto
+    static CurrencyAmount invalidCurrencyAmount = CurrencyAmount.newBuilder()
+                                                                .setIssuedCurrencyAmount(invalidIssuedCurrencyAmount)
+                                                                .build();
 }
