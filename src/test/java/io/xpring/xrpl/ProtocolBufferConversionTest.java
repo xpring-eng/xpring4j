@@ -324,4 +324,31 @@ public class ProtocolBufferConversionTest {
         assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
         assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
     }
+
+    @Test
+    public void convertPaymentTransactionWithOnlyMandatoryCommonFieldsSetTest() {
+        // GIVEN a Transaction protocol buffer with only mandatory common fields set.
+        Transaction transactionProto = FakeXRPProtobufs.transactionWithOnlyMandatoryCommonFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN all fields are present and converted correctly.
+        assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
+        assertThat(xrpTransaction.accountTransactionID()).isNull();
+        assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
+        assertThat(xrpTransaction.flags()).isEqualTo(Common.Flags.newBuilder().build().getValue());
+        assertThat(xrpTransaction.lastLedgerSequence())
+                .isEqualTo(Common.LastLedgerSequence.newBuilder().build().getValue());
+        assertThat(xrpTransaction.memos()).isNull();
+        assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
+        assertThat(xrpTransaction.signers()).isNull();
+        assertThat(xrpTransaction.signingPublicKey())
+                .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
+        assertThat(xrpTransaction.sourceTag()).isEqualTo(Common.SourceTag.newBuilder().build().getValue());
+        assertThat(xrpTransaction.transactionSignature())
+                .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
+        assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
+        assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    }
 }
