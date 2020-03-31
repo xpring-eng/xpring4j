@@ -1,5 +1,6 @@
 package io.xpring.xrpl.model;
 
+import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 import org.xrpl.rpc.v1.Payment.PathElement;
 import org.immutables.value.Value;
 
