@@ -363,4 +363,16 @@ public class ProtocolBufferConversionTest {
         // THEN the result is null.
         assertThat(xrpTransaction).isNull();
     }
+
+    @Test
+    public void convertTransactionWithUnsupportedTypeTest() {
+        // GIVEN a Transaction protocol buffer with an unsupported transaction type.
+        Transaction transactionProto = FakeXRPProtobufs.invlidTransactionUnsupportedType;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN the result is nul.
+        assertThat(xrpTransaction).isNull();
+    }
 }

@@ -278,6 +278,9 @@ public class FakeXRPProtobufs {
             .setPayment(paymentWithAllFieldsSet)
             .build();
 
+    // CheckCash proto
+    static CheckCash checkCash = CheckCash.newBuilder().build();
+
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
@@ -324,11 +327,21 @@ public class FakeXRPProtobufs {
 
     // Invalid Transaction with empty Payment
     static Transaction invalidTransactionWithEmptyPaymentFields = Transaction.newBuilder()
-            .setAccount(account)
-            .setFee(xrpDropsAmount)
-            .setSequence(sequence)
-            .setSigningPublicKey(signingPublicKey)
-            .setTransactionSignature(transactionSignature)
-            .setPayment(Payment.newBuilder().build()) // empty Payment
-            .build();
+                                                                .setAccount(account)
+                                                                .setFee(xrpDropsAmount)
+                                                                .setSequence(sequence)
+                                                                .setSigningPublicKey(signingPublicKey)
+                                                                .setTransactionSignature(transactionSignature)
+                                                                .setPayment(Payment.newBuilder().build()) // empty Payment
+                                                                .build();
+
+    // Invalid Transaction due to unsupported transaction type
+    static Transaction invlidTransactionUnsupportedType = Transaction.newBuilder()
+                                                                .setAccount(account)
+                                                                .setFee(xrpDropsAmount)
+                                                                .setSequence(sequence)
+                                                                .setSigningPublicKey(signingPublicKey)
+                                                                .setTransactionSignature(transactionSignature)
+                                                                .setCheckCash(checkCash) // unsupported
+                                                                .build();
 }
