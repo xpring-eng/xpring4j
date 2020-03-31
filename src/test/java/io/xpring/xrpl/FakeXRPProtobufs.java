@@ -54,6 +54,13 @@ public class FakeXRPProtobufs {
         }
     }
 
+    /**
+     * will use in future fake objects
+     */
+
+    static String testAddress = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
+    static String testDestination = "XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H";
+
     static ByteString testSigningPublicKey;
     static {
         try {
