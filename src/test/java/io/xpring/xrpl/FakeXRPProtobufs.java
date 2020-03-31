@@ -16,8 +16,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -34,22 +34,22 @@ public class FakeXRPProtobufs {
     static {
         try {
             memoDataBytes = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
     static {
         try {
             memoFormatBytes = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
     static {
         try {
             memoTypeBytes = ByteString.copyFrom("789", "Utf8");
-        } catch (UnsupportedEncodingException error) {
-            error.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
     /**
@@ -63,8 +63,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testPublicKey = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -72,8 +72,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testTransactionSignature = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
         }
     }
 
