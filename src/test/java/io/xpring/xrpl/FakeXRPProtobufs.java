@@ -278,15 +278,6 @@ public class FakeXRPProtobufs {
             .setPayment(paymentWithAllFieldsSet)
             .build();
 
-    static Transaction transactionWithEmptyPaymentFields = Transaction.newBuilder()
-            .setAccount(account)
-            .setFee(xrpDropsAmount)
-            .setSequence(sequence)
-            .setSigningPublicKey(signingPublicKey)
-            .setTransactionSignature(transactionSignature)
-            .setPayment(Payment.newBuilder().build())
-            .build();
-
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
@@ -330,4 +321,14 @@ public class FakeXRPProtobufs {
                                                     .setDestination(destination)
                                                     .setSendMax(invalidSendMax)
                                                     .build();
+
+    // Invalid Transaction with empty Payment
+    static Transaction invalidTransactionWithEmptyPaymentFields = Transaction.newBuilder()
+            .setAccount(account)
+            .setFee(xrpDropsAmount)
+            .setSequence(sequence)
+            .setSigningPublicKey(signingPublicKey)
+            .setTransactionSignature(transactionSignature)
+            .setPayment(Payment.newBuilder().build()) // empty Payment
+            .build();
 }

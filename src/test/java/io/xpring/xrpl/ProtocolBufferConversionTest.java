@@ -351,4 +351,16 @@ public class ProtocolBufferConversionTest {
         assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
         assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
     }
+
+    @Test
+    public void convertPaymentTransactionWithBadPaymentFieldsTest() {
+        // GIVEN a Transaction protocol buffer with payment fields which are incorrect.
+        Transaction transactionProto = FakeXRPProtobufs.invalidTransactionWithEmptyPaymentFields;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN the result is null.
+        assertThat(xrpTransaction).isNull();
+    }
 }
