@@ -367,7 +367,7 @@ public class ProtocolBufferConversionTest {
     @Test
     public void convertTransactionWithUnsupportedTypeTest() {
         // GIVEN a Transaction protocol buffer with an unsupported transaction type.
-        Transaction transactionProto = FakeXRPProtobufs.invlidTransactionUnsupportedType;
+        Transaction transactionProto = FakeXRPProtobufs.invalidTransactionUnsupportedType;
 
         // WHEN the protocol buffer is converted to a native Java type.
         XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
