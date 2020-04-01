@@ -21,7 +21,7 @@ public class FakeXRPProtobufs {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.info("Can't create testCurrencyCode", exception);
+            logger.error("Can't create testCurrencyCode", exception);
         }
     }
 
@@ -39,21 +39,21 @@ public class FakeXRPProtobufs {
         try {
             memoDataBytes = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.info("Can't create memoDataBytes", exception);
+            logger.error("Can't create memoDataBytes", exception);
         }
     }
     static {
         try {
             memoFormatBytes = ByteString.copyFrom("456", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.info("Can't create memoFormatBytes", exception);
+            logger.error("Can't create memoFormatBytes", exception);
         }
     }
     static {
         try {
             memoTypeBytes = ByteString.copyFrom("789", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.info("Can't create memoTypeBytes", exception);
+            logger.error("Can't create memoTypeBytes", exception);
         }
     }
     /**
@@ -68,7 +68,7 @@ public class FakeXRPProtobufs {
         try {
             testPublicKey = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.info("Can't create testPublicKey", exception);
+            logger.error("Can't create testPublicKey", exception);
         }
     }
 
@@ -77,7 +77,7 @@ public class FakeXRPProtobufs {
         try {
             testTransactionSignature = ByteString.copyFrom("456", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.info("Can't create testTransactionSignature", exception);
+            logger.error("Can't create testTransactionSignature", exception);
         }
     }
 
