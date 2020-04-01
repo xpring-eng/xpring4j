@@ -231,6 +231,9 @@ public class FakeXRPProtobufs {
                                         .setTransactionSignature(transactionSignature)
                                         .build();
 
+    // CheckCash proto
+    static CheckCash checkCash = CheckCash.newBuilder().build();
+
     // Transaction protos
         // Common.Sequence proto
     static Common.Sequence sequence = Common.Sequence.newBuilder().setValue(testSequence).build();
@@ -274,8 +277,20 @@ public class FakeXRPProtobufs {
                                                                         .setPayment(paymentWithAllFieldsSet)
                                                                         .build();
 
-    // CheckCash proto
-    static CheckCash checkCash = CheckCash.newBuilder().build();
+    // GetTransactionResponse protos
+    static GetTransactionResponse getTransactionResponse1 = GetTransactionResponse.newBuilder()
+                                                                        .setTransaction(transactionWithAllFieldsSet)
+                                                                        .build();
+    static GetTransactionResponse getTransactionResponse2 = GetTransactionResponse.newBuilder()
+                                                            .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
+                                                            .build();
+
+    // GetAccountTransactionHistoryResponse proto
+    static GetAccountTransactionHistoryResponse getAccountTransactionHistoryResponse =
+                                                    GetAccountTransactionHistoryResponse.newBuilder()
+                                                                            .addTransactions(getTransactionResponse1)
+                                                                            .addTransactions(getTransactionResponse2)
+                                                                            .build();
 
     // INVALID OBJECTS ===============================================================
 
