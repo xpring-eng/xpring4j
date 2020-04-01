@@ -30,9 +30,6 @@ public class XRPClientIntegrationTests {
     /** Drops of XRP to send. */
     private static final BigInteger AMOUNT = new BigInteger("1");
 
-    /** Hash of a successful transaction. */
-    private static final String TRANSACTION_HASH = "DAA9F31628C952A48DAE71829E91847BF4EF23C0FABDD7218E41836D1E68EEBD";
-
     @Before
     public void setUp() throws Exception {
         this.legacyXRPClient = new XRPClient(LEGACY_GRPC_URL, false);
@@ -47,7 +44,14 @@ public class XRPClientIntegrationTests {
 
     @Test
     public void getPaymentStatusTest_legacy() throws XpringException  {
-        TransactionStatus transactionStatus = legacyXRPClient.getPaymentStatus(TRANSACTION_HASH);
+        // GIVEN a hash of a payment transaction.
+        Wallet wallet = new Wallet(WALLET_SEED);
+        String transactionHash = legacyXRPClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = legacyXRPClient.getPaymentStatus(transactionHash);
+
+        // THEN the status is 'succeeded'.
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
@@ -67,7 +71,14 @@ public class XRPClientIntegrationTests {
 
     @Test
     public void getPaymentStatusTest() throws XpringException {
-        TransactionStatus transactionStatus = xrpClient.getPaymentStatus(TRANSACTION_HASH);
+        // GIVEN a hash of a payment transaction.
+        Wallet wallet = new Wallet(WALLET_SEED);
+        String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+
+        // WHEN the transaction status is retrieved.
+        TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash);
+
+        // THEN the status is 'succeeded'.
         assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
     }
 
