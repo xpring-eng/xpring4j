@@ -1,11 +1,14 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.helpers.XRPTestUtils;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +39,8 @@ public class ReliableSubmissionXRPClientTest {
                     setLastLedgerSequence(LAST_LEDGER_SEQUENCE).
                     build()
     );
+    private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE =
+                XRPTestUtils.transactionHistoryToPaymentsList(FakeXRPProtobufs.getAccountTransactionHistoryResponse);
 
     FakeXRPClient fakeXRPClient;
     ReliableSubmissionXRPClient reliableSubmissionXRPClient;
@@ -49,7 +54,8 @@ public class ReliableSubmissionXRPClientTest {
                 DEFAULT_TRANSACTION_STATUS_VALUE,
                 DEFAULT_SEND_VALUE,
                 DEFAULT_LATEST_LEDGER_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE
+                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
+                DEFAULT_PAYMENT_HISTORY_VALUE
         );
 
         this.reliableSubmissionXRPClient = new ReliableSubmissionXRPClient(fakeXRPClient);
