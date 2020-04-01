@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Classes in `io.xpring.ilp` now throw an `IlpException` rather than a `XpringException`.
+- Classes in `io.xpring.xrp` now throw an `XRPException` rather than a `XpringException`.
+
+### Removed
+- The `XpringException` class is removed and no longer exists.
+
 ## 3.0.0 - March 24, 2020
 #### Added
 - A new `getPaymentStatus` is added which retrieves the status of payment transactions.
