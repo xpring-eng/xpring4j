@@ -8,7 +8,7 @@ import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
  *
  * @see "https://xrpl.org"
  */
-public class XRPClient {
+public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
     /**
