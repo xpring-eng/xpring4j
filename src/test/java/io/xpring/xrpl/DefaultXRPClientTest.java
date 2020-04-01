@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import io.xpring.GRPCResult;
+import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Rule;
 import org.junit.Test;
@@ -93,7 +94,8 @@ public class DefaultXRPClientTest {
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the balance is retrieved THEN an error is thrown.
@@ -111,7 +113,8 @@ public class DefaultXRPClientTest {
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode)),
                     GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                    GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
             );
 
             // WHEN the payment status is retrieved.
@@ -129,7 +132,8 @@ public class DefaultXRPClientTest {
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the payment status is retrieved.
@@ -148,7 +152,8 @@ public class DefaultXRPClientTest {
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeTransactionStatus(true, transactionFailureCode)),
                     GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                    GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
             );
 
             // WHEN the payment status is retrieved.
@@ -166,7 +171,8 @@ public class DefaultXRPClientTest {
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the payment status is retrieved.
@@ -183,7 +189,8 @@ public class DefaultXRPClientTest {
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.error(GENERIC_ERROR),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the payment status is retrieved THEN an error is thrown..
@@ -224,7 +231,8 @@ public class DefaultXRPClientTest {
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -241,7 +249,8 @@ public class DefaultXRPClientTest {
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 feeResult,
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -259,7 +268,8 @@ public class DefaultXRPClientTest {
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                submitResult
+                submitResult,
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -277,22 +287,15 @@ public class DefaultXRPClientTest {
         // WHEN the payment history for an address is requested.
         List<XRPTransaction> paymentHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
 
-        List<XRPTransaction> expectedPaymentHistory =
+        List<XRPTransaction> expectedPaymentHistory = XRPTestUtils.transactionHistoryToPaymentsList(
+                                                                        makeGetAccountTransactionHistoryResponse());
+
+        // THEN the payment history is returned as expected.
+        assertThat(paymentHistory).isEqualTo(expectedPaymentHistory);
     }
 
 /**
-    it('Payment History - successful response', async function(): Promise<void> {
-        // GIVEN a DefaultXRPClient.
-    const xrpClient = new DefaultXRPClient(fakeSucceedingNetworkClient)
 
-        // WHEN the payment history for an address is requested.
-    const paymentHistory = await xrpClient.paymentHistory(testAddress)
-
-    const expectedPaymentHistory: Array<XRPTransaction> = XRPTestUtils.transactionHistoryToPaymentsList(
-                testGetAccountTransactionHistoryResponse,
-                )
-        // THEN the payment history is returned as expected
-        assert.deepEqual(expectedPaymentHistory, paymentHistory)
     })
 
     it('Payment History - classic address', function(done): void {
@@ -400,7 +403,6 @@ public class DefaultXRPClientTest {
     /**
      * Return an XRPClient which returns the given results for network calls.
      */
-
     private DefaultXRPClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
             GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
