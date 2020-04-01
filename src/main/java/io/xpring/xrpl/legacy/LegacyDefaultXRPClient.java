@@ -10,10 +10,12 @@ import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClientDecorator;
 import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -197,5 +199,9 @@ public class LegacyDefaultXRPClient implements XRPClientDecorator {
 
         io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
         return new RawTransactionStatus(transactionStatus);
+    }
+
+    public List<XRPTransaction> paymentHistory(String address) throws XpringException {
+        throw XpringException.unimplemented;
     }
 }
