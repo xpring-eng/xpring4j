@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.GRPCResult;
 import io.xpring.proto.*;
+import io.xpring.xrpl.XRPException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,7 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.xpring.xrpl.XpringException;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.Wallet;
@@ -60,7 +60,7 @@ public class LegacyDefaultXRPClientTest {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     @Test
-    public void getBalanceTest() throws IOException, XpringException {
+    public void getBalanceTest() throws IOException, XRPException {
         // GIVEN a DefaultXRPClient with mocked networking which will succeed.
         LegacyDefaultXRPClient client = getClient();
 
@@ -72,18 +72,18 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void getBalanceWithClassicAddressTest() throws IOException, XpringException {
+    public void getBalanceWithClassicAddressTest() throws IOException, XRPException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         LegacyDefaultXRPClient client = getClient();
 
         // WHEN the balance for the classic address is retrieved THEN an error is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         client.getBalance(classicAddress.address());
     }
 
     @Test
-    public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
+    public void getBalanceTestWithFailedAccountInfo() throws IOException, XRPException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
         GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
@@ -100,7 +100,7 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionTest() throws IOException, XpringException {
+    public void submitTransactionTest() throws IOException, XRPException {
         // GIVEN a XRPClient with mocked networking which will succeed.
         LegacyDefaultXRPClient client = getClient();
         Wallet wallet = new Wallet(WALLET_SEED);
@@ -114,19 +114,19 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionWithClassicAddress() throws IOException, XpringException {
+    public void submitTransactionWithClassicAddress() throws IOException, XRPException {
         // GIVEN a classic address.
         LegacyDefaultXRPClient client = getClient();
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         Wallet wallet = new Wallet(WALLET_SEED);
 
         // WHEN XRP is sent to the classic address THEN an error is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         client.send(AMOUNT, classicAddress.address(), wallet);
     }
 
     @Test
-    public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
+    public void submitTransactionWithFailedAccountInfo() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to return account info.
         GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
@@ -144,7 +144,7 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionWithFailedFee() throws IOException, XpringException {
+    public void submitTransactionWithFailedFee() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
         GRPCResult<Fee> feeResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
@@ -162,7 +162,7 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionWithFailedLatestValidatedLedgerSequence() throws IOException, XpringException {
+    public void submitTransactionWithFailedLatestValidatedLedgerSequence() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
         GRPCResult<LedgerSequence> ledgerSequence = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(
@@ -180,7 +180,7 @@ public class LegacyDefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
+    public void submitTransactionWithFailedSubmit() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to submit a transaction.
         GRPCResult<SubmitSignedTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
         LegacyDefaultXRPClient client = getClient(

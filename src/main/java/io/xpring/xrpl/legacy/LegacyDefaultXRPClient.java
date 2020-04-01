@@ -3,13 +3,9 @@ package io.xpring.xrpl.legacy;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.proto.*;
+import io.xpring.proto.TransactionStatus;
 import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
-import io.xpring.xrpl.RawTransactionStatus;
-import io.xpring.xrpl.TransactionStatus;
-import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XRPClientDecorator;
-import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,11 +69,11 @@ public class LegacyDefaultXRPClient implements XRPClientDecorator {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XRPException {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
-            throw XpringException.xAddressRequiredException;
+            throw XRPException.xAddressRequiredException;
         }
 
         Objects.requireNonNull(xrplAccountAddress, "xrplAccountAddress must not be null");
@@ -99,15 +95,15 @@ public class LegacyDefaultXRPClient implements XRPClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getPaymentStatus(String transactionHash) {
+    public io.xpring.xrpl.TransactionStatus getPaymentStatus(String transactionHash) {
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
 
         // Return PENDING if the transaction is not validated.
         if (!transactionStatus.getValidated()) {
-            return TransactionStatus.PENDING;
+            return io.xpring.xrpl.TransactionStatus.PENDING;
         }
 
-        return transactionStatus.getTransactionStatusCode().startsWith("tes") ? TransactionStatus.SUCCEEDED : TransactionStatus.FAILED;
+        return transactionStatus.getTransactionStatusCode().startsWith("tes") ?  io.xpring.xrpl.TransactionStatus.SUCCEEDED :  io.xpring.xrpl.TransactionStatus.FAILED;
     }
 
     /**
@@ -117,15 +113,15 @@ public class LegacyDefaultXRPClient implements XRPClientDecorator {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
     public String send(
         final BigInteger amount,
         final String destinationAddress,
         final Wallet sourceWallet
-    ) throws XpringException {
+    ) throws XRPException {
         if (!Utils.isValidXAddress(destinationAddress)) {
-            throw XpringException.xAddressRequiredException;
+            throw XRPException.xAddressRequiredException;
         }
 
         AccountInfo accountInfo = this.getAccountInfo(sourceWallet.getAddress());

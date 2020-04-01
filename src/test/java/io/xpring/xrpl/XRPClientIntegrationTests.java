@@ -37,13 +37,13 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void getBalanceTest_legacy() throws XpringException {
+    public void getBalanceTest_legacy() throws XRPException {
         BigInteger balance = legacyXRPClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getPaymentStatusTest_legacy() throws XpringException  {
+    public void getPaymentStatusTest_legacy() throws XRPException  {
         // GIVEN a hash of a payment transaction.
         Wallet wallet = new Wallet(WALLET_SEED);
         String transactionHash = legacyXRPClient.send(AMOUNT, XRPL_ADDRESS, wallet);
@@ -56,7 +56,7 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void sendXRPTest_legacy() throws XpringException {
+    public void sendXRPTest_legacy() throws XRPException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = legacyXRPClient.send(AMOUNT, XRPL_ADDRESS, wallet);
@@ -64,13 +64,13 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void getBalanceTest() throws XpringException {
+    public void getBalanceTest() throws XRPException {
         BigInteger balance = xrpClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getPaymentStatusTest() throws XpringException {
+    public void getPaymentStatusTest() throws XRPException {
         // GIVEN a hash of a payment transaction.
         Wallet wallet = new Wallet(WALLET_SEED);
         String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
@@ -83,7 +83,7 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void sendXRPTest() throws XpringException {
+    public void sendXRPTest() throws XRPException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
