@@ -1,11 +1,15 @@
 package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
 
 import java.io.UnsupportedEncodingException;
 
 /** Common set of fake objects - protobuf and native Java conversions - for testing */
 public class FakeXRPProtobufs {
+    static private final Logger logger = LoggerFactory.getLogger(FakeXRPProtobufs.class);
+
     // primitive test values
     static String testCurrencyName = "currencyName";
     static ByteString testCurrencyCode;
@@ -16,8 +20,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create testCurrencyCode", exception);
         }
     }
 
@@ -26,6 +30,32 @@ public class FakeXRPProtobufs {
     static long testDrops = 10;
 
     static int testDestinationTag = 2;
+
+    static ByteString memoDataBytes;
+    static ByteString memoFormatBytes;
+    static ByteString memoTypeBytes;
+
+    static {
+        try {
+            memoDataBytes = ByteString.copyFrom("123", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create memoDataBytes", exception);
+        }
+    }
+    static {
+        try {
+            memoFormatBytes = ByteString.copyFrom("456", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create memoFormatBytes", exception);
+        }
+    }
+    static {
+        try {
+            memoTypeBytes = ByteString.copyFrom("789", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create memoTypeBytes", exception);
+        }
+    }
     /**
      * will use in future fake objects
      */
@@ -37,8 +67,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testPublicKey = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create testPublicKey", exception);
         }
     }
 
@@ -46,8 +76,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testTransactionSignature = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create testTransactionSignature", exception);
         }
     }
 
@@ -162,6 +192,23 @@ public class FakeXRPProtobufs {
                                                         .setAmount(amount)
                                                         .setDestination(destination)
                                                         .build();
+
+    // Memo protos
+    static Common.MemoData memoData = Common.MemoData.newBuilder()
+                                                    .setValue(memoDataBytes)
+                                                    .build();
+    static Common.MemoFormat memoFormat = Common.MemoFormat.newBuilder()
+                                                        .setValue(memoFormatBytes)
+                                                        .build();
+    static Common.MemoType memoType = Common.MemoType.newBuilder()
+                                                    .setValue(memoTypeBytes)
+                                                    .build();
+
+    static Memo memoWithAllFieldsSet = Memo.newBuilder()
+                                            .setMemoData(memoData)
+                                            .setMemoFormat(memoFormat)
+                                            .setMemoType(memoType)
+                                            .build();
 
     // INVALID OBJECTS ===============================================================
 
