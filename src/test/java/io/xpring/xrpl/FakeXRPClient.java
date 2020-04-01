@@ -1,7 +1,9 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.XRPTransaction;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * A fake XRPClient which returns the given iVars as results from XRPClientDecorator calls.
@@ -13,19 +15,22 @@ public class FakeXRPClient implements  XRPClientDecorator {
     public String sendValue;
     public int latestValidatedLedgerValue;
     public RawTransactionStatus rawTransactionStatusValue;
+    public List<XRPTransaction> paymentHistoryValue;
 
     public FakeXRPClient(
             BigInteger getBalanceValue,
             TransactionStatus paymentStatusValue,
             String sendValue,
             int latestValidatedLedgerValue,
-            RawTransactionStatus rawTransactionStatusValue
+            RawTransactionStatus rawTransactionStatusValue,
+            List<XRPTransaction> paymentHistoryValue
     ) {
         this.getBalanceValue = getBalanceValue;
         this.paymentStatusValue = paymentStatusValue;
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
+        this.paymentStatusValue = paymentStatusValue;
     }
 
     @Override
@@ -51,5 +56,10 @@ public class FakeXRPClient implements  XRPClientDecorator {
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         return this.rawTransactionStatusValue;
+    }
+
+    @Override
+    public List<XRPTransaction> paymentHistory(String xrplAccountAddress) {
+        return this.paymentHistoryValue;
     }
 }
