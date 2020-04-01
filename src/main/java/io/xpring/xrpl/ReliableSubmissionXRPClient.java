@@ -31,7 +31,10 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
             RawTransactionStatus transactionStatus = this.getRawTransactionStatus(transactionHash);
             int lastLedgerSequence = transactionStatus.getLastLedgerSequence();
             if (lastLedgerSequence == 0) {
-                throw new XRPException("The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined.");
+                throw new XRPException(
+                        XRPExceptionType.UNKNOWN,
+                        "The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined."
+                );
             }
 
             // Retrieve the latest ledger index.
@@ -47,7 +50,10 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
 
             return transactionHash;
         } catch (InterruptedException e) {
-            throw new XRPException("Reliable transaction submission project was interrupted.");
+            throw new XRPException(
+                    XRPExceptionType.UNKNOWN,
+                    "Reliable transaction submission project was interrupted."
+            );
         }
     }
 

@@ -7,6 +7,7 @@ public class IlpException extends Exception {
     /**
      * Create a new exception.
      *
+     * @param type The type of exception.
      * @param message The message to to include in the exception
      */
     public IlpException(IlpExceptionType type, String message) {

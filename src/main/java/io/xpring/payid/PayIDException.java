@@ -11,6 +11,7 @@ public class PayIDException extends Exception {
     /**
      * Create a new exception.
      *
+     * @param type The type of exception.
      * @param message The message to to include in the exception
      */
     public PayIDException(PayIDExceptionType type, String message) {
