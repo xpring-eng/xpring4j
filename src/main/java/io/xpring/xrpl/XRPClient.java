@@ -11,7 +11,7 @@ import io.xpring.xrpl.model.XRPTransaction;
  *
  * @see "https://xrpl.org"
  */
-public class XRPClient {
+public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
     /**
