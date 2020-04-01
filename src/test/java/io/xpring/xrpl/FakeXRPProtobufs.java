@@ -1,5 +1,7 @@
 package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
 import org.xrpl.rpc.v1.Signer;
 
@@ -7,6 +9,8 @@ import java.io.UnsupportedEncodingException;
 
 /** Common set of fake objects - protobuf and native Java conversions - for testing */
 public class FakeXRPProtobufs {
+    static private final Logger logger = LoggerFactory.getLogger(FakeXRPProtobufs.class);
+
     // primitive test values
     static String testCurrencyName = "currencyName";
     static ByteString testCurrencyCode;
@@ -18,7 +22,7 @@ public class FakeXRPProtobufs {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            exception.printStackTrace();
+            logger.error("Can't create testCurrencyCode", exception);
         }
     }
 
@@ -36,21 +40,21 @@ public class FakeXRPProtobufs {
         try {
             memoDataBytes = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            exception.printStackTrace();
+            logger.error("Can't create memoDataBytes", exception);
         }
     }
     static {
         try {
             memoFormatBytes = ByteString.copyFrom("456", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            exception.printStackTrace();
+            logger.error("Can't create memoFormatBytes", exception);
         }
     }
     static {
         try {
             memoTypeBytes = ByteString.copyFrom("789", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            exception.printStackTrace();
+            logger.error("Can't create memoTypeBytes", exception);
         }
     }
 
@@ -59,7 +63,7 @@ public class FakeXRPProtobufs {
         try {
             testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            exception.printStackTrace();
+            logger.error("Can't create testSigningPublicKey", exception);
         }
     }
 
@@ -68,7 +72,7 @@ public class FakeXRPProtobufs {
         try {
             testTransactionSignature = ByteString.copyFrom("456", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            exception.printStackTrace();
+            logger.error("Can't create testTransactionSignature", exception);
         }
     }
 

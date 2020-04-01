@@ -9,7 +9,7 @@ import java.util.List;
  * A fake XRPClient which returns the given iVars as results from XRPClientDecorator calls.
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
-public class FakeXRPClient implements  XRPClientDecorator {
+public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public BigInteger getBalanceValue;
     public TransactionStatus paymentStatusValue;
     public String sendValue;
