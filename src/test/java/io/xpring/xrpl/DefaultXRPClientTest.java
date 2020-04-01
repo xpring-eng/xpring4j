@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import io.xpring.GRPCResult;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -20,6 +21,7 @@ import org.xrpl.rpc.v1.Common.*;
 import org.xrpl.rpc.v1.Common.Amount;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -85,7 +87,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
+        // GIVEN an XRPClient with mocked networking which will fail to retrieve account info.
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
@@ -104,7 +106,7 @@ public class DefaultXRPClientTest {
     public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-            // GIVEN a XRPClient which will return an unvalidated transaction with a failed code.
+            // GIVEN an XRPClient which will return an unvalidated transaction with a failed code.
             DefaultXRPClient client = getClient(
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode)),
@@ -122,7 +124,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XpringException {
-        // GIVEN a XRPClient which will return an unvalidated transaction with a success code.
+        // GIVEN an XRPClient which will return an unvalidated transaction with a success code.
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
@@ -141,7 +143,7 @@ public class DefaultXRPClientTest {
     public void paymentStatusWithValidatedTransactionAndFailureCode() throws IOException, XpringException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-            // GIVEN a XRPClient which will return an validated transaction with a failed code.
+            // GIVEN an XRPClient which will return an validated transaction with a failed code.
             DefaultXRPClient client = getClient(
                     GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                     GRPCResult.ok(makeTransactionStatus(true, transactionFailureCode)),
@@ -159,7 +161,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringException {
-        // GIVEN a XRPClient which will return an validated transaction with a success code.
+        // GIVEN an XRPClient which will return an validated transaction with a success code.
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -176,7 +178,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void paymentStatusWithNodeError() throws IOException, XpringException {
-        // GIVEN a XRPClient which will error when a transaction status is requested..
+        // GIVEN an XRPClient which will error when a transaction status is requested..
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.error(GENERIC_ERROR),
@@ -191,7 +193,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void submitTransactionTest() throws IOException, XpringException {
-        // GIVEN a XRPClient with mocked networking which will succeed.
+        // GIVEN an XRPClient with mocked networking which will succeed.
         DefaultXRPClient client = getClient();
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -216,7 +218,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
-        // GIVEN a XRPClient which will fail to return account info.
+        // GIVEN an XRPClient which will fail to return account info.
         GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
@@ -233,7 +235,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XpringException {
-        // GIVEN a XRPClient which will fail to retrieve a fee.
+        // GIVEN an XRPClient which will fail to retrieve a fee.
         GRPCResult<GetFeeResponse> feeResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -251,7 +253,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
-        // GIVEN a XRPClient which will fail to submit a transaction.
+        // GIVEN an XRPClient which will fail to submit a transaction.
         GRPCResult<SubmitTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -265,34 +267,153 @@ public class DefaultXRPClientTest {
         expectedException.expect(Exception.class);
         client.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
+    //========================================================================================
 
+    @Test
+    public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XpringException {
+        // GIVEN a DefaultXRPClient.
+        DefaultXRPClient xrpClient = getClient();
+
+        // WHEN the payment history for an address is requested.
+        List<XRPTransaction> paymentHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
+
+        List<XRPTransaction> expectedPaymentHistory =
+    }
+
+/**
+    it('Payment History - successful response', async function(): Promise<void> {
+        // GIVEN a DefaultXRPClient.
+    const xrpClient = new DefaultXRPClient(fakeSucceedingNetworkClient)
+
+        // WHEN the payment history for an address is requested.
+    const paymentHistory = await xrpClient.paymentHistory(testAddress)
+
+    const expectedPaymentHistory: Array<XRPTransaction> = XRPTestUtils.transactionHistoryToPaymentsList(
+                testGetAccountTransactionHistoryResponse,
+                )
+        // THEN the payment history is returned as expected
+        assert.deepEqual(expectedPaymentHistory, paymentHistory)
+    })
+
+    it('Payment History - classic address', function(done): void {
+        // GIVEN an XRPClient and a classic address
+    const xrpClient = new DefaultXRPClient(fakeSucceedingNetworkClient)
+    const classicAddress = 'rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn'
+
+        // WHEN the payment history for an account is requested THEN an error to use X-Addresses is thrown.
+        xrpClient.paymentHistory(classicAddress).catch((error) => {
+        assert.typeOf(error, 'Error')
+        assert.equal(error.message, XRPClientErrorMessages.xAddressRequired)
+        done()
+    })
+    })
+
+    it('Payment History - network failure', function(done): void {
+        // GIVEN an XRPClient which wraps an erroring network client.
+    const xrpClient = new DefaultXRPClient(fakeErroringNetworkClient)
+
+        // WHEN the payment history is requested THEN an error is propagated.
+        xrpClient.paymentHistory(testAddress).catch((error) => {
+        assert.typeOf(error, 'Error')
+        assert.equal(error, FakeNetworkClientResponses.defaultError)
+        done()
+    })
+    })
+
+    it('Payment History - non-payment transactions', async function(): Promise<
+            void
+            > {
+        // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions
+
+        // Generate expected transactions from the default response, which only contains payments.
+    const nonPaymentTransactionResponse = new GetTransactionResponse()
+        nonPaymentTransactionResponse.setTransaction(testCheckCashTransaction)
+        // add CHECKCASH transaction - history then contains payment and non-payment transactions
+    const heteregeneousTransactionHistory = testGetAccountTransactionHistoryResponse
+        heteregeneousTransactionHistory.addTransactions(
+                nonPaymentTransactionResponse,
+                )
+
+    const heteroHistoryNetworkResponses = new FakeNetworkClientResponses(
+                FakeNetworkClientResponses.defaultAccountInfoResponse(),
+                FakeNetworkClientResponses.defaultFeeResponse(),
+                FakeNetworkClientResponses.defaultSubmitTransactionResponse(),
+                FakeNetworkClientResponses.defaultGetTransactionResponse(),
+                heteregeneousTransactionHistory,
+                )
+
+    const heteroHistoryNetworkClient = new FakeNetworkClient(
+                heteroHistoryNetworkResponses,
+                )
+
+    const xrpClient = new DefaultXRPClient(heteroHistoryNetworkClient)
+
+        // WHEN the transactionHistory is requested.
+    const transactionHistory = await xrpClient.paymentHistory(testAddress)
+
+        // THEN the returned transactions are conversions of the inputs with non-payment transactions filtered.
+    const expectedTransactionHistory: Array<XRPTransaction> = XRPTestUtils.transactionHistoryToPaymentsList(
+                testGetAccountTransactionHistoryResponse,
+                )
+
+        assert.deepEqual(expectedTransactionHistory, transactionHistory)
+    })
+
+    it('Payment History - invalid Payment', function(done) {
+        // GIVEN an XRPClient client which will return a transaction history which contains a malformed payment.
+    const invalidHistoryNetworkResponses = new FakeNetworkClientResponses(
+                FakeNetworkClientResponses.defaultAccountInfoResponse(),
+                FakeNetworkClientResponses.defaultFeeResponse(),
+                FakeNetworkClientResponses.defaultSubmitTransactionResponse(),
+                FakeNetworkClientResponses.defaultGetTransactionResponse(),
+                testInvalidGetAccountTransactionHistoryResponse, // contains malformed payment
+        )
+    const invalidHistoryNetworkClient = new FakeNetworkClient(
+                invalidHistoryNetworkResponses,
+                )
+    const xrpClient = new DefaultXRPClient(invalidHistoryNetworkClient)
+
+        // WHEN the transactionHistory is requested THEN a conversion error is thrown.
+        xrpClient.paymentHistory(testAddress).catch((error) => {
+        assert.typeOf(error, 'Error')
+        assert.equal(
+                error.message,
+                XRPClientErrorMessages.paymentConversionFailure,
+                )
+        done()
+    })
+        //========================================================================================
+*/
     /**
-     * Convenience method to get a XRPClient which has successful network calls.
+     * Convenience method to get an XRPClient which has successful network calls.
      */
     private DefaultXRPClient getClient() throws IOException {
         return getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
         );
     }
 
     /**
-     * Return a XRPClient which returns the given results for network calls.
+     * Return an XRPClient which returns the given results for network calls.
      */
 
     private DefaultXRPClient getClient(
             GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
             GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
             GRPCResult<GetFeeResponse> getFeeResult,
-            GRPCResult<SubmitTransactionResponse> submitTransactionResult
+            GRPCResult<SubmitTransactionResponse> submitTransactionResult,
+            GRPCResult<GetAccountTransactionHistoryResponse> getAccountTransactionHistoryResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
                 GetTransactionResponseResult,
                 getFeeResult,
-                submitTransactionResult
+                submitTransactionResult,
+                getAccountTransactionHistoryResult
         );
 
         // Generate a unique in-process server name.
@@ -312,13 +433,14 @@ public class DefaultXRPClientTest {
 
 
     /**
-     * Return a XRPLedgerService implementation which returns the given results for network calls.
+     * Return an XRPLedgerService implementation which returns the given results for network calls.
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
         GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
         GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
         GRPCResult<GetFeeResponse> getFeeResult,
-        GRPCResult<SubmitTransactionResponse> submitTransactionResult
+        GRPCResult<SubmitTransactionResponse> submitTransactionResult,
+        GRPCResult<GetAccountTransactionHistoryResponse> getTransactionHistoryResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {
@@ -360,6 +482,17 @@ public class DefaultXRPClientTest {
                             responseObserver.onError(submitTransactionResult.getError());
                         } else {
                             responseObserver.onNext(submitTransactionResult.getValue());
+                            responseObserver.onCompleted();
+                        }
+                    }
+
+                    @Override
+                    public void getAccountTransactionHistory(GetAccountTransactionHistoryRequest request,
+                                                  StreamObserver<GetAccountTransactionHistoryResponse> responseObserver) {
+                        if (getTransactionHistoryResult.isError()) {
+                            responseObserver.onError(getTransactionHistoryResult.getError());
+                        } else {
+                            responseObserver.onNext(getTransactionHistoryResult.getValue());
                             responseObserver.onCompleted();
                         }
                     }
@@ -406,5 +539,14 @@ public class DefaultXRPClientTest {
         Meta meta = Meta.newBuilder().setTransactionResult(transactionResult).build();
 
         return GetTransactionResponse.newBuilder().setValidated(validated).setMeta(meta).build();
+    }
+
+    /**
+     * Make a GetAccountTransactionHistoryResponse.
+     *
+     * Note: Delegates to FakeXRPProtobufs for re-usability.
+     */
+    private GetAccountTransactionHistoryResponse makeGetAccountTransactionHistoryResponse() {
+        return FakeXRPProtobufs.getAccountTransactionHistoryResponse;
     }
 }
