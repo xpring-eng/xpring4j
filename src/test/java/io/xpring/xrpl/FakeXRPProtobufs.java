@@ -3,6 +3,7 @@ import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Signer;
 
 import java.io.UnsupportedEncodingException;
 
@@ -56,19 +57,13 @@ public class FakeXRPProtobufs {
             logger.error("Can't create memoTypeBytes", exception);
         }
     }
-    /**
-     * will use in future fake objects
-     */
-    /*
-    static String testAddress = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
-    static String testDestination = "XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H";
 
-    static ByteString testPublicKey;
+    static ByteString testSigningPublicKey;
     static {
         try {
-            testPublicKey = ByteString.copyFrom("123", "Utf8");
+            testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.error("Can't create testPublicKey", exception);
+            logger.error("Can't create testSigningPublicKey", exception);
         }
     }
 
@@ -81,6 +76,10 @@ public class FakeXRPProtobufs {
         }
     }
 
+    /** will use in future fake objects
+
+    static String testAddress = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
+    static String testDestination = "XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H";
     static int testSequence = 1;
     static String testFee = "3";
     */
@@ -209,6 +208,25 @@ public class FakeXRPProtobufs {
                                             .setMemoFormat(memoFormat)
                                             .setMemoType(memoType)
                                             .build();
+
+    // Signer protos
+        // Account
+    static Common.Account account = Common.Account.newBuilder().setValue(accountAddress).build();
+
+        // SigningPublicKey
+    static Common.SigningPublicKey signingPublicKey = Common.SigningPublicKey.newBuilder()
+                                                                    .setValue(testSigningPublicKey)
+                                                                    .build();
+        // TransactionSignature
+    static Common.TransactionSignature transactionSignature = Common.TransactionSignature.newBuilder()
+                                                                                .setValue(testTransactionSignature)
+                                                                                .build();
+
+    static Signer signerWithAllFieldsSet = Signer.newBuilder()
+                                        .setAccount(account)
+                                        .setSigningPublicKey(signingPublicKey)
+                                        .setTransactionSignature(transactionSignature)
+                                        .build();
 
     // INVALID OBJECTS ===============================================================
 
