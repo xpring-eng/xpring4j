@@ -277,7 +277,6 @@ public class DefaultXRPClientTest {
         expectedException.expect(Exception.class);
         client.send(AMOUNT, XRPL_ADDRESS, wallet);
     }
-    //========================================================================================
 
     @Test
     public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XpringException {
@@ -294,35 +293,35 @@ public class DefaultXRPClientTest {
         assertThat(paymentHistory).isEqualTo(expectedPaymentHistory);
     }
 
-/**
-
-    })
-
-    it('Payment History - classic address', function(done): void {
+    @Test
+    public void paymentHistoryWithClassicAddressTest() throws IOException, XpringException {
         // GIVEN an XRPClient and a classic address
-    const xrpClient = new DefaultXRPClient(fakeSucceedingNetworkClient)
-    const classicAddress = 'rsegqrgSP8XmhCYwL9enkZ9BNDNawfPZnn'
+        DefaultXRPClient xrpClient = getClient();
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
 
         // WHEN the payment history for an account is requested THEN an error to use X-Addresses is thrown.
-        xrpClient.paymentHistory(classicAddress).catch((error) => {
-        assert.typeOf(error, 'Error')
-        assert.equal(error.message, XRPClientErrorMessages.xAddressRequired)
-        done()
-    })
-    })
+        expectedException.expect(XpringException.class);
+        xrpClient.paymentHistory(classicAddress.address());
+    }
 
-    it('Payment History - network failure', function(done): void {
-        // GIVEN an XRPClient which wraps an erroring network client.
-    const xrpClient = new DefaultXRPClient(fakeErroringNetworkClient)
+    @Test
+    public void paymentHistoryWithNetworkFailureTest() throws IOException, XpringException {
+        // GIVEN an XRPClient which will return a network error when calling paymentHistory.
+        GRPCResult<GetAccountTransactionHistoryResponse> getAccountTransactionHistoryResponse =
+                                                                                        GRPCResult.error(GENERIC_ERROR);
+        DefaultXRPClient xrpClient = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                getAccountTransactionHistoryResponse);
 
         // WHEN the payment history is requested THEN an error is propagated.
-        xrpClient.paymentHistory(testAddress).catch((error) => {
-        assert.typeOf(error, 'Error')
-        assert.equal(error, FakeNetworkClientResponses.defaultError)
-        done()
-    })
-    })
+        expectedException.expect(Exception.class);
+        xrpClient.paymentHistory(XRPL_ADDRESS);
+    }
 
+/**
     it('Payment History - non-payment transactions', async function(): Promise<
             void
             > {
