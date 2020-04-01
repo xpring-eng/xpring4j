@@ -63,7 +63,7 @@ public class FakeXRPProtobufs {
         try {
             testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
         } catch (UnsupportedEncodingException exception) {
-            logger.error("Can't create testPublicKey", exception);
+            logger.error("Can't create testSigningPublicKey", exception);
         }
     }
 
