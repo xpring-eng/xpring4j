@@ -64,14 +64,13 @@ public interface XRPClientDecorator {
     /**
      * Return the history of payments for the given account.
      *
-     * Note: This method only works for payment type transactions.
-     * @see "https://xrpl.org/payment.html"
+     * Note: This method only works for payment type transactions. See "https://xrpl.org/payment.html"
      * Note: This method only returns the history that is contained on the remote node,
      *       which may not contain a full history of the network.
      *
      * @param address: The address (account) for which to retrieve payment history.
      * @throws XpringException If there was a problem communicating with the XRP Ledger.
-     * @returns An array of transactions associated with the account.
+     * @return An array of transactions associated with the account.
      */
     List<XRPTransaction> paymentHistory(String address) throws XpringException;
 }
