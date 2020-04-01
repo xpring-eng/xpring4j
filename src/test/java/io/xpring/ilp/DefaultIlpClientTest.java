@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 
-import io.xpring.xrpl.XRPException;
 import org.interledger.spsp.server.grpc.AccountServiceGrpc;
 import org.interledger.spsp.server.grpc.BalanceServiceGrpc;
 import org.interledger.spsp.server.grpc.CreateAccountRequest;
@@ -119,7 +118,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void getIlpBalanceTest() throws XRPException, IOException {
+  public void getIlpBalanceTest() throws IlpException, IOException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
 
@@ -136,7 +135,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void getIlpBalanceWithBearerTokenTest() throws IOException, XRPException {
+  public void getIlpBalanceWithBearerTokenTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed
     DefaultIlpClient client = getClient();
 
@@ -144,13 +143,13 @@ public class DefaultIlpClientTest {
     // THEN a XpringException in thrown
     assertThrows(
       "accessToken cannot start with \"Bearer \"",
-      XRPException.class,
+            IlpException.class,
       () -> client.getBalance("bob", "Bearer bob")
     );
   }
 
   @Test
-  public void sendPaymentTest() throws IOException, XRPException {
+  public void sendPaymentTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
 
@@ -170,7 +169,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void sendPaymentWithBearerTokenTest() throws IOException, XRPException {
+  public void sendPaymentWithBearerTokenTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed
     DefaultIlpClient client = getClient();
 
@@ -184,7 +183,7 @@ public class DefaultIlpClientTest {
 
     assertThrows(
       "accessToken cannot start with \"Bearer \"",
-      XRPException.class,
+            IlpException.class,
       () -> client.sendPayment(paymentRequest, "Bearer bob")
     );
   }

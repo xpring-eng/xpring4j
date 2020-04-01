@@ -6,7 +6,6 @@ import com.google.common.primitives.UnsignedLong;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.xrpl.XRPException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void getBalance() throws XRPException {
+  public void getBalance() throws IlpException {
     // GIVEN an account on the testnet connector with accountId = sdk_account1
 
     // WHEN a balance is retrieved
@@ -45,7 +44,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void sendPayment() throws XRPException {
+  public void sendPayment() throws IlpException {
     // GIVEN an account on the connector with accountId = sdk_account1
     // AND an account on the connector with accountId = sdk_account2
 

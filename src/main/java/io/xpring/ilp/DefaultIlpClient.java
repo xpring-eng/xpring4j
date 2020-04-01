@@ -1,6 +1,5 @@
 package io.xpring.ilp;
 
-import io.xpring.xrpl.XRPException;
 import org.interledger.spsp.server.grpc.BalanceServiceGrpc;
 import org.interledger.spsp.server.grpc.GetBalanceRequest;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
@@ -65,7 +64,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public AccountBalance getBalance(final String accountId, final String accessToken) throws XRPException {
+    public AccountBalance getBalance(final String accountId, final String accessToken) throws IlpException {
         GetBalanceRequest request = GetBalanceRequest.newBuilder()
           .setAccountId(accountId)
           .build();
@@ -78,16 +77,16 @@ public class DefaultIlpClient implements IlpClientDecorator {
             // Convert protobuf response to AccountBalanceResponse
             return AccountBalance.from(response);
         } catch (StatusRuntimeException statusRuntimeException) {
-            throw new XRPException(String.format("Unable to get balance for account %s.  %s", accountId, statusRuntimeException.getStatus()));
+            throw new IlpException(IlpExceptionType.UNKNOWN, String.format("Unable to get balance for account %s.  %s", accountId, statusRuntimeException.getStatus()));
         } catch (IllegalArgumentException illegalArgumentException) {
             // accessToken started with "Bearer "
-            throw new XRPException(illegalArgumentException.getMessage());
+            throw new IlpException(IlpExceptionType.ILLEGAL_ACCESS_TOKEN, illegalArgumentException.getMessage());
         }
     }
 
     @Override
     public PaymentResult sendPayment(final PaymentRequest paymentRequest,
-                                     final String accessToken) throws XRPException {
+                                     final String accessToken) throws IlpException {
         try {
             // Convert paymentRequest to a protobuf object
             SendPaymentRequest request = paymentRequest.toProto();
@@ -100,10 +99,10 @@ public class DefaultIlpClient implements IlpClientDecorator {
             return PaymentResult.from(protoResponse);
 
         } catch (StatusRuntimeException statusRuntimeException) {
-            throw new XRPException("Unable to send payment. " + statusRuntimeException.getStatus());
+            throw new IlpException(IlpExceptionType.UNKNOWN, "Unable to send payment. " + statusRuntimeException.getStatus());
         } catch (IllegalArgumentException illegalArgumentException) {
             // accessToken started with "Bearer "
-            throw new XRPException(illegalArgumentException.getMessage());
+            throw new IlpException(IlpExceptionType.ILLEGAL_ACCESS_TOKEN, illegalArgumentException.getMessage());
         }
     }
 }

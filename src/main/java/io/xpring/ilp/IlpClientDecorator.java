@@ -3,7 +3,6 @@ package io.xpring.ilp;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.xrpl.XRPException;
 
 /**
  * A common interface shared between IlpClient and the internal hierarchy of decorators.
@@ -16,9 +15,9 @@ public interface IlpClientDecorator {
      * @param accountId The accountId to get the balance for.
      * @param accessToken Access token used for authentication.
      * @return An {@link AccountBalance} with account balances and denomination.
-     * @throws XRPException If the given inputs were invalid, the account doesn't exist, or authentication failed.
+     * @throws IlpException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
-    AccountBalance getBalance(final String accountId, final String accessToken) throws XRPException;
+    AccountBalance getBalance(final String accountId, final String accessToken) throws IlpException;
 
     /**
      * Send a payment from the given accountId to the destinationPaymentPointer payment pointer
@@ -28,8 +27,8 @@ public interface IlpClientDecorator {
      * @return A {@link PaymentResult} with details about the payment. Note that this method will not
      *          necessarily throw an exception if the payment failed. Payment status can be checked in
      *          {@link PaymentResult#successfulPayment()}
-     * @throws XRPException If the given inputs were invalid.
+     * @throws IlpException If the given inputs were invalid.
      */
     PaymentResult sendPayment(final PaymentRequest paymentRequest,
-                              final String accessToken) throws XRPException;
+                              final String accessToken) throws IlpException;
 }

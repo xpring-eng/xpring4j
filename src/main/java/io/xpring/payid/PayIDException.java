@@ -15,6 +15,8 @@ public class PayIDException extends Exception {
      */
     public PayIDException(PayIDExceptionType type, String message) {
         super(message);
+
+        this.type = type;
     }
 
     /**
