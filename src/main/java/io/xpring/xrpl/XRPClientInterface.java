@@ -1,7 +1,5 @@
 package io.xpring.xrpl;
 
-import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
-
 import java.math.BigInteger;
 
 public interface XRPClientInterface {
