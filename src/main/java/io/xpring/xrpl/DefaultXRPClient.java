@@ -236,7 +236,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
                     break;
                 }
                 default: {
-                    // Intentionally do nothing, non-payment type transactions are ignored.\
+                    // Intentionally do nothing, non-payment type transactions are ignored.
                 }
             }
         }
