@@ -3,6 +3,7 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
@@ -12,6 +13,8 @@ import org.xrpl.rpc.v1.Common.Amount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -187,6 +190,57 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
         byte [] hashBytes = response.getHash().toByteArray();
         return Utils.byteArrayToHex(hashBytes);
+    }
+
+
+    /**
+     * Return the history of payments for the given account.
+     *
+     * Note: This method only works for payment type transactions.
+     * @see "https://xrpl.org/payment.html"
+     * Note: This method only returns the history that is contained on the remote node,
+     *       which may not contain a full history of the network.
+     *
+     * @param address: The address (account) for which to retrieve payment history.
+     * @throws XpringException If there was a problem communicating with the XRP Ledger.
+     * @returns An array of transactions associated with the account.
+     */
+    public List<XRPTransaction> paymentHistory(String address) throws XpringException {
+        if (!Utils.isValidXAddress(address)) {
+            throw XpringException.xAddressRequiredException;
+        }
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
+
+        GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
+                                                                                        .setAccount(account)
+                                                                                        .build();
+        GetAccountTransactionHistoryResponse transactionHistory = stub.getAccountTransactionHistory(request);
+
+        List<GetTransactionResponse> getTransactionResponses = transactionHistory.getTransactionsList();
+
+        // Filter transactions to payments only and convert them to XRPTransactions.
+        // If a payment transaction fails conversion, throw an error.
+        List<XRPTransaction> payments = new ArrayList<XRPTransaction>();
+        for (GetTransactionResponse transactionResponse : getTransactionResponses) {
+            Transaction transaction = transactionResponse.getTransaction();
+            switch (transaction.getTransactionDataCase()) {
+                case PAYMENT: {
+                    XRPTransaction xrpTransaction = XRPTransaction.from(transaction);
+                    if (xrpTransaction == null) {
+                        throw XpringException.paymentConversionFailure;
+                    } else {
+                        payments.add(xrpTransaction);
+                    }
+                    break;
+                }
+                default: {
+                    // Intentionally do nothing, non-payment type transactions are ignored.\
+                }
+            }
+        }
+        return payments;
     }
 
     @Override

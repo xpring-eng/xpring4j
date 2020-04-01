@@ -1,7 +1,10 @@
 package io.xpring.xrpl;
 
 import java.math.BigInteger;
+import java.util.List;
+
 import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
+import io.xpring.xrpl.model.XRPTransaction;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -91,5 +94,21 @@ public class XRPClient {
             final Wallet sourceWallet
     ) throws XpringException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
+    }
+
+    /**
+     * Return the history of payments for the given account.
+     *
+     * Note: This method only works for payment type transactions.
+     * @see "https://xrpl.org/payment.html"
+     * Note: This method only returns the history that is contained on the remote node,
+     *       which may not contain a full history of the network.
+     *
+     * @param address: The address (account) for which to retrieve payment history.
+     * @throws XpringException If there was a problem communicating with the XRP Ledger.
+     * @returns An array of transactions associated with the account.
+     */
+    List<XRPTransaction> paymentHistory(String address) throws XpringException {
+
     }
 }
