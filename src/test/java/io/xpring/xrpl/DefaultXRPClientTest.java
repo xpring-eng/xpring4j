@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import io.xpring.GRPCResult;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -292,7 +293,7 @@ public class DefaultXRPClientTest {
     public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -311,7 +312,7 @@ public class DefaultXRPClientTest {
     public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),

@@ -8,6 +8,7 @@ import io.grpc.StatusRuntimeException;
 import io.xpring.proto.*;
 import io.xpring.proto.TransactionStatus;
 import io.xpring.xrpl.*;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -327,7 +328,7 @@ public class LegacyDefaultXRPClientTest {
     public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
         // GIVEN an XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
-        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(notFoundError);
+        GRPCResult<AccountInfo, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
         LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -347,7 +348,7 @@ public class LegacyDefaultXRPClientTest {
     public void accountExistsTestWithUnknownError() throws IOException, XpringException {
         // GIVEN an XRPClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
         StatusRuntimeException unknownError = new StatusRuntimeException(Status.UNKNOWN);
-        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(unknownError);
+        GRPCResult<AccountInfo, Throwable> accountInfoResult = GRPCResult.error(unknownError);
         LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
@@ -367,7 +368,7 @@ public class LegacyDefaultXRPClientTest {
     public void accountExistsTestWithCancelledError() throws IOException, XpringException {
         // GIVEN an XRPClient with mocked networking which will fail to retrieve account info w/ CANCELLED error code.
         StatusRuntimeException cancelledError = new StatusRuntimeException(Status.CANCELLED);
-        GRPCResult<AccountInfo> accountInfoResult = GRPCResult.error(cancelledError);
+        GRPCResult<AccountInfo, Throwable> accountInfoResult = GRPCResult.error(cancelledError);
         LegacyDefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeFee(DROPS_OF_XRP_FOR_FEE)),
