@@ -16,14 +16,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.xpring.xrpl.XpringException;
 import org.xrpl.rpc.v1.*;
 import org.xrpl.rpc.v1.Common.*;
-import org.xrpl.rpc.v1.Common.Amount;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Unit tests for {@link DefaultXRPClient}.
