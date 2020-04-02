@@ -13,19 +13,22 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public String sendValue;
     public int latestValidatedLedgerValue;
     public RawTransactionStatus rawTransactionStatusValue;
+    public boolean accountExistsValue;
 
     public FakeXRPClient(
             BigInteger getBalanceValue,
             TransactionStatus paymentStatusValue,
             String sendValue,
             int latestValidatedLedgerValue,
-            RawTransactionStatus rawTransactionStatusValue
+            RawTransactionStatus rawTransactionStatusValue,
+            boolean accountExistsValue
     ) {
         this.getBalanceValue = getBalanceValue;
         this.paymentStatusValue = paymentStatusValue;
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
+        this.accountExistsValue = accountExistsValue;
     }
 
     @Override
@@ -51,5 +54,10 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         return this.rawTransactionStatusValue;
+    }
+
+    @Override
+    public boolean accountExists(String address) {
+        return this.accountExistsValue;
     }
 }
