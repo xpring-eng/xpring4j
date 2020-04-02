@@ -1,11 +1,16 @@
 package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Signer;
 
 import java.io.UnsupportedEncodingException;
 
 /** Common set of fake objects - protobuf and native Java conversions - for testing */
 public class FakeXRPProtobufs {
+    static private final Logger logger = LoggerFactory.getLogger(FakeXRPProtobufs.class);
+
     // primitive test values
     static String testCurrencyName = "currencyName";
     static ByteString testCurrencyCode;
@@ -16,8 +21,8 @@ public class FakeXRPProtobufs {
     static {
         try {
             testCurrencyCode = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create testCurrencyCode", exception);
         }
     }
 
@@ -26,19 +31,39 @@ public class FakeXRPProtobufs {
     static long testDrops = 10;
 
     static int testDestinationTag = 2;
-    /**
-     * will use in future fake objects
-     */
-    /*
-    static String testAddress = "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH";
-    static String testDestination = "XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H";
 
-    static ByteString testPublicKey;
+    static ByteString memoDataBytes;
+    static ByteString memoFormatBytes;
+    static ByteString memoTypeBytes;
+
     static {
         try {
-            testPublicKey = ByteString.copyFrom("123", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            memoDataBytes = ByteString.copyFrom("123", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create memoDataBytes", exception);
+        }
+    }
+    static {
+        try {
+            memoFormatBytes = ByteString.copyFrom("456", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create memoFormatBytes", exception);
+        }
+    }
+    static {
+        try {
+            memoTypeBytes = ByteString.copyFrom("789", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create memoTypeBytes", exception);
+        }
+    }
+
+    static ByteString testSigningPublicKey;
+    static {
+        try {
+            testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create testSigningPublicKey", exception);
         }
     }
 
@@ -46,14 +71,24 @@ public class FakeXRPProtobufs {
     static {
         try {
             testTransactionSignature = ByteString.copyFrom("456", "Utf8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException exception) {
+            logger.error("Can't create testTransactionSignature", exception);
         }
     }
 
-    static int testSequence = 1;
-    static String testFee = "3";
-    */
+    static ByteString testAccountTransactionID;
+    static {
+        try {
+            testAccountTransactionID = ByteString.copyFrom("789", "Utf8");
+        } catch (UnsupportedEncodingException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    static Integer testSequence = 1;
+    static Integer testFlags = 4;
+    static Integer testSourceTag = 6;
+    static Integer testLastLedgerSequence = 5;
 
     // VALID OBJECTS ===============================================================
 
@@ -100,6 +135,7 @@ public class FakeXRPProtobufs {
                                                                             .build();
 
     // CurrencyAmount protos
+        // XRPDropsAmount proto
     static XRPDropsAmount xrpDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDrops).build();
     static CurrencyAmount dropsCurrencyAmount = CurrencyAmount.newBuilder().setXrpAmount(xrpDropsAmount).build();
 
@@ -163,6 +199,88 @@ public class FakeXRPProtobufs {
                                                         .setDestination(destination)
                                                         .build();
 
+    // Memo protos
+    static Common.MemoData memoData = Common.MemoData.newBuilder()
+                                                    .setValue(memoDataBytes)
+                                                    .build();
+    static Common.MemoFormat memoFormat = Common.MemoFormat.newBuilder()
+                                                        .setValue(memoFormatBytes)
+                                                        .build();
+    static Common.MemoType memoType = Common.MemoType.newBuilder()
+                                                    .setValue(memoTypeBytes)
+                                                    .build();
+
+    static Memo memoWithAllFieldsSet = Memo.newBuilder()
+                                            .setMemoData(memoData)
+                                            .setMemoFormat(memoFormat)
+                                            .setMemoType(memoType)
+                                            .build();
+
+    // Signer protos
+        // Account
+    static Common.Account account = Common.Account.newBuilder().setValue(accountAddress).build();
+
+        // SigningPublicKey
+    static Common.SigningPublicKey signingPublicKey = Common.SigningPublicKey.newBuilder()
+                                                                    .setValue(testSigningPublicKey)
+                                                                    .build();
+        // TransactionSignature
+    static Common.TransactionSignature transactionSignature = Common.TransactionSignature.newBuilder()
+                                                                                .setValue(testTransactionSignature)
+                                                                                .build();
+
+    static Signer signerWithAllFieldsSet = Signer.newBuilder()
+                                        .setAccount(account)
+                                        .setSigningPublicKey(signingPublicKey)
+                                        .setTransactionSignature(transactionSignature)
+                                        .build();
+
+    // Transaction protos
+        // Common.Sequence proto
+    static Common.Sequence sequence = Common.Sequence.newBuilder().setValue(testSequence).build();
+
+        // Common.AccountTransactionID proto
+    static Common.AccountTransactionID accountTransactionID = Common.AccountTransactionID.newBuilder()
+                                                                                    .setValue(testAccountTransactionID)
+                                                                                    .build();
+        // Common.Flags proto
+    static Common.Flags flags = Common.Flags.newBuilder().setValue(testFlags).build();
+
+        // Common.LastLedgerSequence proto
+    static Common.LastLedgerSequence lastLedgerSequence = Common.LastLedgerSequence.newBuilder()
+                                                                                .setValue(testLastLedgerSequence)
+                                                                                .build();
+
+        // Common.SourceTag proto
+    static Common.SourceTag sourceTag = Common.SourceTag.newBuilder().setValue(testSourceTag).build();
+
+    static Transaction transactionWithAllFieldsSet = Transaction.newBuilder()
+                                                                .setAccount(account)
+                                                                .setAccountTransactionId(accountTransactionID)
+                                                                .setFee(xrpDropsAmount)
+                                                                .setFlags(flags)
+                                                                .setLastLedgerSequence(lastLedgerSequence)
+                                                                .addMemos(memoWithAllFieldsSet)
+                                                                .setSequence(sequence)
+                                                                .addSigners(signerWithAllFieldsSet)
+                                                                .setSigningPublicKey(signingPublicKey)
+                                                                .setSourceTag(sourceTag)
+                                                                .setTransactionSignature(transactionSignature)
+                                                                .setPayment(paymentWithAllFieldsSet)
+                                                                .build();
+
+    static Transaction transactionWithOnlyMandatoryCommonFieldsSet = Transaction.newBuilder()
+                                                                        .setAccount(account)
+                                                                        .setFee(xrpDropsAmount)
+                                                                        .setSequence(sequence)
+                                                                        .setSigningPublicKey(signingPublicKey)
+                                                                        .setTransactionSignature(transactionSignature)
+                                                                        .setPayment(paymentWithAllFieldsSet)
+                                                                        .build();
+
+    // CheckCash proto
+    static CheckCash checkCash = CheckCash.newBuilder().build();
+
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
@@ -206,4 +324,24 @@ public class FakeXRPProtobufs {
                                                     .setDestination(destination)
                                                     .setSendMax(invalidSendMax)
                                                     .build();
+
+    // Invalid Transaction with empty Payment
+    static Transaction invalidTransactionWithEmptyPaymentFields = Transaction.newBuilder()
+                                                                .setAccount(account)
+                                                                .setFee(xrpDropsAmount)
+                                                                .setSequence(sequence)
+                                                                .setSigningPublicKey(signingPublicKey)
+                                                                .setTransactionSignature(transactionSignature)
+                                                                .setPayment(Payment.newBuilder().build()) // empty Payment
+                                                                .build();
+
+    // Invalid Transaction due to unsupported transaction type
+    static Transaction invalidTransactionUnsupportedType = Transaction.newBuilder()
+                                                                .setAccount(account)
+                                                                .setFee(xrpDropsAmount)
+                                                                .setSequence(sequence)
+                                                                .setSigningPublicKey(signingPublicKey)
+                                                                .setTransactionSignature(transactionSignature)
+                                                                .setCheckCash(checkCash) // unsupported
+                                                                .build();
 }

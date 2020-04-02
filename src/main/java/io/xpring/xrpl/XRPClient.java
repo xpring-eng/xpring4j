@@ -8,7 +8,7 @@ import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
  *
  * @see "https://xrpl.org"
  */
-public class XRPClient {
+public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
     /**
@@ -91,5 +91,15 @@ public class XRPClient {
             final Wallet sourceWallet
     ) throws XpringException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
+    }
+
+    /**
+     * Check if an address exists on the XRP Ledger.
+     *
+     * @param xrplAccountAddress The address to check the existence of.
+     * @return A boolean if the account is on the XRP Ledger.
+     */
+    public boolean accountExists(final String xrplAccountAddress) throws XpringException {
+        return decoratedClient.accountExists(xrplAccountAddress);
     }
 }
