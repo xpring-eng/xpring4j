@@ -76,4 +76,14 @@ public class XRPClient implements XRPClientInterface {
     ) throws XpringException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
     }
+
+    /**
+     * Check if an address exists on the XRP Ledger.
+     *
+     * @param xrplAccountAddress The address to check the existence of.
+     * @return A boolean if the account is on the XRP Ledger.
+     */
+    public boolean accountExists(final String xrplAccountAddress) throws XpringException {
+        return decoratedClient.accountExists(xrplAccountAddress);
+    }
 }
