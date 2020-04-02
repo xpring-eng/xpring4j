@@ -147,7 +147,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.9</version>
+            <version>2.10.3</version>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -424,17 +424,6 @@
                     </pluginArtifact>
                 </configuration>
                 <executions>
-                    <execution>
-                        <id>Compile xpring-common-protocol-buffers protocol buffers</id>
-                        <configuration>
-                            <protoSourceRoot>${project.basedir}/xpring-common-protocol-buffers/proto</protoSourceRoot>
-                        </configuration>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>compile-custom</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
                     <execution>
                         <id>Compile rippled protocol buffers</id>
                         <configuration>
