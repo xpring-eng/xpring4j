@@ -1,7 +1,6 @@
 package io.xpring.xrpl;
 
 import java.math.BigInteger;
-import io.xpring.xrpl.legacy.LegacyDefaultXRPClient;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -12,27 +11,12 @@ public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
     /**
-     * Initialize a new client.
-     *
-     * The client will use the rippled implementation of protocol buffers.
+     * Initialize a new client with the given options.
      *
      * @param grpcURL The remote URL to use for gRPC calls.
      */
     public XRPClient(String grpcURL) {
-        this(grpcURL, true);
-    }
-
-    /**
-     * Initialize a new client with the given options.
-     *
-     * @param useNewProtocolBuffers:  If `true`, then the new protocol buffer implementation from rippled will be used.
-     *
-     * @param grpcURL The remote URL to use for gRPC calls.
-     */
-    public XRPClient(String grpcURL, boolean useNewProtocolBuffers) {
-        XRPClientDecorator defaultXRPClient = useNewProtocolBuffers ?
-                new DefaultXRPClient(grpcURL) :
-                new LegacyDefaultXRPClient(grpcURL);
+        XRPClientDecorator defaultXRPClient =  new DefaultXRPClient(grpcURL);
         this.decoratedClient = new ReliableSubmissionXRPClient(defaultXRPClient);
     }
 
