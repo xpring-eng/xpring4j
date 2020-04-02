@@ -3,7 +3,7 @@ package io.xpring.ilp;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.xrpl.XpringException;
+
 import java.util.Objects;
 
 /**
@@ -28,7 +28,7 @@ public class IlpClient {
      * @param accountId The accountId to get the balance for.
      * @param accessToken Access token used for authentication.
      * @return An {@link AccountBalance} with account balances and denomination.
-     * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
+     * @throws IlpException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
     public AccountBalance getBalance(final String accountId, final String accessToken) throws IlpException {
         return decoratedClient.getBalance(accountId, accessToken);
@@ -42,7 +42,7 @@ public class IlpClient {
      * @return A {@link PaymentResult} with details about the payment. Note that this method will not
      *          necessarily throw an exception if the payment failed. Payment status can be checked in
      *          {@link PaymentResult#successfulPayment()}
-     * @throws XpringException If the given inputs were invalid.
+     * @throws IlpException If the given inputs were invalid.
      */
     public PaymentResult sendPayment(final PaymentRequest paymentRequest,
                                      final String accessToken) throws IlpException {

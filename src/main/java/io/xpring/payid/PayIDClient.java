@@ -1,18 +1,15 @@
 package io.xpring.payid;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.reflect.TypeToken;
-import io.xpring.payid.generated.*;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.interledger.spsp.PaymentPointer;
 
-import io.xpring.payid.generated.api.DefaultApi;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.gson.reflect.TypeToken;
+import io.xpring.payid.generated.ApiClient;
+import io.xpring.payid.generated.ApiException;
+import io.xpring.payid.generated.ApiResponse;
+import io.xpring.payid.generated.Pair;
 import io.xpring.payid.generated.model.PaymentInformation;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
