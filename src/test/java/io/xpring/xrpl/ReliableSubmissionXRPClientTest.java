@@ -158,6 +158,15 @@ public class ReliableSubmissionXRPClientTest {
         this.reliableSubmissionXRPClient.send(SEND_AMOUNT, XRPL_ADDRESS, new Wallet(WALLET_SEED));
     }
 
+    @Test
+    public void testPaymentHistoryWithUnmodifiedResponse() {
+        // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` WHEN transaction history is retrieved.
+        List<XRPTransaction> returnedValue = this.fakeXRPClient.paymentHistory(XRPL_ADDRESS);
+
+        // THEN the result is returned unaltered.
+        assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryValue);
+    }
+
     /**
      * Run the given work on an separate thread in after one second.
      *

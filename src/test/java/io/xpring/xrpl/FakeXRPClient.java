@@ -30,7 +30,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
-        this.paymentStatusValue = paymentStatusValue;
+        this.paymentHistoryValue = paymentHistoryValue;
     }
 
     @Override
