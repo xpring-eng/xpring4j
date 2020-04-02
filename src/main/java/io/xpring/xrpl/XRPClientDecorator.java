@@ -56,4 +56,12 @@ public interface XRPClientDecorator {
      * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
      */
     RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException;
+
+    /**
+     * Check if an address exists on the XRP Ledger.
+     *
+     * @param address The address to check the existence of.
+     * @return A boolean if the account is on the XRPLedger.
+     */
+    boolean accountExists(String address) throws XpringException;
 }
