@@ -61,22 +61,6 @@ public class XRPClient implements XRPClientInterface {
     }
 
     /**
-     * Retrieve the transaction status for a Payment given transaction hash.
-     *
-     * @deprecated Please use `getPaymentStatus` instead.
-     *
-     * Note: This method will only work for Payment type transactions which do not have the tf_partial_payment attribute set.
-     * See: https://xrpl.org/payment.html#payment-flags
-     *
-     * @param transactionHash The hash of the transaction.
-     * @return The status of the given transaction.
-     */
-    @Deprecated
-    public TransactionStatus getTransactionStatus(String transactionHash) throws XpringException {
-        return this.getPaymentStatus(transactionHash);
-    }
-
-    /**
      * Transact XRP between two accounts on the ledger.
      *
      * @param amount The number of drops of XRP to send.
