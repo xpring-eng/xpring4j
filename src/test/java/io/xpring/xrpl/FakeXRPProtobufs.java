@@ -378,4 +378,16 @@ public class FakeXRPProtobufs {
                                                                 .setTransactionSignature(transactionSignature)
                                                                 .setCheckCash(checkCash) // unsupported
                                                                 .build();
+
+    // Invalid GetTransactionResponse proto
+    static GetTransactionResponse invalidGetTransactionResponse = GetTransactionResponse.newBuilder()
+                                                            .setTransaction(invalidTransactionWithEmptyPaymentFields)
+                                                            .build();
+
+    // Invalid GetAccountTransactionHistoryResponse protos
+    static GetAccountTransactionHistoryResponse invalidPaymentGetAccountTransactionHistoryResponse =
+            GetAccountTransactionHistoryResponse.newBuilder()
+                    .addTransactions(invalidGetTransactionResponse)
+                    .addTransactions(getTransactionResponsePayment1)
+                    .build();
 }

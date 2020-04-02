@@ -280,7 +280,7 @@ public class DefaultXRPClientTest {
 
     @Test
     public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XpringException {
-        // GIVEN a DefaultXRPClient.
+        // GIVEN a DefaultXRPClient with mocked networking that will succeed.
         DefaultXRPClient xrpClient = getClient();
 
         // WHEN the payment history for an address is requested.
@@ -321,71 +321,45 @@ public class DefaultXRPClientTest {
         xrpClient.paymentHistory(XRPL_ADDRESS);
     }
 
-/**
-    it('Payment History - non-payment transactions', async function(): Promise<
-            void
-            > {
-        // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions
+    @Test
+    public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XpringException {
+        // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions.
+        GRPCResult<GetAccountTransactionHistoryResponse> getAccountTransactionHistoryResponse =
+                                            GRPCResult.ok(FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
 
-        // Generate expected transactions from the default response, which only contains payments.
-    const nonPaymentTransactionResponse = new GetTransactionResponse()
-        nonPaymentTransactionResponse.setTransaction(testCheckCashTransaction)
-        // add CHECKCASH transaction - history then contains payment and non-payment transactions
-    const heteregeneousTransactionHistory = testGetAccountTransactionHistoryResponse
-        heteregeneousTransactionHistory.addTransactions(
-                nonPaymentTransactionResponse,
-                )
-
-    const heteroHistoryNetworkResponses = new FakeNetworkClientResponses(
-                FakeNetworkClientResponses.defaultAccountInfoResponse(),
-                FakeNetworkClientResponses.defaultFeeResponse(),
-                FakeNetworkClientResponses.defaultSubmitTransactionResponse(),
-                FakeNetworkClientResponses.defaultGetTransactionResponse(),
-                heteregeneousTransactionHistory,
-                )
-
-    const heteroHistoryNetworkClient = new FakeNetworkClient(
-                heteroHistoryNetworkResponses,
-                )
-
-    const xrpClient = new DefaultXRPClient(heteroHistoryNetworkClient)
+        DefaultXRPClient xrpClient = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                getAccountTransactionHistoryResponse);
 
         // WHEN the transactionHistory is requested.
-    const transactionHistory = await xrpClient.paymentHistory(testAddress)
+        List<XRPTransaction> transactionHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
 
         // THEN the returned transactions are conversions of the inputs with non-payment transactions filtered.
-    const expectedTransactionHistory: Array<XRPTransaction> = XRPTestUtils.transactionHistoryToPaymentsList(
-                testGetAccountTransactionHistoryResponse,
-                )
+        List<XRPTransaction> expectedTransactionHistory = XRPTestUtils.transactionHistoryToPaymentsList(
+                                                            FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
+    }
 
-        assert.deepEqual(expectedTransactionHistory, transactionHistory)
-    })
-
-    it('Payment History - invalid Payment', function(done) {
+    @Test
+    public void paymentHistoryWithInvalidPaymentTest() throws IOException, XpringException {
         // GIVEN an XRPClient client which will return a transaction history which contains a malformed payment.
-    const invalidHistoryNetworkResponses = new FakeNetworkClientResponses(
-                FakeNetworkClientResponses.defaultAccountInfoResponse(),
-                FakeNetworkClientResponses.defaultFeeResponse(),
-                FakeNetworkClientResponses.defaultSubmitTransactionResponse(),
-                FakeNetworkClientResponses.defaultGetTransactionResponse(),
-                testInvalidGetAccountTransactionHistoryResponse, // contains malformed payment
-        )
-    const invalidHistoryNetworkClient = new FakeNetworkClient(
-                invalidHistoryNetworkResponses,
-                )
-    const xrpClient = new DefaultXRPClient(invalidHistoryNetworkClient)
+        GRPCResult<GetAccountTransactionHistoryResponse> getAccountTransactionHistoryResponse =
+                GRPCResult.ok(FakeXRPProtobufs.invalidPaymentGetAccountTransactionHistoryResponse);
+
+        DefaultXRPClient xrpClient = getClient(
+                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                getAccountTransactionHistoryResponse);
 
         // WHEN the transactionHistory is requested THEN a conversion error is thrown.
-        xrpClient.paymentHistory(testAddress).catch((error) => {
-        assert.typeOf(error, 'Error')
-        assert.equal(
-                error.message,
-                XRPClientErrorMessages.paymentConversionFailure,
-                )
-        done()
-    })
-        //========================================================================================
-*/
+        expectedException.expect(XpringException.class);
+        xrpClient.paymentHistory(XRPL_ADDRESS);
+    }
+
     /**
      * Convenience method to get an XRPClient which has successful network calls.
      */
@@ -548,6 +522,6 @@ public class DefaultXRPClientTest {
      * Note: Delegates to FakeXRPProtobufs for re-usability.
      */
     private GetAccountTransactionHistoryResponse makeGetAccountTransactionHistoryResponse() {
-        return FakeXRPProtobufs.getAccountTransactionHistoryResponse;
+        return FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse;
     }
 }

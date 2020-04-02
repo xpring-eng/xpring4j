@@ -39,8 +39,8 @@ public class ReliableSubmissionXRPClientTest {
                     setLastLedgerSequence(LAST_LEDGER_SEQUENCE).
                     build()
     );
-    private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE =
-                XRPTestUtils.transactionHistoryToPaymentsList(FakeXRPProtobufs.getAccountTransactionHistoryResponse);
+    private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE = XRPTestUtils
+                    .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
 
     FakeXRPClient fakeXRPClient;
     ReliableSubmissionXRPClient reliableSubmissionXRPClient;
