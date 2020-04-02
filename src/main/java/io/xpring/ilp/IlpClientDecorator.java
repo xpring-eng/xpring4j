@@ -18,7 +18,7 @@ public interface IlpClientDecorator {
      * @return An {@link AccountBalance} with account balances and denomination.
      * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
-    AccountBalance getBalance(final String accountId, final String accessToken) throws XpringException;
+    AccountBalance getBalance(final String accountId, final String accessToken) throws IlpException;
 
     /**
      * Send a payment from the given accountId to the destinationPaymentPointer payment pointer
@@ -31,5 +31,5 @@ public interface IlpClientDecorator {
      * @throws XpringException If the given inputs were invalid.
      */
     PaymentResult sendPayment(final PaymentRequest paymentRequest,
-                              final String accessToken) throws XpringException;
+                              final String accessToken) throws IlpException;
 }

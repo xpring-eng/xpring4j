@@ -30,7 +30,7 @@ public class IlpClient {
      * @return An {@link AccountBalance} with account balances and denomination.
      * @throws XpringException If the given inputs were invalid, the account doesn't exist, or authentication failed.
      */
-    public AccountBalance getBalance(final String accountId, final String accessToken) throws XpringException {
+    public AccountBalance getBalance(final String accountId, final String accessToken) throws IlpException {
         return decoratedClient.getBalance(accountId, accessToken);
     }
 
@@ -45,7 +45,7 @@ public class IlpClient {
      * @throws XpringException If the given inputs were invalid.
      */
     public PaymentResult sendPayment(final PaymentRequest paymentRequest,
-                                     final String accessToken) throws XpringException {
+                                     final String accessToken) throws IlpException {
         return decoratedClient.sendPayment(paymentRequest, accessToken);
     }
 }
