@@ -281,21 +281,40 @@ public class FakeXRPProtobufs {
                                                                         .setPayment(paymentWithAllFieldsSet)
                                                                         .build();
 
+    static Transaction checkCashTransactionWithCommonFieldsSet = Transaction.newBuilder()
+                                                                        .setAccount(account)
+                                                                        .setFee(xrpDropsAmount)
+                                                                        .setSequence(sequence)
+                                                                        .setSigningPublicKey(signingPublicKey)
+                                                                        .setTransactionSignature(transactionSignature)
+                                                                        .setCheckCash(checkCash)
+                                                                        .build();
+
     // GetTransactionResponse protos
-    static GetTransactionResponse getTransactionResponse1 = GetTransactionResponse.newBuilder()
+    static GetTransactionResponse getTransactionResponsePayment1 = GetTransactionResponse.newBuilder()
                                                                         .setTransaction(transactionWithAllFieldsSet)
                                                                         .build();
-    static GetTransactionResponse getTransactionResponse2 = GetTransactionResponse.newBuilder()
+    static GetTransactionResponse getTransactionResponsePayment2 = GetTransactionResponse.newBuilder()
                                                             .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
                                                             .build();
 
-    // GetAccountTransactionHistoryResponse proto
-    static GetAccountTransactionHistoryResponse getAccountTransactionHistoryResponse =
-                                                    GetAccountTransactionHistoryResponse.newBuilder()
-                                                                            .addTransactions(getTransactionResponse1)
-                                                                            .addTransactions(getTransactionResponse2)
-                                                                            .build();
+    static GetTransactionResponse getTransactionResponseCheckCash = GetTransactionResponse.newBuilder()
+                                                                .setTransaction(checkCashTransactionWithCommonFieldsSet)
+                                                                .build();
 
+    // GetAccountTransactionHistoryResponse protos
+    static GetAccountTransactionHistoryResponse paymentOnlyGetAccountTransactionHistoryResponse =
+                                                            GetAccountTransactionHistoryResponse.newBuilder()
+                                                                        .addTransactions(getTransactionResponsePayment1)
+                                                                        .addTransactions(getTransactionResponsePayment2)
+                                                                        .build();
+
+    static GetAccountTransactionHistoryResponse mixedGetAccountTransactionHistoryResponse =
+                                                            GetAccountTransactionHistoryResponse.newBuilder()
+                                                                    .addTransactions(getTransactionResponsePayment1)
+                                                                    .addTransactions(getTransactionResponsePayment2)
+                                                                    .addTransactions(getTransactionResponseCheckCash)
+                                                                    .build();
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
