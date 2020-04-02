@@ -36,6 +36,7 @@ public class ReliableSubmissionXRPClientTest {
                     setLastLedgerSequence(LAST_LEDGER_SEQUENCE).
                     build()
     );
+    private static final boolean DEFAULT_ACCOUNT_EXISTS_VALUE = true;
 
     FakeXRPClient fakeXRPClient;
     ReliableSubmissionXRPClient reliableSubmissionXRPClient;
@@ -49,7 +50,8 @@ public class ReliableSubmissionXRPClientTest {
                 DEFAULT_TRANSACTION_STATUS_VALUE,
                 DEFAULT_SEND_VALUE,
                 DEFAULT_LATEST_LEDGER_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE
+                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
+                DEFAULT_ACCOUNT_EXISTS_VALUE
         );
 
         this.reliableSubmissionXRPClient = new ReliableSubmissionXRPClient(fakeXRPClient);

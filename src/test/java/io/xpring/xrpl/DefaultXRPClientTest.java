@@ -14,12 +14,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import org.xrpl.rpc.v1.*;
 import org.xrpl.rpc.v1.Common.*;
-import org.xrpl.rpc.v1.Common.Amount;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Optional;
 
 /**
  * Unit tests for {@link DefaultXRPClient}.
@@ -263,6 +263,65 @@ public class DefaultXRPClientTest {
         // WHEN XRP is sent then THEN an error is thrown.
         expectedException.expect(Exception.class);
         client.send(AMOUNT, XRPL_ADDRESS, wallet);
+    }
+
+    @Test
+    public void accountExistsTest() throws IOException, XpringException {
+        // GIVEN a DefaultXRPClient with mocked networking which will succeed.
+        DefaultXRPClient client = getClient();
+
+        // WHEN the account is checked
+        boolean exists = client.accountExists(XRPL_ADDRESS);
+
+        // THEN the existence of the account is the the same as the mocked response.
+        assertThat(exists).isEqualTo(true);
+    }
+
+    @Test
+    public void accountExistsWithClassicAddressTest() throws IOException, XpringException {
+        // GIVEN a classic address.
+        ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
+        DefaultXRPClient client = getClient();
+
+        // WHEN the existence of the account is checked for the classic address THEN an error is thrown.
+        expectedException.expect(XpringException.class);
+        client.accountExists(classicAddress.address());
+    }
+
+    @Test
+    public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
+        // GIVEN a XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
+        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        DefaultXRPClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the existence of the account is checked
+        boolean exists = client.accountExists(XRPL_ADDRESS);
+
+        // THEN false is returned.
+        assertThat(exists).isEqualTo(false);
+    }
+
+    @Test
+    public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
+        // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
+        StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
+        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        DefaultXRPClient client = getClient(
+                accountInfoResult,
+                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH))
+        );
+
+        // WHEN the existence of the account is checked THEN the error is re-thrown.
+        expectedException.expect(StatusRuntimeException.class);
+        client.getBalance(XRPL_ADDRESS);
     }
 
     /**

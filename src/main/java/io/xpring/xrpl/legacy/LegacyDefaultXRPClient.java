@@ -2,6 +2,7 @@ package io.xpring.xrpl.legacy;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.xpring.proto.*;
 import io.xpring.proto.TransactionStatus;
 import io.xpring.proto.XRPLedgerAPIGrpc.XRPLedgerAPIBlockingStub;
@@ -193,5 +194,24 @@ public class LegacyDefaultXRPClient implements XRPClientDecorator {
 
         io.xpring.proto.TransactionStatus transactionStatus = stub.getTransactionStatus(transactionStatusRequest);
         return new RawTransactionStatus(transactionStatus);
+    }
+
+    @Override
+    public boolean accountExists(String address) throws XpringException {
+        if (!Utils.isValidXAddress(address)) {
+            throw XpringException.xAddressRequiredException;
+        }
+        try {
+            this.getBalance(address);
+            return true;
+        } catch (StatusRuntimeException exception) {
+            if ((exception.getStatus().getCode() == io.grpc.Status.NOT_FOUND.getCode()) ||
+                    (exception.getStatus().getCode() == io.grpc.Status.UNKNOWN.getCode())) {
+                return false;
+            }
+            throw exception; // re-throw if code other than NOT_FOUND or UNKNOWN
+        } catch (Exception exception) {
+            throw exception; // re-throw any other type of exception
+        }
     }
 }

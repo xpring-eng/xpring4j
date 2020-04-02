@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import org.junit.rules.ExpectedException;
 import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Signer;
 
 import java.math.BigInteger;
 import java.util.stream.Collectors;
@@ -152,19 +153,19 @@ public class ProtocolBufferConversionTest {
 
     @Test
     public void convertCurrencyAmountWithBadInputsTest() {
-        // GIVEN a currency amount protocol buffer with no amounts
+        // GIVEN a currency amount protocol buffer with no amounts.
         CurrencyAmount emptyCurrencyAmount = CurrencyAmount.newBuilder().build();
 
         // WHEN the protocol buffer is converted to a native Java type.
         XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(emptyCurrencyAmount);
 
-        // THEN the result is null
+        // THEN the result is null.
         assertThat(xrpCurrencyAmount).isNull();
     }
 
     @Test
     public void convertCurrencyAmountWithInvalidIssuedCurrencyTest() {
-        // GIVEN a currency amount protocol buffer with an invalid issued currency
+        // GIVEN a currency amount protocol buffer with an invalid issued currency.
         // WHEN the protocol buffer is converted to a native Java type.
         // THEN a NumberFormatException is re-thrown.
         expectedException.expect(NumberFormatException.class);
@@ -239,5 +240,139 @@ public class ProtocolBufferConversionTest {
         // THEN a NumberFormatException is re-thrown.
         expectedException.expect(NumberFormatException.class);
         XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadSendMax);
+    }
+
+    // Memo
+
+    @Test
+    public void convertMemoWithAllFieldsSetTest() {
+        // GIVEN a memo with all fields set.
+        Memo memoProto = FakeXRPProtobufs.memoWithAllFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPMemo xrpMemo = XRPMemo.from(memoProto);
+
+        // THEN all fields are present and set correctly.
+        assertThat(xrpMemo.data()).isEqualTo(memoProto.getMemoData().getValue().toByteArray());
+        assertThat(xrpMemo.format()).isEqualTo(memoProto.getMemoFormat().getValue().toByteArray());
+        assertThat(xrpMemo.type()).isEqualTo(memoProto.getMemoType().getValue().toByteArray());
+    }
+
+    @Test
+    public void convertMemoWithNoFieldsSetTest() {
+        // GIVEN a memo with no fields set.
+        Memo memoProto = Memo.newBuilder().build();
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPMemo xrpMemo = XRPMemo.from(memoProto);
+
+        // THEN all fields are null.
+        assertThat(xrpMemo.data()).isNull();
+        assertThat(xrpMemo.format()).isNull();
+        assertThat(xrpMemo.type()).isNull();
+    }
+
+    // Signer
+
+    @Test
+    public void convertSignerWithAllFieldsSetTest() {
+        // GIVEN a Signer protocol buffer with all fields set.
+        Signer signerProto = FakeXRPProtobufs.signerWithAllFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPSigner xrpSigner = XRPSigner.from(signerProto);
+
+        // THEN all fields are present and converted correctly.
+        assertThat(xrpSigner.account()).isEqualTo(signerProto.getAccount().getValue().getAddress());
+        assertThat(xrpSigner.signingPublicKey())
+                .isEqualTo(signerProto.getSigningPublicKey().getValue().toByteArray());
+        assertThat(xrpSigner.transactionSignature())
+                .isEqualTo(signerProto.getTransactionSignature().getValue().toByteArray());
+    }
+
+    // Transaction
+
+    @Test
+    public void convertPaymentTransactionWithAllCommonFieldsSetTest() {
+        // GIVEN a Transaction protocol buffer with all common fields set.
+        Transaction transactionProto = FakeXRPProtobufs.transactionWithAllFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN all fields are present and converted correctly.
+        assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
+        assertThat(xrpTransaction.accountTransactionID())
+                .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
+        assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
+        assertThat(xrpTransaction.flags()).isEqualTo(transactionProto.getFlags().getValue());
+        assertThat(xrpTransaction.lastLedgerSequence()).isEqualTo(transactionProto.getLastLedgerSequence().getValue());
+        assertThat(xrpTransaction.memos()).isEqualTo(transactionProto.getMemosList()
+                .stream()
+                .map(memo -> XRPMemo.from(memo))
+                .collect(Collectors.toList()));
+        assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
+        assertThat(xrpTransaction.signers()).isEqualTo(transactionProto.getSignersList()
+                .stream()
+                .map(signer -> XRPSigner.from(signer))
+                .collect(Collectors.toList()));
+        assertThat(xrpTransaction.signingPublicKey())
+                .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
+        assertThat(xrpTransaction.sourceTag()).isEqualTo(transactionProto.getSourceTag().getValue());
+        assertThat(xrpTransaction.transactionSignature())
+                .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
+        assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
+        assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    }
+
+    @Test
+    public void convertPaymentTransactionWithOnlyMandatoryCommonFieldsSetTest() {
+        // GIVEN a Transaction protocol buffer with only mandatory common fields set.
+        Transaction transactionProto = FakeXRPProtobufs.transactionWithOnlyMandatoryCommonFieldsSet;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN all fields are present and converted correctly.
+        assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
+        assertThat(xrpTransaction.accountTransactionID()).isNull();
+        assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
+        assertThat(xrpTransaction.flags()).isEqualTo(Common.Flags.newBuilder().build().getValue());
+        assertThat(xrpTransaction.lastLedgerSequence())
+                .isEqualTo(Common.LastLedgerSequence.newBuilder().build().getValue());
+        assertThat(xrpTransaction.memos()).isNull();
+        assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
+        assertThat(xrpTransaction.signers()).isNull();
+        assertThat(xrpTransaction.signingPublicKey())
+                .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
+        assertThat(xrpTransaction.sourceTag()).isEqualTo(Common.SourceTag.newBuilder().build().getValue());
+        assertThat(xrpTransaction.transactionSignature())
+                .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
+        assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
+        assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    }
+
+    @Test
+    public void convertPaymentTransactionWithBadPaymentFieldsTest() {
+        // GIVEN a Transaction protocol buffer with payment fields which are incorrect.
+        Transaction transactionProto = FakeXRPProtobufs.invalidTransactionWithEmptyPaymentFields;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN the result is null.
+        assertThat(xrpTransaction).isNull();
+    }
+
+    @Test
+    public void convertTransactionWithUnsupportedTypeTest() {
+        // GIVEN a Transaction protocol buffer with an unsupported transaction type.
+        Transaction transactionProto = FakeXRPProtobufs.invalidTransactionUnsupportedType;
+
+        // WHEN the protocol buffer is converted to a native Java type.
+        XRPTransaction xrpTransaction = XRPTransaction.from(transactionProto);
+
+        // THEN the result is null.
+        assertThat(xrpTransaction).isNull();
     }
 }

@@ -7,25 +7,28 @@ import java.math.BigInteger;
  * A fake XRPClient which returns the given iVars as results from XRPClientDecorator calls.
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
-public class FakeXRPClient implements  XRPClientDecorator {
+public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public BigInteger getBalanceValue;
     public TransactionStatus paymentStatusValue;
     public String sendValue;
     public int latestValidatedLedgerValue;
     public RawTransactionStatus rawTransactionStatusValue;
+    public boolean accountExistsValue;
 
     public FakeXRPClient(
             BigInteger getBalanceValue,
             TransactionStatus paymentStatusValue,
             String sendValue,
             int latestValidatedLedgerValue,
-            RawTransactionStatus rawTransactionStatusValue
+            RawTransactionStatus rawTransactionStatusValue,
+            boolean accountExistsValue
     ) {
         this.getBalanceValue = getBalanceValue;
         this.paymentStatusValue = paymentStatusValue;
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
+        this.accountExistsValue = accountExistsValue;
     }
 
     @Override
@@ -51,5 +54,10 @@ public class FakeXRPClient implements  XRPClientDecorator {
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         return this.rawTransactionStatusValue;
+    }
+
+    @Override
+    public boolean accountExists(String address) {
+        return this.accountExistsValue;
     }
 }
