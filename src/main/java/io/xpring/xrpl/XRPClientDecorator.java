@@ -56,10 +56,9 @@ public interface XRPClientDecorator {
      * Retrieve the raw transaction status for the given transaction hash.
      *
      * @param transactionHash: The hash of the transaction.
-     * @return an {@link io.xpring.proto.TransactionStatus} containing the raw transaction status.
+     * @return an {@link RawTransactionStatus} containing the raw transaction status.
      */
     RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException;
-
 
     /**
      * Return the history of payments for the given account.
@@ -73,4 +72,12 @@ public interface XRPClientDecorator {
      * @return An array of transactions associated with the account.
      */
     List<XRPTransaction> paymentHistory(String address) throws XpringException;
+
+    /**
+     * Check if an address exists on the XRP Ledger.
+     *
+     * @param address The address to check the existence of.
+     * @return A boolean if the account is on the XRPLedger.
+     */
+    boolean accountExists(String address) throws XpringException;
 }

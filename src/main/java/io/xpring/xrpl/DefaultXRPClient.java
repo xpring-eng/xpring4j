@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.xrpl.model.XRPTransaction;
+import io.grpc.StatusRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
@@ -192,7 +193,6 @@ public class DefaultXRPClient implements XRPClientDecorator {
         return Utils.byteArrayToHex(hashBytes);
     }
 
-
     /**
      * Return the history of payments for the given account.
      *
@@ -213,8 +213,8 @@ public class DefaultXRPClient implements XRPClientDecorator {
         AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
 
         GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
-                                                                                        .setAccount(account)
-                                                                                        .build();
+                .setAccount(account)
+                .build();
         GetAccountTransactionHistoryResponse transactionHistory = stub.getAccountTransactionHistory(request);
 
         List<GetTransactionResponse> getTransactionResponses = transactionHistory.getTransactionsList();
@@ -240,6 +240,30 @@ public class DefaultXRPClient implements XRPClientDecorator {
             }
         }
         return payments;
+    }
+
+    /**
+     * Check if an address exists on the XRP Ledger.
+     *
+     * @param address The address to check the existence of.
+     * @return A boolean if the account is on the XRPLedger.
+     */
+    @Override
+    public boolean accountExists(String address) throws XpringException {
+        if (!Utils.isValidXAddress(address)) {
+            throw XpringException.xAddressRequiredException;
+        }
+        try {
+            this.getBalance(address);
+            return true;
+        } catch (StatusRuntimeException exception) {
+            if (exception.getStatus().getCode() == io.grpc.Status.NOT_FOUND.getCode()) {
+                return false;
+            }
+            throw exception; // re-throw if code other than NOT_FOUND
+        } catch (Exception exception) {
+            throw exception; // re-throw any other type of exception
+        }
     }
 
     @Override

@@ -68,4 +68,9 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
     public List<XRPTransaction> paymentHistory(String address) throws XpringException {
         return this.decoratedClient.paymentHistory(address);
     }
+
+    @Override
+    public boolean accountExists(String address) throws XpringException {
+        return this.decoratedClient.accountExists(address);
+    }
 }
