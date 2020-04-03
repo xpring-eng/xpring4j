@@ -1,6 +1,7 @@
 package io.xpring.payid;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import io.xpring.common.XRPLNetwork;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
