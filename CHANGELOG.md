@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All legacy services are removed from XpringKit. All RPC's go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
 
 #### Changed
-- `XRPClient` requires a new parameter in it's constructor that identifies the network it is attached to.
+- The `XRPClient` constructor requires a new parameter that identifies the network it is connected to.
 
 
 ## 3.0.0 - March 24, 2020
