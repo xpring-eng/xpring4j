@@ -85,59 +85,51 @@ public class XpringClientTest {
 
         XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
-        // WHEN XRP is sent to the Pay ID THEN an the error thrown is from PayID.
+        // WHEN XRP is sent to the Pay ID THEN the exception thrown is from Pay ID.
         expectedException.expect(PayIDException.class);
         xpringClient.send(AMOUNT, PAY_ID, this.wallet);
     }
 
-//
-//
-//    it('send - failure in XRP', function(done): void {
-//        // GIVEN a XpringClient composed of an XRPClient which will throw an error.
-//    const xrpClient = new FakeXRPClient(
-//                fakeBalance,
-//                fakePaymentStatus,
-//                xrpError,
-//                fakeLastLedgerSequenceValue,
-//                fakeRawTransactionStatus,
-//                fakeAccountExistsResult,
-//                fakePaymentHistoryValue,
-//                )
-//
-//    const resolvedXRPAddress = 'r123'
-//    const payIDClient = new FakePayIDClient(resolvedXRPAddress)
-//
-//    const xpringClient = new XpringClient(payIDClient, xrpClient)
-//
-//        // WHEN XRP is sent to the Pay ID.
-//        xpringClient.send(amount, payID, wallet).catch((error) => {
-//        // THEN an the error thrown is from XRP.
-//        assert.equal(error, xrpError)
-//        done()
-//    })
-//    })
-//
-//    it('send - failure in both', function(done): void {
-//        // GIVEN a XpringClient composed of an XRPClient and a PayID client which both throw errors.
-//    const xrpClient = new FakeXRPClient(
-//                fakeBalance,
-//                fakePaymentStatus,
-//                xrpError,
-//                fakeLastLedgerSequenceValue,
-//                fakeRawTransactionStatus,
-//                fakeAccountExistsResult,
-//                fakePaymentHistoryValue,
-//                )
-//
-//    const payIDClient = new FakePayIDClient(payIDError)
-//
-//    const xpringClient = new XpringClient(payIDClient, xrpClient)
-//
-//        // WHEN XRP is sent to the Pay ID.
-//        xpringClient.send(amount, payID, wallet).catch((error) => {
-//        // THEN an the error thrown is from PayID.
-//        assert.equal(error, payIDError)
-//        done()
-//    })
-//    })
+    @Test
+    public void testSendFailureInXRP() throws PayIDException, XpringException {
+        // GIVEN a XpringClient composed of a XRPClient which will throw an error.
+        XRPClientInterface xrpClient = new FakeXRPClient(
+                Result.ok(FAKE_BALANCE_VALUE),
+                Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
+                Result.error(XRP_EXCEPTION),
+                Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        );
+
+        String fakeResolvedPayID = "r123";
+        PayIDClientInterface payIDClient = new FakePayIDClient(Result.ok(fakeResolvedPayID));
+
+        XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
+
+        // WHEN XRP is sent to the Pay ID THEN the exception thrown is from XRP.
+        expectedException.expect(XpringException.class);
+        xpringClient.send(AMOUNT, PAY_ID, this.wallet);
+    }
+
+    @Test
+    public void testSendFailureInBoth() throws PayIDException, XpringException {
+        // GIVEN a XpringClient composed of an XRPClient and a PayID client which both throw errors.
+        XRPClientInterface xrpClient = new FakeXRPClient(
+                Result.ok(FAKE_BALANCE_VALUE),
+                Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
+                Result.error(XRP_EXCEPTION),
+                Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        );
+
+        PayIDClientInterface payIDClient = new FakePayIDClient(Result.error(PAY_ID_EXCEPTION));
+
+        XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
+
+        // WHEN XRP is sent to the Pay ID THEN the exception thrown is from Pay ID.
+        expectedException.expect(PayIDException.class);
+        xpringClient.send(AMOUNT, PAY_ID, this.wallet);
+    }
 }
