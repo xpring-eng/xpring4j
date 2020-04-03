@@ -3,8 +3,8 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.xpring.xrpl.model.XRPTransaction;
 import io.grpc.StatusRuntimeException;
-import io.grpc.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.*;
@@ -14,6 +14,8 @@ import org.xrpl.rpc.v1.Common.Amount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -73,11 +75,11 @@ public class DefaultXRPClient implements XRPClientDecorator {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XRPException {
         if (!Utils.isValidXAddress(xrplAccountAddress)) {
-            throw XpringException.xAddressRequiredException;
+            throw XRPException.xAddressRequiredException;
         }
         ClassicAddress classicAddress = Utils.decodeXAddress(xrplAccountAddress);
 
@@ -95,7 +97,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException {
         Objects.requireNonNull(transactionHash);
 
         RawTransactionStatus transactionStatus = getRawTransactionStatus(transactionHash);
@@ -115,19 +117,19 @@ public class DefaultXRPClient implements XRPClientDecorator {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
     public String send(
             final BigInteger drops,
             final String destinationAddress,
             final Wallet sourceWallet
-    ) throws XpringException {
+    ) throws XRPException {
         Objects.requireNonNull(drops);
         Objects.requireNonNull(destinationAddress);
         Objects.requireNonNull(sourceWallet);
 
         if (!Utils.isValidXAddress(destinationAddress)) {
-            throw XpringException.xAddressRequiredException;
+            throw XRPException.xAddressRequiredException;
         }
 
         ClassicAddress destinationClassicAddress = Utils.decodeXAddress(destinationAddress);
@@ -192,15 +194,64 @@ public class DefaultXRPClient implements XRPClientDecorator {
     }
 
     /**
+     * Return the history of payments for the given account.
+     *
+     * Note: This method only works for payment type transactions. See "https://xrpl.org/payment.html".
+     * Note: This method only returns the history that is contained on the remote node,
+     *       which may not contain a full history of the network.
+     *
+     * @param address: The address (account) for which to retrieve payment history.
+     * @throws XRPException If there was a problem communicating with the XRP Ledger.
+     * @return An array of transactions associated with the account.
+     */
+    public List<XRPTransaction> paymentHistory(String address) throws XRPException {
+        if (!Utils.isValidXAddress(address)) {
+            throw XRPException.xAddressRequiredException;
+        }
+        ClassicAddress classicAddress = Utils.decodeXAddress(address);
+
+        AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
+
+        GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
+                .setAccount(account)
+                .build();
+        GetAccountTransactionHistoryResponse transactionHistory = stub.getAccountTransactionHistory(request);
+
+        List<GetTransactionResponse> getTransactionResponses = transactionHistory.getTransactionsList();
+
+        // Filter transactions to payments only and convert them to XRPTransactions.
+        // If a payment transaction fails conversion, throw an error.
+        List<XRPTransaction> payments = new ArrayList<XRPTransaction>();
+        for (GetTransactionResponse transactionResponse : getTransactionResponses) {
+            Transaction transaction = transactionResponse.getTransaction();
+            switch (transaction.getTransactionDataCase()) {
+                case PAYMENT: {
+                    XRPTransaction xrpTransaction = XRPTransaction.from(transaction);
+                    if (xrpTransaction == null) {
+                        throw XRPException.paymentConversionFailure;
+                    } else {
+                        payments.add(xrpTransaction);
+                    }
+                    break;
+                }
+                default: {
+                    // Intentionally do nothing, non-payment type transactions are ignored.
+                }
+            }
+        }
+        return payments;
+    }
+
+    /**
      * Check if an address exists on the XRP Ledger.
      *
      * @param address The address to check the existence of.
      * @return A boolean if the account is on the XRPLedger.
      */
     @Override
-    public boolean accountExists(String address) throws XpringException {
+    public boolean accountExists(String address) throws XRPException {
         if (!Utils.isValidXAddress(address)) {
-            throw XpringException.xAddressRequiredException;
+            throw XRPException.xAddressRequiredException;
         }
         try {
             this.getBalance(address);
@@ -216,12 +267,12 @@ public class DefaultXRPClient implements XRPClientDecorator {
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringException {
+    public int getLatestValidatedLedgerSequence() throws XRPException {
         return this.getFeeResponse().getLedgerCurrentIndex();
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException {
         Objects.requireNonNull(transactionHash);
 
         byte [] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
