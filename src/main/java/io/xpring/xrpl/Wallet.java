@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.xpring.xrpl.javascript.JavaScriptWallet;
 import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
 import io.xpring.xrpl.javascript.JavaScriptWalletGenerationResult;
@@ -32,7 +33,7 @@ public class Wallet {
      * @throws XpringException If the seed is malformed.
      */
     public Wallet(String seed, boolean isTest) throws XpringException {
-        this.javaScriptWallet = JavaScriptWalletFactory.get().walletFromSeed(seed, isTest);
+        this(JavaScriptWalletFactory.get().walletFromSeed(seed, isTest));
     }
 
     /**
@@ -55,8 +56,35 @@ public class Wallet {
      * @throws XpringException If the mnemonic or derivation path are malformed.
      */
     public Wallet(String mnemonic, String derivationPath, boolean isTest) throws XpringException {
-        this.javaScriptWallet = JavaScriptWalletFactory.get().walletFromMnemonicAndDerivationPath(mnemonic,
-            derivationPath, isTest);
+        this(JavaScriptWalletFactory.get().walletFromMnemonicAndDerivationPath(
+                mnemonic,
+                derivationPath,
+                isTest
+        ));
+    }
+
+    /**
+     * Create a new wallet from a set of keys.
+     *
+     * @param publicKey A hex encoded string representing the public key.
+     * @param privateKey A hex encoded string representing the private key.
+     * @param isTest Whether the address is for use on a test network.
+     * @throws XpringException If either input key is malformed.
+     * @return A new {@link JavaScriptWallet}.
+     */
+    public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XpringException {
+        JavaScriptWallet javaScriptWallet = JavaScriptWalletFactory.get().walletFromKeys(publicKey, privateKey, isTest);
+        return new Wallet(javaScriptWallet);
+    }
+
+    /**
+     * Create a new wallet from an {@link JavaScriptWallet}.
+     *
+     * @param javaScriptWallet The wallet to wrap.
+     */
+    @VisibleForTesting
+    public Wallet(JavaScriptWallet javaScriptWallet) {
+        this.javaScriptWallet = javaScriptWallet;
     }
 
     /**

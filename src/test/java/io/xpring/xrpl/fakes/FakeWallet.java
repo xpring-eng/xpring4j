@@ -2,6 +2,8 @@ package io.xpring.xrpl.fakes;
 
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.javascript.JavaScriptWallet;
+import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
 
 /**
  * A fake {@link Wallet} which always produces the given signature.
@@ -21,13 +23,13 @@ public class FakeWallet extends Wallet {
     private String signature;
 
     /**
-     * Initialize a wallet which will always produce the same signature when asked to sign a string.
+     * Initialize a wallet which will always produce the same signature when asked to sign inputs.
      *
-     * The wallet wll use DEFUALT_PUBLIC_KEY and DEFAULT_PRIVATE_KEY as its keys.
+     * The wallet will use DEFAULT_PUBLIC_KEY and DEFAULT_PRIVATE_KEY as a set of keys.
      *
      * @param signature The signature this wallet will produce.
      */
-    public FakeWallet(String signature) {
+    public FakeWallet(String signature) throws XpringException {
         this(signature, DEFAULT_PUBLIC_KEY, DEFAULT_PRIVATE_KEY);
     }
 
@@ -38,13 +40,9 @@ public class FakeWallet extends Wallet {
      * @param publicKey A hex encoded string representing a public key.
      * @param privateKey A hex encoded string representing a private key.
      */
-    public FakeWallet(String signature, String publicKey, String privateKey) {
-        try {
-            super(publicKey, privateKey);
-        } catch (XpringException exception) {
-            throw new RuntimeException("Error constructing fake wallet.");
-        }
 
+    public FakeWallet(String signature, String publicKey, String privateKey) throws XpringException {
+        super(JavaScriptWalletFactory.get().walletFromKeys(publicKey, privateKey, true));
         this.signature = signature;
     }
 

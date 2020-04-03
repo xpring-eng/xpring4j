@@ -1,9 +1,9 @@
 package io.xpring.xpring;
 
-import io.xpring.payid.PayIDClient;
+import io.xpring.payid.PayIDClientInterface;
 import io.xpring.payid.PayIDException;
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XRPClient;
+import io.xpring.xrpl.XRPClientInterface;
 import io.xpring.xrpl.XpringException;
 
 import java.math.BigInteger;
@@ -12,11 +12,11 @@ import java.math.BigInteger;
  * Composes interactions of Xpring services.
  */
 public class XpringClient {
-    /** A {@link PayIDClient} used to interact with the Pay ID protocol. */
-    private PayIDClient payIDClient;
+    /** A {@link PayIDClientInterface} used to interact with the Pay ID protocol. */
+    private PayIDClientInterface payIDClient;
 
-    /** A {@link XRPClient} used to interact with the Pay ID protocol. */
-    private XRPClient xrpClient;
+    /** A {@link XRPClientInterface} used to interact with the Pay ID protocol. */
+    private XRPClientInterface xrpClient;
 
     /**
      * Create a new XpringClient.
@@ -24,7 +24,7 @@ public class XpringClient {
      * @param payIDClient A Pay ID Client used to interact with the Pay ID protocol.
      * @param xrpClient An XRP Client used to interact with the XRP Ledger protocol.
      */
-    public XpringClient(PayIDClient payIDClient, XRPClient xrpClient) {
+    public XpringClient(PayIDClientInterface payIDClient, XRPClientInterface xrpClient) {
         // TODO(keefertaylor): Verify that given inputs are on the same network.
         this.payIDClient = payIDClient;
         this.xrpClient = xrpClient;
