@@ -1,6 +1,7 @@
 package io.xpring.xpring;
 
-import io.xpring.GRPCResult;
+import io.xpring.common.Result;
+import io.xpring.xrpl.fakes.FakeWallet;
 import io.xpring.payid.*;
 import io.xpring.payid.fakes.FakePayIDClient;
 import io.xpring.xrpl.*;

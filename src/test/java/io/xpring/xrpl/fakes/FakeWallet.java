@@ -23,12 +23,28 @@ public class FakeWallet extends Wallet {
     /**
      * Initialize a wallet which will always produce the same signature when asked to sign a string.
      *
+     * The wallet wll use DEFUALT_PUBLIC_KEY and DEFAULT_PRIVATE_KEY as its keys.
+     *
+     * @param signature The signature this wallet will produce.
+     */
+    public FakeWallet(String signature) {
+        this(signature, DEFAULT_PUBLIC_KEY, DEFAULT_PRIVATE_KEY);
+    }
+
+    /**
+     * Initialize a wallet which will always produce the same signature when asked to sign a string.
+     *
      * @param signature The signature this wallet will produce.
      * @param publicKey A hex encoded string representing a public key.
      * @param privateKey A hex encoded string representing a private key.
      */
-    public FakeWallet(String signature, String publicKey, String privateKey) throws XpringException {
-        super(publicKey, privateKey);
+    public FakeWallet(String signature, String publicKey, String privateKey) {
+        try {
+            super(publicKey, privateKey);
+        } catch (XpringException exception) {
+            throw new RuntimeException("Error constructing fake wallet.");
+        }
+
         this.signature = signature;
     }
 
