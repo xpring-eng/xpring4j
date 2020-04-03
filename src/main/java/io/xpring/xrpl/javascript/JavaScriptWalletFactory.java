@@ -38,6 +38,11 @@ public class JavaScriptWalletFactory {
         return getDefaultDerivationPathFunction.execute().asString();
     }
 
+    public JavaScriptWallet walletFromKeys(String publicKey, String privateKey) {
+        Value wallet = this.wallet.newInstance(publicKey, privateKey);
+
+    }
+
     /**
      * Generate a random Wallet.
      *

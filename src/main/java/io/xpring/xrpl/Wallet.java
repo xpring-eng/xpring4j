@@ -60,6 +60,16 @@ public class Wallet {
     }
 
     /**
+     * Create a new Wallet with a public and private key.
+     *
+     * @param publicKey A hex encoded string representing the Wallet's public key.
+     * @param privateKey A hex encoded string representing the Wallet's private key.
+     */
+    public Wallet(String publicKey, String privateKey) {
+
+    }
+
+    /**
      * Generate a random Wallet.
      *
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
