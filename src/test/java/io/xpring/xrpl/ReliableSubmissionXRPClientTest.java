@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.GRPCResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,12 +61,12 @@ public class ReliableSubmissionXRPClientTest {
     public void setUp() throws Exception {
         this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         this.fakeXRPClient = new FakeXRPClient(
-                DEFAULT_BALANCE_VALUE,
-                DEFAULT_TRANSACTION_STATUS_VALUE,
-                DEFAULT_SEND_VALUE,
-                DEFAULT_LATEST_LEDGER_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
-                DEFAULT_ACCOUNT_EXISTS_VALUE
+                GRPCResult.ok(DEFAULT_BALANCE_VALUE),
+                GRPCResult.ok(DEFAULT_TRANSACTION_STATUS_VALUE),
+                GRPCResult.ok(DEFAULT_SEND_VALUE),
+                GRPCResult.ok(DEFAULT_LATEST_LEDGER_VALUE),
+                GRPCResult.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                GRPCResult.ok(DEFAULT_ACCOUNT_EXISTS_VALUE)
         );
 
         this.reliableSubmissionXRPClient = new ReliableSubmissionXRPClient(fakeXRPClient);
@@ -111,25 +112,27 @@ public class ReliableSubmissionXRPClientTest {
     @Test(timeout=10000)
     public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XpringException {
         // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
-        this.fakeXRPClient.rawTransactionStatusValue = new RawTransactionStatus(
-                GetTransactionResponse.newBuilder()
-                        .setValidated(false)
-                        .setTransaction(
-                                Transaction.newBuilder()
-                                        .setLastLedgerSequence(
-                                                Common.LastLedgerSequence.newBuilder()
-                                                        .setValue(LAST_LEDGER_SEQUENCE)
-                                                        .build()
-                                        )
-                                        .build()
-                        )
-                        .setMeta(
-                                Meta.newBuilder().setTransactionResult(
-                                        TransactionResult.newBuilder()
-                                                .setResult(TRANSACTION_STATUS_CODE)
-                                                .build()
-                                )
-                        ).build()
+        this.fakeXRPClient.rawTransactionStatusValue = GRPCResult.ok(
+                new RawTransactionStatus(
+                    GetTransactionResponse.newBuilder()
+                            .setValidated(false)
+                            .setTransaction(
+                                        Transaction.newBuilder()
+                                            .setLastLedgerSequence(
+                                                    Common.LastLedgerSequence.newBuilder()
+                                                            .setValue(LAST_LEDGER_SEQUENCE)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .setMeta(
+                                    Meta.newBuilder().setTransactionResult(
+                                            TransactionResult.newBuilder()
+                                                    .setResult(TRANSACTION_STATUS_CODE)
+                                                    .build()
+                                    )
+                            ).build()
+            )
         );
 
         runAfterOneSecond(() -> {
@@ -166,25 +169,27 @@ public class ReliableSubmissionXRPClientTest {
         );
 
         runAfterOneSecond(() -> {
-            this.fakeXRPClient.rawTransactionStatusValue = new RawTransactionStatus(
-                    GetTransactionResponse.newBuilder()
-                            .setValidated(true)
-                            .setTransaction(
-                                    Transaction.newBuilder()
-                                            .setLastLedgerSequence(
-                                                    Common.LastLedgerSequence.newBuilder()
-                                                            .setValue(LAST_LEDGER_SEQUENCE)
-                                                            .build()
-                                            )
-                                            .build()
-                            )
-                            .setMeta(
-                                    Meta.newBuilder().setTransactionResult(
-                                            TransactionResult.newBuilder()
-                                                    .setResult(TRANSACTION_STATUS_CODE)
-                                                    .build()
-                                    )
-                            ).build()
+            this.fakeXRPClient.rawTransactionStatusValue = GRPCResult.ok(
+                    new RawTransactionStatus(
+                        GetTransactionResponse.newBuilder()
+                                .setValidated(true)
+                                .setTransaction(
+                                        Transaction.newBuilder()
+                                                .setLastLedgerSequence(
+                                                        Common.LastLedgerSequence.newBuilder()
+                                                                .setValue(LAST_LEDGER_SEQUENCE)
+                                                                .build()
+                                                )
+                                                .build()
+                                )
+                                .setMeta(
+                                        Meta.newBuilder().setTransactionResult(
+                                                TransactionResult.newBuilder()
+                                                        .setResult(TRANSACTION_STATUS_CODE)
+                                                        .build()
+                                        )
+                                ).build()
+                )
             );
         });
 
