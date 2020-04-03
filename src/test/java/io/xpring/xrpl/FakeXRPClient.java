@@ -1,8 +1,7 @@
 package io.xpring.xrpl;
 
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import io.xpring.GRPCResult;
+import io.xpring.common.Result;
 
 import java.math.BigInteger;
 
@@ -11,20 +10,20 @@ import java.math.BigInteger;
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
-    public GRPCResult<BigInteger, XpringException> getBalanceResult;
-    public GRPCResult<TransactionStatus, XpringException> paymentStatusResult;
-    public GRPCResult<String, XpringException> sendResult;
-    public GRPCResult<Integer, XpringException> latestValidatedLedgerResult;
-    public GRPCResult<RawTransactionStatus, XpringException> rawTransactionStatusResult;
-    public GRPCResult<Boolean, XpringException> accountExistsResult;
+    public Result<BigInteger, XpringException> getBalanceResult;
+    public Result<TransactionStatus, XpringException> paymentStatusResult;
+    public Result<String, XpringException> sendResult;
+    public Result<Integer, XpringException> latestValidatedLedgerResult;
+    public Result<RawTransactionStatus, XpringException> rawTransactionStatusResult;
+    public Result<Boolean, XpringException> accountExistsResult;
 
     public FakeXRPClient(
-            GRPCResult<BigInteger, XpringException> getBalanceResult,
-            GRPCResult<TransactionStatus, XpringException> paymentStatusResult,
-            GRPCResult<String, XpringException> sendResult,
-            GRPCResult<Integer, XpringException> latestValidatedLedgerResult,
-            GRPCResult<RawTransactionStatus, XpringException> rawTransactionStatusResult,
-            GRPCResult<Boolean, XpringException> accountExistsResult
+            Result<BigInteger, XpringException> getBalanceResult,
+            Result<TransactionStatus, XpringException> paymentStatusResult,
+            Result<String, XpringException> sendResult,
+            Result<Integer, XpringException> latestValidatedLedgerResult,
+            Result<RawTransactionStatus, XpringException> rawTransactionStatusResult,
+            Result<Boolean, XpringException> accountExistsResult
     ) {
         this.getBalanceResult = getBalanceResult;
         this.paymentStatusResult = paymentStatusResult;

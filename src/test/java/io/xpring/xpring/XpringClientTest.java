@@ -48,12 +48,12 @@ public class XpringClientTest {
         // GIVEN a XpringClient composed of a fake PayIDClient and a fake XRPClient which will both succeed.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
-                FAKE_BALANCE_VALUE,
-                FAKE_TRANSACTION_STATUS_VALUE,
-                expectedTransactionHash,
-                FAKE_LAST_LEDGER_SEQUENCE_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
-                FAKE_ACCOUNT_EXISTS_VALUE
+                Result.ok(FAKE_BALANCE_VALUE),
+                Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
+                Result.ok(expectedTransactionHash),
+                Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
         );
 
         String fakeResolvedPayID = "r123";
@@ -73,12 +73,12 @@ public class XpringClientTest {
         // GIVEN a XpringClient composed of a PayIDClient which will throw an error.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
-                FAKE_BALANCE_VALUE,
-                FAKE_TRANSACTION_STATUS_VALUE,
-                expectedTransactionHash,
-                FAKE_LAST_LEDGER_SEQUENCE_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
-                FAKE_ACCOUNT_EXISTS_VALUE
+                Result.ok(FAKE_BALANCE_VALUE),
+                Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
+                Result.ok(expectedTransactionHash),
+                Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
         );
 
         PayIDClientInterface payIDClient = new FakePayIDClient(Result.error(PAY_ID_EXCEPTION));
