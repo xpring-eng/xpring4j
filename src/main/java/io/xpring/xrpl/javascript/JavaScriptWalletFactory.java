@@ -62,7 +62,7 @@ public class JavaScriptWalletFactory {
      * @param publicKey A hex encoded string representing the public key.
      * @param privateKey A hex encoded string representing the private key.
      * @param isTest Whether the address is for use on a test network.
-     * @throws {@link XpringException} If either input key is malformed.
+     * @throws XpringException If either input key is malformed.
      * @return A new {@link JavaScriptWallet}.
      */
     public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XpringException {
