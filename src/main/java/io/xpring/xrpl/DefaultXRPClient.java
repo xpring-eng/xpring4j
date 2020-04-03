@@ -198,9 +198,9 @@ public class DefaultXRPClient implements XRPClientDecorator {
      * @return A boolean if the account is on the XRPLedger.
      */
     @Override
-    public boolean accountExists(String address) throws XpringException {
+    public boolean accountExists(String address) throws XRPException {
         if (!Utils.isValidXAddress(address)) {
-            throw XpringException.xAddressRequiredException;
+            throw XRPException.xAddressRequiredException;
         }
         try {
             this.getBalance(address);

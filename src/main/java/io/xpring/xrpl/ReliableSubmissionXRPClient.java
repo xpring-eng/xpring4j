@@ -68,7 +68,7 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
     }
 
     @Override
-    public boolean accountExists(String address) throws XpringException {
+    public boolean accountExists(String address) throws XRPException {
         return this.decoratedClient.accountExists(address);
     }
 }

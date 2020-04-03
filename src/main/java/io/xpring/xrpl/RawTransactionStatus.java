@@ -1,26 +1,14 @@
 package io.xpring.xrpl;
 
-import io.xpring.proto.TransactionStatus;
 import org.xrpl.rpc.v1.*;
 
 /** Encapsulates fields of a raw transaction status which is returned by the XRP Ledger. */
+// TODO(keefertaylor): This class is now defunct. Refactor and remove.
 public class RawTransactionStatus {
     private boolean validated;
     private String transactionStatusCode;
     private int lastLedgerSequence;
     private boolean isFullPayment;
-
-    /**
-     * Create a new RawTransactionStatus from a {@link TransactionStatus} protocol buffer.
-     *
-     * @param transactionStatus The {@link TransactionStatus} to encapsulate.
-     */
-    public RawTransactionStatus(TransactionStatus transactionStatus) {
-        this.validated = transactionStatus.getValidated();
-        this.transactionStatusCode = transactionStatus.getTransactionStatusCode();
-        this.lastLedgerSequence = transactionStatus.getLastLedgerSequence();
-        this.isFullPayment = true;
-    }
 
     /**
      * Create a new RawTransactionStatus from a {@link GetTransactionResponse} protocol buffer.
