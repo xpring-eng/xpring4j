@@ -22,6 +22,7 @@ public class XpringClientTest {
     /** Default values for the {@link FakeXRPClient}. These values must be provided but are not varied in testing. */
     public static final XRPLNetwork NETWORK = XRPLNetwork.TEST;
     public static final BigInteger FAKE_BALANCE_VALUE = new BigInteger("10");
+    public static final String FAKE_TRANSACTION_HASH="01234567890ABCDEF";
     public static final TransactionStatus FAKE_TRANSACTION_STATUS_VALUE = TransactionStatus.SUCCEEDED;
     public static final int FAKE_LAST_LEDGER_SEQUENCE_VALUE = 10;
     private static final RawTransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE = new RawTransactionStatus(
@@ -136,6 +137,28 @@ public class XpringClientTest {
 
         // WHEN XRP is sent to the Pay ID THEN the exception thrown is from Pay ID.
         expectedException.expect(PayIDException.class);
+        xpringClient.send(AMOUNT, PAY_ID, this.wallet);
+    }
+
+    @Test
+    public void constructXpringClientWithMismatchedNetworks() throws PayIDException, XRPException, XpringException {
+        // GIVEN a PayIDClient and an XRPClient on different networks.
+        XRPClientInterface xrpClient = new FakeXRPClient(
+                XRPLNetwork.TEST,
+                Result.ok(FAKE_BALANCE_VALUE),
+                Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
+                Result.ok(FAKE_TRANSACTION_HASH),
+                Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        );
+
+        PayIDClientInterface payIDClient = new FakePayIDClient(XRPLNetwork.MAIN, Result.error(PAY_ID_EXCEPTION));
+
+        XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
+
+        // WHEN a XpringClient is constructed THEN a mismatched network XpringError is thrown.
+        expectedException.expect(XpringException.class);
         xpringClient.send(AMOUNT, PAY_ID, this.wallet);
     }
 }
