@@ -151,7 +151,9 @@ wallet.verify(message, signature); // true
 
 ### XRPClient
 
-`XRPClient` is a gateway into the XRP Ledger. `XRPClient` is initialized with a single parameter, which is the URL of the remote adapter (see [Server-Side Component][#server-side-component]).
+`XRPClient` is a gateway into the XRP Ledger. `XRPClient` is initialized with a two parameters:
+- The URL of the gRPC API on the remote rippled node
+- An enum representing the XRPL Network the remote rippled node is attached to
 
 ```java
 import io.xpring.common.XRPLNetwork;
