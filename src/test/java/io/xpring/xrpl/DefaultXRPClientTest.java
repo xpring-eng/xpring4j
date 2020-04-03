@@ -64,7 +64,7 @@ public class DefaultXRPClientTest {
     private static final BigInteger AMOUNT = new BigInteger("1");
 
     @Test
-    public void getBalanceTest() throws IOException, XpringException {
+    public void getBalanceTest() throws IOException, XRPException {
         // GIVEN a DefaultXRPClient with mocked networking which will succeed.
         DefaultXRPClient client = getClient();
 
@@ -76,18 +76,18 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void getBalanceWithClassicAddressTest() throws IOException, XpringException {
+    public void getBalanceWithClassicAddressTest() throws IOException, XRPException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         DefaultXRPClient client = getClient();
 
         // WHEN the balance for the classic address is retrieved THEN an error is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         client.getBalance(classicAddress.address());
     }
 
     @Test
-    public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
+    public void getBalanceTestWithFailedAccountInfo() throws IOException, XRPException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
         GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
@@ -105,7 +105,7 @@ public class DefaultXRPClientTest {
 
 
     @Test
-    public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XpringException {
+    public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XRPException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
             // GIVEN an XRPClient which will return an unvalidated transaction with a failed code.
@@ -126,7 +126,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XpringException {
+    public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XRPException {
         // GIVEN an XRPClient which will return an unvalidated transaction with a success code.
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -144,7 +144,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentStatusWithValidatedTransactionAndFailureCode() throws IOException, XpringException {
+    public void paymentStatusWithValidatedTransactionAndFailureCode() throws IOException, XRPException {
         // Iterate over different types of transaction status codes which represent failures.
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
             // GIVEN an XRPClient which will return an validated transaction with a failed code.
@@ -165,7 +165,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XpringException {
+    public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XRPException {
         // GIVEN an XRPClient which will return an validated transaction with a success code.
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -183,7 +183,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentStatusWithNodeError() throws IOException, XpringException {
+    public void paymentStatusWithNodeError() throws IOException, XRPException {
         // GIVEN an XRPClient which will error when a transaction status is requested..
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
@@ -199,7 +199,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionTest() throws IOException, XpringException {
+    public void submitTransactionTest() throws IOException, XRPException {
         // GIVEN an XRPClient with mocked networking which will succeed.
         DefaultXRPClient client = getClient();
         Wallet wallet = new Wallet(WALLET_SEED);
@@ -212,19 +212,19 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionWithClassicAddress() throws IOException, XpringException {
+    public void submitTransactionWithClassicAddress() throws IOException, XRPException {
         // GIVEN a classic address.
         DefaultXRPClient client = getClient();
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         Wallet wallet = new Wallet(WALLET_SEED);
 
         // WHEN XRP is sent to the classic address THEN an error is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         client.send(AMOUNT, classicAddress.address(), wallet);
     }
 
     @Test
-    public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
+    public void submitTransactionWithFailedAccountInfo() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to return account info.
         GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
@@ -242,7 +242,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void submitTransactionWithFailedFee() throws IOException, XpringException {
+    public void submitTransactionWithFailedFee() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
         GRPCResult<GetFeeResponse, Throwable> feeResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
@@ -261,7 +261,7 @@ public class DefaultXRPClientTest {
 
 
     @Test
-    public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
+    public void submitTransactionWithFailedSubmit() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to submit a transaction.
         GRPCResult<SubmitTransactionResponse, Throwable> submitResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
@@ -279,7 +279,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XpringException {
+    public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XRPException {
         // GIVEN a DefaultXRPClient with mocked networking that will succeed.
         DefaultXRPClient xrpClient = getClient();
 
@@ -294,18 +294,18 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentHistoryWithClassicAddressTest() throws IOException, XpringException {
+    public void paymentHistoryWithClassicAddressTest() throws IOException, XRPException {
         // GIVEN an XRPClient and a classic address
         DefaultXRPClient xrpClient = getClient();
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
 
         // WHEN the payment history for an account is requested THEN an error to use X-Addresses is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         xrpClient.paymentHistory(classicAddress.address());
     }
 
     @Test
-    public void paymentHistoryWithNetworkFailureTest() throws IOException, XpringException {
+    public void paymentHistoryWithNetworkFailureTest() throws IOException, XRPException {
         // GIVEN an XRPClient which will return a network error when calling paymentHistory.
         GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
                                                                                         GRPCResult.error(GENERIC_ERROR);
@@ -322,7 +322,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XpringException {
+    public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XRPException {
         // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions.
         GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
                                             GRPCResult.ok(FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
@@ -343,7 +343,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void paymentHistoryWithInvalidPaymentTest() throws IOException, XpringException {
+    public void paymentHistoryWithInvalidPaymentTest() throws IOException, XRPException {
         // GIVEN an XRPClient client which will return a transaction history which contains a malformed payment.
         GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
                                     GRPCResult.ok(FakeXRPProtobufs.invalidPaymentGetAccountTransactionHistoryResponse);
@@ -356,12 +356,12 @@ public class DefaultXRPClientTest {
                 getAccountTransactionHistoryResponse);
 
         // WHEN the transactionHistory is requested THEN a conversion error is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         xrpClient.paymentHistory(XRPL_ADDRESS);
     }
 
     @Test
-    public void accountExistsTest() throws IOException, XpringException {
+    public void accountExistsTest() throws IOException, XRPException {
         // GIVEN a DefaultXRPClient with mocked networking which will succeed.
         DefaultXRPClient client = getClient();
 
@@ -373,18 +373,18 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void accountExistsWithClassicAddressTest() throws IOException, XpringException {
+    public void accountExistsWithClassicAddressTest() throws IOException, XRPException {
         // GIVEN a classic address.
         ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
         DefaultXRPClient client = getClient();
 
         // WHEN the existence of the account is checked for the classic address THEN an error is thrown.
-        expectedException.expect(XpringException.class);
+        expectedException.expect(XRPException.class);
         client.accountExists(classicAddress.address());
     }
 
     @Test
-    public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
+    public void accountExistsTestWithNotFoundError() throws IOException, XRPException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
         GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
@@ -404,7 +404,7 @@ public class DefaultXRPClientTest {
     }
 
     @Test
-    public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
+    public void accountExistsTestWithUnkonwnError() throws IOException, XRPException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
         GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);

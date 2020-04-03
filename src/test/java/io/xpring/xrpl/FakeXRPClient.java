@@ -37,7 +37,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(String xrplAccountAddress) throws XRPException {
         return this.getBalanceValue;
     }
 
@@ -47,7 +47,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
+    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XRPException {
         return this.sendValue;
     }
 
