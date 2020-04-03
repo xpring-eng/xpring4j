@@ -71,7 +71,7 @@ public class Wallet {
      * @throws {@link XpringException} If either input key is malformed.
      * @return A new {@link JavaScriptWallet}.
      */
-    public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) {
+    public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XpringException {
         JavaScriptWallet javaScriptWallet = JavaScriptWalletFactory.get().walletFromKeys(publicKey, privateKey, isTest);
         return new Wallet(javaScriptWallet);
     }
