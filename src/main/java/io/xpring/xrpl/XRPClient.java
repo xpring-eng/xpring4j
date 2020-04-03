@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.common.XRPLNetwork;
 import java.math.BigInteger;
 
 /**
@@ -10,14 +11,27 @@ import java.math.BigInteger;
 public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
+    /** The XRPL Network of the node that this client is communicating with. */
+    private XRPLNetwork network;
+
     /**
      * Initialize a new client with the given options.
      *
      * @param grpcURL The remote URL to use for gRPC calls.
+     * @param network The network this XRPClient is connecting to.
      */
-    public XRPClient(String grpcURL) {
+    public XRPClient(String grpcURL, XRPLNetwork network) {
         XRPClientDecorator defaultXRPClient =  new DefaultXRPClient(grpcURL);
         this.decoratedClient = new ReliableSubmissionXRPClient(defaultXRPClient);
+
+        this.network = network;
+    }
+
+    /**
+     * Retrieve the network that this XRPClient connects to.
+     */
+    public XRPLNetwork getNetwork() {
+        return this.network;
     }
 
     /**
@@ -25,9 +39,9 @@ public class XRPClient implements XRPClientInterface {
      **
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
-    public BigInteger getBalance(final String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(final String xrplAccountAddress) throws XRPException {
         return decoratedClient.getBalance(xrplAccountAddress);
     }
 
@@ -40,7 +54,7 @@ public class XRPClient implements XRPClientInterface {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException {
         return decoratedClient.getPaymentStatus(transactionHash);
     }
 
@@ -51,13 +65,13 @@ public class XRPClient implements XRPClientInterface {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      * */
     public String send(
             final BigInteger amount,
             final String destinationAddress,
             final Wallet sourceWallet
-    ) throws XpringException {
+    ) throws XRPException {
         return decoratedClient.send(amount, destinationAddress, sourceWallet);
     }
 
@@ -67,7 +81,7 @@ public class XRPClient implements XRPClientInterface {
      * @param xrplAccountAddress The address to check the existence of.
      * @return A boolean if the account is on the XRP Ledger.
      */
-    public boolean accountExists(final String xrplAccountAddress) throws XpringException {
+    public boolean accountExists(final String xrplAccountAddress) throws XRPException {
         return decoratedClient.accountExists(xrplAccountAddress);
     }
 }

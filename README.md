@@ -80,7 +80,6 @@ A hierarchical deterministic wallet is created using a mnemonic and a derivation
 ```java
 import io.xpring.xrpl.Wallet;
 
-
 String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
 Wallet hdWallet1 = new Wallet(mnemonic, null); // Has default derivation path
@@ -152,13 +151,16 @@ wallet.verify(message, signature); // true
 
 ### XRPClient
 
-`XRPClient` is a gateway into the XRP Ledger. `XRPClient` is initialized with a single parameter, which is the URL of the remote adapter (see [Server-Side Component][#server-side-component]).
+`XRPClient` is a gateway into the XRP Ledger. `XRPClient` is initialized with a two parameters:
+- The URL of the gRPC API on the remote rippled node
+- An enum representing the XRPL Network the remote rippled node is attached to
 
 ```java
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL);
+XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 ```
 
 #### Retrieving a Balance
@@ -166,11 +168,12 @@ XRPClient xrpClient = new XRPClient(grpcURL);
 An `XRPClient` can check the balance of an account on the XRP Ledger.
 
 ```java
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL);
+XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
 BigInteger balance = xrpClient.getBalance(address);
@@ -194,11 +197,12 @@ Xpring4J returns the following transaction states:
 These states are determined by the `TransactionStatus` enum.
 
 ```java
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.TransactionStatus;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL);
+XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
 TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash); // TransactionStatus.SUCCEEDED
@@ -213,12 +217,13 @@ An `XRPClient` can send XRP to other [accounts](https://xrpl.org/accounts.html) 
 **Note:** The payment operation will block the calling thread until the operation reaches a definitive and irreversible success or failure state.
 
 ```java
-import java.math.BigInteger;
 import io.xpring.xrpl.Wallet;
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
+import java.math.BigInteger;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
-XRPClient xrpClient = new XRPClient(grpcURL, true);
+XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 
 // Amount of XRP to send.
 BigInteger amount = new BigInteger("1");
