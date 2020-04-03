@@ -2,21 +2,21 @@ package io.xpring.payid.fakes;
 
 import io.xpring.payid.PayIDClientInterface;
 import io.xpring.payid.PayIDException;
-import io.xpring.GRPCResult;
+import io.xpring.common.Result;
 
 /**
  * Fakes a PayID client.
  */
 public class FakePayIDClient implements PayIDClientInterface {
     /** Results from method calls. */
-    private GRPCResult<String, PayIDException> xrpAddressForPayIDResult;
+    private Result<String, PayIDException> xrpAddressForPayIDResult;
 
     /**
      * Initialize a new fake Pay ID client.
      *
      * @param xrpAddressForPayIDResult The result that will be returned from `xrpAddressForPayID`.
      */
-    public FakePayIDClient(GRPCResult<String, PayIDException> xrpAddressForPayIDResult) {
+    public FakePayIDClient(Result<String, PayIDException> xrpAddressForPayIDResult) {
         this.xrpAddressForPayIDResult = xrpAddressForPayIDResult;
     }
 
