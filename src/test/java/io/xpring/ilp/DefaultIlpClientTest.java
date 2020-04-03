@@ -204,10 +204,10 @@ public class DefaultIlpClientTest {
   /**
    * Return a IlpClient which returns the given results for network calls.
    */
-  private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse> getBalanceResult,
-                                     GRPCResult<CreateAccountResponse> createAccountResponse,
-                                     GRPCResult<SendPaymentResponse> sendPaymentResponse,
-                                     GRPCResult<GetAccountResponse> getAccountResponse) throws IOException {
+  private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse, Throwable> getBalanceResult,
+                                     GRPCResult<CreateAccountResponse, Throwable> createAccountResponse,
+                                     GRPCResult<SendPaymentResponse, Throwable> sendPaymentResponse,
+                                     GRPCResult<GetAccountResponse, Throwable> getAccountResponse) throws IOException {
 
     BalanceServiceGrpc.BalanceServiceImplBase balanceServiceImpl = getBalanceService(
       getBalanceResult
@@ -241,7 +241,7 @@ public class DefaultIlpClientTest {
     return new DefaultIlpClient(channel);
   }
 
-  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(GRPCResult<SendPaymentResponse> sendPaymentResponse) {
+  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(GRPCResult<SendPaymentResponse, Throwable> sendPaymentResponse) {
     return mock(IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase.class, delegatesTo(
       new IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase() {
         @Override
@@ -260,7 +260,7 @@ public class DefaultIlpClientTest {
    * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
    */
   private BalanceServiceGrpc.BalanceServiceImplBase getBalanceService(
-    GRPCResult<GetBalanceResponse> getBalanceResult
+    GRPCResult<GetBalanceResponse, Throwable> getBalanceResult
   ) {
     return mock(BalanceServiceGrpc.BalanceServiceImplBase.class, delegatesTo(
       new BalanceServiceGrpc.BalanceServiceImplBase() {
@@ -280,8 +280,8 @@ public class DefaultIlpClientTest {
    * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
    */
   private AccountServiceGrpc.AccountServiceImplBase getAccountService(
-    GRPCResult<CreateAccountResponse> createAccountResponse,
-    GRPCResult<GetAccountResponse> getAccountResponse
+    GRPCResult<CreateAccountResponse, Throwable> createAccountResponse,
+    GRPCResult<GetAccountResponse, Throwable> getAccountResponse
   ) {
     return mock(AccountServiceGrpc.AccountServiceImplBase.class, delegatesTo(
       new AccountServiceGrpc.AccountServiceImplBase() {
