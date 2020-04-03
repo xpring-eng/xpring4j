@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import io.xpring.GRPCResult;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -85,7 +86,7 @@ public class DefaultXRPClientTest {
     @Test
     public void getBalanceTestWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -216,7 +217,7 @@ public class DefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to return account info.
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -233,7 +234,7 @@ public class DefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
-        GRPCResult<GetFeeResponse> feeResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<GetFeeResponse, Throwable> feeResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -251,7 +252,7 @@ public class DefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XpringException {
         // GIVEN a XRPClient which will fail to submit a transaction.
-        GRPCResult<SubmitTransactionResponse> submitResult = GRPCResult.error(GENERIC_ERROR);
+        GRPCResult<SubmitTransactionResponse, Throwable> submitResult = GRPCResult.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -292,7 +293,7 @@ public class DefaultXRPClientTest {
     public void accountExistsTestWithNotFoundError() throws IOException, XpringException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -311,7 +312,7 @@ public class DefaultXRPClientTest {
     public void accountExistsTestWithUnkonwnError() throws IOException, XpringException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
-        GRPCResult<GetAccountInfoResponse> accountInfoResult = GRPCResult.error(notFoundError);
+        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
                 GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -341,10 +342,10 @@ public class DefaultXRPClientTest {
      */
 
     private DefaultXRPClient getClient(
-            GRPCResult<GetAccountInfoResponse> getAccountInfoResponseResult,
-            GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
-            GRPCResult<GetFeeResponse> getFeeResult,
-            GRPCResult<SubmitTransactionResponse> submitTransactionResult
+            GRPCResult<GetAccountInfoResponse, Throwable> getAccountInfoResponseResult,
+            GRPCResult<GetTransactionResponse, Throwable> GetTransactionResponseResult,
+            GRPCResult<GetFeeResponse, Throwable> getFeeResult,
+            GRPCResult<SubmitTransactionResponse, Throwable> submitTransactionResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
@@ -373,10 +374,10 @@ public class DefaultXRPClientTest {
      * Return a XRPLedgerService implementation which returns the given results for network calls.
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
-        GRPCResult<GetAccountInfoResponse> getAccountInfoResult,
-        GRPCResult<GetTransactionResponse> GetTransactionResponseResult,
-        GRPCResult<GetFeeResponse> getFeeResult,
-        GRPCResult<SubmitTransactionResponse> submitTransactionResult
+        GRPCResult<GetAccountInfoResponse, Throwable> getAccountInfoResult,
+        GRPCResult<GetTransactionResponse, Throwable> GetTransactionResponseResult,
+        GRPCResult<GetFeeResponse, Throwable> getFeeResult,
+        GRPCResult<SubmitTransactionResponse, Throwable> submitTransactionResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {
