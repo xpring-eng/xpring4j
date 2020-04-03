@@ -155,10 +155,8 @@ public class XpringClientTest {
 
         PayIDClientInterface payIDClient = new FakePayIDClient(XRPLNetwork.MAIN, Result.error(PAY_ID_EXCEPTION));
 
-        XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
-
         // WHEN a XpringClient is constructed THEN a mismatched network XpringError is thrown.
         expectedException.expect(XpringException.class);
-        xpringClient.send(AMOUNT, PAY_ID, this.wallet);
+        XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
     }
 }
