@@ -1,8 +1,6 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.XRPLNetwork;
-
-import io.xpring.common.XRPLNetwork;
 import java.math.BigInteger;
 
 /**
