@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+#### Changed
+- `IlpClient` methods now throw `IlpException`s if something goes wrong during the call 
+    (either client side or server side).  
+    This is only breaking if users are handling special error cases, which were previously `StatusRuntimeException`s
+
 #### Added
 - A new `accountExists` method added to XRPClient which determines whether a given address exists on the XRP Ledger.
 
@@ -17,12 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - A new `getPaymentStatus` is added which retrieves the status of payment transactions.
 
-#### Deprecated
-- `getTransactionStatus` is deprecated. Please use `getPaymentStatus` instead.
-
 #### Removed
 
 - `XpringClient` is removed from XpringKit. This class has been deprecated since 1.5.0. Clients should use `XRPClient` instead.
+- `getTransactionStatus` is removed. Please use `getPaymentStatus` instead.
 
 #### Changed
 - `XRPClient` now uses [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254) rather than the legacy API. Users who wish to use the legacy API should pass `false` for `useNewProtocolBuffers` in the constructor.
