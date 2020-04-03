@@ -1,6 +1,9 @@
 package io.xpring.xrpl;
 
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import io.xpring.GRPCResult;
+
 import java.math.BigInteger;
 
 /**
@@ -8,56 +11,80 @@ import java.math.BigInteger;
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
-    public BigInteger getBalanceValue;
-    public TransactionStatus paymentStatusValue;
-    public String sendValue;
-    public int latestValidatedLedgerValue;
-    public RawTransactionStatus rawTransactionStatusValue;
-    public boolean accountExistsValue;
+    public GRPCResult<BigInteger, XpringException> getBalanceResult;
+    public GRPCResult<TransactionStatus, XpringException> paymentStatusResult;
+    public GRPCResult<String, XpringException> sendResult;
+    public GRPCResult<Integer, XpringException> latestValidatedLedgerResult;
+    public GRPCResult<RawTransactionStatus, XpringException> rawTransactionStatusResult;
+    public GRPCResult<Boolean, XpringException> accountExistsResult;
 
     public FakeXRPClient(
-            BigInteger getBalanceValue,
-            TransactionStatus paymentStatusValue,
-            String sendValue,
-            int latestValidatedLedgerValue,
-            RawTransactionStatus rawTransactionStatusValue,
-            boolean accountExistsValue
+            GRPCResult<BigInteger, XpringException> getBalanceResult,
+            GRPCResult<TransactionStatus, XpringException> paymentStatusResult,
+            GRPCResult<String, XpringException> sendResult,
+            GRPCResult<Integer, XpringException> latestValidatedLedgerResult,
+            GRPCResult<RawTransactionStatus, XpringException> rawTransactionStatusResult,
+            GRPCResult<Boolean, XpringException> accountExistsResult
     ) {
-        this.getBalanceValue = getBalanceValue;
-        this.paymentStatusValue = paymentStatusValue;
-        this.sendValue = sendValue;
-        this.latestValidatedLedgerValue = latestValidatedLedgerValue;
-        this.rawTransactionStatusValue = rawTransactionStatusValue;
-        this.accountExistsValue = accountExistsValue;
+        this.getBalanceResult = getBalanceResult;
+        this.paymentStatusResult = paymentStatusResult;
+        this.sendResult = sendResult;
+        this.latestValidatedLedgerResult = latestValidatedLedgerResult;
+        this.rawTransactionStatusResult = rawTransactionStatusResult;
+        this.accountExistsResult = accountExistsResult;
     }
 
     @Override
     public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
-        return this.getBalanceValue;
+        if (this.getBalanceResult.isError()) {
+            throw this.getBalanceResult.getError();
+        } else {
+            return getBalanceResult.getValue();
+        }
     }
 
     @Override
-    public TransactionStatus getPaymentStatus(String transactionHash) {
-        return this.paymentStatusValue;
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+        if (this.paymentStatusResult.isError()) {
+            throw this.paymentStatusResult.getError();
+        } else {
+            return paymentStatusResult.getValue();
+        }
     }
 
     @Override
     public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
-        return this.sendValue;
+        if (this.sendResult.isError()) {
+            throw this.sendResult.getError();
+        } else {
+            return sendResult.getValue();
+        }
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() {
-        return this.latestValidatedLedgerValue;
+    public int getLatestValidatedLedgerSequence() throws XpringException {
+        if (this.latestValidatedLedgerResult.isError()) {
+            throw this.latestValidatedLedgerResult.getError();
+        } else {
+            return latestValidatedLedgerResult.getValue();
+        }
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
-        return this.rawTransactionStatusValue;
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
+        if (this.rawTransactionStatusResult.isError()) {
+            throw this.rawTransactionStatusResult.getError();
+        } else {
+            return rawTransactionStatusResult.getValue();
+        }
     }
 
     @Override
-    public boolean accountExists(String address) {
-        return this.accountExistsValue;
+    public boolean accountExists(String address) throws XpringException {
+        if (this.accountExistsResult.isError()) {
+            throw this.accountExistsResult.getError();
+        } else {
+            return accountExistsResult.getValue();
+        }
     }
 }
