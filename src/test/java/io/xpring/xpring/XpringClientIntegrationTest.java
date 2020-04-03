@@ -28,19 +28,15 @@ public class XpringClientIntegrationTest {
      */
     public static final XRPClient XRP_CLIENT = new XRPClient("test.xrp.xpring.io:50051", XRPLNetwork.TEST);
 
-    /**
-     * A XpringClient under test.
-     */
-    public static final XpringClient XPRING_CLIENT = new XpringClient(PAY_ID_CLIENT, XRP_CLIENT);
-
     @Test
-    public void testSendXRP() throws XRPException, PayIDException {
+    public void testSendXRP() throws XpringException, XRPException, PayIDException {
         // GIVEN a Pay ID that will resolve and a wallet with a balance on TestNet.
+        XpringClient xpringClient = new XpringClient(PAY_ID_CLIENT, XRP_CLIENT);
         String payID = "$dev.payid.xpring.money/hbergren";
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
 
         // WHEN XRP is sent to the Pay ID.
-        String transactionHash = XPRING_CLIENT.send(new BigInteger("10"), payID, wallet);
+        String transactionHash = xpringClient.send(new BigInteger("10"), payID, wallet);
 
         // THEN a transaction hash is returned.
         assertNotNull(transactionHash);

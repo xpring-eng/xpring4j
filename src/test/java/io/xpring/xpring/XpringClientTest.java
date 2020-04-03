@@ -46,7 +46,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendSuccess() throws PayIDException, XRPException {
+    public void testSendSuccess() throws PayIDException, XpringException, XRPException {
         // GIVEN a XpringClient composed of a fake PayIDClient and a fake XRPClient which will both succeed.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
@@ -72,7 +72,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendFailureInPayID() throws PayIDException, XRPException {
+    public void testSendFailureInPayID() throws PayIDException, XpringException, XRPException {
         // GIVEN a XpringClient composed of a PayIDClient which will throw an error.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
@@ -95,7 +95,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendFailureInXRP() throws PayIDException, XRPException {
+    public void testSendFailureInXRP() throws PayIDException, XpringException, XRPException {
         // GIVEN a XpringClient composed of a XRPClient which will throw an error.
         XRPClientInterface xrpClient = new FakeXRPClient(
                 NETWORK,
@@ -118,7 +118,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendFailureInBoth() throws PayIDException, XRPException {
+    public void testSendFailureInBoth() throws PayIDException, XpringException, XRPException {
         // GIVEN a XpringClient composed of an XRPClient and a PayID client which both throw errors.
         XRPClientInterface xrpClient = new FakeXRPClient(
                 NETWORK,

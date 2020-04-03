@@ -24,8 +24,11 @@ public class XpringClient {
      * @param payIDClient A Pay ID Client used to interact with the Pay ID protocol.
      * @param xrpClient An XRP Client used to interact with the XRP Ledger protocol.
      */
-    public XpringClient(PayIDClientInterface payIDClient, XRPClientInterface xrpClient) {
-        // TODO(keefertaylor): Verify that given inputs are on the same network.
+    public XpringClient(PayIDClientInterface payIDClient, XRPClientInterface xrpClient) throws XpringException {
+        if (payIDClient.getNetwork() != xrpClient.getNetwork()) {
+            throw XpringException.MISMATCHED_NETWORKS;
+        }
+
         this.payIDClient = payIDClient;
         this.xrpClient = xrpClient;
     }
