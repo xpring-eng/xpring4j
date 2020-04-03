@@ -60,7 +60,7 @@ public class XpringClientTest {
         );
 
         String fakeResolvedPayID = "r123";
-        PayIDClientInterface payIDClient = new FakePayIDClient(Result.ok(fakeResolvedPayID));
+        PayIDClientInterface payIDClient = new FakePayIDClient(NETWORK, Result.ok(fakeResolvedPayID));
 
         XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -85,7 +85,7 @@ public class XpringClientTest {
                 Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
         );
 
-        PayIDClientInterface payIDClient = new FakePayIDClient(Result.error(PAY_ID_EXCEPTION));
+        PayIDClientInterface payIDClient = new FakePayIDClient(NETWORK, Result.error(PAY_ID_EXCEPTION));
 
         XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -108,7 +108,7 @@ public class XpringClientTest {
         );
 
         String fakeResolvedPayID = "r123";
-        PayIDClientInterface payIDClient = new FakePayIDClient(Result.ok(fakeResolvedPayID));
+        PayIDClientInterface payIDClient = new FakePayIDClient(NETWORK, Result.ok(fakeResolvedPayID));
 
         XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -130,7 +130,7 @@ public class XpringClientTest {
                 Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
         );
 
-        PayIDClientInterface payIDClient = new FakePayIDClient(Result.error(PAY_ID_EXCEPTION));
+        PayIDClientInterface payIDClient = new FakePayIDClient(NETWORK, Result.error(PAY_ID_EXCEPTION));
 
         XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
