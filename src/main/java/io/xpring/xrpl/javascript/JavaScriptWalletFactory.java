@@ -63,13 +63,13 @@ public class JavaScriptWalletFactory {
      * @param publicKey A hex encoded string representing the public key.
      * @param privateKey A hex encoded string representing the private key.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringException If either input key is malformed.
+     * @throws XRPException If either input key is malformed.
      * @return A new {@link JavaScriptWallet}.
      */
-    public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XpringException {
+    public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XRPException {
         Value wallet = this.wallet.newInstance(publicKey, privateKey, isTest);
         if (wallet.isNull()) {
-            throw new XpringException("Invalid inputs");
+            throw new XRPException(XRPExceptionType.INVALID_INPUTS, "Invalid inputs");
         }
         return new JavaScriptWallet(wallet);
     }
