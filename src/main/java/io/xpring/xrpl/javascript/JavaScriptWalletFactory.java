@@ -62,6 +62,23 @@ public class JavaScriptWalletFactory {
     }
 
     /**
+     * Instantiate a new wallet from a set of keys.
+     *
+     * @param publicKey A hex encoded string representing the public key.
+     * @param privateKey A hex encoded string representing the private key.
+     * @param isTest Whether the address is for use on a test network.
+     * @throws {@link XpringException} If either input key is malformed.
+     * @return A new {@link JavaScriptWallet}.
+     */
+    public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XpringException {
+        Value wallet = this.wallet.newInstance(publicKey, privateKey, isTest);
+        if (wallet.isNull()) {
+            throw new XpringException("Invalid inputs");
+        }
+        return new JavaScriptWallet(wallet);
+    }
+
+    /**
      * Initialize a new wallet from a seed.
      *
      * @param seed A base58check encoded seed for the wallet.
