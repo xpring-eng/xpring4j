@@ -6,11 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+#### Changed
+- `IlpClient` methods now throw `IlpException`s if something goes wrong during the call 
+    (either client side or server side).  
+    This is only breaking if users are handling special error cases, which were previously `StatusRuntimeException`s
+
 #### Added
 - A new `accountExists` method added to XRPClient which determines whether a given address exists on the XRP Ledger.
 
-#### Removed
+### Changed
+- Classes in `io.xpring.ilp` now throw an `IlpException` rather than a `XpringException`.
+- Classes in `io.xpring.xrp` now throw an `XRPException` rather than a `XpringException`.
 
+### Removed
+- The `XpringException` class is removed and no longer exists.
 - All legacy services are removed from XpringKit. All RPC's go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
 
 ## 3.0.0 - March 24, 2020
