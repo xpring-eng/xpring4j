@@ -1,6 +1,9 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.XRPTransaction;
+
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * An common interface shared between XRPClient and the internal hierarchy of decorators.
@@ -56,6 +59,19 @@ public interface XRPClientDecorator {
      * @return an {@link RawTransactionStatus} containing the raw transaction status.
      */
     RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException;
+
+    /**
+     * Return the history of payments for the given account.
+     *
+     * Note: This method only works for payment type transactions. See "https://xrpl.org/payment.html"
+     * Note: This method only returns the history that is contained on the remote node,
+     *       which may not contain a full history of the network.
+     *
+     * @param address: The address (account) for which to retrieve payment history.
+     * @throws XRPException If there was a problem communicating with the XRP Ledger.
+     * @return An array of transactions associated with the account.
+     */
+    List<XRPTransaction> paymentHistory(String address) throws XRPException;
 
     /**
      * Check if an address exists on the XRP Ledger.

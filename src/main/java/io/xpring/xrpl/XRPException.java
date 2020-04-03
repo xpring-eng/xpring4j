@@ -8,6 +8,12 @@ public class XRPException extends Exception {
             "Please use the X-Address format. See: https://xrpaddress.info/."
     );
 
+    /** Static exception for when a payment transaction can't be converted to an XRPTransaction. */
+    public static XRPException paymentConversionFailure = new XRPException(
+            XRPExceptionType.UNKNOWN,
+            "Could not convert payment transaction: (transaction). Please file a bug at https://github.com/xpring-eng/xpring4j/issues"
+    );
+
     /** Static exception for when functionality is unimplemented. */
     public static XRPException unimplemented = new XRPException(XRPExceptionType.UNIMPLEMENTED, "Unimplemented");
 

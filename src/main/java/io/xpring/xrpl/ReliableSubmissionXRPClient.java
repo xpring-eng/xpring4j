@@ -1,6 +1,9 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.XRPTransaction;
+
 import java.math.BigInteger;
+import java.util.List;
 
 public class ReliableSubmissionXRPClient implements XRPClientDecorator {
     XRPClientDecorator decoratedClient;
@@ -65,6 +68,11 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
+    }
+
+    @Override
+    public List<XRPTransaction> paymentHistory(String address) throws XRPException {
+        return this.decoratedClient.paymentHistory(address);
     }
 
     @Override
