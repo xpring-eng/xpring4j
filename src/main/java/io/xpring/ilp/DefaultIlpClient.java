@@ -14,6 +14,7 @@ import io.xpring.ilp.grpc.IlpCredentials;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
+import io.xpring.ilp.model.AccountBalance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

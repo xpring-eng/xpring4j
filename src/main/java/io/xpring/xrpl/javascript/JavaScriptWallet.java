@@ -1,6 +1,7 @@
 package io.xpring.xrpl.javascript;
 
-import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.XRPException;
+import io.xpring.xrpl.XRPExceptionType;
 import org.graalvm.polyglot.Value;
 
 /**
@@ -56,12 +57,12 @@ public class JavaScriptWallet {
      *
      * @return A hexadecimal encoded signature.
      *
-     * @throws XpringException An exception if the input could not be signed.
+     * @throws XRPException An exception if the input could not be signed.
      */
-    public String sign(String input) throws XpringException {
+    public String sign(String input) throws XRPException {
         Value javaScriptSignature = javaScriptWallet.invokeMember("sign", input);
         if (javaScriptSignature.isNull()) {
-            throw new XpringException("Could not sign input");
+            throw new XRPException(XRPExceptionType.SIGNING_ERROR, "Could not sign input");
         }
         return javaScriptSignature.asString();
     }

@@ -15,9 +15,9 @@ public interface XRPClientInterface {
      *
      * @param xrplAccountAddress The X-Address to retrieve the balance for.
      * @return A {@link BigInteger} with the number of drops in this account.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
-    BigInteger getBalance(final String xrplAccountAddress) throws XpringException;
+    BigInteger getBalance(final String xrplAccountAddress) throws XRPException;
 
     /**
      * Retrieve the transaction status for a Payment given transaction hash.
@@ -28,7 +28,7 @@ public interface XRPClientInterface {
      * @param transactionHash The hash of the transaction.
      * @return The status of the given transaction.
      */
-    TransactionStatus getPaymentStatus(String transactionHash) throws XpringException;
+    TransactionStatus getPaymentStatus(String transactionHash) throws XRPException;
 
     /**
      * Transact XRP between two accounts on the ledger.
@@ -37,7 +37,7 @@ public interface XRPClientInterface {
      * @param destinationAddress The X-Address to send the XRP to.
      * @param sourceWallet The {@link Wallet} which holds the XRP.
      * @return A transaction hash for the payment.
-     * @throws XpringException If the given inputs were invalid.
+     * @throws XRPException If the given inputs were invalid.
      */
-    public String send(BigInteger amount, String destinationAddress,  Wallet sourceWallet) throws XpringException;
+    public String send(BigInteger amount, String destinationAddress,  Wallet sourceWallet) throws XRPException;
 }
