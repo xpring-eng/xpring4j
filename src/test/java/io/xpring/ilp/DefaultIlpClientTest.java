@@ -47,7 +47,7 @@ public class DefaultIlpClientTest {
     .build();
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     int clearingBalance = 10;
     int prepaidAmount = 100;
     getBalanceResponse = GetBalanceResponse.newBuilder()
@@ -254,8 +254,8 @@ public class DefaultIlpClientTest {
   /**
    * Return a IlpClient which returns the given results for network calls.
    */
-  private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse> getBalanceResult,
-                                     GRPCResult<SendPaymentResponse> sendPaymentResponse) throws IOException {
+  private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse, Throwable> getBalanceResult,
+                                     GRPCResult<SendPaymentResponse, Throwable> sendPaymentResponse) throws IOException {
 
     BalanceServiceGrpc.BalanceServiceImplBase balanceServiceImpl = getBalanceService(
       getBalanceResult
@@ -283,7 +283,7 @@ public class DefaultIlpClientTest {
     return new DefaultIlpClient(channel);
   }
 
-  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(GRPCResult<SendPaymentResponse> sendPaymentResponse) {
+  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(GRPCResult<SendPaymentResponse, Throwable> sendPaymentResponse) {
     return mock(IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase.class, delegatesTo(
       new IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase() {
         @Override
@@ -302,7 +302,7 @@ public class DefaultIlpClientTest {
    * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
    */
   private BalanceServiceGrpc.BalanceServiceImplBase getBalanceService(
-    GRPCResult<GetBalanceResponse> getBalanceResult
+    GRPCResult<GetBalanceResponse, Throwable> getBalanceResult
   ) {
     return mock(BalanceServiceGrpc.BalanceServiceImplBase.class, delegatesTo(
       new BalanceServiceGrpc.BalanceServiceImplBase() {
