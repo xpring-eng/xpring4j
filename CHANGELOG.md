@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - All legacy services are removed from XpringKit. All RPC's go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
 
+#### Changed
+- `XRPClient` requires a new parameter in it's constructor that identifies the network it is attached to.
+
+
 ## 3.0.0 - March 24, 2020
 #### Added
 - A new `getPaymentStatus` is added which retrieves the status of payment transactions.

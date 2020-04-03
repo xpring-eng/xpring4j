@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.common.XRPLNetwork;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class XRPClientIntegrationTests {
 
     @Before
     public void setUp() throws Exception {
-        this.xrpClient = new XRPClient(GRPC_URL);
+        this.xrpClient = new XRPClient(GRPC_URL, XRPLNetwork.TEST);
     }
 
     @Test

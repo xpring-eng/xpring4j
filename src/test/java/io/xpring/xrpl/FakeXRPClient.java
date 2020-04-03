@@ -1,6 +1,8 @@
 package io.xpring.xrpl;
 
 
+import io.xpring.common.XRPLNetwork;
+
 import java.math.BigInteger;
 
 /**
@@ -8,6 +10,8 @@ import java.math.BigInteger;
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
+    private XRPLNetwork network;
+
     public BigInteger getBalanceValue;
     public TransactionStatus paymentStatusValue;
     public String sendValue;
@@ -16,6 +20,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public boolean accountExistsValue;
 
     public FakeXRPClient(
+            XRPLNetwork network,
             BigInteger getBalanceValue,
             TransactionStatus paymentStatusValue,
             String sendValue,
@@ -23,12 +28,18 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
             RawTransactionStatus rawTransactionStatusValue,
             boolean accountExistsValue
     ) {
+        this.network = network;
         this.getBalanceValue = getBalanceValue;
         this.paymentStatusValue = paymentStatusValue;
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
         this.accountExistsValue = accountExistsValue;
+    }
+
+    @Override
+    public XRPLNetwork getNetwork() {
+        return this.network;
     }
 
     @Override

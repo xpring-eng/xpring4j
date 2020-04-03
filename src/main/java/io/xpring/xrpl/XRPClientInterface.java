@@ -1,8 +1,15 @@
 package io.xpring.xrpl;
 
+import io.xpring.common.XRPLNetwork;
+
 import java.math.BigInteger;
 
 public interface XRPClientInterface {
+    /**
+     * Retrieve the network that this XRPClient connects to.
+     */
+    public XRPLNetwork getNetwork();
+
     /**
      * Get the balance of the specified account on the XRP Ledger.
      *
