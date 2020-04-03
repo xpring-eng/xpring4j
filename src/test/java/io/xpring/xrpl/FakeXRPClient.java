@@ -1,7 +1,9 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.XRPTransaction;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * A fake XRPClient which returns the given iVars as results from XRPClientDecorator calls.
@@ -13,6 +15,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public String sendValue;
     public int latestValidatedLedgerValue;
     public RawTransactionStatus rawTransactionStatusValue;
+    public List<XRPTransaction> paymentHistoryValue;
     public boolean accountExistsValue;
 
     public FakeXRPClient(
@@ -21,6 +24,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
             String sendValue,
             int latestValidatedLedgerValue,
             RawTransactionStatus rawTransactionStatusValue,
+            List<XRPTransaction> paymentHistoryValue,
             boolean accountExistsValue
     ) {
         this.getBalanceValue = getBalanceValue;
@@ -28,11 +32,12 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
         this.sendValue = sendValue;
         this.latestValidatedLedgerValue = latestValidatedLedgerValue;
         this.rawTransactionStatusValue = rawTransactionStatusValue;
+        this.paymentHistoryValue = paymentHistoryValue;
         this.accountExistsValue = accountExistsValue;
     }
 
     @Override
-    public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(String xrplAccountAddress) throws XRPException {
         return this.getBalanceValue;
     }
 
@@ -42,7 +47,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
+    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XRPException {
         return this.sendValue;
     }
 
@@ -54,6 +59,11 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     @Override
     public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
         return this.rawTransactionStatusValue;
+    }
+
+    @Override
+    public List<XRPTransaction> paymentHistory(String xrplAccountAddress) {
+        return this.paymentHistoryValue;
     }
 
     @Override
