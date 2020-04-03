@@ -1,5 +1,8 @@
 package io.xpring.xrpl;
 
+import io.xpring.common.XRPLNetwork;
+
+import io.xpring.common.XRPLNetwork;
 import java.math.BigInteger;
 
 /**
@@ -10,14 +13,27 @@ import java.math.BigInteger;
 public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
+    /** The XRPL Network of the node that this client is communicating with. */
+    private XRPLNetwork network;
+
     /**
      * Initialize a new client with the given options.
      *
      * @param grpcURL The remote URL to use for gRPC calls.
+     * @param network The network this XRPClient is connecting to.
      */
-    public XRPClient(String grpcURL) {
+    public XRPClient(String grpcURL, XRPLNetwork network) {
         XRPClientDecorator defaultXRPClient =  new DefaultXRPClient(grpcURL);
         this.decoratedClient = new ReliableSubmissionXRPClient(defaultXRPClient);
+
+        this.network = network;
+    }
+
+    /**
+     * Retrieve the network that this XRPClient connects to.
+     */
+    public XRPLNetwork getNetwork() {
+        return this.network;
     }
 
     /**

@@ -1,6 +1,7 @@
 package io.xpring.xpring;
 
 import io.xpring.common.Result;
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.fakes.FakeWallet;
 import io.xpring.payid.*;
 import io.xpring.payid.fakes.FakePayIDClient;
@@ -19,6 +20,7 @@ public class XpringClientTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     /** Default values for the {@link FakeXRPClient}. These values must be provided but are not varied in testing. */
+    public static final XRPLNetwork NETWORK = XRPLNetwork.TEST;
     public static final BigInteger FAKE_BALANCE_VALUE = new BigInteger("10");
     public static final TransactionStatus FAKE_TRANSACTION_STATUS_VALUE = TransactionStatus.SUCCEEDED;
     public static final int FAKE_LAST_LEDGER_SEQUENCE_VALUE = 10;
@@ -48,6 +50,7 @@ public class XpringClientTest {
         // GIVEN a XpringClient composed of a fake PayIDClient and a fake XRPClient which will both succeed.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
+                NETWORK,
                 Result.ok(FAKE_BALANCE_VALUE),
                 Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
                 Result.ok(expectedTransactionHash),
@@ -73,6 +76,7 @@ public class XpringClientTest {
         // GIVEN a XpringClient composed of a PayIDClient which will throw an error.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
+                NETWORK,
                 Result.ok(FAKE_BALANCE_VALUE),
                 Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
                 Result.ok(expectedTransactionHash),
@@ -94,6 +98,7 @@ public class XpringClientTest {
     public void testSendFailureInXRP() throws PayIDException, XpringException {
         // GIVEN a XpringClient composed of a XRPClient which will throw an error.
         XRPClientInterface xrpClient = new FakeXRPClient(
+                NETWORK,
                 Result.ok(FAKE_BALANCE_VALUE),
                 Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
                 Result.error(XRP_EXCEPTION),
@@ -116,6 +121,7 @@ public class XpringClientTest {
     public void testSendFailureInBoth() throws PayIDException, XpringException {
         // GIVEN a XpringClient composed of an XRPClient and a PayID client which both throw errors.
         XRPClientInterface xrpClient = new FakeXRPClient(
+                NETWORK,
                 Result.ok(FAKE_BALANCE_VALUE),
                 Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
                 Result.error(XRP_EXCEPTION),

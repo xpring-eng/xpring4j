@@ -1,8 +1,8 @@
 package io.xpring.xpring;
 
+import io.xpring.common.XRPLNetwork;
 import io.xpring.payid.PayIDClient;
 import io.xpring.payid.PayIDException;
-import io.xpring.payid.XRPLNetwork;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.XpringException;
@@ -26,7 +26,7 @@ public class XpringClientIntegrationTest {
     /**
      * An XRPClient under test.
      */
-    public static final XRPClient XRP_CLIENT = new XRPClient("test.xrp.xpring.io:50051");
+    public static final XRPClient XRP_CLIENT = new XRPClient("test.xrp.xpring.io:50051", XRPLNetwork.TEST);
 
     /**
      * A XpringClient under test.

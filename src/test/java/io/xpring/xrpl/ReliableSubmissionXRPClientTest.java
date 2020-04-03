@@ -1,6 +1,7 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.Result;
+import io.xpring.common.XRPLNetwork;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +62,7 @@ public class ReliableSubmissionXRPClientTest {
     public void setUp() throws Exception {
         this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         this.fakeXRPClient = new FakeXRPClient(
+                XRPLNetwork.TEST,
                 Result.ok(DEFAULT_BALANCE_VALUE),
                 Result.ok(DEFAULT_TRANSACTION_STATUS_VALUE),
                 Result.ok(DEFAULT_SEND_VALUE),

@@ -1,4 +1,4 @@
-package io.xpring.payid;
+package io.xpring.common;
 
 /**
  * Possible networks to resolve.

@@ -1,7 +1,7 @@
 package io.xpring.xrpl;
 
-
 import io.xpring.common.Result;
+import io.xpring.common.XRPLNetwork;
 
 import java.math.BigInteger;
 
@@ -10,6 +10,8 @@ import java.math.BigInteger;
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
+    private XRPLNetwork network;
+
     public Result<BigInteger, XpringException> getBalanceResult;
     public Result<TransactionStatus, XpringException> paymentStatusResult;
     public Result<String, XpringException> sendResult;
@@ -18,6 +20,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public Result<Boolean, XpringException> accountExistsResult;
 
     public FakeXRPClient(
+            XRPLNetwork network,
             Result<BigInteger, XpringException> getBalanceResult,
             Result<TransactionStatus, XpringException> paymentStatusResult,
             Result<String, XpringException> sendResult,
@@ -25,12 +28,18 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
             Result<RawTransactionStatus, XpringException> rawTransactionStatusResult,
             Result<Boolean, XpringException> accountExistsResult
     ) {
+        this.network = network;
         this.getBalanceResult = getBalanceResult;
         this.paymentStatusResult = paymentStatusResult;
         this.sendResult = sendResult;
         this.latestValidatedLedgerResult = latestValidatedLedgerResult;
         this.rawTransactionStatusResult = rawTransactionStatusResult;
         this.accountExistsResult = accountExistsResult;
+    }
+
+    @Override
+    public XRPLNetwork getNetwork() {
+        return this.network;
     }
 
     @Override
