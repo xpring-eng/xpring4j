@@ -40,10 +40,10 @@ Xpring SDK needs to communicate with a rippled node which has gRPC enabled. Cons
 To get developers started right away, Xpring currently provides nodes:
 
 ```
-# TestNet
+# Testnet
 test.xrp.xpring.io:50051
 
-# MainNet
+# Mainnet
 main.xrp.xpring.io:50051
 ```
 
@@ -159,7 +159,7 @@ wallet.verify(message, signature); // true
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 
-String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 ```
 
@@ -172,7 +172,7 @@ import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
 
-String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 
 String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
@@ -201,14 +201,14 @@ import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.TransactionStatus;
 
-String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 
 String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C635D97AF4A";
 TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash); // TransactionStatus.SUCCEEDED
 ```
 
-**Note:** The example transactionHash may lead to a "Transaction not found." error because the TestNet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
+**Note:** The example transactionHash may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://livenet.xrpl.org)
 
 #### Payment history
 
@@ -238,7 +238,7 @@ import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
 
-String grpcURL = "test.xrp.xpring.io:50051"; // TestNet URL, use main.xrp.xpring.io:50051 for MainNet
+String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 
 // Amount of XRP to send.
@@ -324,7 +324,7 @@ All calls to `IlpClient` must pass an access token, which can be generated in yo
 ```java
 import io.xpring.ilp.IlpClient;
 
-String grpcUrl = "hermes-envoy-test.xpring.io"; // TestNet Hermes URL
+String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 ```
 
