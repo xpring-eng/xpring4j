@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.xpring.xrpl.javascript.JavaScriptWallet;
 import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
 import io.xpring.xrpl.javascript.JavaScriptWalletGenerationResult;
@@ -81,18 +82,9 @@ public class Wallet {
      *
      * @param javaScriptWallet The wallet to wrap.
      */
-    private Wallet(JavaScriptWallet javaScriptWallet) {
+    @VisibleForTesting
+    public Wallet(JavaScriptWallet javaScriptWallet) {
         this.javaScriptWallet = javaScriptWallet;
-    }
-
-    /**
-     * Create a new Wallet with a public and private key.
-     *
-     * @param publicKey A hex encoded string representing the Wallet's public key.
-     * @param privateKey A hex encoded string representing the Wallet's private key.
-     */
-    public Wallet(String publicKey, String privateKey) {
-
     }
 
     /**
