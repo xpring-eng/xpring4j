@@ -234,7 +234,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testPaymentHistoryWithUnmodifiedResponse() {
+    public void testPaymentHistoryWithUnmodifiedResponse() throws XRPException {
         // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` WHEN transaction history is retrieved.
         List<XRPTransaction> returnedValue = this.fakeXRPClient.paymentHistory(XRPL_ADDRESS);
 
