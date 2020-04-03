@@ -10,16 +10,16 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
     }
 
     @Override
-    public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(String xrplAccountAddress) throws XRPException {
         return this.decoratedClient.getBalance(xrplAccountAddress);
     }
 
     @Override
-    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException {
         return this.decoratedClient.getPaymentStatus(transactionHash);
     }
 
-    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
+    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XRPException {
         try {
             long ledgerCloseTime = 4 * 1000;
 
@@ -31,7 +31,10 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
             RawTransactionStatus transactionStatus = this.getRawTransactionStatus(transactionHash);
             int lastLedgerSequence = transactionStatus.getLastLedgerSequence();
             if (lastLedgerSequence == 0) {
-                throw new XpringException("The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined.");
+                throw new XRPException(
+                        XRPExceptionType.UNKNOWN,
+                        "The transaction did not have a lastLedgerSequence field so transaction status cannot be reliably determined."
+                );
             }
 
             // Retrieve the latest ledger index.
@@ -47,22 +50,25 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
 
             return transactionHash;
         } catch (InterruptedException e) {
-            throw new XpringException("Reliable transaction submission project was interrupted.");
+            throw new XRPException(
+                    XRPExceptionType.UNKNOWN,
+                    "Reliable transaction submission project was interrupted."
+            );
         }
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringException {
+    public int getLatestValidatedLedgerSequence() throws XRPException {
         return this.decoratedClient.getLatestValidatedLedgerSequence();
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException {
         return this.decoratedClient.getRawTransactionStatus(transactionHash);
     }
 
     @Override
-    public boolean accountExists(String address) throws XpringException {
+    public boolean accountExists(String address) throws XRPException {
         return this.decoratedClient.accountExists(address);
     }
 }

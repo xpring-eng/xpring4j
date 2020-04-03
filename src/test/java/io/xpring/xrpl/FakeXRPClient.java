@@ -12,21 +12,21 @@ import java.math.BigInteger;
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     private XRPLNetwork network;
 
-    public Result<BigInteger, XpringException> getBalanceResult;
-    public Result<TransactionStatus, XpringException> paymentStatusResult;
-    public Result<String, XpringException> sendResult;
-    public Result<Integer, XpringException> latestValidatedLedgerResult;
-    public Result<RawTransactionStatus, XpringException> rawTransactionStatusResult;
-    public Result<Boolean, XpringException> accountExistsResult;
+    public Result<BigInteger, XRPException> getBalanceResult;
+    public Result<TransactionStatus, XRPException> paymentStatusResult;
+    public Result<String, XRPException> sendResult;
+    public Result<Integer, XRPException> latestValidatedLedgerResult;
+    public Result<RawTransactionStatus, XRPException> rawTransactionStatusResult;
+    public Result<Boolean, XRPException> accountExistsResult;
 
     public FakeXRPClient(
             XRPLNetwork network,
-            Result<BigInteger, XpringException> getBalanceResult,
-            Result<TransactionStatus, XpringException> paymentStatusResult,
-            Result<String, XpringException> sendResult,
-            Result<Integer, XpringException> latestValidatedLedgerResult,
-            Result<RawTransactionStatus, XpringException> rawTransactionStatusResult,
-            Result<Boolean, XpringException> accountExistsResult
+            Result<BigInteger, XRPException> getBalanceResult,
+            Result<TransactionStatus, XRPException> paymentStatusResult,
+            Result<String, XRPException> sendResult,
+            Result<Integer, XRPException> latestValidatedLedgerResult,
+            Result<RawTransactionStatus, XRPException> rawTransactionStatusResult,
+            Result<Boolean, XRPException> accountExistsResult
     ) {
         this.network = network;
         this.getBalanceResult = getBalanceResult;
@@ -43,7 +43,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public BigInteger getBalance(String xrplAccountAddress) throws XpringException {
+    public BigInteger getBalance(String xrplAccountAddress) throws XRPException {
         if (this.getBalanceResult.isError()) {
             throw this.getBalanceResult.getError();
         } else {
@@ -52,7 +52,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public TransactionStatus getPaymentStatus(String transactionHash) throws XpringException {
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException {
         if (this.paymentStatusResult.isError()) {
             throw this.paymentStatusResult.getError();
         } else {
@@ -61,7 +61,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XpringException {
+    public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XRPException {
         if (this.sendResult.isError()) {
             throw this.sendResult.getError();
         } else {
@@ -70,7 +70,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() throws XpringException {
+    public int getLatestValidatedLedgerSequence() throws XRPException {
         if (this.latestValidatedLedgerResult.isError()) {
             throw this.latestValidatedLedgerResult.getError();
         } else {
@@ -79,7 +79,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XpringException {
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException {
         if (this.rawTransactionStatusResult.isError()) {
             throw this.rawTransactionStatusResult.getError();
         } else {
@@ -88,7 +88,7 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     }
 
     @Override
-    public boolean accountExists(String address) throws XpringException {
+    public boolean accountExists(String address) throws XRPException {
         if (this.accountExistsResult.isError()) {
             throw this.accountExistsResult.getError();
         } else {

@@ -4,7 +4,7 @@ import io.xpring.payid.PayIDClientInterface;
 import io.xpring.payid.PayIDException;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClientInterface;
-import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.XRPException;
 
 import java.math.BigInteger;
 
@@ -44,7 +44,7 @@ public class XpringClient {
             final BigInteger amount,
             final String destinationPayID,
             final Wallet sourceWallet
-    ) throws PayIDException, XpringException {
+    ) throws PayIDException, XRPException {
         // Resolve the destination address to an XRP address.
         String destinationAddress = this.payIDClient.xrpAddressForPayID(destinationPayID);
 

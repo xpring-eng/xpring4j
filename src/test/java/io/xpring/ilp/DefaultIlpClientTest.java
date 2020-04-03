@@ -27,7 +27,6 @@ import io.xpring.common.Result;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -119,7 +118,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void getIlpBalanceTest() throws XpringException, IOException {
+  public void getIlpBalanceTest() throws IlpException, IOException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
 
@@ -136,7 +135,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void getIlpBalanceWithBearerTokenTest() throws IOException, XpringException {
+  public void getIlpBalanceWithBearerTokenTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed
     DefaultIlpClient client = getClient();
 
@@ -144,13 +143,13 @@ public class DefaultIlpClientTest {
     // THEN a XpringException in thrown
     assertThrows(
       "accessToken cannot start with \"Bearer \"",
-      XpringException.class,
+            IlpException.class,
       () -> client.getBalance("bob", "Bearer bob")
     );
   }
 
   @Test
-  public void sendPaymentTest() throws IOException, XpringException {
+  public void sendPaymentTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
     DefaultIlpClient client = getClient();
 
@@ -170,7 +169,7 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void sendPaymentWithBearerTokenTest() throws IOException, XpringException {
+  public void sendPaymentWithBearerTokenTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed
     DefaultIlpClient client = getClient();
 
@@ -184,7 +183,7 @@ public class DefaultIlpClientTest {
 
     assertThrows(
       "accessToken cannot start with \"Bearer \"",
-      XpringException.class,
+            IlpException.class,
       () -> client.sendPayment(paymentRequest, "Bearer bob")
     );
   }

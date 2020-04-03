@@ -5,7 +5,7 @@ import io.xpring.payid.PayIDClient;
 import io.xpring.payid.PayIDException;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClient;
-import io.xpring.xrpl.XpringException;
+import io.xpring.xrpl.XRPException;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -34,7 +34,7 @@ public class XpringClientIntegrationTest {
     public static final XpringClient XPRING_CLIENT = new XpringClient(PAY_ID_CLIENT, XRP_CLIENT);
 
     @Test
-    public void testSendXRP() throws XpringException, PayIDException {
+    public void testSendXRP() throws XRPException, PayIDException {
         // GIVEN a Pay ID that will resolve and a wallet with a balance on TestNet.
         String payID = "$dev.payid.xpring.money/hbergren";
         Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");

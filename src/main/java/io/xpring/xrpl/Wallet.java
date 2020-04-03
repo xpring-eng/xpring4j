@@ -19,9 +19,9 @@ public class Wallet {
      * Initialize a new wallet from a seed.
      *
      * @param seed A base58check encoded seed for the wallet.
-     * @throws XpringException If the seed is malformed.
+     * @throws XRPException If the seed is malformed.
      */
-    public Wallet(String seed) throws XpringException {
+    public Wallet(String seed) throws XRPException {
         this(seed, false);
     }
 
@@ -30,9 +30,9 @@ public class Wallet {
      *
      * @param seed A base58check encoded seed for the wallet.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringException If the seed is malformed.
+     * @throws XRPException If the seed is malformed.
      */
-    public Wallet(String seed, boolean isTest) throws XpringException {
+    public Wallet(String seed, boolean isTest) throws XRPException {
         this(JavaScriptWalletFactory.get().walletFromSeed(seed, isTest));
     }
 
@@ -41,9 +41,9 @@ public class Wallet {
      *
      * @param mnemonic       A space separated mnemonic.
      * @param derivationPath A derivation. If null, the default derivation path will be used.
-     * @throws XpringException If the mnemonic or derivation path are malformed.
+     * @throws XRPException If the mnemonic or derivation path are malformed.
      */
-    public Wallet(String mnemonic, String derivationPath) throws XpringException {
+    public Wallet(String mnemonic, String derivationPath) throws XRPException {
         this(mnemonic, derivationPath, false);
     }
 
@@ -53,9 +53,9 @@ public class Wallet {
      * @param mnemonic       A space separated mnemonic.
      * @param derivationPath A derivation. If null, the default derivation path will be used.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringException If the mnemonic or derivation path are malformed.
+     * @throws XRPException If the mnemonic or derivation path are malformed.
      */
-    public Wallet(String mnemonic, String derivationPath, boolean isTest) throws XpringException {
+    public Wallet(String mnemonic, String derivationPath, boolean isTest) throws XRPException {
         this(JavaScriptWalletFactory.get().walletFromMnemonicAndDerivationPath(
                 mnemonic,
                 derivationPath,
@@ -69,10 +69,10 @@ public class Wallet {
      * @param publicKey A hex encoded string representing the public key.
      * @param privateKey A hex encoded string representing the private key.
      * @param isTest Whether the address is for use on a test network.
-     * @throws XpringException If either input key is malformed.
+     * @throws XRPException If either input key is malformed.
      * @return A new {@link JavaScriptWallet}.
      */
-    public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XpringException {
+    public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XRPException {
         JavaScriptWallet javaScriptWallet = JavaScriptWalletFactory.get().walletFromKeys(publicKey, privateKey, isTest);
         return new Wallet(javaScriptWallet);
     }
@@ -91,9 +91,9 @@ public class Wallet {
      * Generate a random Wallet.
      *
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
-     * @throws XpringException If wallet generation fails.
+     * @throws XRPException If wallet generation fails.
      */
-    public static WalletGenerationResult generateRandomWallet() throws XpringException {
+    public static WalletGenerationResult generateRandomWallet() throws XRPException {
         return generateRandomWallet(false);
     }
 
@@ -102,9 +102,9 @@ public class Wallet {
      *
      * @param isTest Whether the address is for use on a test network.
      * @return A {WalletGenerationResult} containing the artifacts of the generation process.
-     * @throws XpringException If wallet generation fails.
+     * @throws XRPException If wallet generation fails.
      */
-    public static WalletGenerationResult generateRandomWallet(boolean isTest) throws XpringException {
+    public static WalletGenerationResult generateRandomWallet(boolean isTest) throws XRPException {
             JavaScriptWalletGenerationResult javaScriptWalletGenerationResult = JavaScriptWalletFactory.get()
             .generateRandomWallet(isTest);
 
@@ -142,9 +142,9 @@ public class Wallet {
      *
      * @param input The input to sign as a hexadecimal string.
      * @return A hexadecimal encoded signature.
-     * @throws XpringException If the input is malformed.
+     * @throws XRPException If the input is malformed.
      */
-    public String sign(String input) throws XpringException {
+    public String sign(String input) throws XRPException {
         return javaScriptWallet.sign(input);
     }
 

@@ -33,13 +33,13 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void getBalanceTest() throws XpringException {
+    public void getBalanceTest() throws XRPException {
         BigInteger balance = xrpClient.getBalance(XRPL_ADDRESS);
         assertThat(balance).isGreaterThan(BigInteger.ONE).withFailMessage("Balance should have been positive");
     }
 
     @Test
-    public void getPaymentStatusTest() throws XpringException {
+    public void getPaymentStatusTest() throws XRPException {
         // GIVEN a hash of a payment transaction.
         Wallet wallet = new Wallet(WALLET_SEED);
         String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
@@ -52,7 +52,7 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void sendXRPTest() throws XpringException {
+    public void sendXRPTest() throws XRPException {
         Wallet wallet = new Wallet(WALLET_SEED);
 
         String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
@@ -60,7 +60,7 @@ public class XRPClientIntegrationTests {
     }
 
     @Test
-    public void accountExistsTest() throws XpringException {
+    public void accountExistsTest() throws XRPException {
         boolean exists = xrpClient.accountExists(XRPL_ADDRESS);
         assertThat(exists).isEqualTo(true);
     }

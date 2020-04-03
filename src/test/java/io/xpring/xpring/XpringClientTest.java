@@ -40,13 +40,13 @@ public class XpringClientTest {
 
     /** Exceptions to throw. */
     public static final PayIDException PAY_ID_EXCEPTION = new PayIDException(PayIDExceptionType.UNKNOWN, "Test PayID error");
-    public static final XRPE XRP_EXCEPTION =  new XpringException(XRP"Test XRP Error");
+    public static final XRPException XRP_EXCEPTION =  new XRPException(XRPExceptionType.UNKNOWN, "Test XRP Error");
 
-    public XpringClientTest() throws XpringException {
+    public XpringClientTest() throws XRPException {
     }
 
     @Test
-    public void testSendSuccess() throws PayIDException, XpringException {
+    public void testSendSuccess() throws PayIDException, XRPException {
         // GIVEN a XpringClient composed of a fake PayIDClient and a fake XRPClient which will both succeed.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
@@ -72,7 +72,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendFailureInPayID() throws PayIDException, XpringException {
+    public void testSendFailureInPayID() throws PayIDException, XRPException {
         // GIVEN a XpringClient composed of a PayIDClient which will throw an error.
         String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
         XRPClientInterface xrpClient = new FakeXRPClient(
@@ -95,7 +95,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendFailureInXRP() throws PayIDException, XpringException {
+    public void testSendFailureInXRP() throws PayIDException, XRPException {
         // GIVEN a XpringClient composed of a XRPClient which will throw an error.
         XRPClientInterface xrpClient = new FakeXRPClient(
                 NETWORK,
@@ -118,7 +118,7 @@ public class XpringClientTest {
     }
 
     @Test
-    public void testSendFailureInBoth() throws PayIDException, XpringException {
+    public void testSendFailureInBoth() throws PayIDException, XRPException {
         // GIVEN a XpringClient composed of an XRPClient and a PayID client which both throw errors.
         XRPClientInterface xrpClient = new FakeXRPClient(
                 NETWORK,

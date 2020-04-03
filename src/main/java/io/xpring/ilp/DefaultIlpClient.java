@@ -13,7 +13,6 @@ import io.xpring.ilp.grpc.IlpCredentials;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
 import io.xpring.ilp.model.AccountBalance;
-import io.xpring.xrpl.XpringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +64,7 @@ public class DefaultIlpClient implements IlpClientDecorator {
     }
 
     @Override
-    public AccountBalance getBalance(final String accountId, final String accessToken) throws XpringException {
+    public AccountBalance getBalance(final String accountId, final String accessToken) throws IlpException {
         GetBalanceRequest request = GetBalanceRequest.newBuilder()
           .setAccountId(accountId)
           .build();
@@ -78,16 +77,16 @@ public class DefaultIlpClient implements IlpClientDecorator {
             // Convert protobuf response to AccountBalanceResponse
             return AccountBalance.from(response);
         } catch (StatusRuntimeException statusRuntimeException) {
-            throw new XpringException(String.format("Unable to get balance for account %s.  %s", accountId, statusRuntimeException.getStatus()));
+            throw new IlpException(IlpExceptionType.UNKNOWN, String.format("Unable to get balance for account %s.  %s", accountId, statusRuntimeException.getStatus()));
         } catch (IllegalArgumentException illegalArgumentException) {
             // accessToken started with "Bearer "
-            throw new XpringException(illegalArgumentException.getMessage());
+            throw new IlpException(IlpExceptionType.ILLEGAL_ACCESS_TOKEN, illegalArgumentException.getMessage());
         }
     }
 
     @Override
     public PaymentResult sendPayment(final PaymentRequest paymentRequest,
-                                     final String accessToken) throws XpringException {
+                                     final String accessToken) throws IlpException {
         try {
             // Convert paymentRequest to a protobuf object
             SendPaymentRequest request = paymentRequest.toProto();
@@ -100,10 +99,10 @@ public class DefaultIlpClient implements IlpClientDecorator {
             return PaymentResult.from(protoResponse);
 
         } catch (StatusRuntimeException statusRuntimeException) {
-            throw new XpringException("Unable to send payment. " + statusRuntimeException.getStatus());
+            throw new IlpException(IlpExceptionType.UNKNOWN, "Unable to send payment. " + statusRuntimeException.getStatus());
         } catch (IllegalArgumentException illegalArgumentException) {
             // accessToken started with "Bearer "
-            throw new XpringException(illegalArgumentException.getMessage());
+            throw new IlpException(IlpExceptionType.ILLEGAL_ACCESS_TOKEN, illegalArgumentException.getMessage());
         }
     }
 }

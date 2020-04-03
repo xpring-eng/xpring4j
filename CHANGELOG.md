@@ -9,8 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - A new `accountExists` method added to XRPClient which determines whether a given address exists on the XRP Ledger.
 
-#### Removed
+### Changed
+- Classes in `io.xpring.ilp` now throw an `IlpException` rather than a `XpringException`.
+- Classes in `io.xpring.xrp` now throw an `XRPException` rather than a `XpringException`.
 
+### Removed
+- The `XpringException` class is removed and no longer exists.
 - All legacy services are removed from XpringKit. All RPC's go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
 
 #### Changed

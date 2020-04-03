@@ -75,7 +75,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetBalance() throws XpringException {
+    public void testGetBalance() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a balance is retrieved
         BigInteger balance = reliableSubmissionXRPClient.getBalance(XRPL_ADDRESS);
 
@@ -85,7 +85,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetPaymentStatus() throws XpringException {
+    public void testGetPaymentStatus() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a payment status is retrieved
         TransactionStatus paymentStatus = reliableSubmissionXRPClient.getPaymentStatus(TRANSACTION_HASH);
 
@@ -94,7 +94,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetLatestValidatedLedgerSequence() throws XpringException {
+    public void testGetLatestValidatedLedgerSequence() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN the latest ledger sequence is retrieved
         int latestSequence = reliableSubmissionXRPClient.getLatestValidatedLedgerSequence();
 
@@ -103,7 +103,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetRawTransactionStatus() throws XpringException {
+    public void testGetRawTransactionStatus() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a raw transaction status is retrieved
         RawTransactionStatus transactionStatus = reliableSubmissionXRPClient.getRawTransactionStatus(TRANSACTION_HASH);
 
@@ -112,7 +112,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test(timeout=10000)
-    public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XpringException {
+    public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XRPException {
         // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
         this.fakeXRPClient.rawTransactionStatusResult = Result.ok(
                 new RawTransactionStatus(
@@ -146,7 +146,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test(timeout=10000)
-    public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XpringException {
+    public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XRPException {
         // GIVEN A transaction that will validate in one second
         final String transactionStatusCode = "tesSuccess";
         this.fakeXRPClient.rawTransactionStatusResult = Result.ok(
@@ -202,7 +202,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testSendWithNoLastLedgerSequence() throws XpringException {
+    public void testSendWithNoLastLedgerSequence() throws XRPException {
         // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` which will return a transaction that did not have a last ledger sequence attached.
         this.fakeXRPClient.rawTransactionStatusResult = Result.ok(
                 new RawTransactionStatus(
