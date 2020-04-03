@@ -1,11 +1,13 @@
 package io.xpring.payid;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.gson.reflect.TypeToken;
-import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.generated.*;
 import org.interledger.spsp.PaymentPointer;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.gson.reflect.TypeToken;
+import io.xpring.payid.generated.ApiClient;
+import io.xpring.payid.generated.ApiException;
+import io.xpring.payid.generated.ApiResponse;
+import io.xpring.payid.generated.Pair;
 import io.xpring.payid.generated.model.PaymentInformation;
 
 import java.lang.reflect.Type;

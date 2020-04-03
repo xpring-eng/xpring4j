@@ -235,6 +235,9 @@ public class FakeXRPProtobufs {
                                         .setTransactionSignature(transactionSignature)
                                         .build();
 
+    // CheckCash proto
+    static CheckCash checkCash = CheckCash.newBuilder().build();
+
     // Transaction protos
         // Common.Sequence proto
     static Common.Sequence sequence = Common.Sequence.newBuilder().setValue(testSequence).build();
@@ -278,9 +281,40 @@ public class FakeXRPProtobufs {
                                                                         .setPayment(paymentWithAllFieldsSet)
                                                                         .build();
 
-    // CheckCash proto
-    static CheckCash checkCash = CheckCash.newBuilder().build();
+    static Transaction checkCashTransactionWithCommonFieldsSet = Transaction.newBuilder()
+                                                                        .setAccount(account)
+                                                                        .setFee(xrpDropsAmount)
+                                                                        .setSequence(sequence)
+                                                                        .setSigningPublicKey(signingPublicKey)
+                                                                        .setTransactionSignature(transactionSignature)
+                                                                        .setCheckCash(checkCash)
+                                                                        .build();
 
+    // GetTransactionResponse protos
+    static GetTransactionResponse getTransactionResponsePayment1 = GetTransactionResponse.newBuilder()
+                                                                        .setTransaction(transactionWithAllFieldsSet)
+                                                                        .build();
+    static GetTransactionResponse getTransactionResponsePayment2 = GetTransactionResponse.newBuilder()
+                                                            .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
+                                                            .build();
+
+    static GetTransactionResponse getTransactionResponseCheckCash = GetTransactionResponse.newBuilder()
+                                                                .setTransaction(checkCashTransactionWithCommonFieldsSet)
+                                                                .build();
+
+    // GetAccountTransactionHistoryResponse protos
+    static GetAccountTransactionHistoryResponse paymentOnlyGetAccountTransactionHistoryResponse =
+                                                            GetAccountTransactionHistoryResponse.newBuilder()
+                                                                        .addTransactions(getTransactionResponsePayment1)
+                                                                        .addTransactions(getTransactionResponsePayment2)
+                                                                        .build();
+
+    static GetAccountTransactionHistoryResponse mixedGetAccountTransactionHistoryResponse =
+                                                            GetAccountTransactionHistoryResponse.newBuilder()
+                                                                    .addTransactions(getTransactionResponsePayment1)
+                                                                    .addTransactions(getTransactionResponsePayment2)
+                                                                    .addTransactions(getTransactionResponseCheckCash)
+                                                                    .build();
     // INVALID OBJECTS ===============================================================
 
     // Invalid IssuedCurrencyAmount proto
@@ -344,4 +378,16 @@ public class FakeXRPProtobufs {
                                                                 .setTransactionSignature(transactionSignature)
                                                                 .setCheckCash(checkCash) // unsupported
                                                                 .build();
+
+    // Invalid GetTransactionResponse proto
+    static GetTransactionResponse invalidGetTransactionResponse = GetTransactionResponse.newBuilder()
+                                                            .setTransaction(invalidTransactionWithEmptyPaymentFields)
+                                                            .build();
+
+    // Invalid GetAccountTransactionHistoryResponse protos
+    static GetAccountTransactionHistoryResponse invalidPaymentGetAccountTransactionHistoryResponse =
+            GetAccountTransactionHistoryResponse.newBuilder()
+                    .addTransactions(invalidGetTransactionResponse)
+                    .addTransactions(getTransactionResponsePayment1)
+                    .build();
 }

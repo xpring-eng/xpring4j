@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
 import io.grpc.Status;
+import io.xpring.ilp.IlpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +32,11 @@ public class IlpCredentials extends CallCredentials {
    * @param accessToken Caller's access token, which can not start with 'Bearer '
    * @return An instance of {@link IlpCredentials}
    */
-  public static IlpCredentials build(String accessToken) {
-    Preconditions.checkArgument(
-      !accessToken.startsWith(BEARER_PREFIX),
-      "accessToken cannot start with \"Bearer \""
-    );
+  public static IlpCredentials build(String accessToken) throws IlpException {
+    if (accessToken.startsWith(BEARER_PREFIX)) {
+      throw IlpException.INVALID_ACCESS_TOKEN;
+    }
+
     return new IlpCredentials(accessToken);
   }
 

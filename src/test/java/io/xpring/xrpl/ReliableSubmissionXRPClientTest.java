@@ -1,12 +1,15 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.helpers.XRPTestUtils;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +54,8 @@ public class ReliableSubmissionXRPClientTest {
                     )
             ).build()
     );
+    private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE = XRPTestUtils
+                    .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
     private static final boolean DEFAULT_ACCOUNT_EXISTS_VALUE = true;
 
     FakeXRPClient fakeXRPClient;
@@ -67,6 +72,7 @@ public class ReliableSubmissionXRPClientTest {
                 DEFAULT_SEND_VALUE,
                 DEFAULT_LATEST_LEDGER_VALUE,
                 DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
+                DEFAULT_PAYMENT_HISTORY_VALUE,
                 DEFAULT_ACCOUNT_EXISTS_VALUE
         );
 
@@ -216,6 +222,15 @@ public class ReliableSubmissionXRPClientTest {
         // WHEN a reliable send is submitted THEN an error is thrown.
         expectedException.expect(Exception.class);
         this.reliableSubmissionXRPClient.send(SEND_AMOUNT, XRPL_ADDRESS, new Wallet(WALLET_SEED));
+    }
+
+    @Test
+    public void testPaymentHistoryWithUnmodifiedResponse() {
+        // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` WHEN transaction history is retrieved.
+        List<XRPTransaction> returnedValue = this.fakeXRPClient.paymentHistory(XRPL_ADDRESS);
+
+        // THEN the result is returned unaltered.
+        assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryValue);
     }
 
     /**
