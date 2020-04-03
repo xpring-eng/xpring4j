@@ -45,6 +45,13 @@ public class PayIDClient implements PayIDClientInterface {
     }
 
     /**
+     * Retrieve the network that addresses will be resolved on.
+     */
+    public XRPLNetwork getNetwork() {
+        return this.network;
+    }
+
+    /**
      * Set whether to enable or disable SSL verification.
      *
      * Exposed for testing purposes.
