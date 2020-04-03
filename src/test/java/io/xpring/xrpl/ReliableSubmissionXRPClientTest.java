@@ -1,12 +1,16 @@
 package io.xpring.xrpl;
 
 import io.xpring.GRPCResult;
+import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.helpers.XRPTestUtils;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +55,8 @@ public class ReliableSubmissionXRPClientTest {
                     )
             ).build()
     );
+    private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE = XRPTestUtils
+                    .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
     private static final boolean DEFAULT_ACCOUNT_EXISTS_VALUE = true;
 
     FakeXRPClient fakeXRPClient;
@@ -61,11 +67,13 @@ public class ReliableSubmissionXRPClientTest {
     public void setUp() throws Exception {
         this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         this.fakeXRPClient = new FakeXRPClient(
+                XRPLNetwork.TEST,
                 GRPCResult.ok(DEFAULT_BALANCE_VALUE),
                 GRPCResult.ok(DEFAULT_TRANSACTION_STATUS_VALUE),
                 GRPCResult.ok(DEFAULT_SEND_VALUE),
                 GRPCResult.ok(DEFAULT_LATEST_LEDGER_VALUE),
                 GRPCResult.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                GRPCResult.ok(DEFAULT_PAYMENT_HISTORY_VALUE),
                 GRPCResult.ok(DEFAULT_ACCOUNT_EXISTS_VALUE)
         );
 
@@ -73,7 +81,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetBalance() throws XpringException {
+    public void testGetBalance() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a balance is retrieved
         BigInteger balance = reliableSubmissionXRPClient.getBalance(XRPL_ADDRESS);
 
@@ -83,7 +91,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetPaymentStatus() throws XpringException {
+    public void testGetPaymentStatus() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a payment status is retrieved
         TransactionStatus paymentStatus = reliableSubmissionXRPClient.getPaymentStatus(TRANSACTION_HASH);
 
@@ -92,7 +100,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetLatestValidatedLedgerSequence() throws XpringException {
+    public void testGetLatestValidatedLedgerSequence() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN the latest ledger sequence is retrieved
         int latestSequence = reliableSubmissionXRPClient.getLatestValidatedLedgerSequence();
 
@@ -101,7 +109,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testGetRawTransactionStatus() throws XpringException {
+    public void testGetRawTransactionStatus() throws XRPException {
         // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN a raw transaction status is retrieved
         RawTransactionStatus transactionStatus = reliableSubmissionXRPClient.getRawTransactionStatus(TRANSACTION_HASH);
 
@@ -110,7 +118,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test(timeout=10000)
-    public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XpringException {
+    public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XRPException {
         // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
         this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(
                 new RawTransactionStatus(
@@ -144,7 +152,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test(timeout=10000)
-    public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XpringException {
+    public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XRPException {
         // GIVEN A transaction that will validate in one second
         final String transactionStatusCode = "tesSuccess";
         this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(
@@ -200,7 +208,7 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testSendWithNoLastLedgerSequence() throws XpringException {
+    public void testSendWithNoLastLedgerSequence() throws XRPException {
         // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` which will return a transaction that did not have a last ledger sequence attached.
         this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(
                 new RawTransactionStatus(
@@ -223,6 +231,15 @@ public class ReliableSubmissionXRPClientTest {
         // WHEN a reliable send is submitted THEN an error is thrown.
         expectedException.expect(Exception.class);
         this.reliableSubmissionXRPClient.send(SEND_AMOUNT, XRPL_ADDRESS, new Wallet(WALLET_SEED));
+    }
+
+    @Test
+    public void testPaymentHistoryWithUnmodifiedResponse() {
+        // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` WHEN transaction history is retrieved.
+        List<XRPTransaction> returnedValue = this.fakeXRPClient.paymentHistory(XRPL_ADDRESS);
+
+        // THEN the result is returned unaltered.
+        assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryResult);
     }
 
     /**
