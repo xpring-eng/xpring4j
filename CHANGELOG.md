@@ -17,12 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - A new `getPaymentStatus` is added which retrieves the status of payment transactions.
 
-#### Deprecated
-- `getTransactionStatus` is deprecated. Please use `getPaymentStatus` instead.
-
 #### Removed
 
 - `XpringClient` is removed from XpringKit. This class has been deprecated since 1.5.0. Clients should use `XRPClient` instead.
+- `getTransactionStatus` is removed. Please use `getPaymentStatus` instead.
 
 #### Changed
 - `XRPClient` now uses [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254) rather than the legacy API. Users who wish to use the legacy API should pass `false` for `useNewProtocolBuffers` in the constructor.
