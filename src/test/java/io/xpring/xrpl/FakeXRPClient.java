@@ -18,11 +18,10 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     public GRPCResult<String, XRPException> sendResult;
     public GRPCResult<Integer, XRPException> latestValidatedLedgerResult;
     public GRPCResult<RawTransactionStatus, XRPException> rawTransactionStatusResult;
-    public GRPCResult<List<XRPTransaction>, XRPException> paymentHistoryResult;
+    public GRPCResult<List<XRPTransaction, XRPException> paymentHistoryResult;
     public GRPCResult<Boolean, XRPException> accountExistsResult;
 
     public FakeXRPClient(
-            
             GRPCResult<BigInteger, XRPException> getBalanceResult,
             GRPCResult<TransactionStatus, XRPException> paymentStatusResult,
             GRPCResult<String, XRPException> sendResult,
@@ -94,6 +93,8 @@ public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
         }
     }
 
+
+    @Override
     public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
         if (this.paymentHistoryResult.isError()) {
             throw this.paymentHistoryResult.getError();
