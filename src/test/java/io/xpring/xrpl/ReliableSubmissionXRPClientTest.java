@@ -1,6 +1,6 @@
 package io.xpring.xrpl;
 
-import io.xpring.GRPCResult;
+import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
@@ -68,13 +68,13 @@ public class ReliableSubmissionXRPClientTest {
         this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         this.fakeXRPClient = new FakeXRPClient(
                 XRPLNetwork.TEST,
-                GRPCResult.ok(DEFAULT_BALANCE_VALUE),
-                GRPCResult.ok(DEFAULT_TRANSACTION_STATUS_VALUE),
-                GRPCResult.ok(DEFAULT_SEND_VALUE),
-                GRPCResult.ok(DEFAULT_LATEST_LEDGER_VALUE),
-                GRPCResult.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
-                GRPCResult.ok(DEFAULT_PAYMENT_HISTORY_VALUE),
-                GRPCResult.ok(DEFAULT_ACCOUNT_EXISTS_VALUE)
+                Result.ok(DEFAULT_BALANCE_VALUE),
+                Result.ok(DEFAULT_TRANSACTION_STATUS_VALUE),
+                Result.ok(DEFAULT_SEND_VALUE),
+                Result.ok(DEFAULT_LATEST_LEDGER_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(DEFAULT_PAYMENT_HISTORY_VALUE),
+                Result.ok(DEFAULT_ACCOUNT_EXISTS_VALUE)
         );
 
         this.reliableSubmissionXRPClient = new ReliableSubmissionXRPClient(fakeXRPClient);
@@ -120,7 +120,7 @@ public class ReliableSubmissionXRPClientTest {
     @Test(timeout=10000)
     public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XRPException {
         // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
-        this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(new RawTransactionStatus(
+        this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                 GetTransactionResponse.newBuilder()
                         .setValidated(false)
                         .setTransaction(
@@ -142,7 +142,7 @@ public class ReliableSubmissionXRPClientTest {
         ));
 
         runAfterOneSecond(() -> {
-            this.fakeXRPClient.latestValidatedLedgerResult = GRPCResult.ok(LAST_LEDGER_SEQUENCE + 1);
+            this.fakeXRPClient.latestValidatedLedgerResult = Result.ok(LAST_LEDGER_SEQUENCE + 1);
         });
 
         // WHEN a reliable send is submitted THEN the send reaches a consistent state and returns.
@@ -153,7 +153,7 @@ public class ReliableSubmissionXRPClientTest {
     public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XRPException {
         // GIVEN A transaction that will validate in one second
         final String transactionStatusCode = "tesSuccess";
-        this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(new RawTransactionStatus(
+        this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                 GetTransactionResponse.newBuilder()
                         .setValidated(false)
                         .setTransaction(
@@ -175,7 +175,7 @@ public class ReliableSubmissionXRPClientTest {
         ));
 
         runAfterOneSecond(() -> {
-            this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(new RawTransactionStatus(
+            this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                     GetTransactionResponse.newBuilder()
                             .setValidated(true)
                             .setTransaction(
@@ -204,7 +204,7 @@ public class ReliableSubmissionXRPClientTest {
     @Test
     public void testSendWithNoLastLedgerSequence() throws XRPException {
         // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` which will return a transaction that did not have a last ledger sequence attached.
-        this.fakeXRPClient.rawTransactionStatusResult = GRPCResult.ok(new RawTransactionStatus(
+        this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                 GetTransactionResponse.newBuilder()
                         .setValidated(false)
                         .setTransaction(

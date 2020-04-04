@@ -2,8 +2,8 @@ package io.xpring.xrpl;
 
 import io.xpring.xrpl.model.XRPTransaction;
 
+import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.GRPCResult;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -15,23 +15,23 @@ import java.util.List;
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
     private XRPLNetwork network;
 
-    public GRPCResult<BigInteger, XRPException> getBalanceResult;
-    public GRPCResult<TransactionStatus, XRPException> paymentStatusResult;
-    public GRPCResult<String, XRPException> sendResult;
-    public GRPCResult<Integer, XRPException> latestValidatedLedgerResult;
-    public GRPCResult<RawTransactionStatus, XRPException> rawTransactionStatusResult;
-    public GRPCResult<List<XRPTransaction>, XRPException> paymentHistoryResult;
-    public GRPCResult<Boolean, XRPException> accountExistsResult;
+    public Result<BigInteger, XRPException> getBalanceResult;
+    public Result<TransactionStatus, XRPException> paymentStatusResult;
+    public Result<String, XRPException> sendResult;
+    public Result<Integer, XRPException> latestValidatedLedgerResult;
+    public Result<RawTransactionStatus, XRPException> rawTransactionStatusResult;
+    public Result<List<XRPTransaction>, XRPException> paymentHistoryResult;
+    public Result<Boolean, XRPException> accountExistsResult;
 
     public FakeXRPClient(
             XRPLNetwork network,
-            GRPCResult<BigInteger, XRPException> getBalanceResult,
-            GRPCResult<TransactionStatus, XRPException> paymentStatusResult,
-            GRPCResult<String, XRPException> sendResult,
-            GRPCResult<Integer, XRPException> latestValidatedLedgerResult,
-            GRPCResult<RawTransactionStatus, XRPException> rawTransactionStatusResult,
-            GRPCResult<List<XRPTransaction>, XRPException> paymentHistoryResult,
-            GRPCResult<Boolean, XRPException> accountExistsResult
+            Result<BigInteger, XRPException> getBalanceResult,
+            Result<TransactionStatus, XRPException> paymentStatusResult,
+            Result<String, XRPException> sendResult,
+            Result<Integer, XRPException> latestValidatedLedgerResult,
+            Result<RawTransactionStatus, XRPException> rawTransactionStatusResult,
+            Result<List<XRPTransaction>, XRPException> paymentHistoryResult,
+            Result<Boolean, XRPException> accountExistsResult
     ) {
         this.network = network;
         this.getBalanceResult = getBalanceResult;
