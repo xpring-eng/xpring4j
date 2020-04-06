@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
@@ -35,27 +36,27 @@ public class ReliableSubmissionXRPClientTest {
     private static final String DEFAULT_SEND_VALUE = "DEADBEEF";
     private static final int DEFAULT_LATEST_LEDGER_VALUE = 10;
     private static final RawTransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE = new RawTransactionStatus(
-        GetTransactionResponse.newBuilder()
-            .setValidated(true)
-            .setTransaction(
-                    Transaction.newBuilder()
-                    .setLastLedgerSequence(
-                            Common.LastLedgerSequence.newBuilder()
-                                    .setValue(LAST_LEDGER_SEQUENCE)
+            GetTransactionResponse.newBuilder()
+                    .setValidated(true)
+                    .setTransaction(
+                            Transaction.newBuilder()
+                                    .setLastLedgerSequence(
+                                            Common.LastLedgerSequence.newBuilder()
+                                                    .setValue(LAST_LEDGER_SEQUENCE)
+                                                    .build()
+                                    )
                                     .build()
                     )
-                    .build()
-            )
-            .setMeta(
-                    Meta.newBuilder().setTransactionResult(
-                            TransactionResult.newBuilder()
-                                    .setResult(TRANSACTION_STATUS_CODE)
-                                    .build()
-                    )
-            ).build()
+                    .setMeta(
+                            Meta.newBuilder().setTransactionResult(
+                                    TransactionResult.newBuilder()
+                                            .setResult(TRANSACTION_STATUS_CODE)
+                                            .build()
+                            )
+                    ).build()
     );
     private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE = XRPTestUtils
-                    .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
+            .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
     private static final boolean DEFAULT_ACCOUNT_EXISTS_VALUE = true;
 
     FakeXRPClient fakeXRPClient;
@@ -67,13 +68,13 @@ public class ReliableSubmissionXRPClientTest {
         this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         this.fakeXRPClient = new FakeXRPClient(
                 XRPLNetwork.TEST,
-                DEFAULT_BALANCE_VALUE,
-                DEFAULT_TRANSACTION_STATUS_VALUE,
-                DEFAULT_SEND_VALUE,
-                DEFAULT_LATEST_LEDGER_VALUE,
-                DEFAULT_RAW_TRANSACTION_STATUS_VALUE,
-                DEFAULT_PAYMENT_HISTORY_VALUE,
-                DEFAULT_ACCOUNT_EXISTS_VALUE
+                Result.ok(DEFAULT_BALANCE_VALUE),
+                Result.ok(DEFAULT_TRANSACTION_STATUS_VALUE),
+                Result.ok(DEFAULT_SEND_VALUE),
+                Result.ok(DEFAULT_LATEST_LEDGER_VALUE),
+                Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
+                Result.ok(DEFAULT_PAYMENT_HISTORY_VALUE),
+                Result.ok(DEFAULT_ACCOUNT_EXISTS_VALUE)
         );
 
         this.reliableSubmissionXRPClient = new ReliableSubmissionXRPClient(fakeXRPClient);
@@ -119,7 +120,7 @@ public class ReliableSubmissionXRPClientTest {
     @Test(timeout=10000)
     public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XRPException {
         // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
-        this.fakeXRPClient.rawTransactionStatusValue = new RawTransactionStatus(
+        this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                 GetTransactionResponse.newBuilder()
                         .setValidated(false)
                         .setTransaction(
@@ -138,10 +139,10 @@ public class ReliableSubmissionXRPClientTest {
                                                 .build()
                                 )
                         ).build()
-        );
+        ));
 
         runAfterOneSecond(() -> {
-            this.fakeXRPClient.latestValidatedLedgerValue = LAST_LEDGER_SEQUENCE + 1;
+            this.fakeXRPClient.latestValidatedLedgerResult = Result.ok(LAST_LEDGER_SEQUENCE + 1);
         });
 
         // WHEN a reliable send is submitted THEN the send reaches a consistent state and returns.
@@ -152,7 +153,7 @@ public class ReliableSubmissionXRPClientTest {
     public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XRPException {
         // GIVEN A transaction that will validate in one second
         final String transactionStatusCode = "tesSuccess";
-        this.fakeXRPClient.rawTransactionStatusValue = new RawTransactionStatus(
+        this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                 GetTransactionResponse.newBuilder()
                         .setValidated(false)
                         .setTransaction(
@@ -171,10 +172,10 @@ public class ReliableSubmissionXRPClientTest {
                                                 .build()
                                 )
                         ).build()
-        );
+        ));
 
         runAfterOneSecond(() -> {
-            this.fakeXRPClient.rawTransactionStatusValue = new RawTransactionStatus(
+            this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                     GetTransactionResponse.newBuilder()
                             .setValidated(true)
                             .setTransaction(
@@ -193,7 +194,7 @@ public class ReliableSubmissionXRPClientTest {
                                                     .build()
                                     )
                             ).build()
-            );
+            ));
         });
 
         // WHEN a reliable send is submitted THEN the send reaches a consistent state and returns.
@@ -203,7 +204,7 @@ public class ReliableSubmissionXRPClientTest {
     @Test
     public void testSendWithNoLastLedgerSequence() throws XRPException {
         // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` which will return a transaction that did not have a last ledger sequence attached.
-        this.fakeXRPClient.rawTransactionStatusValue = new RawTransactionStatus(
+        this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
                 GetTransactionResponse.newBuilder()
                         .setValidated(false)
                         .setTransaction(
@@ -217,7 +218,7 @@ public class ReliableSubmissionXRPClientTest {
                                                 .build()
                                 )
                         ).build()
-        );
+        ));
 
         // WHEN a reliable send is submitted THEN an error is thrown.
         expectedException.expect(Exception.class);
@@ -225,12 +226,12 @@ public class ReliableSubmissionXRPClientTest {
     }
 
     @Test
-    public void testPaymentHistoryWithUnmodifiedResponse() {
+    public void testPaymentHistoryWithUnmodifiedResponse() throws XRPException {
         // GIVEN a `ReliableSubmissionXRPClient` decorating a `FakeXRPClient` WHEN transaction history is retrieved.
         List<XRPTransaction> returnedValue = this.fakeXRPClient.paymentHistory(XRPL_ADDRESS);
 
         // THEN the result is returned unaltered.
-        assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryValue);
+        assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryResult.getValue());
     }
 
     /**

@@ -1,7 +1,10 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.model.XRPTransaction;
+
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -83,5 +86,20 @@ public class XRPClient implements XRPClientInterface {
      */
     public boolean accountExists(final String xrplAccountAddress) throws XRPException {
         return decoratedClient.accountExists(xrplAccountAddress);
+    }
+
+    /**
+     * Return the history of payments for the given account.
+     *
+     * Note: This method only works for payment type transactions. See "https://xrpl.org/payment.html".
+     * Note: This method only returns the history that is contained on the remote node,
+     *       which may not contain a full history of the network.
+     *
+     * @param xrplAccountAddress: The address (account) for which to retrieve payment history.
+     * @throws XRPException If there was a problem communicating with the XRP Ledger.
+     * @return An array of transactions associated with the account.
+     */
+    public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
+        return decoratedClient.paymentHistory(xrplAccountAddress);
     }
 }

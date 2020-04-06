@@ -3,10 +3,12 @@ package io.xpring.xrpl;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * Integration tests for Xpring4J.
@@ -63,5 +65,11 @@ public class XRPClientIntegrationTests {
     public void accountExistsTest() throws XRPException {
         boolean exists = xrpClient.accountExists(XRPL_ADDRESS);
         assertThat(exists).isEqualTo(true);
+    }
+
+    @Test
+    public void paymentHistoryTest() throws XRPException {
+        List<XRPTransaction> paymentHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
+        assertThat(paymentHistory.size()).isGreaterThan(0);
     }
 }
