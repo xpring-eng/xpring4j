@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.xpring.xrpl.javascript.JavaScriptWallet;
 import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
 import io.xpring.xrpl.javascript.JavaScriptWalletGenerationResult;
@@ -81,7 +82,8 @@ public class Wallet {
      *
      * @param javaScriptWallet The wallet to wrap.
      */
-    private Wallet(JavaScriptWallet javaScriptWallet) {
+    @VisibleForTesting
+    public Wallet(JavaScriptWallet javaScriptWallet) {
         this.javaScriptWallet = javaScriptWallet;
     }
 
