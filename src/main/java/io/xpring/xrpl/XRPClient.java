@@ -1,6 +1,10 @@
 package io.xpring.xrpl;
 
+import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.model.XRPTransaction;
+
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -10,14 +14,27 @@ import java.math.BigInteger;
 public class XRPClient implements XRPClientInterface {
     private XRPClientDecorator decoratedClient;
 
+    /** The XRPL Network of the node that this client is communicating with. */
+    private XRPLNetwork network;
+
     /**
      * Initialize a new client with the given options.
      *
      * @param grpcURL The remote URL to use for gRPC calls.
+     * @param network The network this XRPClient is connecting to.
      */
-    public XRPClient(String grpcURL) {
+    public XRPClient(String grpcURL, XRPLNetwork network) {
         XRPClientDecorator defaultXRPClient =  new DefaultXRPClient(grpcURL);
         this.decoratedClient = new ReliableSubmissionXRPClient(defaultXRPClient);
+
+        this.network = network;
+    }
+
+    /**
+     * Retrieve the network that this XRPClient connects to.
+     */
+    public XRPLNetwork getNetwork() {
+        return this.network;
     }
 
     /**
@@ -69,5 +86,20 @@ public class XRPClient implements XRPClientInterface {
      */
     public boolean accountExists(final String xrplAccountAddress) throws XRPException {
         return decoratedClient.accountExists(xrplAccountAddress);
+    }
+
+    /**
+     * Return the history of payments for the given account.
+     *
+     * Note: This method only works for payment type transactions. See "https://xrpl.org/payment.html".
+     * Note: This method only returns the history that is contained on the remote node,
+     *       which may not contain a full history of the network.
+     *
+     * @param xrplAccountAddress: The address (account) for which to retrieve payment history.
+     * @throws XRPException If there was a problem communicating with the XRP Ledger.
+     * @return An array of transactions associated with the account.
+     */
+    public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
+        return decoratedClient.paymentHistory(xrplAccountAddress);
     }
 }

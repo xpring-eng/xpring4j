@@ -4,10 +4,9 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
-import io.xpring.GRPCResult;
+import io.xpring.common.Result;
 import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -89,13 +88,13 @@ public class DefaultXRPClientTest {
     @Test
     public void getBalanceTestWithFailedAccountInfo() throws IOException, XRPException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
-        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the balance is retrieved THEN an error is thrown.
@@ -110,11 +109,11 @@ public class DefaultXRPClientTest {
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
             // GIVEN an XRPClient which will return an unvalidated transaction with a failed code.
             DefaultXRPClient client = getClient(
-                    GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                    GRPCResult.ok(makeTransactionStatus(false, transactionFailureCode)),
-                    GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                    GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                    Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                    Result.ok(makeTransactionStatus(false, transactionFailureCode)),
+                    Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                    Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                    Result.ok(makeGetAccountTransactionHistoryResponse())
             );
 
             // WHEN the payment status is retrieved.
@@ -129,11 +128,11 @@ public class DefaultXRPClientTest {
     public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XRPException {
         // GIVEN an XRPClient which will return an unvalidated transaction with a success code.
         DefaultXRPClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the payment status is retrieved.
@@ -149,11 +148,11 @@ public class DefaultXRPClientTest {
         for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
             // GIVEN an XRPClient which will return an validated transaction with a failed code.
             DefaultXRPClient client = getClient(
-                    GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                    GRPCResult.ok(makeTransactionStatus(true, transactionFailureCode)),
-                    GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                    GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                    GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                    Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                    Result.ok(makeTransactionStatus(true, transactionFailureCode)),
+                    Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                    Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                    Result.ok(makeGetAccountTransactionHistoryResponse())
             );
 
             // WHEN the payment status is retrieved.
@@ -168,11 +167,11 @@ public class DefaultXRPClientTest {
     public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XRPException {
         // GIVEN an XRPClient which will return an validated transaction with a success code.
         DefaultXRPClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the payment status is retrieved.
@@ -186,11 +185,11 @@ public class DefaultXRPClientTest {
     public void paymentStatusWithNodeError() throws IOException, XRPException {
         // GIVEN an XRPClient which will error when a transaction status is requested..
         DefaultXRPClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.error(GENERIC_ERROR),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.error(GENERIC_ERROR),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the payment status is retrieved THEN an error is thrown..
@@ -226,13 +225,13 @@ public class DefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedAccountInfo() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to return account info.
-        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(GENERIC_ERROR);
+        Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -244,13 +243,14 @@ public class DefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedFee() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to retrieve a fee.
-        GRPCResult<GetFeeResponse, Throwable> feeResult = GRPCResult.error(GENERIC_ERROR);
+        Result<GetFeeResponse, Throwable> feeResult = Result.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
                 feeResult,
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+
+        Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -263,13 +263,13 @@ public class DefaultXRPClientTest {
     @Test
     public void submitTransactionWithFailedSubmit() throws IOException, XRPException {
         // GIVEN a XRPClient which will fail to submit a transaction.
-        GRPCResult<SubmitTransactionResponse, Throwable> submitResult = GRPCResult.error(GENERIC_ERROR);
+        Result<SubmitTransactionResponse, Throwable> submitResult = Result.error(GENERIC_ERROR);
         DefaultXRPClient client = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
                 submitResult,
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
         Wallet wallet = new Wallet(WALLET_SEED);
 
@@ -307,13 +307,13 @@ public class DefaultXRPClientTest {
     @Test
     public void paymentHistoryWithNetworkFailureTest() throws IOException, XRPException {
         // GIVEN an XRPClient which will return a network error when calling paymentHistory.
-        GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
-                                                                                        GRPCResult.error(GENERIC_ERROR);
+        Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
+                Result.error(GENERIC_ERROR);
         DefaultXRPClient xrpClient = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
                 getAccountTransactionHistoryResponse);
 
         // WHEN the payment history is requested THEN an error is propagated.
@@ -324,14 +324,14 @@ public class DefaultXRPClientTest {
     @Test
     public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XRPException {
         // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions.
-        GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
-                                            GRPCResult.ok(FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
+        Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
+                Result.ok(FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
 
         DefaultXRPClient xrpClient = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
                 getAccountTransactionHistoryResponse);
 
         // WHEN the transactionHistory is requested.
@@ -345,14 +345,14 @@ public class DefaultXRPClientTest {
     @Test
     public void paymentHistoryWithInvalidPaymentTest() throws IOException, XRPException {
         // GIVEN an XRPClient client which will return a transaction history which contains a malformed payment.
-        GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
-                                    GRPCResult.ok(FakeXRPProtobufs.invalidPaymentGetAccountTransactionHistoryResponse);
+        Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
+                Result.ok(FakeXRPProtobufs.invalidPaymentGetAccountTransactionHistoryResponse);
 
         DefaultXRPClient xrpClient = getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
                 getAccountTransactionHistoryResponse);
 
         // WHEN the transactionHistory is requested THEN a conversion error is thrown.
@@ -387,13 +387,13 @@ public class DefaultXRPClientTest {
     public void accountExistsTestWithNotFoundError() throws IOException, XRPException {
         // GIVEN a XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
-        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
+        Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the existence of the account is checked
@@ -407,13 +407,13 @@ public class DefaultXRPClientTest {
     public void accountExistsTestWithUnkonwnError() throws IOException, XRPException {
         // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
         StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
-        GRPCResult<GetAccountInfoResponse, Throwable> accountInfoResult = GRPCResult.error(notFoundError);
+        Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
         DefaultXRPClient client = getClient(
                 accountInfoResult,
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
 
         // WHEN the existence of the account is checked THEN the error is re-thrown.
@@ -426,11 +426,11 @@ public class DefaultXRPClientTest {
      */
     private DefaultXRPClient getClient() throws IOException {
         return getClient(
-                GRPCResult.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-                GRPCResult.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
-                GRPCResult.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-                GRPCResult.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-                GRPCResult.ok(makeGetAccountTransactionHistoryResponse())
+                Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+                Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+                Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+                Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+                Result.ok(makeGetAccountTransactionHistoryResponse())
         );
     }
 
@@ -438,11 +438,11 @@ public class DefaultXRPClientTest {
      * Return an XRPClient which returns the given results for network calls.
      */
     private DefaultXRPClient getClient(
-            GRPCResult<GetAccountInfoResponse, Throwable> getAccountInfoResponseResult,
-            GRPCResult<GetTransactionResponse, Throwable> GetTransactionResponseResult,
-            GRPCResult<GetFeeResponse, Throwable> getFeeResult,
-            GRPCResult<SubmitTransactionResponse, Throwable> submitTransactionResult,
-            GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResult
+            Result<GetAccountInfoResponse, Throwable> getAccountInfoResponseResult,
+            Result<GetTransactionResponse, Throwable> GetTransactionResponseResult,
+            Result<GetFeeResponse, Throwable> getFeeResult,
+            Result<SubmitTransactionResponse, Throwable> submitTransactionResult,
+            Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResult
     ) throws IOException {
         XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase serviceImpl = getService(
                 getAccountInfoResponseResult,
@@ -472,11 +472,11 @@ public class DefaultXRPClientTest {
      * Return an XRPLedgerService implementation which returns the given results for network calls.
      */
     private XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase getService(
-        GRPCResult<GetAccountInfoResponse, Throwable> getAccountInfoResult,
-        GRPCResult<GetTransactionResponse, Throwable> GetTransactionResponseResult,
-        GRPCResult<GetFeeResponse, Throwable> getFeeResult,
-        GRPCResult<SubmitTransactionResponse, Throwable> submitTransactionResult,
-        GRPCResult<GetAccountTransactionHistoryResponse, Throwable> getTransactionHistoryResult
+            Result<GetAccountInfoResponse, Throwable> getAccountInfoResult,
+            Result<GetTransactionResponse, Throwable> GetTransactionResponseResult,
+            Result<GetFeeResponse, Throwable> getFeeResult,
+            Result<SubmitTransactionResponse, Throwable> submitTransactionResult,
+            Result<GetAccountTransactionHistoryResponse, Throwable> getTransactionHistoryResult
     ) {
         return mock(XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase.class, delegatesTo(
                 new XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceImplBase() {

@@ -2,6 +2,9 @@ package io.xpring.xrpl;
 
 import io.xpring.xrpl.model.XRPTransaction;
 
+import io.xpring.common.Result;
+import io.xpring.common.XRPLNetwork;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -10,64 +13,102 @@ import java.util.List;
  * @Note: Since this class is passed by reference and the iVars are mutable, outputs of this class can be changed after it is injected.
  */
 public class FakeXRPClient implements  XRPClientDecorator, XRPClientInterface {
-    public BigInteger getBalanceValue;
-    public TransactionStatus paymentStatusValue;
-    public String sendValue;
-    public int latestValidatedLedgerValue;
-    public RawTransactionStatus rawTransactionStatusValue;
-    public List<XRPTransaction> paymentHistoryValue;
-    public boolean accountExistsValue;
+    private XRPLNetwork network;
+
+    public Result<BigInteger, XRPException> getBalanceResult;
+    public Result<TransactionStatus, XRPException> paymentStatusResult;
+    public Result<String, XRPException> sendResult;
+    public Result<Integer, XRPException> latestValidatedLedgerResult;
+    public Result<RawTransactionStatus, XRPException> rawTransactionStatusResult;
+    public Result<List<XRPTransaction>, XRPException> paymentHistoryResult;
+    public Result<Boolean, XRPException> accountExistsResult;
 
     public FakeXRPClient(
-            BigInteger getBalanceValue,
-            TransactionStatus paymentStatusValue,
-            String sendValue,
-            int latestValidatedLedgerValue,
-            RawTransactionStatus rawTransactionStatusValue,
-            List<XRPTransaction> paymentHistoryValue,
-            boolean accountExistsValue
+            XRPLNetwork network,
+            Result<BigInteger, XRPException> getBalanceResult,
+            Result<TransactionStatus, XRPException> paymentStatusResult,
+            Result<String, XRPException> sendResult,
+            Result<Integer, XRPException> latestValidatedLedgerResult,
+            Result<RawTransactionStatus, XRPException> rawTransactionStatusResult,
+            Result<List<XRPTransaction>, XRPException> paymentHistoryResult,
+            Result<Boolean, XRPException> accountExistsResult
     ) {
-        this.getBalanceValue = getBalanceValue;
-        this.paymentStatusValue = paymentStatusValue;
-        this.sendValue = sendValue;
-        this.latestValidatedLedgerValue = latestValidatedLedgerValue;
-        this.rawTransactionStatusValue = rawTransactionStatusValue;
-        this.paymentHistoryValue = paymentHistoryValue;
-        this.accountExistsValue = accountExistsValue;
+        this.network = network;
+        this.getBalanceResult = getBalanceResult;
+        this.paymentStatusResult = paymentStatusResult;
+        this.sendResult = sendResult;
+        this.latestValidatedLedgerResult = latestValidatedLedgerResult;
+        this.rawTransactionStatusResult = rawTransactionStatusResult;
+        this.paymentHistoryResult = paymentHistoryResult;
+        this.accountExistsResult = accountExistsResult;
+    }
+
+    @Override
+    public XRPLNetwork getNetwork() {
+        return this.network;
     }
 
     @Override
     public BigInteger getBalance(String xrplAccountAddress) throws XRPException {
-        return this.getBalanceValue;
+        if (this.getBalanceResult.isError()) {
+            throw this.getBalanceResult.getError();
+        } else {
+            return getBalanceResult.getValue();
+        }
     }
 
     @Override
-    public TransactionStatus getPaymentStatus(String transactionHash) {
-        return this.paymentStatusValue;
+    public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException {
+        if (this.paymentStatusResult.isError()) {
+            throw this.paymentStatusResult.getError();
+        } else {
+            return paymentStatusResult.getValue();
+        }
     }
 
     @Override
     public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XRPException {
-        return this.sendValue;
+        if (this.sendResult.isError()) {
+            throw this.sendResult.getError();
+        } else {
+            return sendResult.getValue();
+        }
     }
 
     @Override
-    public int getLatestValidatedLedgerSequence() {
-        return this.latestValidatedLedgerValue;
+    public int getLatestValidatedLedgerSequence() throws XRPException {
+        if (this.latestValidatedLedgerResult.isError()) {
+            throw this.latestValidatedLedgerResult.getError();
+        } else {
+            return latestValidatedLedgerResult.getValue();
+        }
     }
 
     @Override
-    public RawTransactionStatus getRawTransactionStatus(String transactionHash) {
-        return this.rawTransactionStatusValue;
+    public RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException {
+        if (this.rawTransactionStatusResult.isError()) {
+            throw this.rawTransactionStatusResult.getError();
+        } else {
+            return rawTransactionStatusResult.getValue();
+        }
     }
 
     @Override
-    public List<XRPTransaction> paymentHistory(String xrplAccountAddress) {
-        return this.paymentHistoryValue;
+    public boolean accountExists(String address) throws XRPException {
+        if (this.accountExistsResult.isError()) {
+            throw this.accountExistsResult.getError();
+        } else {
+            return accountExistsResult.getValue();
+        }
     }
 
+
     @Override
-    public boolean accountExists(String address) {
-        return this.accountExistsValue;
+    public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
+        if (this.paymentHistoryResult.isError()) {
+            throw this.paymentHistoryResult.getError();
+        } else {
+            return paymentHistoryResult.getValue();
+        }
     }
 }

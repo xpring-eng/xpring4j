@@ -4,6 +4,8 @@ import org.interledger.spsp.PaymentPointer;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
+
+import io.xpring.common.XRPLNetwork;
 import io.xpring.payid.generated.ApiClient;
 import io.xpring.payid.generated.ApiException;
 import io.xpring.payid.generated.ApiResponse;
