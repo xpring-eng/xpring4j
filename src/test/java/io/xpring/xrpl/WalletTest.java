@@ -87,7 +87,7 @@ public class WalletTest {
     }
 
     @Test
-    public void  testGenerateWalletFromMnemonicInvalidDerivationPath() throws XRPException {
+    public void testGenerateWalletFromMnemonicInvalidDerivationPath() throws XRPException {
         expectedException.expect(XRPException.class);
         String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
         String derivationPath = "invalid_path";
@@ -95,11 +95,21 @@ public class WalletTest {
     }
 
     @Test
-    public void  testGenerateWalletFromMnemonicInvalidMnemonic() throws XRPException {
+    public void testGenerateWalletFromMnemonicInvalidMnemonic() throws XRPException {
         expectedException.expect(XRPException.class);
         String mnemonic = "xrp xrp xrp xrp xrp xrp xrp xrp xrp xrp xrp xrp";
         String derivationPath = "m/44'/144'/0'/0/1";
         new Wallet(mnemonic, derivationPath);
+    }
+
+    @Test
+    public void testGenerateWalletFromKeys() throws XRPException {
+        // GIVEN a set of well formed keys.
+        String publicKey = "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE";
+        String privateKey = "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4";
+
+        // WHEN a wallet is generated THEN it is constructed successfully.
+        assertNotNull(Wallet.walletFromKeys(publicKey, privateKey, false));
     }
 
     @Test
