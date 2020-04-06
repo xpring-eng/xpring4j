@@ -20,7 +20,7 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
-import io.xpring.GRPCResult;
+import io.xpring.common.Result;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
@@ -232,8 +232,8 @@ public class DefaultIlpClientTest {
    */
   private DefaultIlpClient getSuccessfulClient() throws IOException {
     return getClient(
-      GRPCResult.ok(getBalanceResponse),
-      GRPCResult.ok(sendPaymentResponse)
+      Result.ok(getBalanceResponse),
+      Result.ok(sendPaymentResponse)
     );
   }
 
@@ -246,16 +246,16 @@ public class DefaultIlpClientTest {
    */
   private DefaultIlpClient getFailingClient(Status exceptionStatus) throws IOException {
     return getClient(
-      GRPCResult.error(new StatusRuntimeException(exceptionStatus)),
-      GRPCResult.error(new StatusRuntimeException(exceptionStatus))
+            Result.error(new StatusRuntimeException(exceptionStatus)),
+            Result.error(new StatusRuntimeException(exceptionStatus))
     );
   }
 
   /**
    * Return a IlpClient which returns the given results for network calls.
    */
-  private DefaultIlpClient getClient(GRPCResult<GetBalanceResponse, Throwable> getBalanceResult,
-                                     GRPCResult<SendPaymentResponse, Throwable> sendPaymentResponse) throws IOException {
+  private DefaultIlpClient getClient(Result<GetBalanceResponse, Throwable> getBalanceResult,
+                                     Result<SendPaymentResponse, Throwable> sendPaymentResponse) throws IOException {
 
     BalanceServiceGrpc.BalanceServiceImplBase balanceServiceImpl = getBalanceService(
       getBalanceResult
@@ -283,7 +283,7 @@ public class DefaultIlpClientTest {
     return new DefaultIlpClient(channel);
   }
 
-  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(GRPCResult<SendPaymentResponse, Throwable> sendPaymentResponse) {
+  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(Result<SendPaymentResponse, Throwable> sendPaymentResponse) {
     return mock(IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase.class, delegatesTo(
       new IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase() {
         @Override
@@ -302,7 +302,7 @@ public class DefaultIlpClientTest {
    * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
    */
   private BalanceServiceGrpc.BalanceServiceImplBase getBalanceService(
-    GRPCResult<GetBalanceResponse, Throwable> getBalanceResult
+    Result<GetBalanceResponse, Throwable> getBalanceResult
   ) {
     return mock(BalanceServiceGrpc.BalanceServiceImplBase.class, delegatesTo(
       new BalanceServiceGrpc.BalanceServiceImplBase() {

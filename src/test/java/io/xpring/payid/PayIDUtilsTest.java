@@ -29,8 +29,7 @@ public class PayIDUtilsTest {
 
         // THEN the host and path are set correctly.
         assertEquals(paymentPointer.host(), "example.com");
-        // TODO(keefertaylor): Use constant for path when exposed, see: https://github.com/hyperledger/quilt/pull/437
-        assertEquals(paymentPointer.path(), "/.well-known/pay");
+        assertEquals(paymentPointer.path(), PaymentPointer.WELL_KNOWN);
     }
 
     @Test
@@ -43,8 +42,7 @@ public class PayIDUtilsTest {
 
         // THEN the host and path are set correctly.
         assertEquals(paymentPointer.host(), "example.com");
-        // TODO(keefertaylor): Use constant for path when exposed, see: https://github.com/hyperledger/quilt/pull/437
-        assertEquals(paymentPointer.path(), "/.well-known/pay");
+        assertEquals(paymentPointer.path(), PaymentPointer.WELL_KNOWN);
     }
 
     @Test
