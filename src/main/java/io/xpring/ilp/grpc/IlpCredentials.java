@@ -11,12 +11,10 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.Executor;
 
 /**
- * An extension of {@link CallCredentials} which provides a convenient way to
- * add an Authorization metadata header, and ensures every bearer token
- * going over the wire is prefixed with 'Bearer '
+ * An extension of {@link CallCredentials} which provides a convenient way to add an Authorization metadata header, and
+ * ensures every bearer token going over the wire is prefixed with 'Bearer '.
  */
 public class IlpCredentials extends CallCredentials {
-
   public static final String BEARER_PREFIX = "Bearer ";
   private static Logger LOGGER = LoggerFactory.getLogger(IlpCredentials.class);
 
@@ -50,12 +48,13 @@ public class IlpCredentials extends CallCredentials {
   }
 
   @Override
-  public void thisUsesUnstableApi() {}
+  public void thisUsesUnstableApi() {
+  }
 
   /**
-   * Adds an Authorization header to the request Metadata, prepending 'Bearer ' to the access token
+   * Adds an Authorization header to the request Metadata, prepending 'Bearer ' to the access token.
    *
-   * @param applier A {@link io.grpc.CallCredentials.MetadataApplier}
+   * @param applier     A {@link io.grpc.CallCredentials.MetadataApplier}
    * @param accessToken An access token that does not start with 'Bearer '
    */
   protected void applyToken(MetadataApplier applier, String accessToken) {

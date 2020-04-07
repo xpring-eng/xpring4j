@@ -50,19 +50,19 @@ public class IlpIntegrationTests {
 
     // WHEN a payment is sent from the sender to the receiver
     PaymentRequest paymentRequest = PaymentRequest.builder()
-      .amount(UnsignedLong.valueOf(10))
-      .destinationPaymentPointer("$xpring.money/sdk_account2")
-      .senderAccountId("sdk_account1")
-      .build();
+        .amount(UnsignedLong.valueOf(10))
+        .destinationPaymentPointer("$xpring.money/sdk_account2")
+        .senderAccountId("sdk_account1")
+        .build();
 
     PaymentResult response = client.sendPayment(paymentRequest, "password");
 
     PaymentResult expected = PaymentResult.builder()
-      .originalAmount(UnsignedLong.valueOf(10))
-      .amountSent(UnsignedLong.valueOf(10))
-      .amountDelivered(UnsignedLong.valueOf(10))
-      .successfulPayment(true)
-      .build();
+        .originalAmount(UnsignedLong.valueOf(10))
+        .amountSent(UnsignedLong.valueOf(10))
+        .amountDelivered(UnsignedLong.valueOf(10))
+        .successfulPayment(true)
+        .build();
 
     // THEN the response should equal the mocked response above
     assertThat(response).isEqualToComparingFieldByField(expected);

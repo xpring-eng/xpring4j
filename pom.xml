@@ -331,13 +331,6 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>verify</id>
                         <phase>verify</phase>
                         <goals>

@@ -7,7 +7,7 @@ import org.immutables.value.Value;
 import java.math.BigInteger;
 
 /**
- * Response object for requests to get an account's balance
+ * Response object for requests to get an account's balance.
  */
 @Value.Immutable
 public interface AccountBalance {
@@ -17,12 +17,12 @@ public interface AccountBalance {
   }
 
   /**
-   * @return The accountId for this account balance.
+   * The accountId for this account balance.
    */
   String accountId();
 
   /**
-   * Currency code or other asset identifier that this account's balances will be denominated in
+   * Currency code or other asset identifier that this account's balances will be denominated in.
    */
   String assetCode();
 
@@ -63,15 +63,15 @@ public interface AccountBalance {
    * #netBalance()}, and is generally never negative.
    *
    * @return An {@link BigInteger} representing the number of units the counterparty (i.e., owner of this account) has
-   * prepaid with this Connector.
+   *     prepaid with this Connector.
    */
   BigInteger prepaidAmount();
 
   /**
-   * Constructs an {@link AccountBalance} from a {@link GetBalanceResponse}
+   * Constructs an {@link AccountBalance} from a {@link GetBalanceResponse}.
    *
    * @param getBalanceResponse a {@link GetBalanceResponse} (protobuf object) whose field values will be used
-   *                           to construct an {@link AccountBalance}
+   *                           to construct an {@link AccountBalance}.
    * @return an {@link AccountBalance} with its fields set via the analogous protobuf fields.
    */
   static AccountBalance from(GetBalanceResponse getBalanceResponse) {
