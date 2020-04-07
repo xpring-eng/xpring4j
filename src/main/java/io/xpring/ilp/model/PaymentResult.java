@@ -6,7 +6,7 @@ import com.google.common.primitives.UnsignedLong;
 import org.immutables.value.Value;
 
 /**
- * A response object containing details about a requested payment
+ * A response object containing details about a requested payment.
  */
 @Value.Immutable
 public interface PaymentResult {
@@ -46,17 +46,17 @@ public interface PaymentResult {
   boolean successfulPayment();
 
   /**
-   * Constructs a {@link PaymentResult} from a protobuf {@link SendPaymentResponse}
+   * Constructs a {@link PaymentResult} from a protobuf {@link SendPaymentResponse}.
    *
    * @param protoResponse a {@link SendPaymentResponse} to be converted
    * @return a {@link PaymentResult} with fields populated using the analogous fields in the proto object
    */
   static PaymentResult from(SendPaymentResponse protoResponse) {
     return PaymentResult.builder()
-      .originalAmount(UnsignedLong.valueOf(protoResponse.getOriginalAmount()))
-      .amountDelivered(UnsignedLong.valueOf(protoResponse.getAmountDelivered()))
-      .amountSent(UnsignedLong.valueOf(protoResponse.getAmountSent()))
-      .successfulPayment(protoResponse.getSuccessfulPayment())
-      .build();
+        .originalAmount(UnsignedLong.valueOf(protoResponse.getOriginalAmount()))
+        .amountDelivered(UnsignedLong.valueOf(protoResponse.getAmountDelivered()))
+        .amountSent(UnsignedLong.valueOf(protoResponse.getAmountSent()))
+        .successfulPayment(protoResponse.getSuccessfulPayment())
+        .build();
   }
 }

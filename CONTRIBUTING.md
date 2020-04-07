@@ -53,3 +53,9 @@ $ git submodule update --init --recursive
 # Run tests.
 $ mvn clean test
 ```
+
+Lint rules are enforced on all continuous integration builds via 
+[CheckStyle](https://maven.apache.org/plugins/maven-checkstyle-plugin/). It is recommended developers use the 
+[IntelliJ CheckStyle Plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea) to lint their code during
+development.
+
