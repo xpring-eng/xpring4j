@@ -331,9 +331,16 @@
                 </dependencies>
                 <executions>
                     <execution>
+                        <id>verify</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
+                        <configuration>
+                            <failsOnError>true</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <violationSeverity>warning</violationSeverity>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
