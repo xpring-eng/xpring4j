@@ -6,7 +6,6 @@ import com.google.common.primitives.UnsignedLong;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void getBalance() throws XpringException {
+  public void getBalance() throws IlpException {
     // GIVEN an account on the testnet connector with accountId = sdk_account1
 
     // WHEN a balance is retrieved
@@ -45,25 +44,25 @@ public class IlpIntegrationTests {
   }
 
   @Test
-  public void sendPayment() throws XpringException {
+  public void sendPayment() throws IlpException {
     // GIVEN an account on the connector with accountId = sdk_account1
     // AND an account on the connector with accountId = sdk_account2
 
     // WHEN a payment is sent from the sender to the receiver
     PaymentRequest paymentRequest = PaymentRequest.builder()
-      .amount(UnsignedLong.valueOf(10))
-      .destinationPaymentPointer("$xpring.money/sdk_account2")
-      .senderAccountId("sdk_account1")
-      .build();
+        .amount(UnsignedLong.valueOf(10))
+        .destinationPaymentPointer("$xpring.money/sdk_account2")
+        .senderAccountId("sdk_account1")
+        .build();
 
     PaymentResult response = client.sendPayment(paymentRequest, "password");
 
     PaymentResult expected = PaymentResult.builder()
-      .originalAmount(UnsignedLong.valueOf(10))
-      .amountSent(UnsignedLong.valueOf(10))
-      .amountDelivered(UnsignedLong.valueOf(10))
-      .successfulPayment(true)
-      .build();
+        .originalAmount(UnsignedLong.valueOf(10))
+        .amountSent(UnsignedLong.valueOf(10))
+        .amountDelivered(UnsignedLong.valueOf(10))
+        .successfulPayment(true)
+        .build();
 
     // THEN the response should equal the mocked response above
     assertThat(response).isEqualToComparingFieldByField(expected);

@@ -5,12 +5,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.AdditionalAnswers.delegatesTo;
 import static org.mockito.Mockito.mock;
 
-import org.interledger.spsp.server.grpc.AccountServiceGrpc;
 import org.interledger.spsp.server.grpc.BalanceServiceGrpc;
-import org.interledger.spsp.server.grpc.CreateAccountRequest;
-import org.interledger.spsp.server.grpc.CreateAccountResponse;
-import org.interledger.spsp.server.grpc.GetAccountRequest;
-import org.interledger.spsp.server.grpc.GetAccountResponse;
 import org.interledger.spsp.server.grpc.GetBalanceRequest;
 import org.interledger.spsp.server.grpc.GetBalanceResponse;
 import org.interledger.spsp.server.grpc.IlpOverHttpServiceGrpc;
@@ -19,6 +14,8 @@ import org.interledger.spsp.server.grpc.SendPaymentResponse;
 
 import com.google.common.primitives.UnsignedLong;
 import io.grpc.ManagedChannel;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -27,17 +24,14 @@ import io.xpring.common.Result;
 import io.xpring.ilp.model.AccountBalance;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResult;
-import io.xpring.xrpl.XpringException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Unit tests for {@link io.xpring.ilp.DefaultIlpClient}
+ * Unit tests for {@link io.xpring.ilp.DefaultIlpClient}.
  */
 public class DefaultIlpClientTest {
 
@@ -45,83 +39,41 @@ public class DefaultIlpClientTest {
   public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
   private GetBalanceResponse getBalanceResponse;
-  private CreateAccountResponse createAccountResponse;
   private SendPaymentResponse sendPaymentResponse;
-  private GetAccountResponse getAccountResponse;
+  public static final PaymentRequest mockPaymentRequest = PaymentRequest.builder()
+      .amount(UnsignedLong.valueOf(1000))
+      .destinationPaymentPointer("$foo.dev/bar")
+      .senderAccountId("baz")
+      .build();
 
+  /**
+   * Set up responses.
+   */
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     int clearingBalance = 10;
     int prepaidAmount = 100;
     getBalanceResponse = GetBalanceResponse.newBuilder()
-      .setAccountId("bob")
-      .setAssetCode("XRP")
-      .setAssetScale(9)
-      .setNetBalance(clearingBalance + prepaidAmount)
-      .setClearingBalance(clearingBalance)
-      .setPrepaidAmount(prepaidAmount)
-      .build();
-
-    Map<String, String> customSettings = new HashMap<>();
-    customSettings.put("ilpOverHttp.incoming.auth_type", "SIMPLE");
-    customSettings.put("ilpOverHttp.incoming.auth_token", "gobbledygook");
-
-    createAccountResponse = CreateAccountResponse.newBuilder()
-      .setAccountRelationship("CHILD")
-      .setAssetCode("XRP")
-      .setAssetScale(9)
-      .putAllCustomSettings(customSettings)
-      .setAccountId("foo")
-      .setDescription("")
-      .setLinkType("ILP_OVER_HTTP")
-      .setIsConnectionInitiator(true)
-      .setIlpAddressSegment("foo")
-      .setBalanceSettings(CreateAccountResponse.BalanceSettings.newBuilder().build())
-      .setIsChildAccount(true)
-      .setIsInternal(false)
-      .setIsSendRoutes(true)
-      .setIsReceiveRoutes(false)
-      .setMaxPacketsPerSecond(0)
-      .setIsParentAccount(false)
-      .setIsPeerAccount(false)
-      .setIsPeerOrParentAccount(false)
-      .setPaymentPointer("$xpring.money.dev/foo")
-      .build();
-
-    getAccountResponse = GetAccountResponse.newBuilder()
-      .setAccountRelationship("CHILD")
-      .setAssetCode("XRP")
-      .setAssetScale(9)
-      .putAllCustomSettings(customSettings)
-      .setAccountId("foo")
-      .setDescription("")
-      .setLinkType("ILP_OVER_HTTP")
-      .setIsConnectionInitiator(true)
-      .setIlpAddressSegment("foo")
-      .setBalanceSettings(GetAccountResponse.BalanceSettings.newBuilder().build())
-      .setIsChildAccount(true)
-      .setIsInternal(false)
-      .setIsSendRoutes(true)
-      .setIsReceiveRoutes(false)
-      .setMaxPacketsPerSecond(0)
-      .setIsParentAccount(false)
-      .setIsPeerAccount(false)
-      .setIsPeerOrParentAccount(false)
-      .setPaymentPointer("$xpring.money.dev/foo")
-      .build();
+        .setAccountId("bob")
+        .setAssetCode("XRP")
+        .setAssetScale(9)
+        .setNetBalance(clearingBalance + prepaidAmount)
+        .setClearingBalance(clearingBalance)
+        .setPrepaidAmount(prepaidAmount)
+        .build();
 
     sendPaymentResponse = SendPaymentResponse.newBuilder()
-      .setOriginalAmount(1000)
-      .setAmountDelivered(1000)
-      .setAmountSent(1000)
-      .setSuccessfulPayment(true)
-      .build();
+        .setOriginalAmount(1000)
+        .setAmountDelivered(1000)
+        .setAmountSent(1000)
+        .setSuccessfulPayment(true)
+        .build();
   }
 
   @Test
-  public void getIlpBalanceTest() throws XpringException, IOException {
+  public void successfulGetBalanceTest() throws IlpException, IOException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
-    DefaultIlpClient client = getClient();
+    DefaultIlpClient client = getSuccessfulClient();
 
     // WHEN the balance is retrieved for "bob"
     AccountBalance balanceResponse = client.getBalance("bob", "jwtjwtjwtjwt");
@@ -136,31 +88,76 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void getIlpBalanceWithBearerTokenTest() throws IOException, XpringException {
+  public void getBalanceThrowsInvalidAccessToken() throws IOException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed
-    DefaultIlpClient client = getClient();
+    DefaultIlpClient client = getSuccessfulClient();
 
     // WHEN the balance is retrieved for "bob" with an access token prefixed with "Bearer "
-    // THEN a XpringException in thrown
+    // THEN an IlpException in thrown
     assertThrows(
-      "accessToken cannot start with \"Bearer \"",
-      XpringException.class,
-      () -> client.getBalance("bob", "Bearer bob")
+        IlpException.INVALID_ACCESS_TOKEN.getMessage(),
+        IlpException.class,
+        () -> client.getBalance("bob", "Bearer password")
     );
   }
 
   @Test
-  public void sendPaymentTest() throws IOException, XpringException {
+  public void getBalanceThrowsNotFound() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = NOT_FOUND
+    DefaultIlpClient client = getFailingClient(Status.NOT_FOUND);
+
+    // WHEN the balance is retrieved THEN IlpException.NOT_FOUND is thrown
+    assertGetBalanceThrows(client, IlpException.NOT_FOUND);
+  }
+
+  @Test
+  public void getBalanceThrowsInvalidArgument() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = INVALID_ARGUMENT
+    DefaultIlpClient client = getFailingClient(Status.INVALID_ARGUMENT);
+
+    // WHEN the balance is retrieved THEN IlpException.INVALID_ARGUMENT is thrown
+    assertGetBalanceThrows(client, IlpException.INVALID_ARGUMENT);
+  }
+
+  @Test
+  public void getBalanceThrowsUnauthenticated() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = UNAUTHENTICATED
+    DefaultIlpClient client = getFailingClient(Status.UNAUTHENTICATED);
+
+    // WHEN the balance is retrieved THEN IlpException.UNAUTHENTICATED is thrown
+    assertGetBalanceThrows(client, IlpException.UNAUTHENTICATED);
+  }
+
+  @Test
+  public void getBalanceThrowsInternal() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = INTERNAL
+    DefaultIlpClient client = getFailingClient(Status.INTERNAL);
+
+    // WHEN the balance is retrieved THEN IlpException.INTERNAL is thrown
+    assertGetBalanceThrows(client, IlpException.INTERNAL);
+  }
+
+  @Test
+  public void getBalanceThrowsUnknown() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = UNKNOWN
+    DefaultIlpClient client = getFailingClient(Status.UNKNOWN);
+
+    // WHEN the balance is retrieved THEN IlpException.UNKNOWN is thrown
+    assertGetBalanceThrows(client, IlpException.UNKNOWN);
+  }
+
+  @Test
+  public void successfulSendPaymentTest() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed.
-    DefaultIlpClient client = getClient();
+    DefaultIlpClient client = getSuccessfulClient();
 
     // WHEN a payment is sent
-    PaymentRequest paymentRequest = PaymentRequest.builder()
-      .amount(UnsignedLong.valueOf(1000))
-      .destinationPaymentPointer("$foo.dev/bar")
-      .senderAccountId("baz")
-      .build();
-    PaymentResult response = client.sendPayment(paymentRequest, "gobbledygook");
+    PaymentResult response = client.sendPayment(mockPaymentRequest, "gobbledygook");
 
     // THEN the payment result is equal to the mocked response
     assertThat(response.originalAmount().longValue()).isEqualTo(this.sendPaymentResponse.getOriginalAmount());
@@ -170,34 +167,90 @@ public class DefaultIlpClientTest {
   }
 
   @Test
-  public void sendPaymentWithBearerTokenTest() throws IOException, XpringException {
+  public void sendPaymentThrowsInvalidAccessToken() throws IOException, IlpException {
     // GIVEN a DefaultIlpClient with mocked networking which will succeed
-    DefaultIlpClient client = getClient();
+    DefaultIlpClient client = getSuccessfulClient();
 
     // WHEN a payment is sent with an access token prefixed with "Bearer "
-    // THEN a XpringException in thrown
-    PaymentRequest paymentRequest = PaymentRequest.builder()
-      .amount(UnsignedLong.valueOf(1000))
-      .destinationPaymentPointer("$foo.dev/bar")
-      .senderAccountId("baz")
-      .build();
-
+    // THEN an IlpException in thrown
     assertThrows(
-      "accessToken cannot start with \"Bearer \"",
-      XpringException.class,
-      () -> client.sendPayment(paymentRequest, "Bearer bob")
+        IlpException.INVALID_ACCESS_TOKEN.getMessage(),
+        IlpException.class,
+        () -> client.sendPayment(mockPaymentRequest, "Bearer bob")
     );
+  }
+
+  @Test
+  public void sendPaymentThrowsNotFound() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = NOT_FOUND
+    DefaultIlpClient client = getFailingClient(Status.NOT_FOUND);
+
+    // WHEN a payment is sent THEN IlpException.NOT_FOUND is thrown
+    assertSendPaymentThrows(client, IlpException.NOT_FOUND);
+  }
+
+  @Test
+  public void sendPaymentThrowsInvalidArgument() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = INVALID_ARGUMENT
+    DefaultIlpClient client = getFailingClient(Status.INVALID_ARGUMENT);
+
+    // WHEN a payment is sent THEN IlpException.INVALID_ARGUMENT is thrown
+    assertSendPaymentThrows(client, IlpException.INVALID_ARGUMENT);
+  }
+
+  @Test
+  public void sendPaymentThrowsUnauthenticated() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = UNAUTHENTICATED
+    DefaultIlpClient client = getFailingClient(Status.UNAUTHENTICATED);
+
+    // WHEN a payment is sent THEN IlpException.UNAUTHENTICATED is thrown
+    assertSendPaymentThrows(client, IlpException.UNAUTHENTICATED);
+  }
+
+  @Test
+  public void sendPaymentThrowsInternal() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = INTERNAL
+    DefaultIlpClient client = getFailingClient(Status.INTERNAL);
+
+    // WHEN a payment is sent THEN IlpException.INTERNAL is thrown
+    assertSendPaymentThrows(client, IlpException.INTERNAL);
+  }
+
+  @Test
+  public void sendPaymentThrowsUnknown() throws IOException {
+    // GIVEN a DefaultIlpClient with mocked networking which will throw a StatusRuntimeException
+    // with grpc.Status = UNKNOWN
+    DefaultIlpClient client = getFailingClient(Status.UNKNOWN);
+
+    // WHEN a payment is sent THEN IlpException.UNKNOWN is thrown
+    assertSendPaymentThrows(client, IlpException.UNKNOWN);
   }
 
   /**
    * Convenience method to get a IlpClient which has successful network calls.
    */
-  private DefaultIlpClient getClient() throws IOException {
+  private DefaultIlpClient getSuccessfulClient() throws IOException {
     return getClient(
-      Result.ok(getBalanceResponse),
-      Result.ok(createAccountResponse),
-      Result.ok(sendPaymentResponse),
-      Result.ok(getAccountResponse)
+        Result.ok(getBalanceResponse),
+        Result.ok(sendPaymentResponse)
+    );
+  }
+
+  /**
+   * Convenience method to get a DefaultIlpClient whose network calls cause exceptions with exceptionStatus.
+   *
+   * @param exceptionStatus The {@link Status} of the {@link StatusRuntimeException} thrown by the network calls
+   * @return a {@link DefaultIlpClient} whose network calls cause exceptions
+   * @throws IOException if the test gRPC service fails to start
+   */
+  private DefaultIlpClient getFailingClient(Status exceptionStatus) throws IOException {
+    return getClient(
+        Result.error(new StatusRuntimeException(exceptionStatus)),
+        Result.error(new StatusRuntimeException(exceptionStatus))
     );
   }
 
@@ -205,17 +258,10 @@ public class DefaultIlpClientTest {
    * Return a IlpClient which returns the given results for network calls.
    */
   private DefaultIlpClient getClient(Result<GetBalanceResponse, Throwable> getBalanceResult,
-                                     Result<CreateAccountResponse, Throwable> createAccountResponse,
-                                     Result<SendPaymentResponse, Throwable> sendPaymentResponse,
-                                     Result<GetAccountResponse, Throwable> getAccountResponse) throws IOException {
+                                     Result<SendPaymentResponse, Throwable> sendPaymentResponse) throws IOException {
 
     BalanceServiceGrpc.BalanceServiceImplBase balanceServiceImpl = getBalanceService(
-      getBalanceResult
-    );
-
-    AccountServiceGrpc.AccountServiceImplBase accountServiceImpl = getAccountService(
-      createAccountResponse,
-      getAccountResponse
+        getBalanceResult
     );
 
     IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpServiceImpl = ilpOverHttpService(sendPaymentResponse);
@@ -225,85 +271,85 @@ public class DefaultIlpClientTest {
 
     // Create a server, add service, start, and register for automatic graceful shutdown.
     grpcCleanup.register(InProcessServerBuilder
-      .forName(serverName)
-      .directExecutor()
-      .addService(balanceServiceImpl)
-      .addService(accountServiceImpl)
-      .addService(ilpOverHttpServiceImpl)
-      .build()
-      .start());
+        .forName(serverName)
+        .directExecutor()
+        .addService(balanceServiceImpl)
+        .addService(ilpOverHttpServiceImpl)
+        .build()
+        .start());
 
     // Create a client channel and register for automatic graceful shutdown.
     ManagedChannel channel = grpcCleanup.register(
-      InProcessChannelBuilder.forName(serverName).directExecutor().build());
+        InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
     // Create a new XRPClient using the in-process channel;
     return new DefaultIlpClient(channel);
   }
 
-  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(Result<SendPaymentResponse, Throwable> sendPaymentResponse) {
+  private IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase ilpOverHttpService(
+      Result<SendPaymentResponse, Throwable> sendPaymentResponse
+  ) {
     return mock(IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase.class, delegatesTo(
-      new IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase() {
-        @Override
-        public void sendMoney(SendPaymentRequest request, StreamObserver<SendPaymentResponse> responseObserver) {
-          if (sendPaymentResponse.isError()) {
-            responseObserver.onError(new Throwable(sendPaymentResponse.getError()));
-          } else {
-            responseObserver.onNext(sendPaymentResponse.getValue());
-            responseObserver.onCompleted();
+        new IlpOverHttpServiceGrpc.IlpOverHttpServiceImplBase() {
+          @Override
+          public void sendMoney(SendPaymentRequest request, StreamObserver<SendPaymentResponse> responseObserver) {
+            if (sendPaymentResponse.isError()) {
+              responseObserver.onError(new Throwable(sendPaymentResponse.getError()));
+            } else {
+              responseObserver.onNext(sendPaymentResponse.getValue());
+              responseObserver.onCompleted();
+            }
           }
-        }
-      }));
+        }));
   }
 
   /**
    * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
    */
   private BalanceServiceGrpc.BalanceServiceImplBase getBalanceService(
-    Result<GetBalanceResponse, Throwable> getBalanceResult
+      Result<GetBalanceResponse, Throwable> getBalanceResult
   ) {
     return mock(BalanceServiceGrpc.BalanceServiceImplBase.class, delegatesTo(
-      new BalanceServiceGrpc.BalanceServiceImplBase() {
-        @Override
-        public void getBalance(GetBalanceRequest request, StreamObserver<GetBalanceResponse> responseObserver) {
-          if (getBalanceResult.isError()) {
-            responseObserver.onError(new Throwable(getBalanceResult.getError()));
-          } else {
-            responseObserver.onNext(getBalanceResult.getValue());
-            responseObserver.onCompleted();
+        new BalanceServiceGrpc.BalanceServiceImplBase() {
+          @Override
+          public void getBalance(GetBalanceRequest request, StreamObserver<GetBalanceResponse> responseObserver) {
+            if (getBalanceResult.isError()) {
+              responseObserver.onError(new Throwable(getBalanceResult.getError()));
+            } else {
+              responseObserver.onNext(getBalanceResult.getValue());
+              responseObserver.onCompleted();
+            }
           }
-        }
-      }));
+        }));
   }
 
   /**
-   * Return a BalanceServiceGrpc implementation which returns the given results for network calls.
+   * Assert that a call to {@link DefaultIlpClient#getBalance} with the given {@link DefaultIlpClient} throws the given
+   * exception.
+   *
+   * @param client            a {@link DefaultIlpClient} to test
+   * @param expectedException the {@link IlpException} that client should throw
    */
-  private AccountServiceGrpc.AccountServiceImplBase getAccountService(
-    Result<CreateAccountResponse, Throwable> createAccountResponse,
-    Result<GetAccountResponse, Throwable> getAccountResponse
-  ) {
-    return mock(AccountServiceGrpc.AccountServiceImplBase.class, delegatesTo(
-      new AccountServiceGrpc.AccountServiceImplBase() {
-        @Override
-        public void createAccount(CreateAccountRequest request, StreamObserver<CreateAccountResponse> responseObserver) {
-          if (createAccountResponse.isError()) {
-            responseObserver.onError(new Throwable(createAccountResponse.getError()));
-          } else {
-            responseObserver.onNext(createAccountResponse.getValue());
-            responseObserver.onCompleted();
-          }
-        }
+  private void assertGetBalanceThrows(DefaultIlpClient client, IlpException expectedException) {
+    assertThrows(
+        expectedException.getMessage(),
+        IlpException.class,
+        () -> client.getBalance("bob", "password")
+    );
+  }
 
-        @Override
-        public void getAccount(GetAccountRequest request, StreamObserver<GetAccountResponse> responseObserver) {
-          if (getAccountResponse.isError()) {
-            responseObserver.onError(new Throwable(getAccountResponse.getError()));
-          } else {
-            responseObserver.onNext(getAccountResponse.getValue());
-            responseObserver.onCompleted();
-          }
-        }
-      }));
+  /**
+   * Assert that a call to {@link DefaultIlpClient#sendPayment} with the given {@link DefaultIlpClient} throws the given
+   * exception.
+   *
+   * @param client            a {@link DefaultIlpClient} to test
+   * @param expectedException the {@link IlpException} that client should throw
+   */
+  private void assertSendPaymentThrows(DefaultIlpClient client, IlpException expectedException) {
+    assertThrows(
+        expectedException.getMessage(),
+        IlpException.class,
+        () -> client.sendPayment(mockPaymentRequest, "password")
+    );
   }
 }

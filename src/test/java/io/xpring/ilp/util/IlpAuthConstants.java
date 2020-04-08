@@ -4,8 +4,9 @@ import org.interledger.spsp.server.grpc.CreateAccountResponse;
 
 /**
  * Defines the keys that will be present in {@link CreateAccountResponse#getCustomSettingsMap()}.
- *
+ * <p>
  * These keys follow a hierarchical dot-notation format, and mirror the keys created on the Java connector exactly.
+ * </p>
  */
 public class IlpAuthConstants {
 
