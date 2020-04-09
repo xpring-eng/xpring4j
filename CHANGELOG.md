@@ -6,21 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-#### Changed
-- `IlpClient` methods now throw `IlpException`s if something goes wrong during the call 
-    (either client side or server side).  
-    This is only breaking if users are handling special error cases, which were previously `StatusRuntimeException`s
 
-#### Added
+## 4.0.0
+
+This major release contains new features in XRP to check for existence of an account and to retrieve payment history for an account.
+
+We make several breaking API changes in order to accomodate some larger refactors across the codebase and standardize interfaces. In particular, exception naming is refactored.
+
+Additionally, this release turns down support for the legacy protocol buffers. This functionality has been defaulted to off and slated for removal for several releases.
+
+### Added
+- Add a new `paymentHistory` method to `XRPClient`. This method allows clients to retrieve payment history for an address.
 - A new `accountExists` method added to XRPClient which determines whether a given address exists on the XRP Ledger.
 
 ### Changed
+- The `XRPClient` constructor requires a new parameter that identifies the network it is connected to.
 - Classes in `io.xpring.ilp` now throw an `IlpException` rather than a `XpringException`.
 - Classes in `io.xpring.xrp` now throw an `XRPException` rather than a `XpringException`.
+- `IlpClient` methods now throw `IlpException`s if something goes wrong during the call (either client side or server side). This is only breaking if users are handling special error cases, which were previously `StatusRuntimeException`s
 
 ### Removed
 - The `XpringException` class is removed and no longer exists.
-- All legacy services are removed from XpringKit. All RPC's go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
+- All legacy services are removed from XpringKit. All RPCs go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
 
 ## 3.0.0 - March 24, 2020
 #### Added

@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public enum XRPExceptionType {
     INVALID_INPUTS,
     SIGNING_ERROR,

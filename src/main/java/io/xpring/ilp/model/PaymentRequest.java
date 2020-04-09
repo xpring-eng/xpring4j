@@ -6,7 +6,7 @@ import com.google.common.primitives.UnsignedLong;
 import org.immutables.value.Value;
 
 /**
- * An immutable interface which can be used to send a payment request to a connector
+ * An immutable interface which can be used to send a payment request to a connector.
  */
 public interface PaymentRequest {
 
@@ -28,22 +28,20 @@ public interface PaymentRequest {
    * This payment pointer will be the identifier for the account of the recipient of this payment on the ILP
    * network.
    *
-   * @see "https://github.com/interledger/rfcs/blob/master/0026-payment-pointers/0026-payment-pointers.md"
-   *
    * @return A {@link String} conforming to the Payment Pointer RFC which identifies an account on the ILP network
+   * @see "https://github.com/interledger/rfcs/blob/master/0026-payment-pointers/0026-payment-pointers.md"
    */
   String destinationPaymentPointer();
 
   /**
-   * @return The accountID of the sender.
+   * The accountID of the sender.
    */
   String senderAccountId();
 
   /**
-   * Constructs a {@link PaymentRequest} (non-proto) from a {@link SendPaymentRequest}
+   * Constructs a {@link PaymentRequest} (non-proto) from a {@link SendPaymentRequest}.
    *
-   * @return A {@link SendPaymentRequest} populated with the analogous fields in
-   *          a {@link PaymentRequest}
+   * @return A {@link SendPaymentRequest} populated with the analogous fields in a {@link PaymentRequest}.
    */
   SendPaymentRequest toProto();
 
@@ -53,10 +51,10 @@ public interface PaymentRequest {
     @Override
     public SendPaymentRequest toProto() {
       return SendPaymentRequest.newBuilder()
-        .setAmount(this.amount().longValue())
-        .setDestinationPaymentPointer(this.destinationPaymentPointer())
-        .setAccountId(this.senderAccountId())
-        .build();
+          .setAmount(this.amount().longValue())
+          .setDestinationPaymentPointer(this.destinationPaymentPointer())
+          .setAccountId(this.senderAccountId())
+          .build();
     }
   }
 }
