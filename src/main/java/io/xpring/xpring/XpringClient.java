@@ -19,7 +19,7 @@ public class XpringClient {
   private PayIDClientInterface payIDClient;
 
   /**
-   * A {@link XRPClientInterface} used to interact with the Pay ID protocol.
+   * A {@link XRPClientInterface} used to interact with the XRP Ledger protocol.
    */
   private XRPClientInterface xrpClient;
 
