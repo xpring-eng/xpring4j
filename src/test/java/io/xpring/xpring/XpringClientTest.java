@@ -126,14 +126,12 @@ public class XpringClientTest {
     // GIVEN a XpringClient composed of a XRPClient which will throw an error.
     XRPClientInterface xrpClient = new FakeXRPClient(
         XRPLNetwork.TEST,
-
         Result.ok(FAKE_BALANCE_VALUE),
         Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
         Result.error(XRP_EXCEPTION),
         Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
-
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
     );
 
@@ -159,7 +157,6 @@ public class XpringClientTest {
         Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
-
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
     );
 
