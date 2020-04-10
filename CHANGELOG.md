@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 4.0.1
+
+This fix version contains several fixes for experimental components.
+
 ## 4.0.0
 
 This major release contains new features in XRP to check for existence of an account and to retrieve payment history for an account.
