@@ -12,7 +12,6 @@ import java.math.BigInteger;
  * Composes interactions of Xpring services.
  */
 public class XpringClient {
-
   /**
    * A {@link PayIDClientInterface} used to interact with the Pay ID protocol.
    */
