@@ -12,10 +12,12 @@ import java.util.Objects;
 /**
  * Provides JavaScript based Utils functionality.
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class JavaScriptPayIDUtils {
   /**
    * An reference to the underlying JavaScript PayIDUtils object.
    */
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   private Value javaScriptPayIDUtils;
 
   /**
