@@ -1,7 +1,5 @@
 package io.xpring.payid;
 
-import org.interledger.spsp.PaymentPointer;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
 import io.xpring.common.XRPLNetwork;
@@ -71,7 +69,7 @@ public class PayIDClient implements PayIDClientInterface {
    * @return An XRP address representing the given PayID.
    */
   public String xrpAddressForPayID(String payID) throws PayIDException {
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(payID);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(payID);
     if (paymentPointer == null) {
       throw PayIDException.invalidPaymentPointerException;
     }

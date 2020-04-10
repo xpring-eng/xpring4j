@@ -1,6 +1,7 @@
 package io.xpring.payid;
 
-import org.interledger.spsp.PaymentPointer;
+import io.xpring.payid.javascript.JavaScriptPayIDUtils;
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 
 /**
  * Provides utilities for PayID.
@@ -8,17 +9,13 @@ import org.interledger.spsp.PaymentPointer;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDUtils {
 
-  /**
-   * Parse a PayID to a payment pointer object.
-   *
-   * @param payID The input payID..
-   * @return A PaymentPointer object if the input was valid, otherwise undefined.
-   */
-  public static PaymentPointer parsePayID(String payID) {
+  private static final JavaScriptPayIDUtils javaScriptPayIDUtils;
+
+  static {
     try {
-      return PaymentPointer.of(payID);
-    } catch (Exception e) {
-      return null;
+      javaScriptPayIDUtils = new JavaScriptPayIDUtils();
+    } catch (JavaScriptLoaderException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -26,5 +23,15 @@ public class PayIDUtils {
    * Please do not instantiate this static utility class.
    */
   private PayIDUtils() {
+  }
+
+  /**
+   * Parse the given Pay ID to a set of components.
+   *
+   * @param payID A PayID to parse.
+   * @return A boolean indicating whether this was a valid address.
+   */
+  public static PayIDComponents parsePayID(String payID) {
+    return javaScriptPayIDUtils.parsePayID(payID);
   }
 }

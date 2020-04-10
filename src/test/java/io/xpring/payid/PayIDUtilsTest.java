@@ -3,8 +3,6 @@ package io.xpring.payid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.interledger.spsp.PaymentPointer;
-
 import org.junit.Test;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
@@ -15,7 +13,7 @@ public class PayIDUtilsTest {
     String rawPaymentPointer = "$example.com/foo";
 
     // WHEN it is parsed to a PaymentPointer object
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the host and path are set correctly.
     assertEquals(paymentPointer.host(), "example.com");
@@ -28,11 +26,11 @@ public class PayIDUtilsTest {
     String rawPaymentPointer = "$example.com";
 
     // WHEN it is parsed to a PaymentPointer object
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the host and path are set correctly.
     assertEquals(paymentPointer.host(), "example.com");
-    assertEquals(paymentPointer.path(), PaymentPointer.WELL_KNOWN);
+    assertEquals(paymentPointer.path(), "/.well-known/pay");
   }
 
   @Test
@@ -41,11 +39,11 @@ public class PayIDUtilsTest {
     String rawPaymentPointer = "$example.com";
 
     // WHEN it is parsed to a PaymentPointer object
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the host and path are set correctly.
     assertEquals(paymentPointer.host(), "example.com");
-    assertEquals(paymentPointer.path(), PaymentPointer.WELL_KNOWN);
+    assertEquals(paymentPointer.path(), "/.well-known/pay");
   }
 
   @Test
@@ -54,7 +52,7 @@ public class PayIDUtilsTest {
     String rawPaymentPointer = "example.com/";
 
     // WHEN it is parsed to a PaymentPointer object
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the result is null
     assertNull(paymentPointer);
@@ -66,7 +64,7 @@ public class PayIDUtilsTest {
     String rawPaymentPointer = "$";
 
     // WHEN it is parsed to a PaymentPointer object
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the result is null
     assertNull(paymentPointer);
@@ -78,7 +76,7 @@ public class PayIDUtilsTest {
     String rawPaymentPointer = "$ZA̡͊͠͝LGΌ IS̯͈͕̹̘̱ͮ TO͇̹̺ͅƝ̴ȳ̳ TH̘Ë͖́̉ ͠P̯͍̭O̚N̐Y̡";
 
     // WHEN it is parsed to a PaymentPointer object
-    PaymentPointer paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the result is null
     assertNull(paymentPointer);

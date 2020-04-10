@@ -8,7 +8,6 @@ import org.graalvm.polyglot.Value;
 import java.util.Objects;
 import java.util.Optional;
 
-
 /**
  * Provides JavaScript based Utils functionality.
  */

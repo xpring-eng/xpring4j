@@ -131,10 +131,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.interledger</groupId>
-            <artifactId>spsp-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
