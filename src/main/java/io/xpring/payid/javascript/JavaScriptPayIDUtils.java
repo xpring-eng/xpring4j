@@ -41,8 +41,8 @@ public class JavaScriptPayIDUtils {
   public PayIDComponents parsePayID(String payID) {
     Objects.requireNonNull(payID);
 
-    Value isValidAddressFunction = javaScriptPayIDUtils.getMember("parsePaymentPointer");
-    Value javaScriptComponents =  isValidAddressFunction.execute(payID);
+    Value parsePayIDFunction = javaScriptPayIDUtils.getMember("parsePaymentPointer");
+    Value javaScriptComponents =  parsePayIDFunction.execute(payID);
     if (javaScriptComponents.isNull()) {
       return null;
     }
