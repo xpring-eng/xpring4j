@@ -5,20 +5,20 @@ import java.util.Optional;
 /**
  * Represents a result monad of type `Type` or an error of type `ErrorType`.
  */
-public class Result<Type, ErrorType extends Throwable> {
-  private Optional<Type> value;
-  private Optional<ErrorType> error;
+public class Result<T, E extends Throwable> {
+  private Optional<T> value;
+  private Optional<E> error;
 
-  private Result(Type value, ErrorType error) {
+  private Result(T value, E error) {
     this.value = Optional.ofNullable(value);
     this.error = Optional.ofNullable(error);
   }
 
-  public static <Type, ErrorType extends Throwable> Result<Type, ErrorType> ok(Type value) {
-    return new Result<Type, ErrorType>(value, null);
+  public static <T, E extends Throwable> Result<T, E> ok(T value) {
+    return new Result<T, E>(value, null);
   }
 
-  public static <Type, ErrorType extends Throwable> Result<Type, ErrorType> error(ErrorType error) {
+  public static <T, E extends Throwable> Result<T, E> error(E error) {
     return new Result<>(null, error);
   }
 
@@ -26,11 +26,11 @@ public class Result<Type, ErrorType extends Throwable> {
     return error.isPresent();
   }
 
-  public Type getValue() {
+  public T getValue() {
     return value.get();
   }
 
-  public ErrorType getError() {
+  public E getError() {
     return error.get();
   }
 }
