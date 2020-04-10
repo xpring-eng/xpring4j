@@ -159,7 +159,6 @@ wallet.verify(message, signature); // true
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 
-
 String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);
 ```
@@ -172,7 +171,6 @@ An `XRPClient` can check the balance of an account on the XRP Ledger.
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.XRPClient;
 import java.math.BigInteger;
-
 
 String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XRPClient xrpClient = new XRPClient(grpcURL, XRPLNetwork.TEST);

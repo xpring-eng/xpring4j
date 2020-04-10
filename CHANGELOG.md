@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `XRPClient` requires a new parameter in it's constructor that identifies the network it is attached to.
+
 ## 4.0.0
 
 This major release contains new features in XRP to check for existence of an account and to retrieve payment history for an account.
@@ -28,10 +31,6 @@ Additionally, this release turns down support for the legacy protocol buffers. T
 ### Removed
 - The `XpringException` class is removed and no longer exists.
 - All legacy services are removed from XpringKit. All RPCs go through [rippled's protocol buffer API](https://github.com/ripple/rippled/pull/3254).
-
-#### Changed
-- `XRPClient` requires a new parameter in it's constructor that identifies the network it is attached to.
-
 
 ## 3.0.0 - March 24, 2020
 #### Added
