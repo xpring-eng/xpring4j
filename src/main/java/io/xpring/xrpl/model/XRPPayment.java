@@ -30,7 +30,7 @@ public interface XRPPayment {
   String destination();
 
   /**
-   * (Optional) Arbitrary tag that identifies the reason for the payment.
+   * (Optional) Arbitrary tag that identifies a hosted recipient to pay, or the reason for the payment.
    */
   @Nullable
   Integer destinationTag();
