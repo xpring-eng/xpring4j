@@ -9,7 +9,6 @@ import io.xpring.xrpl.javascript.JavaScriptWalletGenerationResult;
  * Represents an account on the XRP Ledger and provides signing / verifying cryptographic functions.
  */
 public class Wallet {
-
   /**
    * The underlying JavaScript wallet.
    */

@@ -117,7 +117,6 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
     }
   }
 
-
   @Override
   public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
     if (this.paymentHistoryResult.isError()) {
