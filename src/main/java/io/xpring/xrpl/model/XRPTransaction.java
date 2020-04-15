@@ -5,10 +5,11 @@ import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 import org.immutables.value.Value;
-import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -148,7 +149,7 @@ public interface XRPTransaction {
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
    *                    to construct an {@link XRPTransaction}
    * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
-   * @see <a href="https://github.com/ripple/rippled/blob/4f422f6f393b12d5aaba11fb65c33b7885891906/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
+   * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
    * GetTransactionResponse protocol buffer</a>
    */
   static XRPTransaction from(GetTransactionResponse getTransactionResponse) {
