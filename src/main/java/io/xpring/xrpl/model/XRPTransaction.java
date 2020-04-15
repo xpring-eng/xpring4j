@@ -1,10 +1,16 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
+import com.oracle.truffle.js.builtins.JavaBuiltins;
 import io.xpring.xrpl.TransactionType;
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
+import io.xpring.xrpl.javascript.JavaScriptSigner;
+import io.xpring.xrpl.javascript.JavaScriptUtils;
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.GetTransaction;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
+import org.xrpl.rpc.v1.GetTransactionResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +28,11 @@ public interface XRPTransaction {
   static ImmutableXRPTransaction.Builder builder() {
     return ImmutableXRPTransaction.builder();
   }
+
+  /**
+   * The identifying hash of the transaction.
+   */
+  String hash();
 
   /**
    * The unique address of the account that initiated the transaction.
@@ -115,15 +126,37 @@ public interface XRPTransaction {
   XRPPayment paymentFields();
 
   /**
-   * Constructs an {@link XRPTransaction} from a {@link Transaction}.
+   * The timestamp of the transaction reported in Unix time (seconds)
    *
-   * @param transaction a {@link Transaction} (protobuf object) whose field values will be used
+   * @see "https://xrpl.org/basic-data-types.html#specifying-time"
+   */
+  Number timestamp();
+
+  /**
+   * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
+   *
+   * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
    *                    to construct an {@link XRPTransaction}
    * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
-   * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L13">
-   * Transaction protocol buffer</a>
+   * @see <a href="https://github.com/ripple/rippled/blob/4f422f6f393b12d5aaba11fb65c33b7885891906/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
+   * GetTransactionResponse protocol buffer</a>
    */
-  static XRPTransaction from(Transaction transaction) {
+  static XRPTransaction from(GetTransactionResponse getTransactionResponse) {
+    JavaScriptUtils javaScriptUtils;
+    try {
+      javaScriptUtils = new JavaScriptUtils();
+    } catch (JavaScriptLoaderException e) {
+      throw new RuntimeException(e);
+    }
+
+    final Transaction transaction = getTransactionResponse.getTransaction();
+    if (transaction == null) {
+      return null;
+    }
+
+    byte[] transactionHashBytes = getTransactionResponse.getHash().toByteArray();
+    final String hash = javaScriptUtils.toTransactionHash(transactionHashBytes.toString());
+
     final String account = transaction.getAccount().getValue().getAddress();
 
     ByteString accountTransactionIDByteString = transaction.getAccountTransactionId().getValue();
@@ -179,6 +212,7 @@ public interface XRPTransaction {
     }
 
     return XRPTransaction.builder()
+        .hash(hash)
         .account(account)
         .accountTransactionID(accountTransactionID)
         .fee(fee)
@@ -192,6 +226,7 @@ public interface XRPTransaction {
         .transactionSignature(transactionSignature)
         .type(type)
         .paymentFields(paymentFields)
+        .timestamp(timestamp)
         .build();
   }
 }
