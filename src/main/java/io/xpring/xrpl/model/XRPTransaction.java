@@ -1,13 +1,10 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
-import com.oracle.truffle.js.builtins.JavaBuiltins;
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
-import io.xpring.xrpl.javascript.JavaScriptSigner;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 import org.immutables.value.Value;
-import org.xrpl.rpc.v1.GetTransaction;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.GetTransactionResponse;
@@ -142,7 +139,8 @@ public interface XRPTransaction {
    *
    * @see "https://xrpl.org/basic-data-types.html#specifying-time"
    */
-  Number timestamp();
+  @Nullable
+  Integer timestamp();
 
   /**
    * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
@@ -167,7 +165,7 @@ public interface XRPTransaction {
     }
 
     byte[] transactionHashBytes = getTransactionResponse.getHash().toByteArray();
-    final String hash = javaScriptUtils.toTransactionHash(transactionHashBytes.toString());
+    final String hash = javaScriptUtils.toHex(transactionHashBytes);
 
     final String account = transaction.getAccount().getValue().getAddress();
 
@@ -223,6 +221,14 @@ public interface XRPTransaction {
         return null;
       }
     }
+
+    // Transactions report their timestamps since the Ripple Epoch, which is 946,684,800 seconds after
+    // the unix epoch. Convert transaction's timestamp to a unix timestamp.
+    // See: https://xrpl.org/basic-data-types.html#specifying-time
+    Integer rippleTransactionDate = getTransactionResponse.getDate().getValue();
+    Integer timestamp = rippleTransactionDate != null
+                    ? rippleTransactionDate + 946684800
+                    : null;
 
     return XRPTransaction.builder()
         .hash(hash)
