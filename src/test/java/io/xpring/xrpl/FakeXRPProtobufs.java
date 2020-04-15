@@ -3,11 +3,11 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xrpl.rpc.v1.AccountAddress;
-import org.xrpl.rpc.v1.CheckCash;
+import org.xrpl.rpc.v1.*;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.AccountTransactionID;
 import org.xrpl.rpc.v1.Common.Amount;
+import org.xrpl.rpc.v1.Common.Date;
 import org.xrpl.rpc.v1.Common.DeliverMin;
 import org.xrpl.rpc.v1.Common.Destination;
 import org.xrpl.rpc.v1.Common.DestinationTag;
@@ -22,16 +22,7 @@ import org.xrpl.rpc.v1.Common.Sequence;
 import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.Common.SourceTag;
 import org.xrpl.rpc.v1.Common.TransactionSignature;
-import org.xrpl.rpc.v1.Currency;
-import org.xrpl.rpc.v1.CurrencyAmount;
-import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
-import org.xrpl.rpc.v1.GetTransactionResponse;
-import org.xrpl.rpc.v1.IssuedCurrencyAmount;
-import org.xrpl.rpc.v1.Memo;
-import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Signer;
-import org.xrpl.rpc.v1.Transaction;
-import org.xrpl.rpc.v1.XRPDropsAmount;
 
 import java.io.UnsupportedEncodingException;
 
@@ -125,7 +116,18 @@ public class FakeXRPProtobufs {
   static Integer testFlags = 4;
   static Integer testSourceTag = 6;
   static Integer testLastLedgerSequence = 5;
+  static Integer testTimestamp = 0; // expected to convert to a Unix time of 946684800, the beginning of Ripple epoch
+  static Integer expectedTimestamp = 946684800;
 
+  static ByteString testTransactionHash;
+  static {
+    try {
+      testTransactionHash = ByteString.copyFrom("faketransactionhash", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+  static String expectedHash = "789";
   // VALID OBJECTS ===============================================================
 
   // Currency proto
@@ -260,6 +262,7 @@ public class FakeXRPProtobufs {
   static SigningPublicKey signingPublicKey = SigningPublicKey.newBuilder()
       .setValue(testSigningPublicKey)
       .build();
+
   // TransactionSignature
   static TransactionSignature transactionSignature = TransactionSignature.newBuilder()
       .setValue(testTransactionSignature)
@@ -326,31 +329,43 @@ public class FakeXRPProtobufs {
       .setCheckCash(checkCash)
       .build();
 
+  // Additional Transaction metadata protos for GetTransactionResponse protos
+  // Date
+  static Common.Date dateProto = Common.Date.newBuilder().setValue(testTimestamp).build();
+
   // GetTransactionResponse protos
-  static GetTransactionResponse getTransactionResponsePayment1 = GetTransactionResponse.newBuilder()
-      .setTransaction(transactionWithAllFieldsSet)
-      .build();
-  static GetTransactionResponse getTransactionResponsePayment2 = GetTransactionResponse.newBuilder()
-      .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
-      .build();
+  static GetTransactionResponse getTransactionResponsePaymentAllFields = GetTransactionResponse.newBuilder()
+                                                                  .setTransaction(transactionWithAllFieldsSet)
+                                                                  .setDate(dateProto)
+                                                                  .setHash(testTransactionHash)
+                                                                  .build();
+
+  static GetTransactionResponse getTransactionResponsePaymentMandatoryFields =
+                                                            GetTransactionResponse.newBuilder()
+                                                            .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
+                                                            .setHash(testTransactionHash)
+                                                            .build();
 
   static GetTransactionResponse getTransactionResponseCheckCash = GetTransactionResponse.newBuilder()
-      .setTransaction(checkCashTransactionWithCommonFieldsSet)
-      .build();
+                                                                .setTransaction(checkCashTransactionWithCommonFieldsSet)
+                                                                .setDate(dateProto)
+                                                                .setHash(testTransactionHash)
+                                                                .build();
 
   // GetAccountTransactionHistoryResponse protos
   static GetAccountTransactionHistoryResponse paymentOnlyGetAccountTransactionHistoryResponse =
       GetAccountTransactionHistoryResponse.newBuilder()
-          .addTransactions(getTransactionResponsePayment1)
-          .addTransactions(getTransactionResponsePayment2)
+          .addTransactions(getTransactionResponsePaymentAllFields)
+          .addTransactions(getTransactionResponsePaymentMandatoryFields)
           .build();
 
   static GetAccountTransactionHistoryResponse mixedGetAccountTransactionHistoryResponse =
       GetAccountTransactionHistoryResponse.newBuilder()
-          .addTransactions(getTransactionResponsePayment1)
-          .addTransactions(getTransactionResponsePayment2)
+          .addTransactions(getTransactionResponsePaymentAllFields)
+          .addTransactions(getTransactionResponsePaymentMandatoryFields)
           .addTransactions(getTransactionResponseCheckCash)
           .build();
+
   // INVALID OBJECTS ===============================================================
 
   // Invalid IssuedCurrencyAmount proto
@@ -415,15 +430,19 @@ public class FakeXRPProtobufs {
       .setCheckCash(checkCash) // unsupported
       .build();
 
-  // Invalid GetTransactionResponse proto
-  static GetTransactionResponse invalidGetTransactionResponse = GetTransactionResponse.newBuilder()
+  // Invalid GetTransactionResponse protos
+  static GetTransactionResponse invalidGetTransactionResponseEmptyPaymentFields = GetTransactionResponse.newBuilder()
       .setTransaction(invalidTransactionWithEmptyPaymentFields)
       .build();
 
+  static GetTransactionResponse invalidGetTransactionResponseUnsupportedTransactionType =
+                                                              GetTransactionResponse.newBuilder()
+                                                                      .setTransaction(invalidTransactionUnsupportedType)
+                                                                      .build();
   // Invalid GetAccountTransactionHistoryResponse protos
   static GetAccountTransactionHistoryResponse invalidPaymentGetAccountTransactionHistoryResponse =
       GetAccountTransactionHistoryResponse.newBuilder()
-          .addTransactions(invalidGetTransactionResponse)
-          .addTransactions(getTransactionResponsePayment1)
+          .addTransactions(invalidGetTransactionResponseEmptyPaymentFields)
+          .addTransactions(getTransactionResponsePaymentAllFields)
           .build();
 }
