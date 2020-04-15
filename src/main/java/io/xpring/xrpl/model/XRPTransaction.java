@@ -6,8 +6,8 @@ import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
-import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.Transaction;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,7 +123,7 @@ public interface XRPTransaction {
   XRPPayment paymentFields();
 
   /**
-   * The timestamp of the transaction reported in Unix time (seconds)
+   * The timestamp of the transaction reported in Unix time (seconds).
    *
    * @see "https://xrpl.org/basic-data-types.html#specifying-time"
    */

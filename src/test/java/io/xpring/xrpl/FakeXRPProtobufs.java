@@ -3,7 +3,18 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.Currency;
+import org.xrpl.rpc.v1.IssuedCurrencyAmount;
+import org.xrpl.rpc.v1.CurrencyAmount;
+import org.xrpl.rpc.v1.Payment;
+import org.xrpl.rpc.v1.Transaction;
+import org.xrpl.rpc.v1.AccountAddress;
+import org.xrpl.rpc.v1.XRPDropsAmount;
+import org.xrpl.rpc.v1.Memo;
+import org.xrpl.rpc.v1.CheckCash;
+import org.xrpl.rpc.v1.Signer;
+import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
+import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.AccountTransactionID;
 import org.xrpl.rpc.v1.Common.Amount;
@@ -22,7 +33,6 @@ import org.xrpl.rpc.v1.Common.Sequence;
 import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.Common.SourceTag;
 import org.xrpl.rpc.v1.Common.TransactionSignature;
-import org.xrpl.rpc.v1.Signer;
 
 import java.io.UnsupportedEncodingException;
 
@@ -120,6 +130,7 @@ public class FakeXRPProtobufs {
   static Integer expectedTimestamp = 946684800;
 
   static ByteString testTransactionHash;
+
   static {
     try {
       testTransactionHash = ByteString.copyFrom("faketransactionhash", "Utf8");
@@ -127,6 +138,7 @@ public class FakeXRPProtobufs {
       exception.printStackTrace();
     }
   }
+
   static String expectedHash = "789";
   // VALID OBJECTS ===============================================================
 
@@ -331,7 +343,7 @@ public class FakeXRPProtobufs {
 
   // Additional Transaction metadata protos for GetTransactionResponse protos
   // Date
-  static Common.Date dateProto = Common.Date.newBuilder().setValue(testTimestamp).build();
+  static Date dateProto = Date.newBuilder().setValue(testTimestamp).build();
 
   // GetTransactionResponse protos
   static GetTransactionResponse getTransactionResponsePaymentAllFields = GetTransactionResponse.newBuilder()
