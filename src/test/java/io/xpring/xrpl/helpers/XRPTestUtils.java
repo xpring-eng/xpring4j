@@ -30,7 +30,7 @@ public class XRPTestUtils {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XRPTransaction xrpTransaction = XRPTransaction.from(transaction);
+          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse);
           if (xrpTransaction != null) {
             payments.add(xrpTransaction);
           }
