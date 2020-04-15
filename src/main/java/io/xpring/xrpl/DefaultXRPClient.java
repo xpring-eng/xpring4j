@@ -252,7 +252,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XRPTransaction xrpTransaction = XRPTransaction.from(transaction);
+          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse);
           if (xrpTransaction == null) {
             throw XRPException.paymentConversionFailure;
           } else {
