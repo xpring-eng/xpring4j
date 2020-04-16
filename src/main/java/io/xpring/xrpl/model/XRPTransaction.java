@@ -189,7 +189,7 @@ public interface XRPTransaction {
         .map(XRPMemo::from)
         .collect(Collectors.toList());
 
-    Integer sequence = transaction.getSequence().getValue();
+    final Integer sequence = transaction.getSequence().getValue();
 
     List<XRPSigner> signers = transaction.getSignersList()
         .stream()
@@ -226,10 +226,16 @@ public interface XRPTransaction {
     // Transactions report their timestamps since the Ripple Epoch, which is 946,684,800 seconds after
     // the unix epoch. Convert transaction's timestamp to a unix timestamp.
     // See: https://xrpl.org/basic-data-types.html#specifying-time
-    Integer rippleTransactionDate = getTransactionResponse.getDate().getValue();
-    Integer timestamp = rippleTransactionDate != null
-                    ? rippleTransactionDate + 946684800
-                    : null;
+    Integer timestamp;
+    if (getTransactionResponse.hasDate()) {
+      Integer rippleTransactionDate = getTransactionResponse.getDate().getValue();
+      timestamp = rippleTransactionDate != null
+              ? rippleTransactionDate + 946684800
+              : null;
+    } else {
+      timestamp = null;
+    }
+
 
     return XRPTransaction.builder()
         .hash(hash)
