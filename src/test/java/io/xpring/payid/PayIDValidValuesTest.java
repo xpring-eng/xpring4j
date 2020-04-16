@@ -143,10 +143,3 @@ public class PayIDValidValuesTest {
     assertThat(upperCasePercentEncoded("foo$%af%2ebar")).isEqualTo("foo$%AF%2Ebar");
   }
 }
-
-// TODO: Ensure no $ in sub-delims?
-// TODO: Ensure that payid always starts with (unreserved / sub-delims)
-// TODO: pct-encoded
-// TODO: Invalid (gen-delims like hash)
-// TODO: normalization (caps, etc).
-// TODO: I18N?
