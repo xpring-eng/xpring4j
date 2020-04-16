@@ -24,7 +24,7 @@ public interface AccountBalance {
   String accountId();
 
   /**
-   * he currency code or other asset identifier that this account's balances will be denominated in.
+   * The currency code or other asset identifier that this account's balances will be denominated in.
    *
    * @return A {@link String} containing the currency code or other asset identifier that this account's
    *          balances will be denominated in.
