@@ -132,10 +132,13 @@ public class JavaScriptUtils {
    * @return An encoded hexadecimal string.
    */
   public String toHex(byte[] bytes) {
-    Objects.requireNonNull(bytes);
-
-    Value toHexFunction = javaScriptUtils.getMember("toHex");
-    Value hex = toHexFunction.execute(bytes);
-    return hex.isNull() ? null : hex.asString();
+    final char[] hexArray = "0123456789ABCDEF".toCharArray();
+    char[] hexChars = new char[bytes.length * 2];
+    for (int j = 0; j < bytes.length; j++) {
+      int next = bytes[j] & 0xFF;
+      hexChars[j * 2] = hexArray[next >>> 4];
+      hexChars[j * 2 + 1] = hexArray[next & 0x0F];
+    }
+    return new String(hexChars);
   }
 }
