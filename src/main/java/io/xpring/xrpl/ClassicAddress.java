@@ -11,16 +11,22 @@ import java.util.Optional;
 public interface ClassicAddress {
   /**
    * The address component of the classic address.
+   *
+   * @return A {@link String} representing the address component of the classic address.
    */
   public String address();
 
   /**
    * The tag component of the classic address.
+   *
+   * @return An {@link Optional} of {@link Integer} representing the tag component of the classic address.
    */
   public Optional<Integer> tag();
 
   /**
-   * A boolean indicating whether this address is for use on a test network.
+   * Whether this address is for use on a test network.
+   *
+   * @return A boolean indicating whether this address is for use on a test network.
    */
   public boolean isTest();
 

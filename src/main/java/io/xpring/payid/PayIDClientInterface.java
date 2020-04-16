@@ -8,7 +8,9 @@ import io.xpring.common.XRPLNetwork;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public interface PayIDClientInterface {
   /**
-   * Retrieve the network that addresses will be resolved on.
+   * The {@link XRPLNetwork} that addresses will be resolved on.
+   *
+   * @return The {@link XRPLNetwork} that addresses will be resolved on.
    */
   XRPLNetwork getNetwork();
 
@@ -17,6 +19,7 @@ public interface PayIDClientInterface {
    *
    * @param payID The payID to resolve for an address.
    * @return An XRP address representing the given PayID.
+   * @throws PayIDException if the inputs were invalid.
    */
   String xrpAddressForPayID(String payID) throws PayIDException;
 }

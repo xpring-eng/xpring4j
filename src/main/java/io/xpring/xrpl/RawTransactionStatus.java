@@ -35,6 +35,8 @@ public class RawTransactionStatus {
 
   /**
    * Retrieve whether or not the transaction has been validated.
+   *
+   * @return true if the transaction has been validated.
    */
   public boolean getValidated() {
     return this.validated;
@@ -42,6 +44,8 @@ public class RawTransactionStatus {
 
   /**
    * Retrieve the transaction status code.
+   *
+   * @return A {@link String} representing the transaction status code.
    */
   public String getTransactionStatusCode() {
     return this.transactionStatusCode;
@@ -49,13 +53,17 @@ public class RawTransactionStatus {
 
   /**
    * Retrieve the last ledger sequence this transaction is valid for.
+   *
+   * @return An int representing the last ledger sequence.
    */
   public int getLastLedgerSequence() {
     return this.lastLedgerSequence;
   }
 
   /**
-   * Returns whether the transaction represnented by this status is a full payment.
+   * Whether this payment has a full payment status.
+   *
+   * @return true if the transaction represented by this status is a full payment.
    */
   public boolean isFullPayment() {
     return this.isFullPayment;

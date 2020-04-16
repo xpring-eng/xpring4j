@@ -18,17 +18,23 @@ public interface XRPIssuedCurrency {
   }
 
   /**
-   * The currency used to value the amount.
+   * The {@link XRPCurrency} used to value the amount.
+   *
+   * @return The {@link XRPCurrency} used to value the amount.
    */
   XRPCurrency currency();
 
   /**
    * The value of the amount.
+   *
+   * @return A {@link BigInteger} representing the value of the amount.
    */
   BigInteger value();
 
   /**
-   * Unique account address of the entity issuing the currency.
+   * The unique account address of the entity issuing the currency.
+   *
+   * @return The unique account address of the entity issuing the currency.
    */
   String issuer();
 

@@ -44,7 +44,9 @@ public class XRPException extends Exception {
   }
 
   /**
-   * The exception type.
+   * The exception type of this {@link XRPException}.
+   *
+   * @return A {@link XRPExceptionType} representing the exception type.
    */
   public XRPExceptionType getType() {
     return this.type;
