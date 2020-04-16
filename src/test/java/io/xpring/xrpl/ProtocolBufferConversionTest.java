@@ -1,7 +1,7 @@
 package io.xpring.xrpl;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
+import io.xpring.xrpl.javascript.JavaScriptUtils;
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -14,22 +14,34 @@ import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.xrpl.rpc.v1.Currency;
-import org.xrpl.rpc.v1.CurrencyAmount;
-import org.xrpl.rpc.v1.Payment;
-import org.xrpl.rpc.v1.Transaction;
-import org.xrpl.rpc.v1.Memo;
-import org.xrpl.rpc.v1.Signer;
-import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Common.Flags;
 import org.xrpl.rpc.v1.Common.LastLedgerSequence;
 import org.xrpl.rpc.v1.Common.SourceTag;
+import org.xrpl.rpc.v1.Currency;
+import org.xrpl.rpc.v1.CurrencyAmount;
+import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.Memo;
+import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Payment.PathElement;
+import org.xrpl.rpc.v1.Signer;
+import org.xrpl.rpc.v1.Transaction;
 
 import java.math.BigInteger;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 public class ProtocolBufferConversionTest {
+
+  public static JavaScriptUtils javaScriptUtils;
+
+  static {
+    try {
+      javaScriptUtils = new JavaScriptUtils();
+    } catch (JavaScriptLoaderException e) {
+      e.printStackTrace();
+    }
+  }
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -315,7 +327,8 @@ public class ProtocolBufferConversionTest {
     XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
 
     // THEN all fields are present and converted correctly.
-    assertThat(xrpTransaction.hash()).isEqualTo(FakeXRPProtobufs.expectedHash);
+    assertThat(xrpTransaction.hash())
+            .isEqualTo(javaScriptUtils.toHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
@@ -351,7 +364,8 @@ public class ProtocolBufferConversionTest {
     XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
 
     // THEN all fields are present and converted correctly.
-    assertThat(xrpTransaction.hash()).isEqualTo(FakeXRPProtobufs.expectedHash);
+    assertThat(xrpTransaction.hash())
+            .isEqualTo(javaScriptUtils.toHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID()).isNull();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());

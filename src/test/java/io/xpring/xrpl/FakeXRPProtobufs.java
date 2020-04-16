@@ -139,7 +139,6 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static String expectedHash = "789";
   // VALID OBJECTS ===============================================================
 
   // Currency proto
