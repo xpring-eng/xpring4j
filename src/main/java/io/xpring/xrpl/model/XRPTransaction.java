@@ -37,7 +37,7 @@ public interface XRPTransaction {
    * provided hash.
    * </p>
    *
-   * @return A byte array containing the has value of another transaction.
+   * @return A byte array containing the hash value of another transaction.
    */
   @Nullable
   byte[] accountTransactionID();
