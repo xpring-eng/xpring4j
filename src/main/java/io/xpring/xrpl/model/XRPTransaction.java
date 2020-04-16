@@ -5,6 +5,7 @@ import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
@@ -144,6 +145,15 @@ public interface XRPTransaction {
   Integer timestamp();
 
   /**
+   * (Omitted for non-Payment transactions) The Currency Amount actually received by the Destination account.
+   * Use this field to determine how much was delivered, regardless of whether the transaction is a partial payment.
+   *
+   * @see "https://xrpl.org/transaction-metadata.html#delivered_amount"
+   */
+  @Nullable
+  String deliveredAmount();
+
+  /**
    * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
    *
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
@@ -196,14 +206,14 @@ public interface XRPTransaction {
         .map(XRPSigner::from)
         .collect(Collectors.toList());
 
-    byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
+    final byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
 
     Optional<Integer> sourceTag = Optional.empty();
     if (transaction.hasSourceTag()) {
       sourceTag = Optional.of(transaction.getSourceTag().getValue());
     }
 
-    byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
+    final byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
 
     TransactionType type;
     XRPPayment paymentFields;
@@ -236,6 +246,22 @@ public interface XRPTransaction {
       timestamp = null;
     }
 
+    String deliveredAmount;
+    if (getTransactionResponse.getMeta().hasDeliveredAmount()) {
+      CurrencyAmount currencyAmountDelivered = getTransactionResponse.getMeta().getDeliveredAmount().getValue();
+      if (currencyAmountDelivered.hasXrpAmount()) {
+        deliveredAmount = Long.toString(currencyAmountDelivered.getXrpAmount().getDrops());
+      } else {
+        if (currencyAmountDelivered.hasIssuedCurrencyAmount()) {
+          deliveredAmount = currencyAmountDelivered.getIssuedCurrencyAmount().getValue();
+        } else { // there MUST be one of XRP drops or issued currency
+          return null;
+        }
+      }
+    } else { // no delivered amount (not set for non-payment transactions)
+      deliveredAmount = null;
+    }
+
 
     return XRPTransaction.builder()
         .hash(hash)
@@ -253,6 +279,7 @@ public interface XRPTransaction {
         .type(type)
         .paymentFields(paymentFields)
         .timestamp(timestamp)
+        .deliveredAmount(deliveredAmount)
         .build();
   }
 }

@@ -3,18 +3,9 @@ package io.xpring.xrpl;
 import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xrpl.rpc.v1.Currency;
-import org.xrpl.rpc.v1.IssuedCurrencyAmount;
-import org.xrpl.rpc.v1.CurrencyAmount;
-import org.xrpl.rpc.v1.Payment;
-import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.AccountAddress;
-import org.xrpl.rpc.v1.XRPDropsAmount;
-import org.xrpl.rpc.v1.Memo;
 import org.xrpl.rpc.v1.CheckCash;
-import org.xrpl.rpc.v1.Signer;
-import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
-import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.AccountTransactionID;
 import org.xrpl.rpc.v1.Common.Amount;
@@ -33,6 +24,17 @@ import org.xrpl.rpc.v1.Common.Sequence;
 import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.Common.SourceTag;
 import org.xrpl.rpc.v1.Common.TransactionSignature;
+import org.xrpl.rpc.v1.Currency;
+import org.xrpl.rpc.v1.CurrencyAmount;
+import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
+import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.IssuedCurrencyAmount;
+import org.xrpl.rpc.v1.Memo;
+import org.xrpl.rpc.v1.Meta;
+import org.xrpl.rpc.v1.Payment;
+import org.xrpl.rpc.v1.Signer;
+import org.xrpl.rpc.v1.Transaction;
+import org.xrpl.rpc.v1.XRPDropsAmount;
 
 import java.io.UnsupportedEncodingException;
 
@@ -61,7 +63,7 @@ public class FakeXRPProtobufs {
   static String testIssuedCurrencyValue = "100";
   static String testInvalidIssuedCurrencyValue = "xrp"; // non-numeric
   static long testDrops = 10;
-
+  static long testDeliveredDrops = 20;
   static int testDestinationTag = 2;
 
   static ByteString memoDataBytes;
@@ -344,10 +346,22 @@ public class FakeXRPProtobufs {
   // Date
   static Date dateProto = Date.newBuilder().setValue(testTimestamp).build();
 
+  // Meta with DeliveredAmount
+  static XRPDropsAmount deliveredXRPDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDeliveredDrops).build();
+  static CurrencyAmount deliveredAmountCurrencyAmount = CurrencyAmount.newBuilder()
+                                                                      .setXrpAmount(deliveredXRPDropsAmount)
+                                                                      .build();
+  static Common.DeliveredAmount deliveredAmountProto = Common.DeliveredAmount.newBuilder()
+                                                                              .setValue(deliveredAmountCurrencyAmount)
+                                                                              .build();
+
+  static Meta metaProto = Meta.newBuilder().setDeliveredAmount(deliveredAmountProto).build();
+
   // GetTransactionResponse protos
   static GetTransactionResponse getTransactionResponsePaymentAllFields = GetTransactionResponse.newBuilder()
                                                                   .setTransaction(transactionWithAllFieldsSet)
                                                                   .setDate(dateProto)
+                                                                  .setMeta(metaProto)
                                                                   .setHash(testTransactionHash)
                                                                   .build();
 
