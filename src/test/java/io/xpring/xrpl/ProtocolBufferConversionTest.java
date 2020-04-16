@@ -1,5 +1,7 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.javascript.JavaScriptLoaderException;
+import io.xpring.xrpl.javascript.JavaScriptUtils;
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -27,6 +29,16 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ProtocolBufferConversionTest {
+
+  public static JavaScriptUtils javaScriptUtils;
+
+  static {
+    try {
+      javaScriptUtils = new JavaScriptUtils();
+    } catch (JavaScriptLoaderException e) {
+      e.printStackTrace();
+    }
+  }
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -311,7 +323,8 @@ public class ProtocolBufferConversionTest {
     XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
 
     // THEN all fields are present and converted correctly.
-    assertThat(xrpTransaction.hash()).isEqualTo(FakeXRPProtobufs.expectedHash);
+    assertThat(xrpTransaction.hash())
+            .isEqualTo(javaScriptUtils.toHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
@@ -348,7 +361,8 @@ public class ProtocolBufferConversionTest {
     XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
 
     // THEN all fields are present and converted correctly.
-    assertThat(xrpTransaction.hash()).isEqualTo(FakeXRPProtobufs.expectedHash);
+    assertThat(xrpTransaction.hash())
+            .isEqualTo(javaScriptUtils.toHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID()).isEmpty();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
