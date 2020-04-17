@@ -16,12 +16,13 @@ import java.util.Objects;
  * Unit tests for {@link PayID}.
  */
 @RunWith(Parameterized.class)
-public class PayIdValidValuesTest {
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+public class PayIDValidValuesTest {
 
   private String sourcePayID;
   private String expectedAccountPart;
   private String expectedHost;
-  private String expectedPayIdToString;
+  private String expectedPayIDToString;
 
   /**
    * Required args constructor. Used by @Parameters annotated method to instantiate several test cases with different
@@ -32,19 +33,19 @@ public class PayIdValidValuesTest {
    *                            {@code sourcePayID}.
    * @param expectedHost A {@link String} representing the host part of a PayID that should be derived from
    *                     {@code sourcePayID}.
-   * @param expectedPayIdToString A {@link String} containing the expected value of a {@code toString()} call on
+   * @param expectedPayIDToString A {@link String} containing the expected value of a {@code toString()} call on
    *                              a {@link PayID}.
    */
-  public PayIdValidValuesTest(
+  public PayIDValidValuesTest(
       String sourcePayID,
       String expectedAccountPart,
       String expectedHost,
-      String expectedPayIdToString
+      String expectedPayIDToString
   ) {
     this.sourcePayID = Objects.requireNonNull(sourcePayID);
     this.expectedAccountPart = Objects.requireNonNull(expectedAccountPart);
     this.expectedHost = Objects.requireNonNull(expectedHost);
-    this.expectedPayIdToString = Objects.requireNonNull(expectedPayIdToString);
+    this.expectedPayIDToString = Objects.requireNonNull(expectedPayIDToString);
   }
 
   /**
@@ -134,7 +135,7 @@ public class PayIdValidValuesTest {
     assertThat(payID).isNotNull();
     assertThat(payID.account()).isEqualTo(expectedAccountPart);
     assertThat(payID.host()).isEqualTo(expectedHost);
-    assertThat(payID.toString()).isEqualTo(expectedPayIdToString);
+    assertThat(payID.toString()).isEqualTo(expectedPayIDToString);
   }
 
   @Test
