@@ -88,6 +88,7 @@ public class XRPClient implements XRPClientInterface {
    *
    * @param xrplAccountAddress The address to check the existence of.
    * @return A boolean if the account is on the XRP Ledger.
+   * @throws XRPException If the given inputs were invalid.
    */
   public boolean accountExists(final String xrplAccountAddress) throws XRPException {
     return decoratedClient.accountExists(xrplAccountAddress);
