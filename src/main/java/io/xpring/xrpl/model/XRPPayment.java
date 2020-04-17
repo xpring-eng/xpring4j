@@ -21,28 +21,39 @@ public interface XRPPayment {
 
   /**
    * The amount of currency to deliver.
+   *
+   * @return An {@link XRPCurrencyAmount} representing the amount of currency to deliver.
    */
   XRPCurrencyAmount amount();
 
   /**
    * The unique address of the account receiving the payment.
+   *
+   * @return A {@link String} containing the unique address of the account receiving the payment.
    */
   String destination();
 
   /**
    * (Optional) Arbitrary tag that identifies a hosted recipient to pay, or the reason for the payment.
+   *
+   * @return An {@link Integer} containing the tag that identifies the reason for the payment.
    */
   @Nullable
   Integer destinationTag();
 
   /**
    * (Optional) Minimum amount of destination currency this transaction should deliver.
+   *
+   * @return An {@link XRPCurrencyAmount} representing the minimum amount of destination currency this
+   *          transaction should deliver.
    */
   @Nullable
   XRPCurrencyAmount deliverMin();
 
   /**
    * (Optional) Arbitrary 256-bit hash representing a specific reason or identifier for this payment.
+   *
+   * @return A byte array containing a 256-bit hash representing a specific reason or identifier for this payment.
    */
   @Nullable
   byte[] invoiceID();
@@ -52,12 +63,17 @@ public interface XRPPayment {
    * <p>
    * Must be omitted for XRP-to-XRP transactions.
    * </p>
+   *
+   * @return A {@link List} of {@link XRPPath}s containing the paths to be used for this transaction.
    */
   @Nullable
   List<XRPPath> paths();
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.
+   *
+   * @return An {@link XRPCurrencyAmount} representing the highest amount of source currency this
+   *          transaction is allowed to cost.
    */
   @Nullable
   XRPCurrencyAmount sendMax();

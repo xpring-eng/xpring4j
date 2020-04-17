@@ -35,6 +35,8 @@ public interface PaymentRequest {
 
   /**
    * The accountID of the sender.
+   *
+   * @return A {@link String} containing the accountID of the sender.
    */
   String senderAccountId();
 

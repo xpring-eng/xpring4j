@@ -10,6 +10,8 @@ import java.util.List;
 public interface XRPClientInterface {
   /**
    * Retrieve the network that this XRPClient connects to.
+   *
+   * @return The {@link XRPLNetwork} of an {@link XRPClientInterface}
    */
   public XRPLNetwork getNetwork();
 
@@ -31,6 +33,7 @@ public interface XRPClientInterface {
    * </p>
    * @param transactionHash The hash of the transaction.
    * @return The status of the given transaction.
+   * @throws XRPException If the given inputs were invalid.
    */
   TransactionStatus getPaymentStatus(String transactionHash) throws XRPException;
 

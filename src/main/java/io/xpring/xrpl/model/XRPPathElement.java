@@ -5,6 +5,7 @@ import org.xrpl.rpc.v1.Payment.PathElement;
 
 /**
  * A path step in an XRP Ledger Path.
+ * TODO (amiecorso): All optional fields should be typed as Optional
  *
  * @see "https://xrpl.org/paths.html#path-steps"
  */
@@ -20,6 +21,8 @@ public interface XRPPathElement {
    * <p>
    * This field is optional. MUST NOT be provided if this path element specifies the currency or issuer fields.
    * </p>
+   *
+   * @return A {@link String} representing the account of this {@link XRPPathElement}.
    */
   String account();
 
@@ -29,6 +32,8 @@ public interface XRPPathElement {
    * This field is optional. The currency specified indicates the new currency. MUST NOT be provided if this path
    * element specifies the account field.
    * </p>
+   *
+   * @return The {@link XRPCurrency} of this {@link XRPPathElement}.
    */
   XRPCurrency currency();
 
@@ -38,6 +43,8 @@ public interface XRPPathElement {
    * a previous element of the path defines the issuer. If present when currency is omitted,
    * indicates a path element that uses an order book between same-named currencies with different issuers.
    * MUST be omitted if the currency is XRP. MUST NOT be provided if this element specifies the account field.
+   *
+   * @return A {@link String} representing the issuer of a new currency.
    */
   String issuer();
 
