@@ -19,7 +19,9 @@ public interface XRPPath {
   }
 
   /**
-   * List of XRPPathElements that make up this XRPPath.
+   * The elements of this {@link XRPPath}.
+   *
+   * @return A List of {@link XRPPathElement}s that make up this {@link XRPPath}.
    */
   List<XRPPathElement> pathElements();
 
@@ -27,7 +29,7 @@ public interface XRPPath {
    * Constructs an {@link XRPPath} from a {@link org.xrpl.rpc.v1.Payment.Path}.
    *
    * @param path a {@link org.xrpl.rpc.v1.Payment.Path} (protobuf object) whose field values will be used
-   *             to construct an {@link XRPPath}
+   *             to construct an {@link XRPPath}.
    * @return an {@link XRPPath} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L237">
    * Path protocol buffer</a>
