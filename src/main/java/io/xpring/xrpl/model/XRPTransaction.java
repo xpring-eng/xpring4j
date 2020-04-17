@@ -34,6 +34,8 @@ public interface XRPTransaction {
 
   /**
    * The unique address of the account that initiated the transaction.
+   *
+   * @return A {@link String} containing the unique address of the account that initiated the transaction.
    */
   String account();
 
@@ -43,17 +45,24 @@ public interface XRPTransaction {
    * If provided, this transaction is only valid if the sending account's previously-sent transaction matches the
    * provided hash.
    * </p>
+   *
+   * @return A byte array containing the hash value of another transaction.
    */
   @Nullable
   byte[] accountTransactionID();
 
   /**
-   * Integer amount of XRP, in drops, to be destroyed as a cost for distributing this transaction to the network.
+   * The amount of XRP, in drops, to be destroyed as a cost for distributing this transaction to the network.
+   *
+   * @return A {@link Long} representing amount of XRP, in drops, to be destroyed as a cost for distributing
+   *          this transaction to the network.
    */
   Long fee();
 
   /**
-   * (Optional) Set of bit-flags for this transaction.
+   * (Optional) set of bit-flags for this transaction.
+   *
+   * @return An {@link Integer} representing the set of bit-flags for this transaction.
    */
   @Nullable
   Integer flags();
@@ -63,12 +72,16 @@ public interface XRPTransaction {
    * <p>
    * Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.
    * </p>
+   *
+   * @return An {@link Integer} representing the highest ledger index this transaction can appear in.
    */
   @Nullable
   Integer lastLedgerSequence();
 
   /**
    * (Optional) Additional arbitrary information used to identify this transaction.
+   *
+   * @return A {@link List} of {@link XRPMemo}s containing additional information for this transaction.
    */
   @Nullable
   List<XRPMemo> memos();
@@ -79,11 +92,16 @@ public interface XRPTransaction {
    * A transaction is only valid if the Sequence number is exactly 1 greater than the previous transaction from the same
    * account.
    * </p>
+   *
+   * @return An {@link Integer} representing the sequence number of the account sending the transaction.
    */
   Integer sequence();
 
   /**
-   * (Optional) Array of objects that represent a multi-signature which authorizes this transaction.
+   * A collection of signers that represent a multi-signature which authorizes this transaction.
+   *
+   * @return An optional {@link List} of {@link XRPSigner}s that represent a multi-signature which
+   *          authorizes this transaction.
    */
   @Nullable
   List<XRPSigner> signers();
@@ -93,6 +111,8 @@ public interface XRPTransaction {
    * <p>
    * If an empty string, indicates a multi-signature is present in the Signers field instead.
    * </p>
+   *
+   * @return A byte array containing the public key.
    */
   byte[] signingPublicKey();
 
@@ -102,23 +122,31 @@ public interface XRPTransaction {
    * <p>
    * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
    * </p>
+   *
+   * @return An {@link Integer} representing the source tag of this transaction.
    */
   @Nullable
   Integer sourceTag();
 
   /**
    * The signature that verifies this transaction as originating from the account it says it is from.
+   *
+   * @return A byte array containing the signature that verifies this transaction as originating from
+   *          the account it says it is from.
    */
   byte[] transactionSignature();
 
   /**
-   * The type of transaction.
+   * The type of this {@link TransactionType}.
+   *
+   * @return A {@link TransactionType} representing the type of transaction.
    */
   TransactionType type();
 
   /**
-   * An XRPPayment object representing the additional fields present in a PAYMENT transaction.
+   * Additional fields present in an {@link XRPPayment}.
    *
+   * @return A {@link XRPPayment} representing the additional fields present in an {@link XRPPayment}.
    * @see "https://xrpl.org/payment.html#payment-fields"
    */
   XRPPayment paymentFields();

@@ -29,6 +29,7 @@ public class IlpCredentials extends CallCredentials {
    *
    * @param accessToken Caller's access token, which can not start with 'Bearer '
    * @return An instance of {@link IlpCredentials}
+   * @throws IlpException if the given inputs are invalid.
    */
   public static IlpCredentials build(String accessToken) throws IlpException {
     if (accessToken.startsWith(BEARER_PREFIX)) {

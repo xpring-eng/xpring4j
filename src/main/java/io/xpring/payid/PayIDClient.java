@@ -45,6 +45,8 @@ public class PayIDClient implements PayIDClientInterface {
 
   /**
    * Retrieve the network that addresses will be resolved on.
+   *
+   * @return The {@link XRPLNetwork} of this {@link PayIDClient}
    */
   public XRPLNetwork getNetwork() {
     return this.network;
@@ -55,6 +57,8 @@ public class PayIDClient implements PayIDClientInterface {
    * <p>
    * Exposed for testing purposes.
    * </p>
+   *
+   * @param enableSSLVerification true if SSL should be enabled.
    */
   @VisibleForTesting
   public void setEnableSSLVerification(boolean enableSSLVerification) {
