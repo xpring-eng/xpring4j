@@ -3,6 +3,8 @@ package io.xpring.xrpl.model;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment.PathElement;
 
+import java.util.Optional;
+
 /**
  * A path step in an XRP Ledger Path.
  * TODO (amiecorso): All optional fields should be typed as Optional
@@ -17,25 +19,21 @@ public interface XRPPathElement {
   }
 
   /**
-   * If present, this path step represents rippling through the specified address.
-   * <p>
-   * This field is optional. MUST NOT be provided if this path element specifies the currency or issuer fields.
-   * </p>
+   * (Optional) If present, this path step represents rippling through the specified address.
+   * MUST NOT be provided if this path element specifies the currency or issuer fields.
    *
    * @return A {@link String} representing the account of this {@link XRPPathElement}.
    */
-  String account();
+  Optional<String> account();
 
   /**
-   * If present, this path element represents changing currencies through an order book.
-   * <p>
-   * This field is optional. The currency specified indicates the new currency. MUST NOT be provided if this path
-   * element specifies the account field.
-   * </p>
+   * (Optional) If present, this path element represents changing currencies through an order book.
+   * The currency specified indicates the new currency.
+   * MUST NOT be provided if this path element specifies the account field.
    *
    * @return The {@link XRPCurrency} of this {@link XRPPathElement}.
    */
-  XRPCurrency currency();
+  Optional<XRPCurrency> currency();
 
   /**
    * (Optional) If present, this path element represents changing currencies and this address
@@ -46,7 +44,7 @@ public interface XRPPathElement {
    *
    * @return A {@link String} representing the issuer of a new currency.
    */
-  String issuer();
+  Optional<String> issuer();
 
   /**
    * Constructs an {@link XRPPathElement} from a {@link org.xrpl.rpc.v1.Payment.PathElement}.
