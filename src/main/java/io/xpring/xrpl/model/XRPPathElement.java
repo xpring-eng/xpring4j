@@ -7,7 +7,6 @@ import java.util.Optional;
 
 /**
  * A path step in an XRP Ledger Path.
- * TODO (amiecorso): All optional fields should be typed as Optional
  *
  * @see "https://xrpl.org/paths.html#path-steps"
  */
