@@ -31,7 +31,7 @@ public interface PayID {
    *   <li>Lower-case the scheme, if present.</li>
    *   <li>Lower-case the accountpart</li>
    *   <li>Lower-case the host</li>
-   *   <li>For any hex-encoded String, upper-case the Hexadecimal letters (e.g., 'f' -> 'F')</li>
+   *   <li>For any hex-encoded String, upper-case the Hexadecimal letters (e.g., 'f' to 'F')</li>
    * </ul>
    *
    * @param value text of a complete PayID.
