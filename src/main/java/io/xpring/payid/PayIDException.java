@@ -26,7 +26,9 @@ public class PayIDException extends Exception {
   }
 
   /**
-   * The exception type.
+   * The exception type of this {@link PayIDException}.
+   *
+   * @return A {@link PayIDExceptionType} representing the exception type.
    */
   public PayIDExceptionType getType() {
     return this.type;
