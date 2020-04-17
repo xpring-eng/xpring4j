@@ -2,6 +2,12 @@ package io.xpring.payid;
 
 import okhttp3.HttpUrl;
 
+/**
+ * Defines how to resolve a PayID to a URL.
+ *
+ * @see "https://github.com/xpring-eng/rfcs/blob/master/payid/src/spec/payid-discovery.md"
+ */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public interface PayIDResolver {
 
   /**
