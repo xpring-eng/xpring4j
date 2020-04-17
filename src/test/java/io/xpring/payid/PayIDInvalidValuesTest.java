@@ -15,7 +15,8 @@ import java.util.Objects;
  * Unit tests for {@link PayID}.
  */
 @RunWith(Parameterized.class)
-public class PayIdInvalidValuesTest {
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+public class PayIDInvalidValuesTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -32,7 +33,7 @@ public class PayIdInvalidValuesTest {
    * @param exceptionToExpect The type of exception to expect when building an invalid {@link PayID}.
    * @param exceptionMessageToExpect The exception message to expect when building an invalid {@link PayID}.
    */
-  public PayIdInvalidValuesTest(
+  public PayIDInvalidValuesTest(
       final String sourcePayID,
       final Class<Exception> exceptionToExpect,
       final String exceptionMessageToExpect
