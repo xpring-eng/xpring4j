@@ -84,13 +84,13 @@ abstract class AbstractPayID implements PayID {
 
     // Verify Account
     Preconditions.checkArgument(
-      ACCOUNT_PATTERN.matcher(this.account()).matches(),
-      format("PayID 'account' for `%s` has an invalid value.", this.toString())
+        ACCOUNT_PATTERN.matcher(this.account()).matches(),
+        format("PayID 'account' for `%s` has an invalid value.", this.toString())
     );
 
     // Verify Host
     Preconditions.checkArgument(HOST_PATTERN.matcher(this.host()).matches(),
-      format("PayID 'host' for `%s` has an invalid value.", this.toString()));
+        format("PayID 'host' for `%s` has an invalid value.", this.toString()));
 
     return this;
   }

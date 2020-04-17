@@ -61,11 +61,11 @@ public interface PayID {
     // See https://stackoverflow.com/a/35242882
     int numDollarSigns = new StringTokenizer(" " + value + " ", "$").countTokens() - 1;
     Preconditions.checkArgument(numDollarSigns == 1,
-      format("PayID `%s` may only contain a single dollar-sign. All other dollar-signs must be percent-encoded.",
-        value));
+        format("PayID `%s` may only contain a single dollar-sign. All other dollar-signs must be percent-encoded.",
+          value));
     Preconditions.checkArgument(!value.startsWith("%"),
-      format("PayID `%s` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
-        + "A PayID may not start with a percent-encoded value.", value));
+        format("PayID `%s` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
+          + "A PayID may not start with a percent-encoded value.", value));
 
     final String[] parts = value.split("\\$");
 

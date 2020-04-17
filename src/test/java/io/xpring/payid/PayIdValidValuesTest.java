@@ -16,23 +16,35 @@ import java.util.Objects;
  * Unit tests for {@link PayID}.
  */
 @RunWith(Parameterized.class)
-public class PayIDValidValuesTest {
+public class PayIdValidValuesTest {
 
   private String sourcePayID;
   private String expectedAccountPart;
   private String expectedHost;
-  private String expectedPayIDToString;
+  private String expectedPayIdToString;
 
-  public PayIDValidValuesTest(
-    String sourcePayID,
-    String expectedAccountPart,
-    String expectedHost,
-    String expectedPayIDToString
+  /**
+   * Required args constructor. Used by @Parameters annotated method to instantiate several test cases with different
+   * inputs.
+   *
+   * @param sourcePayID A {@link String} representing a {@link PayID}.
+   * @param expectedAccountPart A {@link String} representing the account part of a PayID that should be derived from
+   *                            {@code sourcePayID}.
+   * @param expectedHost A {@link String} representing the host part of a PayID that should be derived from
+   *                     {@code sourcePayID}.
+   * @param expectedPayIdToString A {@link String} containing the expected value of a {@code toString()} call on
+   *                              a {@link PayID}.
+   */
+  public PayIdValidValuesTest(
+      String sourcePayID,
+      String expectedAccountPart,
+      String expectedHost,
+      String expectedPayIdToString
   ) {
     this.sourcePayID = Objects.requireNonNull(sourcePayID);
     this.expectedAccountPart = Objects.requireNonNull(expectedAccountPart);
     this.expectedHost = Objects.requireNonNull(expectedHost);
-    this.expectedPayIDToString = Objects.requireNonNull(expectedPayIDToString);
+    this.expectedPayIdToString = Objects.requireNonNull(expectedPayIdToString);
   }
 
   /**
@@ -122,7 +134,7 @@ public class PayIDValidValuesTest {
     assertThat(payID).isNotNull();
     assertThat(payID.account()).isEqualTo(expectedAccountPart);
     assertThat(payID.host()).isEqualTo(expectedHost);
-    assertThat(payID.toString()).isEqualTo(expectedPayIDToString);
+    assertThat(payID.toString()).isEqualTo(expectedPayIdToString);
   }
 
   @Test

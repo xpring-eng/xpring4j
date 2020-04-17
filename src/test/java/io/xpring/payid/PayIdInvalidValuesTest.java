@@ -15,7 +15,7 @@ import java.util.Objects;
  * Unit tests for {@link PayID}.
  */
 @RunWith(Parameterized.class)
-public class PayIDInvalidValuesTest {
+public class PayIdInvalidValuesTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -24,8 +24,18 @@ public class PayIDInvalidValuesTest {
   private Class<Exception> exceptionClassToExpect;
   private String exceptionMessageToExpect;
 
-  public PayIDInvalidValuesTest(
-    final String sourcePayID, final Class<Exception> exceptionToExpect, final String exceptionMessageToExpect
+  /**
+   * Required args constructor. Used by @Parameters annotated method to instantiate several test cases with different
+   * inputs.
+   *
+   * @param sourcePayID A {@link String} representing a {@link PayID}.
+   * @param exceptionToExpect The type of exception to expect when building an invalid {@link PayID}.
+   * @param exceptionMessageToExpect The exception message to expect when building an invalid {@link PayID}.
+   */
+  public PayIdInvalidValuesTest(
+      final String sourcePayID,
+      final Class<Exception> exceptionToExpect,
+      final String exceptionMessageToExpect
   ) {
     this.sourcePayID = sourcePayID;
     this.exceptionClassToExpect = Objects.requireNonNull(exceptionToExpect);
@@ -73,8 +83,7 @@ public class PayIDInvalidValuesTest {
         "payid:alice$wallet.example$bank.example", // input with two dollar-signs
         IllegalArgumentException.class, // exception to expect
         "PayID `alice$wallet.example$bank.example` may only contain a single dollar-sign. "
-          + "All other dollar-signs must be percent-encoded.",
-        // message to expect
+          + "All other dollar-signs must be percent-encoded.", // message to expect
       },
       //5
       {
