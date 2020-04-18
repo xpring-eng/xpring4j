@@ -1,11 +1,10 @@
 package io.xpring.xrpl.model;
 
-import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /**
  * A payment on the XRP Ledger.
@@ -13,33 +12,41 @@ import javax.annotation.Nullable;
  * @see "https://xrpl.org/payment.html"
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-@Value.Immutable
-public interface XRPPayment {
-  static ImmutableXRPPayment.Builder builder() {
-    return ImmutableXRPPayment.builder();
-  }
+public class XRPPayment {
+  private final XRPCurrencyAmount amount;
+  private final String destination;
+  private final Integer destinationTag;
+  private final XRPCurrencyAmount deliverMin;
+  private final byte[] invoiceID;
+  private final List<XRPPath> paths;
+  private final XRPCurrencyAmount sendMax;
 
   /**
    * The amount of currency to deliver.
    *
    * @return An {@link XRPCurrencyAmount} representing the amount of currency to deliver.
    */
-  XRPCurrencyAmount amount();
+  public XRPCurrencyAmount amount() {
+    return amount;
+  };
 
   /**
    * The unique address of the account receiving the payment.
    *
    * @return A {@link String} containing the unique address of the account receiving the payment.
    */
-  String destination();
+  public String destination() {
+    return destination;
+  };
 
   /**
    * (Optional) Arbitrary tag that identifies the reason for the payment.
    *
    * @return An {@link Integer} containing the tag that identifies the reason for the payment.
    */
-  @Nullable
-  Integer destinationTag();
+  public Optional<Integer> destinationTag() {
+    return Optional.ofNullable(destinationTag);
+  };
 
   /**
    * (Optional) Minimum amount of destination currency this transaction should deliver.
@@ -47,27 +54,28 @@ public interface XRPPayment {
    * @return An {@link XRPCurrencyAmount} representing the minimum amount of destination currency this
    *          transaction should deliver.
    */
-  @Nullable
-  XRPCurrencyAmount deliverMin();
+  public Optional<XRPCurrencyAmount> deliverMin() {
+    return Optional.ofNullable(deliverMin);
+  };
 
   /**
    * (Optional) Arbitrary 256-bit hash representing a specific reason or identifier for this payment.
    *
    * @return A byte array containing a 256-bit hash representing a specific reason or identifier for this payment.
    */
-  @Nullable
-  byte[] invoiceID();
+  public Optional<byte[]> invoiceID() {
+    return Optional.ofNullable(invoiceID);
+  };
 
   /**
-   * Array of payment paths to be used for this transaction.
-   * <p>
+   * (Optional) Array of payment paths to be used for this transaction.
    * Must be omitted for XRP-to-XRP transactions.
-   * </p>
    *
    * @return A {@link List} of {@link XRPPath}s containing the paths to be used for this transaction.
    */
-  @Nullable
-  List<XRPPath> paths();
+  public Optional<List<XRPPath>> paths() {
+    return Optional.ofNullable(paths);
+  };
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.
@@ -75,8 +83,9 @@ public interface XRPPayment {
    * @return An {@link XRPCurrencyAmount} representing the highest amount of source currency this
    *          transaction is allowed to cost.
    */
-  @Nullable
-  XRPCurrencyAmount sendMax();
+  public Optional<XRPCurrencyAmount> sendMax() {
+    return Optional.ofNullable(sendMax);
+  };
 
   /**
    * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}.
@@ -87,7 +96,7 @@ public interface XRPPayment {
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L224">
    * Payment protocol buffer</a>
    */
-  static XRPPayment from(Payment payment) {
+  public static XRPPayment from(Payment payment) {
     // amount is required
     XRPCurrencyAmount amount = XRPCurrencyAmount.from(payment.getAmount().getValue());
     if (amount == null) {
@@ -144,7 +153,7 @@ public interface XRPPayment {
       sendMax = null;
     }
 
-    return builder()
+    return new XRPPaymentBuilder()
         .amount(amount)
         .destination(destination)
         .destinationTag(destinationTag)
@@ -153,5 +162,67 @@ public interface XRPPayment {
         .paths(paths)
         .sendMax(sendMax)
         .build();
+  }
+
+  private XRPPayment(XRPPayment.XRPPaymentBuilder builder) {
+    this.amount = builder.amount;
+    this.destination = builder.destination;
+    this.destinationTag = builder.destinationTag;
+    this.deliverMin = builder.deliverMin;
+    this.invoiceID = builder.invoiceID;
+    this.paths = builder.paths;
+    this.sendMax = builder.sendMax;
+  }
+
+  //Builder class
+  public static class XRPPaymentBuilder{
+    private XRPCurrencyAmount amount;
+    private String destination;
+    private Integer destinationTag;
+    private XRPCurrencyAmount deliverMin;
+    private byte[] invoiceID;
+    private List<XRPPath> paths;
+    private XRPCurrencyAmount sendMax;
+
+    public XRPPaymentBuilder() {}
+
+    public XRPPayment.XRPPaymentBuilder amount(XRPCurrencyAmount amount) {
+      this.amount = amount;
+      return this;
+    }
+
+    public XRPPayment.XRPPaymentBuilder destination(String destination) {
+      this.destination = destination;
+      return this;
+    }
+
+    public XRPPayment.XRPPaymentBuilder destinationTag(Integer destinationTag) {
+      this.destinationTag = destinationTag;
+      return this;
+    }
+
+    public XRPPayment.XRPPaymentBuilder deliverMin(XRPCurrencyAmount deliverMin) {
+      this.deliverMin = deliverMin;
+      return this;
+    }
+
+    public XRPPayment.XRPPaymentBuilder invoiceID(byte[] invoiceID) {
+      this.invoiceID = invoiceID;
+      return this;
+    }
+
+    public XRPPayment.XRPPaymentBuilder paths(List<XRPPath> paths) {
+      this.paths = paths;
+      return this;
+    }
+
+    public XRPPayment.XRPPaymentBuilder sendMax(XRPCurrencyAmount sendMax) {
+      this.sendMax = sendMax;
+      return this;
+    }
+
+    public XRPPayment build() {
+      return new XRPPayment(this);
+    }
   }
 }
