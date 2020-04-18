@@ -55,17 +55,17 @@ public interface XRPPathElement {
    * PathElement protocol buffer</a>
    */
   static XRPPathElement from(PathElement pathElement) {
-    Optional<String> account = Optional.ofNullable(null);
+    Optional<String> account = Optional.empty();
     if (pathElement.hasAccount()) {
       account = Optional.of(pathElement.getAccount().getAddress());
     }
 
-    Optional<XRPCurrency> currency = Optional.ofNullable(null);
+    Optional<XRPCurrency> currency = Optional.empty();
     if (pathElement.hasCurrency()) {
       currency = Optional.of(XRPCurrency.from(pathElement.getCurrency()));
     }
 
-    Optional<String> issuer = Optional.ofNullable(null);
+    Optional<String> issuer = Optional.empty();
     if (pathElement.hasIssuer()) {
       issuer = Optional.of(pathElement.getIssuer().getAddress());
     }

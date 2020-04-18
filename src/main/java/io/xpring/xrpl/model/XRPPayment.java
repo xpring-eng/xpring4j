@@ -94,13 +94,13 @@ public interface XRPPayment {
     }
     final String destination = payment.getDestination().getValue().getAddress();
 
-    Optional<Integer> destinationTag = Optional.ofNullable(null);
+    Optional<Integer> destinationTag = Optional.empty();
     if (payment.hasDestinationTag()) {
       destinationTag = Optional.of(payment.getDestinationTag().getValue());
     }
 
     // If the deliverMin field is set, it must be able to be transformed into an XRPCurrencyAmount.
-    Optional<XRPCurrencyAmount> deliverMin = Optional.ofNullable(null);
+    Optional<XRPCurrencyAmount> deliverMin = Optional.empty();
     if (payment.hasDeliverMin()) {
       deliverMin = Optional.ofNullable(XRPCurrencyAmount.from(payment.getDeliverMin().getValue()));
       if (!deliverMin.isPresent()) {
@@ -108,7 +108,7 @@ public interface XRPPayment {
       }
     }
 
-    Optional<byte[]> invoiceID = Optional.ofNullable(null);
+    Optional<byte[]> invoiceID = Optional.empty();
     if (payment.hasInvoiceId()) {
       invoiceID = Optional.of(payment.getInvoiceId().getValue().toByteArray());
     }
@@ -118,11 +118,11 @@ public interface XRPPayment {
         .map(XRPPath::from)
         .collect(Collectors.toList()));
     if (paths.get().isEmpty()) {
-      paths = Optional.ofNullable(null);
+      paths = Optional.empty();
     }
 
     // If the sendMax field is set, it must be able to be transformed into an XRPCurrencyAmount.
-    Optional<XRPCurrencyAmount> sendMax = Optional.ofNullable(null);
+    Optional<XRPCurrencyAmount> sendMax = Optional.empty();
     if (payment.hasSendMax()) {
       sendMax = Optional.ofNullable(XRPCurrencyAmount.from(payment.getSendMax().getValue()));
       if (!sendMax.isPresent()) {
