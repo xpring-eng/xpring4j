@@ -59,9 +59,9 @@ public class ProtocolBufferConversionTest {
     XRPPathElement xrpPathElement = XRPPathElement.from(testPathElementProto);
 
     // THEN the currency converted as expected.
-    assertThat(xrpPathElement.account()).isEqualTo(testPathElementProto.getAccount().getAddress());
-    assertThat(xrpPathElement.currency()).isEqualTo(XRPCurrency.from(testPathElementProto.getCurrency()));
-    assertThat(xrpPathElement.issuer()).isEqualTo(testPathElementProto.getIssuer().getAddress());
+    assertThat(xrpPathElement.account().get()).isEqualTo(testPathElementProto.getAccount().getAddress());
+    assertThat(xrpPathElement.currency().get()).isEqualTo(XRPCurrency.from(testPathElementProto.getCurrency()));
+    assertThat(xrpPathElement.issuer().get()).isEqualTo(testPathElementProto.getIssuer().getAddress());
   }
 
   @Test
@@ -73,9 +73,9 @@ public class ProtocolBufferConversionTest {
     XRPPathElement xrpPathElement = XRPPathElement.from(emptyPathElementProto);
 
     // THEN the currency converted as expected.
-    assertThat(xrpPathElement.account()).isEmpty();
-    assertThat(xrpPathElement.currency()).isEqualTo(XRPCurrency.from(Currency.newBuilder().build()));
-    assertThat(xrpPathElement.issuer()).isEmpty();
+    assertThat(xrpPathElement.account().isPresent()).isFalse();
+    assertThat(xrpPathElement.currency().isPresent()).isFalse();
+    assertThat(xrpPathElement.issuer().isPresent()).isFalse();
   }
 
   // Path
