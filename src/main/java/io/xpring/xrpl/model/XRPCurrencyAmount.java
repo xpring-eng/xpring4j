@@ -87,7 +87,9 @@ public class XRPCurrencyAmount {
     private String drops;
     private XRPIssuedCurrency issuedCurrency;
 
-    public XRPCurrencyAmountBuilder() {}
+    public XRPCurrencyAmountBuilder() {
+
+    }
 
     public XRPCurrencyAmount.XRPCurrencyAmountBuilder drops(String drops) {
       this.drops = drops;
