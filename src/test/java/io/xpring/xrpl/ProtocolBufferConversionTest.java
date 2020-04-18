@@ -195,20 +195,17 @@ public class ProtocolBufferConversionTest {
     XRPPayment xrpPayment = XRPPayment.from(paymentProto);
 
     // THEN the result is as expected.
-    assertThat(xrpPayment.amount())
-            .isEqualToComparingFieldByField(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
+    assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
     assertThat(xrpPayment.destinationTag().get()).isEqualTo(paymentProto.getDestinationTag().getValue());
     assertThat(xrpPayment.deliverMin().get())
-            .isEqualToComparingFieldByField(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
+            .isEqualTo(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
     assertThat(xrpPayment.invoiceID().get()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
-    assertThat(xrpPayment.paths().get())
-        .isEqualTo(paymentProto.getPathsList()
+    assertThat(xrpPayment.paths().get()).isEqualTo(paymentProto.getPathsList()
             .stream()
             .map(path -> XRPPath.from(path))
             .collect(Collectors.toList()));
-    assertThat(xrpPayment.sendMax().get())
-            .isEqualToComparingFieldByField(XRPCurrencyAmount.from(paymentProto.getSendMax().getValue()));
+    assertThat(xrpPayment.sendMax().get()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getSendMax().getValue()));
   }
 
   @Test
@@ -222,12 +219,12 @@ public class ProtocolBufferConversionTest {
     // THEN the result is as expected.
     assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
-    assertThat(xrpPayment.destinationTag()).isNull();
-    assertThat(xrpPayment.destinationTag()).isNull();
-    assertThat(xrpPayment.deliverMin()).isNull();
-    assertThat(xrpPayment.invoiceID()).isNull();
-    assertThat(xrpPayment.paths()).isNull();
-    assertThat(xrpPayment.sendMax()).isNull();
+    assertThat(xrpPayment.destinationTag().isPresent()).isFalse();
+    assertThat(xrpPayment.destinationTag().isPresent()).isFalse();
+    assertThat(xrpPayment.deliverMin().isPresent()).isFalse();
+    assertThat(xrpPayment.invoiceID().isPresent()).isFalse();
+    assertThat(xrpPayment.paths().isPresent()).isFalse();
+    assertThat(xrpPayment.sendMax().isPresent()).isFalse();
   }
 
   @Test
