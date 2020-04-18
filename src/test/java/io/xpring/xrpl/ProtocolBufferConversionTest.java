@@ -1,7 +1,5 @@
 package io.xpring.xrpl;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -27,6 +25,8 @@ import org.xrpl.rpc.v1.Transaction;
 
 import java.math.BigInteger;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ProtocolBufferConversionTest {
 
@@ -146,9 +146,9 @@ public class ProtocolBufferConversionTest {
     XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.dropsCurrencyAmount);
 
     // THEN the result has drops set and an empty issued currency.
-    assertThat(xrpCurrencyAmount.drops())
+    assertThat(xrpCurrencyAmount.drops().get())
         .isEqualTo(Long.toString(FakeXRPProtobufs.dropsCurrencyAmount.getXrpAmount().getDrops()));
-    assertThat(xrpCurrencyAmount.issuedCurrency()).isNull();
+    assertThat(xrpCurrencyAmount.issuedCurrency().isPresent()).isFalse();
   }
 
   @Test
