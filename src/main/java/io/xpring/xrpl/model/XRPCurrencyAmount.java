@@ -5,7 +5,7 @@ import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * An amount of currency on the XRP Ledger.
@@ -21,25 +21,19 @@ public interface XRPCurrencyAmount {
 
   /**
    * An amount of XRP, specified in drops.
-   * <p>
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
-   * </p>
    *
    * @return The {@link String} representation of an amount of XRP, specified in drops.
    */
-  @Nullable
-  String drops();
+  Optional<String> drops();
 
   /**
    * An amount of an issued currency.
-   * <p>
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
-   * </p>
    *
    * @return The {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
    */
-  @Nullable
-  XRPIssuedCurrency issuedCurrency();
+  Optional<XRPIssuedCurrency> issuedCurrency();
 
   /**
    * Constructs an {@link XRPCurrencyAmount} from a {@link CurrencyAmount}.
