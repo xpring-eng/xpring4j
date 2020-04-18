@@ -3,7 +3,6 @@ package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
-import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 
 import java.util.Optional;
 
@@ -48,9 +47,8 @@ public interface XRPCurrencyAmount {
     switch (currencyAmount.getAmountCase()) {
       // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
       case ISSUED_CURRENCY_AMOUNT: {
-        IssuedCurrencyAmount issuedCurrencyAmount = currencyAmount.getIssuedCurrencyAmount();
-        if (issuedCurrencyAmount != null) {
-          XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
+        if (currencyAmount.hasIssuedCurrencyAmount()) {
+          XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(currencyAmount.getIssuedCurrencyAmount());
           if (xrpIssuedCurrency != null) {
             return builder().issuedCurrency(xrpIssuedCurrency).build();
           }
@@ -59,10 +57,12 @@ public interface XRPCurrencyAmount {
         return null;
       }
       case XRP_AMOUNT: {
-        long numericDrops = currencyAmount.getXrpAmount().getDrops();
-        String drops = Long.toString(numericDrops);
-        return builder().drops(drops)
-            .build();
+        if (currencyAmount.hasXrpAmount()) {
+          long numericDrops = currencyAmount.getXrpAmount().getDrops();
+          String drops = Long.toString(numericDrops);
+          return builder().drops(drops)
+                  .build();
+        }
       }
       // if no AmountCase is set (e.g. empty CurrencyAmount protobuf was passed to constructor)
       default:
