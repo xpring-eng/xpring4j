@@ -4,7 +4,7 @@ import com.google.protobuf.ByteString;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Signer;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Represents a signer of a transaction on the XRP Ledger.
@@ -26,20 +26,18 @@ public interface XRPSigner {
   String account();
 
   /**
-   * The public key used to create this signature.
+   * (Optional) The public key used to create this signature.
    *
    * @return A byte array containing the public key used to create this signature.
    */
-  @Nullable
-  byte[] signingPublicKey();
+  Optional<byte[]> signingPublicKey();
 
   /**
-   * A signature for this transaction, verifiable using the {@code signingPublicKey()}.
+   * (Optional) A signature for this transaction, verifiable using the {@code signingPublicKey()}.
    *
    * @return A byte array containing a signature for this transaction, verifiable using the {@code signingPublicKey()}.
    */
-  @Nullable
-  byte[] transactionSignature();
+  Optional<byte[]> transactionSignature();
 
   /**
    * Constructs an {@link XRPSigner} from a {@link Signer}.
@@ -51,14 +49,17 @@ public interface XRPSigner {
    * Signer protocol buffer</a>
    */
   static XRPSigner from(Signer signer) {
-    String address = signer.getAccount().getValue().getAddress();
-    String account = address.isEmpty() ? null : address;
+    String account = signer.getAccount().getValue().getAddress();
 
     ByteString publicKey = signer.getSigningPublicKey().getValue();
-    byte[] signingPublicKey = publicKey.equals(ByteString.EMPTY) ? null : publicKey.toByteArray();
+    Optional<byte[]> signingPublicKey = publicKey.equals(ByteString.EMPTY)
+            ? Optional.empty()
+            : Optional.of(publicKey.toByteArray());
 
     ByteString txnSignature = signer.getTransactionSignature().getValue();
-    byte[] transactionSignature = txnSignature.equals(ByteString.EMPTY) ? null : txnSignature.toByteArray();
+    Optional<byte[]> transactionSignature = txnSignature.equals(ByteString.EMPTY)
+            ? Optional.empty()
+            : Optional.of(txnSignature.toByteArray());
 
     return XRPSigner.builder()
         .account(account)

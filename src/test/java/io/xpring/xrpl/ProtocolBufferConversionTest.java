@@ -296,9 +296,9 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpSigner.account()).isEqualTo(signerProto.getAccount().getValue().getAddress());
-    assertThat(xrpSigner.signingPublicKey())
+    assertThat(xrpSigner.signingPublicKey().get())
         .isEqualTo(signerProto.getSigningPublicKey().getValue().toByteArray());
-    assertThat(xrpSigner.transactionSignature())
+    assertThat(xrpSigner.transactionSignature().get())
         .isEqualTo(signerProto.getTransactionSignature().getValue().toByteArray());
   }
 
