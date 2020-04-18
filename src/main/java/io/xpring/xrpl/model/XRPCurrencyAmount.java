@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 
+import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 
 import javax.annotation.Nullable;

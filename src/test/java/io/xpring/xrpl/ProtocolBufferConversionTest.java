@@ -195,17 +195,20 @@ public class ProtocolBufferConversionTest {
     XRPPayment xrpPayment = XRPPayment.from(paymentProto);
 
     // THEN the result is as expected.
-    assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
+    assertThat(xrpPayment.amount())
+            .isEqualToComparingFieldByField(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
-    assertThat(xrpPayment.destinationTag()).isEqualTo(paymentProto.getDestinationTag().getValue());
-    assertThat(xrpPayment.deliverMin()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
-    assertThat(xrpPayment.invoiceID()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
-    assertThat(xrpPayment.paths())
+    assertThat(xrpPayment.destinationTag().get()).isEqualTo(paymentProto.getDestinationTag().getValue());
+    assertThat(xrpPayment.deliverMin().get())
+            .isEqualToComparingFieldByField(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
+    assertThat(xrpPayment.invoiceID().get()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
+    assertThat(xrpPayment.paths().get())
         .isEqualTo(paymentProto.getPathsList()
             .stream()
             .map(path -> XRPPath.from(path))
             .collect(Collectors.toList()));
-    assertThat(xrpPayment.sendMax()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getSendMax().getValue()));
+    assertThat(xrpPayment.sendMax().get())
+            .isEqualToComparingFieldByField(XRPCurrencyAmount.from(paymentProto.getSendMax().getValue()));
   }
 
   @Test
