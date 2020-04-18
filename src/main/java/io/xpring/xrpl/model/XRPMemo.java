@@ -1,10 +1,11 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Option;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Memo;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Represents a memo on the XRPLedger.
@@ -19,12 +20,11 @@ public interface XRPMemo {
   }
 
   /**
-   * An arbitrary hex value, conventionally containing the content of the memo.
+   * (Optional) An arbitrary hex value, conventionally containing the content of the memo.
    *
    * @return A byte array of arbitrary hex value, conventionally containing the content of the memo.
    */
-  @Nullable
-  byte[] data();
+  Optional<byte[]> data();
 
   /**
    * Hex value representing characters allowed in URLs.
@@ -34,8 +34,7 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  @Nullable
-  byte[] format();
+  Optional<byte[]> format();
 
   /**
    * Hex value representing characters allowed in URLs.
@@ -45,8 +44,7 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  @Nullable
-  byte[] type();
+  Optional<byte[]> type();
 
   /**
    * Constructs an {@link XRPMemo} from a {@link Memo}.
@@ -59,13 +57,14 @@ public interface XRPMemo {
    */
   static XRPMemo from(Memo memo) {
     ByteString memoData = memo.getMemoData().getValue();
-    byte[] data = memoData.equals(ByteString.EMPTY) ? null : memoData.toByteArray();
+    Optional<byte[]> data = memoData.equals(ByteString.EMPTY) ? Optional.empty() : Optional.of(memoData.toByteArray());
 
     ByteString memoFormat = memo.getMemoFormat().getValue();
-    byte[] format = memoFormat.equals(ByteString.EMPTY) ? null : memoFormat.toByteArray();
+    Optional<byte[]> format = memoFormat.equals(ByteString.EMPTY)
+            ? Optional.empty() : Optional.of(memoFormat.toByteArray());
 
     ByteString memoType = memo.getMemoType().getValue();
-    byte[] type = memoType.equals(ByteString.EMPTY) ? null : memoType.toByteArray();
+    Optional<byte[]> type = memoType.equals(ByteString.EMPTY) ? Optional.empty() : Optional.of(memoType.toByteArray());
 
     return XRPMemo.builder()
         .data(data)
