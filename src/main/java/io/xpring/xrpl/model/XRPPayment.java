@@ -184,7 +184,9 @@ public class XRPPayment {
     private List<XRPPath> paths;
     private XRPCurrencyAmount sendMax;
 
-    public XRPPaymentBuilder() {}
+    public XRPPaymentBuilder() {
+
+    }
 
     public XRPPayment.XRPPaymentBuilder amount(XRPCurrencyAmount amount) {
       this.amount = amount;

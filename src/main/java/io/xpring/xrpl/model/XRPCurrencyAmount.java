@@ -67,6 +67,8 @@ public class XRPCurrencyAmount {
           String drops = Long.toString(numericDrops);
           return new XRPCurrencyAmountBuilder().drops(drops).build();
         }
+        // if AmountCase is XRP_AMOUNT, the protobuf MUST have an xrpAmount
+        return null;
       }
       // if no AmountCase is set (e.g. empty CurrencyAmount protobuf was passed to constructor)
       default:

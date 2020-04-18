@@ -97,7 +97,9 @@ public class XRPPathElement {
     private XRPCurrency currency;
     private String issuer;
 
-    public XRPPathElementBuilder() {}
+    public XRPPathElementBuilder() {
+
+    }
 
     public XRPPathElementBuilder account(String account) {
       this.account = account;
