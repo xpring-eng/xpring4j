@@ -314,23 +314,23 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
-    assertThat(xrpTransaction.accountTransactionID())
+    assertThat(xrpTransaction.accountTransactionID().get())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
-    assertThat(xrpTransaction.flags()).isEqualTo(transactionProto.getFlags().getValue());
-    assertThat(xrpTransaction.lastLedgerSequence()).isEqualTo(transactionProto.getLastLedgerSequence().getValue());
-    assertThat(xrpTransaction.memos()).isEqualTo(transactionProto.getMemosList()
+    assertThat(xrpTransaction.flags().get()).isEqualTo(transactionProto.getFlags().getValue());
+    assertThat(xrpTransaction.lastLedgerSequence().get()).isEqualTo(transactionProto.getLastLedgerSequence().getValue());
+    assertThat(xrpTransaction.memos().get()).isEqualTo(transactionProto.getMemosList()
         .stream()
         .map(memo -> XRPMemo.from(memo))
         .collect(Collectors.toList()));
     assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
-    assertThat(xrpTransaction.signers()).isEqualTo(transactionProto.getSignersList()
+    assertThat(xrpTransaction.signers().get()).isEqualTo(transactionProto.getSignersList()
         .stream()
         .map(signer -> XRPSigner.from(signer))
         .collect(Collectors.toList()));
     assertThat(xrpTransaction.signingPublicKey())
         .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
-    assertThat(xrpTransaction.sourceTag()).isEqualTo(transactionProto.getSourceTag().getValue());
+    assertThat(xrpTransaction.sourceTag().get()).isEqualTo(transactionProto.getSourceTag().getValue());
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
@@ -347,21 +347,21 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
-    assertThat(xrpTransaction.accountTransactionID()).isNull();
+    assertThat(xrpTransaction.accountTransactionID().isPresent()).isFalse();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
-    assertThat(xrpTransaction.flags()).isEqualTo(Flags.newBuilder().build().getValue());
-    assertThat(xrpTransaction.lastLedgerSequence())
-        .isEqualTo(LastLedgerSequence.newBuilder().build().getValue());
-    assertThat(xrpTransaction.memos()).isNull();
+    assertThat(xrpTransaction.flags().isPresent()).isFalse();
+    assertThat(xrpTransaction.lastLedgerSequence().isPresent()).isFalse();
+    assertThat(xrpTransaction.memos().isPresent()).isFalse();
     assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
-    assertThat(xrpTransaction.signers()).isNull();
+    assertThat(xrpTransaction.signers().isPresent()).isFalse();
     assertThat(xrpTransaction.signingPublicKey())
         .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
-    assertThat(xrpTransaction.sourceTag()).isEqualTo(SourceTag.newBuilder().build().getValue());
+    assertThat(xrpTransaction.sourceTag().isPresent()).isFalse();
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
-    assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    assertThat(xrpTransaction.paymentFields())
+            .isEqualToComparingFieldByField(XRPPayment.from(transactionProto.getPayment()));
   }
 
   @Test

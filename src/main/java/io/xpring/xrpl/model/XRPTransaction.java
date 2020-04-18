@@ -1,14 +1,15 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Option;
 import io.xpring.xrpl.TransactionType;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /**
  * A transaction on the XRP Ledger.
@@ -32,15 +33,12 @@ public interface XRPTransaction {
 
   /**
    * (Optional) Hash value identifying another transaction.
-   * <p>
    * If provided, this transaction is only valid if the sending account's previously-sent transaction matches the
    * provided hash.
-   * </p>
    *
    * @return A byte array containing the hash value of another transaction.
    */
-  @Nullable
-  byte[] accountTransactionID();
+  Optional<byte[]> accountTransactionID();
 
   /**
    * The amount of XRP, in drops, to be destroyed as a cost for distributing this transaction to the network.
@@ -55,53 +53,43 @@ public interface XRPTransaction {
    *
    * @return An {@link Integer} representing the set of bit-flags for this transaction.
    */
-  @Nullable
-  Integer flags();
+  Optional<Integer> flags();
 
   /**
    * (Optional; strongly recommended) Highest ledger index this transaction can appear in.
-   * <p>
    * Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.
-   * </p>
    *
    * @return An {@link Integer} representing the highest ledger index this transaction can appear in.
    */
-  @Nullable
-  Integer lastLedgerSequence();
+  Optional<Integer> lastLedgerSequence();
 
   /**
    * (Optional) Additional arbitrary information used to identify this transaction.
    *
    * @return A {@link List} of {@link XRPMemo}s containing additional information for this transaction.
    */
-  @Nullable
-  List<XRPMemo> memos();
+  Optional<List<XRPMemo>> memos();
 
   /**
    * The sequence number of the account sending the transaction.
-   * <p>
    * A transaction is only valid if the Sequence number is exactly 1 greater than the previous transaction from the same
    * account.
-   * </p>
    *
    * @return An {@link Integer} representing the sequence number of the account sending the transaction.
    */
   Integer sequence();
 
   /**
-   * A collection of signers that represent a multi-signature which authorizes this transaction.
+   * (Optional) A collection of signers that represent a multi-signature which authorizes this transaction.
    *
    * @return An optional {@link List} of {@link XRPSigner}s that represent a multi-signature which
    *          authorizes this transaction.
    */
-  @Nullable
-  List<XRPSigner> signers();
+  Optional<List<XRPSigner>> signers();
 
   /**
    * Hex representation of the public key that corresponds to the private key used to sign this transaction.
-   * <p>
    * If an empty string, indicates a multi-signature is present in the Signers field instead.
-   * </p>
    *
    * @return A byte array containing the public key.
    */
@@ -110,14 +98,11 @@ public interface XRPTransaction {
   /**
    * (Optional) Arbitrary integer used to identify the reason for this payment or a sender on whose behalf this
    * transaction is made.
-   * <p>
    * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
-   * </p>
    *
    * @return An {@link Integer} representing the source tag of this transaction.
    */
-  @Nullable
-  Integer sourceTag();
+  Optional<Integer> sourceTag();
 
   /**
    * The signature that verifies this transaction as originating from the account it says it is from.
@@ -154,37 +139,56 @@ public interface XRPTransaction {
   static XRPTransaction from(Transaction transaction) {
     final String account = transaction.getAccount().getValue().getAddress();
 
-    ByteString accountTransactionIDByteString = transaction.getAccountTransactionId().getValue();
-    final byte[] accountTransactionID = accountTransactionIDByteString.equals(ByteString.EMPTY)
-        ? null : accountTransactionIDByteString.toByteArray();
+    Optional<byte[]> accountTransactionID = Optional.empty();
+    if (transaction.hasAccountTransactionId()) {
+      ByteString accountTransactionIDByteString = transaction.getAccountTransactionId().getValue();
+      accountTransactionID = accountTransactionIDByteString.equals(ByteString.EMPTY)
+              ? Optional.empty()
+              : Optional.of(accountTransactionIDByteString.toByteArray());
+    }
 
     final Long fee = transaction.getFee().getDrops();
 
-    final Integer flags = transaction.getFlags().getValue();
+    Optional<Integer> flags = Optional.empty();
+    if (transaction.hasFlags()) {
+      flags = Optional.of(transaction.getFlags().getValue());
+    }
 
-    final Integer lastLedgerSequence = transaction.getLastLedgerSequence().getValue();
+    Optional<Integer> lastLedgerSequence = Optional.empty();
+    if (transaction.hasLastLedgerSequence()) {
+      lastLedgerSequence = Optional.of(transaction.getLastLedgerSequence().getValue());
+    }
 
-    List<XRPMemo> memos = transaction.getMemosList()
+    Optional<List<XRPMemo>> memos;
+    List<XRPMemo> memoList = transaction.getMemosList()
         .stream()
         .map(XRPMemo::from)
         .collect(Collectors.toList());
-    if (memos.isEmpty()) {
-      memos = null;
+    if (memoList.isEmpty()) {
+      memos = Optional.empty();
+    } else {
+      memos = Optional.of(memoList);
     }
 
     Integer sequence = transaction.getSequence().getValue();
 
-    List<XRPSigner> signers = transaction.getSignersList()
+    Optional<List<XRPSigner>> signers;
+    List<XRPSigner> signersList = transaction.getSignersList()
         .stream()
         .map(XRPSigner::from)
         .collect(Collectors.toList());
-    if (signers.isEmpty()) {
-      signers = null;
+    if (signersList.isEmpty()) {
+      signers = Optional.empty();
+    } else {
+      signers = Optional.of(signersList);
     }
 
     byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
 
-    Integer sourceTag = transaction.getSourceTag().getValue();
+    Optional<Integer> sourceTag = Optional.empty();
+    if (transaction.hasSourceTag()) {
+      sourceTag = Optional.of(transaction.getSourceTag().getValue());
+    }
 
     byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
 
