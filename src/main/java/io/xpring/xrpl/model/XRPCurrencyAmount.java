@@ -48,7 +48,7 @@ public class XRPCurrencyAmount {
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/amount.proto#L10">
    * CurrencyAmount protocol buffer</a>
    */
-  static XRPCurrencyAmount from(CurrencyAmount currencyAmount) throws NumberFormatException {
+  public static XRPCurrencyAmount from(CurrencyAmount currencyAmount) throws NumberFormatException {
     switch (currencyAmount.getAmountCase()) {
       // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
       case ISSUED_CURRENCY_AMOUNT: {

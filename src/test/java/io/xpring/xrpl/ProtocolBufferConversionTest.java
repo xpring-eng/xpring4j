@@ -158,8 +158,8 @@ public class ProtocolBufferConversionTest {
     XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount);
 
     // THEN the result has an issued currency set and no drops amount.
-    assertThat(xrpCurrencyAmount.drops()).isNull();
-    assertThat(xrpCurrencyAmount.issuedCurrency())
+    assertThat(xrpCurrencyAmount.drops().isPresent()).isFalse();
+    assertThat(xrpCurrencyAmount.issuedCurrency().get())
         .isEqualTo(XRPIssuedCurrency.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount.getIssuedCurrencyAmount()));
   }
 
