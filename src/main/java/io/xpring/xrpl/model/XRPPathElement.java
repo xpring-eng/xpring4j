@@ -29,7 +29,7 @@ public class XRPPathElement {
    */
   public Optional<String> account() {
     return Optional.ofNullable(account);
-  };
+  }
 
   /**
    * (Optional) If present, this path element represents changing currencies through an order book.
@@ -40,7 +40,7 @@ public class XRPPathElement {
    */
   public Optional<XRPCurrency> currency() {
     return Optional.ofNullable(currency);
-  };
+  }
 
   /**
    * (Optional) If present, this path element represents changing currencies and this address
@@ -53,7 +53,7 @@ public class XRPPathElement {
    */
   public Optional<String> issuer() {
     return Optional.ofNullable(issuer);
-  };
+  }
 
   /**
    * Constructs an {@link XRPPathElement} from a {@link org.xrpl.rpc.v1.Payment.PathElement}.
@@ -91,7 +91,7 @@ public class XRPPathElement {
   }
 
   //Builder class
-  public static class XRPPathElementBuilder{
+  public static class XRPPathElementBuilder {
     //optional fields
     private String account;
     private XRPCurrency currency;

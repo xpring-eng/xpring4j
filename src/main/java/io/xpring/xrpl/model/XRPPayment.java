@@ -28,7 +28,7 @@ public class XRPPayment {
    */
   public XRPCurrencyAmount amount() {
     return amount;
-  };
+  }
 
   /**
    * The unique address of the account receiving the payment.
@@ -37,7 +37,7 @@ public class XRPPayment {
    */
   public String destination() {
     return destination;
-  };
+  }
 
   /**
    * (Optional) Arbitrary tag that identifies the reason for the payment.
@@ -46,7 +46,7 @@ public class XRPPayment {
    */
   public Optional<Integer> destinationTag() {
     return Optional.ofNullable(destinationTag);
-  };
+  }
 
   /**
    * (Optional) Minimum amount of destination currency this transaction should deliver.
@@ -56,7 +56,7 @@ public class XRPPayment {
    */
   public Optional<XRPCurrencyAmount> deliverMin() {
     return Optional.ofNullable(deliverMin);
-  };
+  }
 
   /**
    * (Optional) Arbitrary 256-bit hash representing a specific reason or identifier for this payment.
@@ -65,7 +65,7 @@ public class XRPPayment {
    */
   public Optional<byte[]> invoiceID() {
     return Optional.ofNullable(invoiceID);
-  };
+  }
 
   /**
    * (Optional) Array of payment paths to be used for this transaction.
@@ -75,7 +75,7 @@ public class XRPPayment {
    */
   public Optional<List<XRPPath>> paths() {
     return Optional.ofNullable(paths);
-  };
+  }
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.
@@ -85,7 +85,7 @@ public class XRPPayment {
    */
   public Optional<XRPCurrencyAmount> sendMax() {
     return Optional.ofNullable(sendMax);
-  };
+  }
 
   /**
    * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}.
@@ -175,7 +175,7 @@ public class XRPPayment {
   }
 
   //Builder class
-  public static class XRPPaymentBuilder{
+  public static class XRPPaymentBuilder {
     private XRPCurrencyAmount amount;
     private String destination;
     private Integer destinationTag;

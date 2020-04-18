@@ -80,7 +80,7 @@ public class XRPCurrencyAmount {
   }
 
   //Builder class
-  public static class XRPCurrencyAmountBuilder{
+  public static class XRPCurrencyAmountBuilder {
     //optional fields
     private String drops;
     private XRPIssuedCurrency issuedCurrency;
