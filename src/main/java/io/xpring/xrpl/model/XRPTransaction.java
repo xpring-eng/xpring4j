@@ -1,7 +1,6 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Option;
 import io.xpring.xrpl.TransactionType;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;

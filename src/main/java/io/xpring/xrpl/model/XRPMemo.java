@@ -26,20 +26,16 @@ public interface XRPMemo {
   Optional<byte[]> data();
 
   /**
-   * Hex value representing characters allowed in URLs.
-   * <p>
+   * (Optional) Hex value representing characters allowed in URLs.
    * Conventionally containing information on how the memo is encoded, for example as a MIME type.
-   * </p>
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
   Optional<byte[]> format();
 
   /**
-   * Hex value representing characters allowed in URLs.
-   * <p>
+   * (Optional) Hex value representing characters allowed in URLs.
    * Conventionally, a unique relation (according to RFC 5988) that defines the format of this memo.
-   * </p>
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
