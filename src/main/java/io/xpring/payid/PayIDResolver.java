@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PayIDResolver {
 
   /**
-   * Resolves a {@link PayID} to it's endpoint URL.
+   * Resolves a {@link PayID} to its endpoint URL.
    *
    * @param payID A {@link PayID} to resolve to an {@link HttpUrl}.
    * @return The {@link HttpUrl} that {@code payID} resolves to.
