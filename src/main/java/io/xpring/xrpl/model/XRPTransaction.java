@@ -37,7 +37,7 @@ public interface XRPTransaction {
    *
    * @return A byte array containing the hash value of another transaction.
    */
-  Optional<byte[]> accountTransactionID();
+  byte[] accountTransactionID();
 
   /**
    * The amount of XRP, in drops, to be destroyed as a cost for distributing this transaction to the network.
@@ -84,7 +84,7 @@ public interface XRPTransaction {
    * @return An optional {@link List} of {@link XRPSigner}s that represent a multi-signature which
    *          authorizes this transaction.
    */
-  Optional<List<XRPSigner>> signers();
+  List<XRPSigner> signers();
 
   /**
    * Hex representation of the public key that corresponds to the private key used to sign this transaction.
@@ -138,13 +138,7 @@ public interface XRPTransaction {
   static XRPTransaction from(Transaction transaction) {
     final String account = transaction.getAccount().getValue().getAddress();
 
-    Optional<byte[]> accountTransactionID = Optional.empty();
-    if (transaction.hasAccountTransactionId()) {
-      ByteString accountTransactionIDByteString = transaction.getAccountTransactionId().getValue();
-      accountTransactionID = accountTransactionIDByteString.equals(ByteString.EMPTY)
-              ? Optional.empty()
-              : Optional.of(accountTransactionIDByteString.toByteArray());
-    }
+    byte[] accountTransactionID = transaction.getAccountTransactionId().getValue().toByteArray();
 
     final Long fee = transaction.getFee().getDrops();
 
@@ -165,16 +159,10 @@ public interface XRPTransaction {
 
     Integer sequence = transaction.getSequence().getValue();
 
-    Optional<List<XRPSigner>> signers;
-    List<XRPSigner> signersList = transaction.getSignersList()
+    List<XRPSigner> signers = transaction.getSignersList()
         .stream()
         .map(XRPSigner::from)
         .collect(Collectors.toList());
-    if (signersList.isEmpty()) {
-      signers = Optional.empty();
-    } else {
-      signers = Optional.of(signersList);
-    }
 
     byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
 

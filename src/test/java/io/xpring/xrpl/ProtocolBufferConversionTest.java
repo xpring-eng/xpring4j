@@ -310,19 +310,18 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
-    assertThat(xrpTransaction.accountTransactionID().get())
+    assertThat(xrpTransaction.accountTransactionID())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
     assertThat(xrpTransaction.flags().get()).isEqualTo(transactionProto.getFlags().getValue());
     assertThat(xrpTransaction.lastLedgerSequence().get())
             .isEqualTo(transactionProto.getLastLedgerSequence().getValue());
-// HALP
-    assertThat(xrpTransaction.memos()).containsExactlyElementsOf(transactionProto.getMemosList()
+    assertThat(xrpTransaction.memos()).isEqualTo(transactionProto.getMemosList()
         .stream()
         .map(memo -> XRPMemo.from(memo))
         .collect(Collectors.toList()));
     assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
-    assertThat(xrpTransaction.signers().get()).isEqualTo(transactionProto.getSignersList()
+    assertThat(xrpTransaction.signers()).isEqualTo(transactionProto.getSignersList()
         .stream()
         .map(signer -> XRPSigner.from(signer))
         .collect(Collectors.toList()));
@@ -346,13 +345,13 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
-    assertThat(xrpTransaction.accountTransactionID().isPresent()).isFalse();
+    assertThat(xrpTransaction.accountTransactionID()).isEmpty();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
     assertThat(xrpTransaction.flags().isPresent()).isFalse();
     assertThat(xrpTransaction.lastLedgerSequence().isPresent()).isFalse();
     assertThat(xrpTransaction.memos()).isEmpty();
     assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
-    assertThat(xrpTransaction.signers().isPresent()).isFalse();
+    assertThat(xrpTransaction.signers()).isEmpty();
     assertThat(xrpTransaction.signingPublicKey())
         .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
     assertThat(xrpTransaction.sourceTag().isPresent()).isFalse();
