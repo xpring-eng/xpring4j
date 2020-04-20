@@ -10,13 +10,12 @@ import java.util.List;
  * Represents a JSON Resource Descriptor (JRD) returned from a WebFinger request as defined in RFC-7033.
  *
  * <p>
- * For the purposes of PayID dereferencing, only subject and links are necessary.  Thus, the aliases and properties
+ * For the purposes of PayID Discovery, only subject and links are necessary.  Thus, the aliases and properties
  * fields are omitted.
  * </p>
  *
  * @see "https://tools.ietf.org/html/rfc7033#section-4.4"
  */
-@Value.Style(jdkOnly = true)
 @Value.Immutable
 @JsonDeserialize(as = ImmutableWebFingerJrd.class)
 @JsonSerialize(as = ImmutableWebFingerJrd.class)

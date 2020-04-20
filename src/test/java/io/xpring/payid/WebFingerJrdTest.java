@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.xpring.common.ObjectMapperFactory;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Optional;
 
 public class WebFingerJrdTest {
 
@@ -13,19 +16,19 @@ public class WebFingerJrdTest {
 
   @Before
   public void setUp() throws Exception {
-    objectMapper = new ObjectMapper();
+    objectMapper = ObjectMapperFactory.create();
   }
 
   @Test
   public void testWebFingerLinkJson() throws JsonProcessingException {
     // GIVEN a WebFingerLink
-    String rel = "http://payid.org/rel/discovery/1.0";
-    String type = "application/payid-discovery-url";
+    String rel = "http://payid.org/rel/payid/1.0";
     String href = "https://doug.purdy.im/pay";
+    String template = "https://doug.purdy.im/{acctpart}";
 
     WebFingerLink link = WebFingerLink.builder()
-        .href(href)
-        .type(type)
+        .href(Optional.of(href))
+        .template(Optional.of(template))
         .rel(rel)
         .build();
 
@@ -34,8 +37,8 @@ public class WebFingerJrdTest {
     WebFingerLink deserializedLink = objectMapper.readValue(linkJson, WebFingerLink.class);
 
     // THEN all link fields are unchanged.
-    assertThat(deserializedLink.href()).isEqualTo(href);
-    assertThat(deserializedLink.type()).isEqualTo(type);
+    assertThat(deserializedLink.href().get()).isEqualTo(href);
+    assertThat(deserializedLink.template().get()).isEqualTo(template);
     assertThat(deserializedLink.rel()).isEqualTo(rel);
   }
 
@@ -44,14 +47,14 @@ public class WebFingerJrdTest {
     // GIVEN a WebFingerJrd
     String subject = "payid:doug$payid.ml";
     String rel = "http://payid.org/rel/payid/1.0";
-    String type = "application/payid-discovery-url";
     String href = "https://doug.purdy.im/pay";
+    String template = "https://doug.purdy.im/{acctpart}";
 
     WebFingerJrd jrd = WebFingerJrd.builder()
         .subject(subject)
         .addLinks(WebFingerLink.builder()
-          .href(href)
-          .type(type)
+          .href(Optional.of(href))
+          .template(Optional.of(template))
           .rel(rel)
           .build())
         .build();
