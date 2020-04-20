@@ -1,10 +1,7 @@
 package io.xpring.xrpl.model;
 
-import com.google.protobuf.ByteString;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Signer;
-
-import java.util.Optional;
 
 /**
  * Represents a signer of a transaction on the XRP Ledger.
@@ -30,14 +27,14 @@ public interface XRPSigner {
    *
    * @return A byte array containing the public key used to create this signature.
    */
-  Optional<byte[]> signingPublicKey();
+  byte[] signingPublicKey();
 
   /**
    * (Optional) A signature for this transaction, verifiable using the {@code signingPublicKey()}.
    *
    * @return A byte array containing a signature for this transaction, verifiable using the {@code signingPublicKey()}.
    */
-  Optional<byte[]> transactionSignature();
+  byte[] transactionSignature();
 
   /**
    * Constructs an {@link XRPSigner} from a {@link Signer}.
@@ -51,15 +48,9 @@ public interface XRPSigner {
   static XRPSigner from(Signer signer) {
     String account = signer.getAccount().getValue().getAddress();
 
-    ByteString publicKey = signer.getSigningPublicKey().getValue();
-    Optional<byte[]> signingPublicKey = publicKey.equals(ByteString.EMPTY)
-            ? Optional.empty()
-            : Optional.of(publicKey.toByteArray());
+    byte[] signingPublicKey = signer.getSigningPublicKey().getValue().toByteArray();
 
-    ByteString txnSignature = signer.getTransactionSignature().getValue();
-    Optional<byte[]> transactionSignature = txnSignature.equals(ByteString.EMPTY)
-            ? Optional.empty()
-            : Optional.of(txnSignature.toByteArray());
+    byte[] transactionSignature = signer.getTransactionSignature().getValue().toByteArray();
 
     return XRPSigner.builder()
         .account(account)

@@ -197,8 +197,8 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpPayment.destinationTag().get()).isEqualTo(paymentProto.getDestinationTag().getValue());
     assertThat(xrpPayment.deliverMin().get())
             .isEqualTo(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
-    assertThat(xrpPayment.invoiceID().get()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
-    assertThat(xrpPayment.paths().get()).isEqualTo(paymentProto.getPathsList()
+    assertThat(xrpPayment.invoiceID()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
+    assertThat(xrpPayment.paths()).isEqualTo(paymentProto.getPathsList()
             .stream()
             .map(path -> XRPPath.from(path))
             .collect(Collectors.toList()));
@@ -219,8 +219,8 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpPayment.destinationTag().isPresent()).isFalse();
     assertThat(xrpPayment.destinationTag().isPresent()).isFalse();
     assertThat(xrpPayment.deliverMin().isPresent()).isFalse();
-    assertThat(xrpPayment.invoiceID().isPresent()).isFalse();
-    assertThat(xrpPayment.paths().isPresent()).isFalse();
+    assertThat(xrpPayment.invoiceID()).isEmpty();
+    assertThat(xrpPayment.paths()).isEmpty();
     assertThat(xrpPayment.sendMax().isPresent()).isFalse();
   }
 
@@ -262,9 +262,9 @@ public class ProtocolBufferConversionTest {
     XRPMemo xrpMemo = XRPMemo.from(memoProto);
 
     // THEN all fields are present and set correctly.
-    assertThat(xrpMemo.data().get()).isEqualTo(memoProto.getMemoData().getValue().toByteArray());
-    assertThat(xrpMemo.format().get()).isEqualTo(memoProto.getMemoFormat().getValue().toByteArray());
-    assertThat(xrpMemo.type().get()).isEqualTo(memoProto.getMemoType().getValue().toByteArray());
+    assertThat(xrpMemo.data()).isEqualTo(memoProto.getMemoData().getValue().toByteArray());
+    assertThat(xrpMemo.format()).isEqualTo(memoProto.getMemoFormat().getValue().toByteArray());
+    assertThat(xrpMemo.type()).isEqualTo(memoProto.getMemoType().getValue().toByteArray());
   }
 
   @Test
@@ -276,9 +276,9 @@ public class ProtocolBufferConversionTest {
     XRPMemo xrpMemo = XRPMemo.from(memoProto);
 
     // THEN all fields are empty Optionals.
-    assertThat(xrpMemo.data().isPresent()).isFalse();
-    assertThat(xrpMemo.format().isPresent()).isFalse();
-    assertThat(xrpMemo.type().isPresent()).isFalse();
+    assertThat(xrpMemo.data()).isEmpty();
+    assertThat(xrpMemo.format()).isEmpty();
+    assertThat(xrpMemo.type()).isEmpty();
   }
 
   // Signer
@@ -293,10 +293,9 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpSigner.account()).isEqualTo(signerProto.getAccount().getValue().getAddress());
-    assertThat(xrpSigner.signingPublicKey().get())
-        .isEqualTo(signerProto.getSigningPublicKey().getValue().toByteArray());
-    assertThat(xrpSigner.transactionSignature().get())
-        .isEqualTo(signerProto.getTransactionSignature().getValue().toByteArray());
+    assertThat(xrpSigner.signingPublicKey()).isEqualTo(signerProto.getSigningPublicKey().getValue().toByteArray());
+    assertThat(xrpSigner.transactionSignature())
+            .isEqualTo(signerProto.getTransactionSignature().getValue().toByteArray());
   }
 
   // Transaction
@@ -318,25 +317,23 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.lastLedgerSequence().get())
             .isEqualTo(transactionProto.getLastLedgerSequence().getValue());
 // HALP
-//    assertThat(xrpTransaction.memos().get()).isEqualTo(transactionProto.getMemosList()
-//        .stream()
-//        .map(memo -> XRPMemo.from(memo))
-//        .collect(Collectors.toList()));
-
-//    assertThat(xrpTransaction.sequence()).isEqualToComparingFieldByField(transactionProto.getSequence().getValue());
-
-//    assertThat(xrpTransaction.signers().get()).isEqualTo(transactionProto.getSignersList()
-//        .stream()
-//        .map(signer -> XRPSigner.from(signer))
-//        .collect(Collectors.toList()));
+    assertThat(xrpTransaction.memos()).containsExactlyElementsOf(transactionProto.getMemosList()
+        .stream()
+        .map(memo -> XRPMemo.from(memo))
+        .collect(Collectors.toList()));
+    assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
+    assertThat(xrpTransaction.signers().get()).isEqualTo(transactionProto.getSignersList()
+        .stream()
+        .map(signer -> XRPSigner.from(signer))
+        .collect(Collectors.toList()));
     assertThat(xrpTransaction.signingPublicKey())
         .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
     assertThat(xrpTransaction.sourceTag().get()).isEqualTo(transactionProto.getSourceTag().getValue());
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
-//    assertThat(xrpTransaction.paymentFields())
-//            .isEqualToComparingFieldByField(XRPPayment.from(transactionProto.getPayment()));
+    assertThat(xrpTransaction.paymentFields())
+            .isEqualTo(XRPPayment.from(transactionProto.getPayment()));
   }
 
   @Test
@@ -353,7 +350,7 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
     assertThat(xrpTransaction.flags().isPresent()).isFalse();
     assertThat(xrpTransaction.lastLedgerSequence().isPresent()).isFalse();
-    assertThat(xrpTransaction.memos().isPresent()).isFalse();
+    assertThat(xrpTransaction.memos()).isEmpty();
     assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
     assertThat(xrpTransaction.signers().isPresent()).isFalse();
     assertThat(xrpTransaction.signingPublicKey())
@@ -362,8 +359,7 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
-//    assertThat(xrpTransaction.paymentFields())
-//            .isEqualToComparingFieldByField(XRPPayment.from(transactionProto.getPayment()));
+    assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
   }
 
   @Test

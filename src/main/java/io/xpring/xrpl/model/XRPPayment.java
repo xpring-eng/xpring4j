@@ -6,7 +6,6 @@ import org.xrpl.rpc.v1.Payment;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /**
  * A payment on the XRP Ledger.
@@ -54,7 +53,7 @@ public interface XRPPayment {
    *
    * @return A byte array containing a 256-bit hash representing a specific reason or identifier for this payment.
    */
-  Optional<byte[]> invoiceID();
+  byte[] invoiceID();
 
   /**
    * (Optional) Array of payment paths to be used for this transaction.
@@ -62,7 +61,7 @@ public interface XRPPayment {
    *
    * @return A {@link List} of {@link XRPPath}s containing the paths to be used for this transaction.
    */
-  Optional<List<XRPPath>> paths();
+  List<XRPPath> paths();
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.
@@ -108,18 +107,12 @@ public interface XRPPayment {
       }
     }
 
-    Optional<byte[]> invoiceID = Optional.empty();
-    if (payment.hasInvoiceId()) {
-      invoiceID = Optional.of(payment.getInvoiceId().getValue().toByteArray());
-    }
+    byte[] invoiceID = payment.getInvoiceId().getValue().toByteArray();
 
-    Optional<List<XRPPath>> paths = Optional.of(payment.getPathsList()
+    List<XRPPath> paths = payment.getPathsList()
         .stream()
         .map(XRPPath::from)
-        .collect(Collectors.toList()));
-    if (paths.get().isEmpty()) {
-      paths = Optional.empty();
-    }
+        .collect(Collectors.toList());
 
     // If the sendMax field is set, it must be able to be transformed into an XRPCurrencyAmount.
     Optional<XRPCurrencyAmount> sendMax = Optional.empty();

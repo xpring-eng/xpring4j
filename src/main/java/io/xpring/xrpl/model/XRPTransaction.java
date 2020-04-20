@@ -67,7 +67,7 @@ public interface XRPTransaction {
    *
    * @return A {@link List} of {@link XRPMemo}s containing additional information for this transaction.
    */
-  Optional<List<XRPMemo>> memos();
+  List<XRPMemo> memos();
 
   /**
    * The sequence number of the account sending the transaction.
@@ -158,16 +158,10 @@ public interface XRPTransaction {
       lastLedgerSequence = Optional.of(transaction.getLastLedgerSequence().getValue());
     }
 
-    Optional<List<XRPMemo>> memos;
-    List<XRPMemo> memoList = transaction.getMemosList()
+    List<XRPMemo> memos = transaction.getMemosList()
         .stream()
         .map(XRPMemo::from)
         .collect(Collectors.toList());
-    if (memoList.isEmpty()) {
-      memos = Optional.empty();
-    } else {
-      memos = Optional.of(memoList);
-    }
 
     Integer sequence = transaction.getSequence().getValue();
 

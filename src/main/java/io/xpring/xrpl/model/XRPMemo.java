@@ -4,8 +4,6 @@ import com.google.protobuf.ByteString;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Memo;
 
-import java.util.Optional;
-
 /**
  * Represents a memo on the XRPLedger.
  *
@@ -23,7 +21,7 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value, conventionally containing the content of the memo.
    */
-  Optional<byte[]> data();
+  byte[] data();
 
   /**
    * (Optional) Hex value representing characters allowed in URLs.
@@ -31,7 +29,7 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  Optional<byte[]> format();
+  byte[] format();
 
   /**
    * (Optional) Hex value representing characters allowed in URLs.
@@ -39,7 +37,7 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  Optional<byte[]> type();
+  byte[] type();
 
   /**
    * Constructs an {@link XRPMemo} from a {@link Memo}.
@@ -52,14 +50,13 @@ public interface XRPMemo {
    */
   static XRPMemo from(Memo memo) {
     ByteString memoData = memo.getMemoData().getValue();
-    Optional<byte[]> data = memoData.equals(ByteString.EMPTY) ? Optional.empty() : Optional.of(memoData.toByteArray());
+    byte[] data = memoData.toByteArray();
 
     ByteString memoFormat = memo.getMemoFormat().getValue();
-    Optional<byte[]> format = memoFormat.equals(ByteString.EMPTY)
-            ? Optional.empty() : Optional.of(memoFormat.toByteArray());
+    byte[] format = memoFormat.toByteArray();
 
     ByteString memoType = memo.getMemoType().getValue();
-    Optional<byte[]> type = memoType.equals(ByteString.EMPTY) ? Optional.empty() : Optional.of(memoType.toByteArray());
+    byte[] type = memoType.toByteArray();
 
     return XRPMemo.builder()
         .data(data)
