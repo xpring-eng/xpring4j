@@ -2,6 +2,7 @@ package io.xpring.payid.fakes;
 
 import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
+import io.xpring.payid.PayID;
 import io.xpring.payid.PayIDClientInterface;
 import io.xpring.payid.PayIDException;
 
