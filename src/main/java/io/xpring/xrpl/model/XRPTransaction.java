@@ -29,6 +29,8 @@ public interface XRPTransaction {
 
   /**
    * The identifying hash of the transaction.
+   *
+   * @return a {@link String} representation of the hash of the transaction.
    */
   String hash();
 
@@ -138,6 +140,7 @@ public interface XRPTransaction {
   /**
    * (Optional) The timestamp of the transaction reported in Unix time (seconds).
    *
+   * @return An {@link Integer} representing the timestamp of the transaction.
    * @see "https://xrpl.org/basic-data-types.html#specifying-time"
    */
   Optional<Integer> timestamp();
@@ -146,6 +149,7 @@ public interface XRPTransaction {
    * (Optional, omitted for non-Payment transactions) The Currency Amount actually received by the Destination account.
    * Use this field to determine how much was delivered, regardless of whether the transaction is a partial payment.
    *
+   * @return A {@link String} representation of the amount actually delivered by this transaction.
    * @see "https://xrpl.org/transaction-metadata.html#delivered_amount"
    */
   Optional<String> deliveredAmount();
@@ -191,14 +195,14 @@ public interface XRPTransaction {
       lastLedgerSequence = Optional.of(transaction.getLastLedgerSequence().getValue());
     }
 
-    List<XRPMemo> memos = transaction.getMemosList()
+    final List<XRPMemo> memos = transaction.getMemosList()
         .stream()
         .map(XRPMemo::from)
         .collect(Collectors.toList());
 
     final Integer sequence = transaction.getSequence().getValue();
 
-    List<XRPSigner> signers = transaction.getSignersList()
+    final List<XRPSigner> signers = transaction.getSignersList()
         .stream()
         .map(XRPSigner::from)
         .collect(Collectors.toList());
