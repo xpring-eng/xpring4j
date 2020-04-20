@@ -44,7 +44,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
   @Override
   public Optional<HttpUrl> resolveHttpUrl(PayID payID) {
     try {
-      Optional<WebfingerLink> webFingerLink = this.getWebfingerPayIDLink(payID);
+      Optional<WebFingerLink> webFingerLink = this.getWebfingerPayIDLink(payID);
 
       // Recurse through webfinger href responses until either the webfinger redirect doesn't exist or until
       // we get a non webfinger href URL, in which case we can infer that the href is a PayID server URL.
@@ -54,7 +54,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
 
       // On the last webfinger call, the webfinger href was invalid or doesnt exist, in which case we should fall back
       // to manual mode resolution.
-      Optional<WebfingerLink> finalWebFingerLink = webFingerLink;
+      Optional<WebFingerLink> finalWebFingerLink = webFingerLink;
       return finalWebFingerLink
         .map(link -> {
           // webfinger href for payid servers may or may not be templatized.  This should expand the template if it is a
@@ -69,7 +69,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
     }
   }
 
-  protected Optional<WebfingerLink> getWebfingerPayIDLink(PayID payID) throws JsonProcessingException {
+  protected Optional<WebFingerLink> getWebfingerPayIDLink(PayID payID) throws JsonProcessingException {
     HttpUrl webfingerUrl = new HttpUrl.Builder()
       .scheme("https")
       .host(payID.host())
@@ -80,10 +80,10 @@ public class AutoModePayIDResolver implements PayIDResolver {
     return this.getWebfingerPayIDLink(webfingerUrl);
   }
 
-  protected Optional<WebfingerLink> getWebfingerPayIDLink(HttpUrl webfingerUrl) throws JsonProcessingException {
+  protected Optional<WebFingerLink> getWebfingerPayIDLink(HttpUrl webfingerUrl) throws JsonProcessingException {
     Optional<String> jrdString = this.executeForJrdString(webfingerUrl);
     if (jrdString.isPresent()) {
-      WebfingerResponse typedJrd = objectMapper.readValue(jrdString.get(), WebfingerResponse.class);
+      WebFingerJrd typedJrd = objectMapper.readValue(jrdString.get(), WebFingerJrd.class);
       return typedJrd.links().stream()
         .filter(link -> link.rel().equals("http://payid.org/rel/discovery/1.0"))
         .findFirst();

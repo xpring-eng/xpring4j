@@ -39,9 +39,9 @@ public class AutoModePayIDResolverTest {
   @Test
   public void resolveHttpUrlOneRedirect() throws IOException {
     String payIDUrl = "https://doug.purdy.im/pay";
-    WebfingerResponse webFingerResponse = WebfingerResponse.builder()
+    WebFingerJrd webFingerResponse = WebFingerJrd.builder()
       .subject("payid.ml")
-      .addLinks(WebfingerLink.builder()
+      .addLinks(WebFingerLink.builder()
         .rel("http://payid.org/rel/discovery/1.0")
         .type("application/payid-uri-template")
         .href(payIDUrl)
@@ -71,18 +71,18 @@ public class AutoModePayIDResolverTest {
     String firstPayIDUrl = "https://doug.purdy.im/.well-known/webfinger";
     PayID payID = PayID.of("payid:doug$payid.ml");
 
-    WebfingerResponse firstWebFingerResponse = WebfingerResponse.builder()
+    WebFingerJrd firstWebFingerResponse = WebFingerJrd.builder()
       .subject("payid.ml")
-      .addLinks(WebfingerLink.builder()
+      .addLinks(WebFingerLink.builder()
         .rel("http://payid.org/rel/discovery/1.0")
         .type("application/payid-uri-template")
         .href(firstPayIDUrl)
         .build())
       .build();
 
-    WebfingerResponse secondWebFingerResponse = WebfingerResponse.builder()
+    WebFingerJrd secondWebFingerResponse = WebFingerJrd.builder()
       .subject("payid.ml")
-      .addLinks(WebfingerLink.builder()
+      .addLinks(WebFingerLink.builder()
         .rel("http://payid.org/rel/discovery/1.0")
         .type("application/payid-uri-template")
         .href(ultimatePayIDUrl)
@@ -113,9 +113,9 @@ public class AutoModePayIDResolverTest {
   @Test
   public void resolveHttpUrlExpandsUrlTemplate() throws JsonProcessingException {
     String payIDUrl = "https://doug.purdy.im/pay";
-    WebfingerResponse webFingerResponse = WebfingerResponse.builder()
+    WebFingerJrd webFingerResponse = WebFingerJrd.builder()
       .subject("payid.ml")
-      .addLinks(WebfingerLink.builder()
+      .addLinks(WebFingerLink.builder()
         .rel("http://payid.org/rel/discovery/1.0")
         .type("application/payid-uri-template")
         .href(payIDUrl + "/{acctpart}")
@@ -157,9 +157,9 @@ public class AutoModePayIDResolverTest {
   @Test
   public void resolveHttpUrlJrdAvailableButNoMatchingLink() throws JsonProcessingException {
     String payIDUrl = "https://doug.purdy.im/pay";
-    WebfingerResponse webFingerResponse = WebfingerResponse.builder()
+    WebFingerJrd webFingerResponse = WebFingerJrd.builder()
       .subject("payid.ml")
-      .addLinks(WebfingerLink.builder()
+      .addLinks(WebFingerLink.builder()
         .rel("http://this.is.not.the.rel.you.are.looking.for")
         .type("application/payid-uri-template")
         .href(payIDUrl + "/{acctpart}")
