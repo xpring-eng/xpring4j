@@ -106,8 +106,9 @@ public class AutoModePayIDResolver implements PayIDResolver {
    * Get a WebFinger Link for a given PayID.
    *
    * @param payID The {@link PayID} whose host should be queried for a WebFinger Link
-   * @return A
-   * @throws JsonProcessingException
+   * @return A present {@link WebFingerLink} containing a resolved URL or {@link Optional#empty()} if the WebFinger
+   *          server was unreachable or did not provide an appropriate link.
+   * @throws JsonProcessingException if the WebFinger response could not be parsed.
    */
   protected Optional<WebFingerLink> getWebFingerPayIDLink(PayID payID) throws JsonProcessingException {
     HttpUrl webfingerUrl = new HttpUrl.Builder()
@@ -120,6 +121,14 @@ public class AutoModePayIDResolver implements PayIDResolver {
     return this.getWebFingerPayIDLink(webfingerUrl);
   }
 
+  /**
+   * Get a WebFinger Link from a given URL.
+   *
+   * @param webfingerUrl The {@link HttpUrl} of a WebFinger server endpoint.
+   * @return A present {@link WebFingerLink} containing a resolved URL or {@link Optional#empty()} if the WebFinger
+   *          server was unreachable or did not provide an appropriate link.
+   * @throws JsonProcessingException if the WebFinger response could not be parsed.
+   */
   protected Optional<WebFingerLink> getWebFingerPayIDLink(HttpUrl webfingerUrl) throws JsonProcessingException {
     Optional<String> jrdString = this.executeForJrdString(webfingerUrl);
     if (jrdString.isPresent()) {
@@ -132,6 +141,17 @@ public class AutoModePayIDResolver implements PayIDResolver {
     return Optional.empty();
   }
 
+  /**
+   * Execute a GET request on the given WebFinger URL for a JRD.
+   *
+   * <p>
+   *   This is split off as a separate method to increase testability/mocking of this class.
+   * </p>
+   *
+   * @param webfingerUrl the {@link HttpUrl} of the WebFinger server endpoint.
+   * @return A present {@link String} containing the JSON payload of the request response, or {@link Optional#empty()}
+   *          if the request failed.
+   */
   protected Optional<String> executeForJrdString(HttpUrl webfingerUrl) {
     Request webfingerRequest = new Request.Builder()
       .header(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -142,7 +162,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
 
     try (Response response = this.okHttpClient.newCall(webfingerRequest).execute()) {
       // Auto mode not enabled
-      if (response.code() == 404) {
+      if (response.code() >= 400 && response.code() <= 500) {
         return Optional.empty();
       }
 
@@ -158,6 +178,11 @@ public class AutoModePayIDResolver implements PayIDResolver {
     }
   }
 
+  /**
+   * Constructs a new {@link OkHttpClient}.
+   *
+   * @return A new {@link OkHttpClient}.
+   */
   private static OkHttpClient newOkHttpClient() {
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).build();
