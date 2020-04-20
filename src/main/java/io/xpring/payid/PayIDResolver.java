@@ -13,14 +13,13 @@ import java.util.Optional;
 public interface PayIDResolver {
 
   /**
-   * Resolves a {@link PayID} to it's endpoint URL.
+   * Resolves a {@link PayID} to its endpoint URL.
    *
    * @param payID A {@link PayID} to resolve to an {@link HttpUrl}.
-   *
    * @return The {@link HttpUrl} that {@code payID} resolves to.
-   *
+   * @throws PayIDDiscoveryException if the inputs were invalid or the PayID was unresolvable.
    * @see "https://github.com/xpring-eng/rfcs/blob/master/payid/src/spec/payid-discovery.md"
    */
-  Optional<HttpUrl> resolveHttpUrl(PayID payID);
+  Optional<HttpUrl> resolvePayIDUrl(PayID payID) throws PayIDDiscoveryException;
 
 }
