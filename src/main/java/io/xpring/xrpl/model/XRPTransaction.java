@@ -138,7 +138,7 @@ public interface XRPTransaction {
   static XRPTransaction from(Transaction transaction) {
     final String account = transaction.getAccount().getValue().getAddress();
 
-    byte[] accountTransactionID = transaction.getAccountTransactionId().getValue().toByteArray();
+    final byte[] accountTransactionID = transaction.getAccountTransactionId().getValue().toByteArray();
 
     final Long fee = transaction.getFee().getDrops();
 
