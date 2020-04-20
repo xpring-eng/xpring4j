@@ -7,8 +7,10 @@ import org.immutables.value.Value;
 /**
  * Represents a WebFinger Link, as defined in RFC-7033.
  *
+ * <p>
  * For the purposes of PayID dereferencing, only rel, href, and type are necessary.  Thus, the titles and properties
  * fields of a WebFinger Link are omitted.
+ * </p>
  *
  * @see "https://tools.ietf.org/html/rfc7033#section-4.4.4"
  */

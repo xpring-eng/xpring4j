@@ -24,10 +24,10 @@ public class WebFingerJrdTest {
     String href = "https://doug.purdy.im/pay";
 
     WebFingerLink link = WebFingerLink.builder()
-      .href(href)
-      .type(type)
-      .rel(rel)
-      .build();
+        .href(href)
+        .type(type)
+        .rel(rel)
+        .build();
 
     // WHEN the link is serialized and deserialized
     String linkJson = objectMapper.writeValueAsString(link);
@@ -48,13 +48,13 @@ public class WebFingerJrdTest {
     String href = "https://doug.purdy.im/pay";
 
     WebFingerJrd jrd = WebFingerJrd.builder()
-      .subject(subject)
-      .addLinks(WebFingerLink.builder()
-        .href(href)
-        .type(type)
-        .rel(rel)
-        .build())
-      .build();
+        .subject(subject)
+        .addLinks(WebFingerLink.builder()
+          .href(href)
+          .type(type)
+          .rel(rel)
+          .build())
+        .build();
 
     // WHEN the JRD is serialized and deserialized
     String jrdJson = objectMapper.writeValueAsString(jrd);
