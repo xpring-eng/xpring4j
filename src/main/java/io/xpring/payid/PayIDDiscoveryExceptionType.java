@@ -1,7 +1,7 @@
 package io.xpring.payid;
 
 /**
- * Types of {@link PayIDDiscoveryException}
+ * Types of {@link PayIDDiscoveryException}.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public enum PayIDDiscoveryExceptionType {
