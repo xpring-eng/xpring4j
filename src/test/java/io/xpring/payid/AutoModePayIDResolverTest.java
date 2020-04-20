@@ -18,11 +18,15 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.util.Optional;
 
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class AutoModePayIDResolverTest {
 
   private AutoModePayIDResolver autoModePayIDResolver;
   private ObjectMapper objectMapper;
 
+  /**
+   * Set up the tests.
+   */
   @Before
   public void setUp() {
     initMocks(this);
@@ -40,18 +44,20 @@ public class AutoModePayIDResolverTest {
   public void resolveHttpUrlOneRedirect() throws IOException {
     String payIDUrl = "https://doug.purdy.im/pay";
     WebFingerJrd webFingerResponse = WebFingerJrd.builder()
-      .subject("payid.ml")
-      .addLinks(WebFingerLink.builder()
-        .rel("http://payid.org/rel/discovery/1.0")
-        .type("application/payid-uri-template")
-        .href(payIDUrl)
-        .build())
-      .build();
+        .subject("payid.ml")
+        .addLinks(WebFingerLink.builder()
+          .rel("http://payid.org/rel/discovery/1.0")
+          .type("application/payid-uri-template")
+          .href(payIDUrl)
+          .build())
+        .build();
 
 
     PayID payID = PayID.of("payid:doug$payid.ml");
 
-    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse))).when(autoModePayIDResolver).executeForJrdString(any());
+    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse)))
+        .when(autoModePayIDResolver)
+        .executeForJrdString(any());
 
     Optional<HttpUrl> httpUrl = autoModePayIDResolver.resolveHttpUrl(payID);
     verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
@@ -72,32 +78,36 @@ public class AutoModePayIDResolverTest {
     PayID payID = PayID.of("payid:doug$payid.ml");
 
     WebFingerJrd firstWebFingerResponse = WebFingerJrd.builder()
-      .subject("payid.ml")
-      .addLinks(WebFingerLink.builder()
-        .rel("http://payid.org/rel/discovery/1.0")
-        .type("application/payid-uri-template")
-        .href(firstPayIDUrl)
-        .build())
-      .build();
+        .subject("payid.ml")
+        .addLinks(WebFingerLink.builder()
+          .rel("http://payid.org/rel/discovery/1.0")
+          .type("application/payid-uri-template")
+          .href(firstPayIDUrl)
+          .build())
+        .build();
 
     WebFingerJrd secondWebFingerResponse = WebFingerJrd.builder()
-      .subject("payid.ml")
-      .addLinks(WebFingerLink.builder()
-        .rel("http://payid.org/rel/discovery/1.0")
-        .type("application/payid-uri-template")
-        .href(ultimatePayIDUrl)
-        .build())
-      .build();
+        .subject("payid.ml")
+        .addLinks(WebFingerLink.builder()
+          .rel("http://payid.org/rel/discovery/1.0")
+          .type("application/payid-uri-template")
+          .href(ultimatePayIDUrl)
+          .build())
+        .build();
 
     HttpUrl firstWebfingerUrl = new HttpUrl.Builder()
-      .scheme("https")
-      .host(payID.host())
-      .addEncodedPathSegments(WEBFINGER_URL)
-      .addQueryParameter("resource", payID.toString())
-      .build();
+        .scheme("https")
+        .host(payID.host())
+        .addEncodedPathSegments(WEBFINGER_URL)
+        .addQueryParameter("resource", payID.toString())
+        .build();
 
-    doReturn(Optional.of(objectMapper.writeValueAsString(firstWebFingerResponse))).when(autoModePayIDResolver).executeForJrdString(firstWebfingerUrl);
-    doReturn(Optional.of(objectMapper.writeValueAsString(secondWebFingerResponse))).when(autoModePayIDResolver).executeForJrdString(HttpUrl.parse(firstPayIDUrl));
+    doReturn(Optional.of(objectMapper.writeValueAsString(firstWebFingerResponse)))
+        .when(autoModePayIDResolver)
+        .executeForJrdString(firstWebfingerUrl);
+    doReturn(Optional.of(objectMapper.writeValueAsString(secondWebFingerResponse)))
+        .when(autoModePayIDResolver)
+        .executeForJrdString(HttpUrl.parse(firstPayIDUrl));
     Optional<HttpUrl> httpUrl = autoModePayIDResolver.resolveHttpUrl(payID);
     verify(autoModePayIDResolver, times(2)).executeForJrdString(any());
     assertThat(httpUrl.get().toString()).isEqualTo(ultimatePayIDUrl);
@@ -114,18 +124,20 @@ public class AutoModePayIDResolverTest {
   public void resolveHttpUrlExpandsUrlTemplate() throws JsonProcessingException {
     String payIDUrl = "https://doug.purdy.im/pay";
     WebFingerJrd webFingerResponse = WebFingerJrd.builder()
-      .subject("payid.ml")
-      .addLinks(WebFingerLink.builder()
-        .rel("http://payid.org/rel/discovery/1.0")
-        .type("application/payid-uri-template")
-        .href(payIDUrl + "/{acctpart}")
-        .build())
-      .build();
+        .subject("payid.ml")
+        .addLinks(WebFingerLink.builder()
+          .rel("http://payid.org/rel/discovery/1.0")
+          .type("application/payid-uri-template")
+          .href(payIDUrl + "/{acctpart}")
+          .build())
+        .build();
 
 
     PayID payID = PayID.of("payid:doug$payid.ml");
 
-    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse))).when(autoModePayIDResolver).executeForJrdString(any());
+    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse)))
+        .when(autoModePayIDResolver)
+        .executeForJrdString(any());
 
     Optional<HttpUrl> httpUrl = autoModePayIDResolver.resolveHttpUrl(payID);
     verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
@@ -158,18 +170,20 @@ public class AutoModePayIDResolverTest {
   public void resolveHttpUrlJrdAvailableButNoMatchingLink() throws JsonProcessingException {
     String payIDUrl = "https://doug.purdy.im/pay";
     WebFingerJrd webFingerResponse = WebFingerJrd.builder()
-      .subject("payid.ml")
-      .addLinks(WebFingerLink.builder()
-        .rel("http://this.is.not.the.rel.you.are.looking.for")
-        .type("application/payid-uri-template")
-        .href(payIDUrl + "/{acctpart}")
-        .build())
-      .build();
+        .subject("payid.ml")
+        .addLinks(WebFingerLink.builder()
+          .rel("http://this.is.not.the.rel.you.are.looking.for")
+          .type("application/payid-uri-template")
+          .href(payIDUrl + "/{acctpart}")
+          .build())
+        .build();
 
 
     PayID payID = PayID.of("payid:doug$payid.ml");
 
-    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse))).when(autoModePayIDResolver).executeForJrdString(any());
+    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse)))
+        .when(autoModePayIDResolver)
+        .executeForJrdString(any());
 
     Optional<HttpUrl> httpUrl = autoModePayIDResolver.resolveHttpUrl(payID);
     verify(autoModePayIDResolver, times(1)).executeForJrdString(any());

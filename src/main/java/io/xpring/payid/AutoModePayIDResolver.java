@@ -26,6 +26,7 @@ import java.util.Optional;
  *
  * @see "https://github.com/xpring-eng/rfcs/blob/master/payid/src/spec/payid-discovery.md#automated-mode"
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class AutoModePayIDResolver implements PayIDResolver {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -112,11 +113,11 @@ public class AutoModePayIDResolver implements PayIDResolver {
    */
   protected Optional<WebFingerLink> getWebFingerPayIDLink(PayID payID) throws JsonProcessingException {
     HttpUrl webfingerUrl = new HttpUrl.Builder()
-      .scheme("https")
-      .host(payID.host())
-      .addEncodedPathSegments(WEBFINGER_URL)
-      .addQueryParameter("resource", payID.toString())
-      .build();
+        .scheme("https")
+        .host(payID.host())
+        .addEncodedPathSegments(WEBFINGER_URL)
+        .addQueryParameter("resource", payID.toString())
+        .build();
 
     return this.getWebFingerPayIDLink(webfingerUrl);
   }
@@ -154,11 +155,11 @@ public class AutoModePayIDResolver implements PayIDResolver {
    */
   protected Optional<String> executeForJrdString(HttpUrl webfingerUrl) {
     Request webfingerRequest = new Request.Builder()
-      .header(HttpHeaders.CONTENT_TYPE, "application/json")
-      .header(HttpHeaders.ACCEPT, "application/json")
-      .url(webfingerUrl)
-      .get()
-      .build();
+        .header(HttpHeaders.CONTENT_TYPE, "application/json")
+        .header(HttpHeaders.ACCEPT, "application/json")
+        .url(webfingerUrl)
+        .get()
+        .build();
 
     try (Response response = this.okHttpClient.newCall(webfingerRequest).execute()) {
       // Auto mode not enabled
