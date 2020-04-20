@@ -24,7 +24,7 @@ public class AutoModePayIDResolverTest {
   private ObjectMapper objectMapper;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     initMocks(this);
     objectMapper = new ObjectMapper();
     autoModePayIDResolver = Mockito.spy(new AutoModePayIDResolver());

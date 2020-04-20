@@ -20,6 +20,12 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * Implementation of {@link PayIDResolver} which resolves {@link PayID} to URLs using
+ * automated mode.
+ *
+ * @see "https://github.com/xpring-eng/rfcs/blob/master/payid/src/spec/payid-discovery.md#automated-mode"
+ */
 public class AutoModePayIDResolver implements PayIDResolver {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,28 +34,55 @@ public class AutoModePayIDResolver implements PayIDResolver {
   private OkHttpClient okHttpClient;
   private ObjectMapper objectMapper;
 
+  /**
+   * No-args constructor.
+   */
   public AutoModePayIDResolver() {
     this(newOkHttpClient(), new ObjectMapper());
   }
 
+  /**
+   * Required args constructor.  Initializes with a default {@link ObjectMapper}.
+   *
+   * @param okHttpClient An {@link OkHttpClient} to be used by this resolver.
+   */
   public AutoModePayIDResolver(OkHttpClient okHttpClient) {
     this(okHttpClient, new ObjectMapper());
   }
 
+  /**
+   * Required args constructor.
+   *
+   * @param okHttpClient An {@link OkHttpClient} to be used by this resolver.
+   * @param objectMapper An {@link ObjectMapper} to be used by this resolver.
+   */
   public AutoModePayIDResolver(OkHttpClient okHttpClient, ObjectMapper objectMapper) {
     this.okHttpClient = okHttpClient;
     this.objectMapper = objectMapper;
   }
 
+  /**
+   * Resolves a {@link PayID} to an {@link HttpUrl} using automated mode.
+   *
+   * <p>
+   *   This implementation recursively sends WebFinger GET requests to the PayID host
+   *   until a non-WebFinger URL is returns as the href of the WebFinger Link.  This means that
+   *   WebFinger servers can delegate PayID resolution to different hosts.
+   * </p>
+   *
+   * @param payID A {@link PayID} to resolve to an {@link HttpUrl}.
+   * @return The {@link Optional} of {@link HttpUrl} of the PayID server for a given PayID, or {@link Optional#empty()}
+   *          if there is no WebFinger server running at the PayID's host URL.
+   */
   @Override
   public Optional<HttpUrl> resolveHttpUrl(PayID payID) {
     try {
-      Optional<WebFingerLink> webFingerLink = this.getWebfingerPayIDLink(payID);
+      Optional<WebFingerLink> webFingerLink = this.getWebFingerPayIDLink(payID);
 
       // Recurse through webfinger href responses until either the webfinger redirect doesn't exist or until
       // we get a non webfinger href URL, in which case we can infer that the href is a PayID server URL.
       while (webFingerLink.isPresent() && webFingerLink.get().href().endsWith(WEBFINGER_URL)) {
-        webFingerLink = this.getWebfingerPayIDLink(HttpUrl.parse(webFingerLink.get().href()));
+        webFingerLink = this.getWebFingerPayIDLink(HttpUrl.parse(webFingerLink.get().href()));
       }
 
       // On the last webfinger call, the webfinger href was invalid or doesnt exist, in which case we should fall back
@@ -69,7 +102,14 @@ public class AutoModePayIDResolver implements PayIDResolver {
     }
   }
 
-  protected Optional<WebFingerLink> getWebfingerPayIDLink(PayID payID) throws JsonProcessingException {
+  /**
+   * Get a WebFinger Link for a given PayID.
+   *
+   * @param payID The {@link PayID} whose host should be queried for a WebFinger Link
+   * @return A
+   * @throws JsonProcessingException
+   */
+  protected Optional<WebFingerLink> getWebFingerPayIDLink(PayID payID) throws JsonProcessingException {
     HttpUrl webfingerUrl = new HttpUrl.Builder()
       .scheme("https")
       .host(payID.host())
@@ -77,10 +117,10 @@ public class AutoModePayIDResolver implements PayIDResolver {
       .addQueryParameter("resource", payID.toString())
       .build();
 
-    return this.getWebfingerPayIDLink(webfingerUrl);
+    return this.getWebFingerPayIDLink(webfingerUrl);
   }
 
-  protected Optional<WebFingerLink> getWebfingerPayIDLink(HttpUrl webfingerUrl) throws JsonProcessingException {
+  protected Optional<WebFingerLink> getWebFingerPayIDLink(HttpUrl webfingerUrl) throws JsonProcessingException {
     Optional<String> jrdString = this.executeForJrdString(webfingerUrl);
     if (jrdString.isPresent()) {
       WebFingerJrd typedJrd = objectMapper.readValue(jrdString.get(), WebFingerJrd.class);
@@ -123,10 +163,6 @@ public class AutoModePayIDResolver implements PayIDResolver {
     ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).build();
     builder.connectionSpecs(Arrays.asList(spec, ConnectionSpec.CLEARTEXT));
     builder.cookieJar(NO_COOKIES);
-
-//    builder.connectTimeout(defaultConnectTimeoutMillis, TimeUnit.MILLISECONDS);
-//    builder.readTimeout(defaultReadTimeoutMillis, TimeUnit.MILLISECONDS);
-//    builder.writeTimeout(defaultWriteTimeoutMillis, TimeUnit.MILLISECONDS);
 
     return builder.build();
   }
