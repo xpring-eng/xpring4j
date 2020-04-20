@@ -16,7 +16,6 @@ import java.util.List;
  *
  * @see "https://tools.ietf.org/html/rfc7033#section-4.4"
  */
-@Value.Style(jdkOnly = true)
 @Value.Immutable
 @JsonDeserialize(as = ImmutableWebFingerJrd.class)
 @JsonSerialize(as = ImmutableWebFingerJrd.class)
