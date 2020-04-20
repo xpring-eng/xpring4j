@@ -348,8 +348,8 @@ public class ProtocolBufferConversionTest {
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
     assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
-    assertThat(xrpTransaction.timestamp()).isEqualTo(FakeXRPProtobufs.expectedTimestamp);
-    assertThat(xrpTransaction.deliveredAmount()).isEqualTo(Long.toString(FakeXRPProtobufs.testDeliveredDrops));
+    assertThat(xrpTransaction.timestamp().get()).isEqualTo(FakeXRPProtobufs.expectedTimestamp);
+    assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(Long.toString(FakeXRPProtobufs.testDeliveredDrops));
   }
 
   @Test
@@ -379,8 +379,8 @@ public class ProtocolBufferConversionTest {
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
     assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
-    assertThat(xrpTransaction.timestamp()).isNull();
-    assertThat(xrpTransaction.deliveredAmount()).isNull();
+    assertThat(xrpTransaction.timestamp().isPresent()).isFalse();
+    assertThat(xrpTransaction.deliveredAmount().isPresent()).isFalse();
   }
 
   @Test

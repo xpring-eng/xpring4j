@@ -1,6 +1,5 @@
 package io.xpring.xrpl.model;
 
-import com.google.protobuf.ByteString;
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
@@ -137,21 +136,19 @@ public interface XRPTransaction {
   XRPPayment paymentFields();
 
   /**
-   * The timestamp of the transaction reported in Unix time (seconds).
+   * (Optional) The timestamp of the transaction reported in Unix time (seconds).
    *
    * @see "https://xrpl.org/basic-data-types.html#specifying-time"
    */
-  @Nullable
-  Integer timestamp();
+  Optional<Integer> timestamp();
 
   /**
-   * (Omitted for non-Payment transactions) The Currency Amount actually received by the Destination account.
+   * (Optional, omitted for non-Payment transactions) The Currency Amount actually received by the Destination account.
    * Use this field to determine how much was delivered, regardless of whether the transaction is a partial payment.
    *
    * @see "https://xrpl.org/transaction-metadata.html#delivered_amount"
    */
-  @Nullable
-  String deliveredAmount();
+  Optional<String> deliveredAmount();
 
   /**
    * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
@@ -236,32 +233,28 @@ public interface XRPTransaction {
     // Transactions report their timestamps since the Ripple Epoch, which is 946,684,800 seconds after
     // the unix epoch. Convert transaction's timestamp to a unix timestamp.
     // See: https://xrpl.org/basic-data-types.html#specifying-time
-    Integer timestamp;
+    Optional<Integer> timestamp = Optional.empty();
     if (getTransactionResponse.hasDate()) {
       Integer rippleTransactionDate = getTransactionResponse.getDate().getValue();
-      timestamp = rippleTransactionDate != null
-              ? rippleTransactionDate + 946684800
-              : null;
-    } else {
-      timestamp = null;
+      if (rippleTransactionDate != null) {
+        timestamp = Optional.of(rippleTransactionDate + 946684800);
+      }
     }
 
-    String deliveredAmount;
+    Optional<String> deliveredAmount = Optional.empty();
     if (getTransactionResponse.getMeta().hasDeliveredAmount()) {
       CurrencyAmount currencyAmountDelivered = getTransactionResponse.getMeta().getDeliveredAmount().getValue();
-      if (currencyAmountDelivered.hasXrpAmount()) {
-        deliveredAmount = Long.toString(currencyAmountDelivered.getXrpAmount().getDrops());
-      } else {
-        if (currencyAmountDelivered.hasIssuedCurrencyAmount()) {
-          deliveredAmount = currencyAmountDelivered.getIssuedCurrencyAmount().getValue();
-        } else { // there MUST be one of XRP drops or issued currency
+      switch (currencyAmountDelivered.getAmountCase()) {
+        case XRP_AMOUNT:
+          deliveredAmount = Optional.of(Long.toString(currencyAmountDelivered.getXrpAmount().getDrops()));
+          break;
+        case ISSUED_CURRENCY_AMOUNT:
+          deliveredAmount = Optional.of(Long.toString(currencyAmountDelivered.getXrpAmount().getDrops()));
+          break;
+        default: // there MUST be one of XRP drops or issued currency
           return null;
-        }
       }
-    } else { // no delivered amount (not set for non-payment transactions)
-      deliveredAmount = null;
     }
-
 
     return XRPTransaction.builder()
         .hash(hash)
