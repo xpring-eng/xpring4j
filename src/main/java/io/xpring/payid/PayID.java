@@ -3,6 +3,8 @@ package io.xpring.payid;
 import static io.xpring.payid.AbstractPayID.upperCasePercentEncoded;
 import static java.lang.String.format;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Preconditions;
 
 import java.util.Locale;
