@@ -57,7 +57,7 @@ public interface XRPPayment {
   @Value.Default
   default byte[] invoiceID() {
     return new byte[0];
-  };
+  }
 
   /**
    * (Optional) Array of payment paths to be used for this transaction.
@@ -68,7 +68,7 @@ public interface XRPPayment {
   @Value.Default
   default List<XRPPath> paths() {
     return new ArrayList<>();
-  };
+  }
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.

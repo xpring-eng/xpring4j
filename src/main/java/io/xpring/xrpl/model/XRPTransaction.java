@@ -41,7 +41,7 @@ public interface XRPTransaction {
   @Value.Default
   default byte[] accountTransactionID() {
     return new byte[0];
-  };
+  }
 
   /**
    * The amount of XRP, in drops, to be destroyed as a cost for distributing this transaction to the network.
@@ -74,7 +74,7 @@ public interface XRPTransaction {
   @Value.Default
   default List<XRPMemo> memos() {
     return new ArrayList<>();
-  };
+  }
 
   /**
    * The sequence number of the account sending the transaction.
@@ -94,7 +94,7 @@ public interface XRPTransaction {
   @Value.Default
   default List<XRPSigner> signers() {
     return new ArrayList<>();
-  };
+  }
 
   /**
    * Hex representation of the public key that corresponds to the private key used to sign this transaction.

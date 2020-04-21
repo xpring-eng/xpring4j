@@ -24,7 +24,7 @@ public interface XRPMemo {
   @Value.Default
   default byte[] data() {
     return new byte[0];
-  };
+  }
 
   /**
    * (Optional) Hex value representing characters allowed in URLs.
@@ -46,7 +46,7 @@ public interface XRPMemo {
   @Value.Default
   default byte[] type() {
     return new byte[0];
-  };
+  }
 
   /**
    * Constructs an {@link XRPMemo} from a {@link Memo}.
