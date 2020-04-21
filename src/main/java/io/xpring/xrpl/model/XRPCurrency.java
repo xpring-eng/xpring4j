@@ -17,11 +17,15 @@ public interface XRPCurrency {
 
   /**
    * The 3 character currency ASCII code.
+   *
+   * @return The 3 character currency ASCII code.
    */
   String name();
 
   /**
    * The 160 bit currency code. 20 bytes.
+   *
+   * @return The 160 bit currency code. 20 bytes.
    */
   byte[] code();
 
