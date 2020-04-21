@@ -54,7 +54,7 @@ public interface XRPTransaction {
   /**
    * (Optional) set of bit-flags for this transaction.
    *
-   * @return An {@link Optional<Integer>} representing the set of bit-flags for this transaction.
+   * @return An Optional {@link Integer} representing the set of bit-flags for this transaction.
    */
   Optional<Integer> flags();
 
@@ -62,7 +62,7 @@ public interface XRPTransaction {
    * (Optional; strongly recommended) Highest ledger index this transaction can appear in.
    * Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.
    *
-   * @return An {@link Optional<Integer>} representing the highest ledger index this transaction can appear in.
+   * @return An Optional {@link Integer} representing the highest ledger index this transaction can appear in.
    */
   Optional<Integer> lastLedgerSequence();
 
@@ -109,7 +109,7 @@ public interface XRPTransaction {
    * transaction is made.
    * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
    *
-   * @return An {@link Optional<Integer>} representing the source tag of this transaction.
+   * @return An Optional {@link Integer} representing the source tag of this transaction.
    */
   Optional<Integer> sourceTag();
 
