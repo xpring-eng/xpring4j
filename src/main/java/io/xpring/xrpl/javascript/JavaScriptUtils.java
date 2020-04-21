@@ -124,21 +124,4 @@ public class JavaScriptUtils {
     Value hash = transactionBlobToTransactionHashFunction.execute(transactionBlobHex);
     return hash.isNull() ? null : hash.toString();
   }
-
-  /**
-   * Convert the given byte array to a hexadecimal string.
-   *
-   * @param bytes An array of bytes
-   * @return An encoded hexadecimal string.
-   */
-  public String toHex(byte[] bytes) {
-    final char[] hexArray = "0123456789ABCDEF".toCharArray();
-    char[] hexChars = new char[bytes.length * 2];
-    for (int j = 0; j < bytes.length; j++) {
-      int next = bytes[j] & 0xFF;
-      hexChars[j * 2] = hexArray[next >>> 4];
-      hexChars[j * 2 + 1] = hexArray[next & 0x0F];
-    }
-    return new String(hexChars);
-  }
 }

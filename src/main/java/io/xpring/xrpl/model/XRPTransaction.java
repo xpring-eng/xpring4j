@@ -1,8 +1,7 @@
 package io.xpring.xrpl.model;
 
 import io.xpring.xrpl.TransactionType;
-import io.xpring.xrpl.javascript.JavaScriptLoaderException;
-import io.xpring.xrpl.javascript.JavaScriptUtils;
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetTransactionResponse;
@@ -173,20 +172,13 @@ public interface XRPTransaction {
    * GetTransactionResponse protocol buffer</a>
    */
   static XRPTransaction from(GetTransactionResponse getTransactionResponse) {
-    JavaScriptUtils javaScriptUtils;
-    try {
-      javaScriptUtils = new JavaScriptUtils();
-    } catch (JavaScriptLoaderException e) {
-      throw new RuntimeException(e);
-    }
-
     final Transaction transaction = getTransactionResponse.getTransaction();
     if (transaction == null) {
       return null;
     }
 
     byte[] transactionHashBytes = getTransactionResponse.getHash().toByteArray();
-    final String hash = javaScriptUtils.toHex(transactionHashBytes);
+    final String hash = Utils.byteArrayToHex(transactionHashBytes);
 
     final String account = transaction.getAccount().getValue().getAddress();
 
