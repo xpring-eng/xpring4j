@@ -324,7 +324,7 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.hash())
-            .isEqualTo(javaScriptUtils.toHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
+            .isEqualTo(Utils.byteArrayToHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
@@ -363,7 +363,7 @@ public class ProtocolBufferConversionTest {
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.hash())
-            .isEqualTo(javaScriptUtils.toHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
+            .isEqualTo(Utils.byteArrayToHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID()).isEmpty();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
