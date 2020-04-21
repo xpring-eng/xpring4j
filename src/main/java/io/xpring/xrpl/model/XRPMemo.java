@@ -21,7 +21,10 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value, conventionally containing the content of the memo.
    */
-  byte[] data();
+  @Value.Default
+  default byte[] data() {
+    return new byte[0];
+  };
 
   /**
    * (Optional) Hex value representing characters allowed in URLs.
@@ -29,7 +32,10 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  byte[] format();
+  @Value.Default
+  default byte[] format() {
+    return new byte[0];
+  }
 
   /**
    * (Optional) Hex value representing characters allowed in URLs.
@@ -37,7 +43,10 @@ public interface XRPMemo {
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  byte[] type();
+  @Value.Default
+  default byte[] type() {
+    return new byte[0];
+  };
 
   /**
    * Constructs an {@link XRPMemo} from a {@link Memo}.

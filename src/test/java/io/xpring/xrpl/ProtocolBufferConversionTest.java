@@ -70,9 +70,9 @@ public class ProtocolBufferConversionTest {
     XRPPathElement xrpPathElement = XRPPathElement.from(emptyPathElementProto);
 
     // THEN all fields are empty Optionals.
-    assertThat(xrpPathElement.account().isPresent()).isFalse();
-    assertThat(xrpPathElement.currency().isPresent()).isFalse();
-    assertThat(xrpPathElement.issuer().isPresent()).isFalse();
+    assertThat(xrpPathElement.account()).isEmpty();
+    assertThat(xrpPathElement.currency()).isEmpty();
+    assertThat(xrpPathElement.issuer()).isEmpty();
   }
 
   // Path
@@ -145,7 +145,7 @@ public class ProtocolBufferConversionTest {
     // THEN the result has drops set and an empty issued currency.
     assertThat(xrpCurrencyAmount.drops().get())
         .isEqualTo(Long.toString(FakeXRPProtobufs.dropsCurrencyAmount.getXrpAmount().getDrops()));
-    assertThat(xrpCurrencyAmount.issuedCurrency().isPresent()).isFalse();
+    assertThat(xrpCurrencyAmount.issuedCurrency()).isEmpty();
   }
 
   @Test
@@ -155,7 +155,7 @@ public class ProtocolBufferConversionTest {
     XRPCurrencyAmount xrpCurrencyAmount = XRPCurrencyAmount.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount);
 
     // THEN the result has an issued currency set and no drops amount.
-    assertThat(xrpCurrencyAmount.drops().isPresent()).isFalse();
+    assertThat(xrpCurrencyAmount.drops()).isEmpty();
     assertThat(xrpCurrencyAmount.issuedCurrency().get())
         .isEqualTo(XRPIssuedCurrency.from(FakeXRPProtobufs.issuedCurrencyCurrencyAmount.getIssuedCurrencyAmount()));
   }
@@ -216,12 +216,12 @@ public class ProtocolBufferConversionTest {
     // THEN the result is as expected.
     assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
-    assertThat(xrpPayment.destinationTag().isPresent()).isFalse();
-    assertThat(xrpPayment.destinationTag().isPresent()).isFalse();
-    assertThat(xrpPayment.deliverMin().isPresent()).isFalse();
+    assertThat(xrpPayment.destinationTag()).isEmpty();
+    assertThat(xrpPayment.destinationTag()).isEmpty();
+    assertThat(xrpPayment.deliverMin()).isEmpty();
     assertThat(xrpPayment.invoiceID()).isEmpty();
     assertThat(xrpPayment.paths()).isEmpty();
-    assertThat(xrpPayment.sendMax().isPresent()).isFalse();
+    assertThat(xrpPayment.sendMax()).isEmpty();
   }
 
   @Test
@@ -347,14 +347,14 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
     assertThat(xrpTransaction.accountTransactionID()).isEmpty();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
-    assertThat(xrpTransaction.flags().isPresent()).isFalse();
-    assertThat(xrpTransaction.lastLedgerSequence().isPresent()).isFalse();
+    assertThat(xrpTransaction.flags()).isEmpty();
+    assertThat(xrpTransaction.lastLedgerSequence()).isEmpty();
     assertThat(xrpTransaction.memos()).isEmpty();
     assertThat(xrpTransaction.sequence()).isEqualTo(transactionProto.getSequence().getValue());
     assertThat(xrpTransaction.signers()).isEmpty();
     assertThat(xrpTransaction.signingPublicKey())
         .isEqualTo(transactionProto.getSigningPublicKey().getValue().toByteArray());
-    assertThat(xrpTransaction.sourceTag().isPresent()).isFalse();
+    assertThat(xrpTransaction.sourceTag()).isEmpty();
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);

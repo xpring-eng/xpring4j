@@ -48,11 +48,9 @@ public interface XRPCurrencyAmount {
     switch (currencyAmount.getAmountCase()) {
       // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
       case ISSUED_CURRENCY_AMOUNT: {
-        if (currencyAmount.hasIssuedCurrencyAmount()) {
-          XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(currencyAmount.getIssuedCurrencyAmount());
-          if (xrpIssuedCurrency != null) {
-            return builder().issuedCurrency(xrpIssuedCurrency).build();
-          }
+        XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(currencyAmount.getIssuedCurrencyAmount());
+        if (xrpIssuedCurrency != null) {
+          return builder().issuedCurrency(xrpIssuedCurrency).build();
         }
         // if AmountCase is ISSUED_CURRENCY_AMOUNT, we must be able to convert this to an XRPIssuedCurrency
         return null;
