@@ -23,7 +23,7 @@ public interface XRPCurrencyAmount {
    * (Optional) An amount of XRP, specified in drops.
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
    *
-   * @return The {@link String} representation of an amount of XRP, specified in drops.
+   * @return The Optional {@link String} representation of an amount of XRP, specified in drops.
    */
   Optional<String> drops();
 
@@ -31,7 +31,7 @@ public interface XRPCurrencyAmount {
    * (Optional) An amount of an issued currency.
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
    *
-   * @return The {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
+   * @return The Optional {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
    */
   Optional<XRPIssuedCurrency> issuedCurrency();
 
@@ -48,11 +48,9 @@ public interface XRPCurrencyAmount {
     switch (currencyAmount.getAmountCase()) {
       // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
       case ISSUED_CURRENCY_AMOUNT: {
-        if (currencyAmount.hasIssuedCurrencyAmount()) {
-          XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(currencyAmount.getIssuedCurrencyAmount());
-          if (xrpIssuedCurrency != null) {
-            return builder().issuedCurrency(xrpIssuedCurrency).build();
-          }
+        XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(currencyAmount.getIssuedCurrencyAmount());
+        if (xrpIssuedCurrency != null) {
+          return builder().issuedCurrency(xrpIssuedCurrency).build();
         }
         // if AmountCase is ISSUED_CURRENCY_AMOUNT, we must be able to convert this to an XRPIssuedCurrency
         return null;

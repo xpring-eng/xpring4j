@@ -23,14 +23,14 @@ public interface XRPSigner {
   String account();
 
   /**
-   * (Optional) The public key used to create this signature.
+   * The public key used to create this signature.
    *
    * @return A byte array containing the public key used to create this signature.
    */
   byte[] signingPublicKey();
 
   /**
-   * (Optional) A signature for this transaction, verifiable using the {@code signingPublicKey()}.
+   * A signature for this transaction, verifiable using the {@code signingPublicKey()}.
    *
    * @return A byte array containing a signature for this transaction, verifiable using the {@code signingPublicKey()}.
    */
