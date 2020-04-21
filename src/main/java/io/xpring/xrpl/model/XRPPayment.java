@@ -3,6 +3,7 @@ package io.xpring.xrpl.model;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +54,10 @@ public interface XRPPayment {
    *
    * @return A byte array containing a 256-bit hash representing a specific reason or identifier for this payment.
    */
-  byte[] invoiceID();
+  @Value.Default
+  default byte[] invoiceID() {
+    return new byte[0];
+  };
 
   /**
    * (Optional) Array of payment paths to be used for this transaction.
@@ -61,7 +65,10 @@ public interface XRPPayment {
    *
    * @return A {@link List} of {@link XRPPath}s containing the paths to be used for this transaction.
    */
-  List<XRPPath> paths();
+  @Value.Default
+  default List<XRPPath> paths() {
+    return new ArrayList<>();
+  };
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.

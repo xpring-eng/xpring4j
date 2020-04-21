@@ -73,7 +73,7 @@ public interface XRPTransaction {
    */
   @Value.Default
   default List<XRPMemo> memos() {
-    return new ArrayList<XRPMemo>();
+    return new ArrayList<>();
   };
 
   /**
@@ -93,7 +93,7 @@ public interface XRPTransaction {
    */
   @Value.Default
   default List<XRPSigner> signers() {
-    return new ArrayList<XRPSigner>();
+    return new ArrayList<>();
   };
 
   /**
