@@ -1,18 +1,24 @@
 package io.xpring.payid;
 
+import static io.xpring.payid.AutoModePayIDResolver.DISCOVERY_URL;
+import static io.xpring.payid.AutoModePayIDResolver.PAY_ID_URL;
 import static io.xpring.payid.AutoModePayIDResolver.WEBFINGER_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.xpring.common.ObjectMapperFactory;
 import okhttp3.HttpUrl;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -20,6 +26,9 @@ import java.util.Optional;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class AutoModePayIDResolverTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   private AutoModePayIDResolver autoModePayIDResolver;
   private ObjectMapper objectMapper;
@@ -30,7 +39,7 @@ public class AutoModePayIDResolverTest {
   @Before
   public void setUp() {
     initMocks(this);
-    objectMapper = new ObjectMapper();
+    objectMapper = ObjectMapperFactory.create();
     autoModePayIDResolver = Mockito.spy(new AutoModePayIDResolver());
   }
 
@@ -46,7 +55,7 @@ public class AutoModePayIDResolverTest {
     WebFingerJrd webFingerResponse = WebFingerJrd.builder()
         .subject("payid.ml")
         .addLinks(WebFingerLink.builder()
-          .rel("http://payid.org/rel/discovery/1.0")
+          .rel(PAY_ID_URL)
           .href(payIDUrl)
           .build())
         .build();
@@ -79,7 +88,7 @@ public class AutoModePayIDResolverTest {
     WebFingerJrd firstWebFingerResponse = WebFingerJrd.builder()
         .subject("payid.ml")
         .addLinks(WebFingerLink.builder()
-          .rel("http://payid.org/rel/discovery/1.0")
+          .rel(DISCOVERY_URL)
           .href(firstPayIDUrl)
           .build())
         .build();
@@ -87,7 +96,7 @@ public class AutoModePayIDResolverTest {
     WebFingerJrd secondWebFingerResponse = WebFingerJrd.builder()
         .subject("payid.ml")
         .addLinks(WebFingerLink.builder()
-          .rel("http://payid.org/rel/discovery/1.0")
+          .rel(PAY_ID_URL)
           .href(ultimatePayIDUrl)
           .build())
         .build();
@@ -124,7 +133,7 @@ public class AutoModePayIDResolverTest {
     WebFingerJrd webFingerResponse = WebFingerJrd.builder()
         .subject("payid.ml")
         .addLinks(WebFingerLink.builder()
-          .rel("http://payid.org/rel/discovery/1.0")
+          .rel(PAY_ID_URL)
           .template(payIDUrl + "/{acctpart}")
           .build())
         .build();
@@ -139,50 +148,50 @@ public class AutoModePayIDResolverTest {
     verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
     assertThat(httpUrl.toString()).isEqualTo(payIDUrl + "/doug");
   }
-//
-//  /**
-//   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} which makes WebFinger requests to a server
-//   * that doesn't exist or does not have a mapping for the PayID returns {@link Optional#empty()}.
-//   *
-//   * @throws IOException if the mock response we want is not serializable.
-//   */
-//  @Test
-//  public void resolvePayIDUrlNoJrdAvailable() {
-//    doReturn(Optional.empty()).when(autoModePayIDResolver).executeForJrdString(any());
-//
-//    PayID payID = PayID.of("payid:doug$payid.ml");
-//    Optional<HttpUrl> httpUrl = autoModePayIDResolver.resolvePayIDUrl(payID);
-//    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
-//    assertThat(httpUrl).isEmpty();
-//  }
-//
-//  /**
-//   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
-//   * returns a JRD which has no link with rel="http://payid.org/rel/discovery/1.0" returns {@link Optional#empty()}.
-//   *
-//   * @throws IOException if the mock response we want is not serializable.
-//   */
-//  @Test
-//  public void resolvePayIDUrlJrdAvailableButNoMatchingLink() throws JsonProcessingException {
-//    String payIDUrl = "https://doug.purdy.im/pay";
-//    WebFingerJrd webFingerResponse = WebFingerJrd.builder()
-//        .subject("payid.ml")
-//        .addLinks(WebFingerLink.builder()
-//          .rel("http://this.is.not.the.rel.you.are.looking.for")
-//          .type("application/payid-uri-template")
-//          .href(payIDUrl + "/{acctpart}")
-//          .build())
-//        .build();
-//
-//
-//    PayID payID = PayID.of("payid:doug$payid.ml");
-//
-//    doReturn(Optional.of(objectMapper.writeValueAsString(webFingerResponse)))
-//        .when(autoModePayIDResolver)
-//        .executeForJrdString(any());
-//
-//    Optional<HttpUrl> httpUrl = autoModePayIDResolver.resolvePayIDUrl(payID);
-//    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
-//    assertThat(httpUrl).isEmpty();
-//  }
+
+  /**
+   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} which makes WebFinger requests to a server
+   * that doesn't exist or does not have a mapping for the PayID returns {@link Optional#empty()}.
+   *
+   * @throws IOException if the mock response we want is not serializable.
+   */
+  @Test
+  public void resolvePayIDUrlNoJrdAvailable() {
+    doThrow(PayIDDiscoveryException.class).when(autoModePayIDResolver).executeForJrdString(any());
+
+    PayID payID = PayID.of("payid:doug$payid.ml");
+
+    expectedException.expect(PayIDDiscoveryException.class);
+    autoModePayIDResolver.resolvePayIDUrl(payID);
+    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
+  }
+
+  /**
+   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
+   * returns a JRD which has no link with rel="http://payid.org/rel/discovery/1.0" returns {@link Optional#empty()}.
+   *
+   * @throws IOException if the mock response we want is not serializable.
+   */
+  @Test
+  public void resolvePayIDUrlJrdAvailableButNoMatchingLink() throws JsonProcessingException {
+    String payIDUrl = "https://doug.purdy.im/pay";
+    WebFingerJrd webFingerResponse = WebFingerJrd.builder()
+        .subject("payid.ml")
+        .addLinks(WebFingerLink.builder()
+          .rel("http://this.is.not.the.rel.you.are.looking.for")
+          .href(payIDUrl + "/{acctpart}")
+          .build())
+        .build();
+
+
+    PayID payID = PayID.of("payid:doug$payid.ml");
+
+    doReturn(objectMapper.writeValueAsString(webFingerResponse))
+        .when(autoModePayIDResolver)
+        .executeForJrdString(any());
+
+    expectedException.expect(PayIDDiscoveryException.class);
+    autoModePayIDResolver.resolvePayIDUrl(payID);
+    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
+  }
 }
