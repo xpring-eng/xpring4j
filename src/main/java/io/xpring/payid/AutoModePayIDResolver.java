@@ -4,6 +4,7 @@ import static okhttp3.CookieJar.NO_COOKIES;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.Http;
 import com.google.common.net.HttpHeaders;
 import io.xpring.common.ObjectMapperFactory;
 import okhttp3.ConnectionSpec;
@@ -82,16 +83,23 @@ public class AutoModePayIDResolver implements PayIDResolver {
   public HttpUrl resolvePayIDUrl(PayID payID) throws PayIDDiscoveryException {
     WebFingerLink webFingerLink = this.getWebFingerPayIDLink(payID);
 
+    // TODO: Limit 5 retries.
     // Recurse through webfinger href responses until either the webfinger redirect doesn't exist or until
     // we get a non webfinger href URL, in which case we can infer that the href is a PayID server URL.
     while (webFingerLink.rel().equals(DISCOVERY_URL)) {
-      HttpUrl nextWebfingerUrl = expandUrlTemplate(webFingerLink, payID);
-      webFingerLink = this.getWebFingerPayIDLink(nextWebfingerUrl);
+      String discoveryUrl = webFingerLink.href()
+        .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN,
+          "PayID Discovery delegation was improperly configured. Discovery URL missing href."));
+      webFingerLink = this.getWebFingerPayIDLink(HttpUrl.parse(discoveryUrl));
     }
 
     // On the last webfinger call, the webfinger href was invalid or doesnt exist, in which case we should fall back
     // to manual mode resolution.
-    return expandUrlTemplate(webFingerLink, payID);
+    String payIDUriTemplate = webFingerLink.template()
+      .orElse(webFingerLink.href()
+        .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "no href or template found."))
+      );
+    return expandUrlTemplate(payIDUriTemplate, payID);
   }
 
   /**
@@ -101,20 +109,11 @@ public class AutoModePayIDResolver implements PayIDResolver {
    * @param payID A {@link PayID} which should be used to expand the template.
    * @return The href if it exists, or the expanded template.
    */
-  protected HttpUrl expandUrlTemplate(WebFingerLink webFingerLink, PayID payID) {
-    String expandedUrl = webFingerLink.href()
-      .orElseGet(() -> {
-        String template = webFingerLink.template()
-          .orElseThrow(() -> new PayIDDiscoveryException(
-            PayIDDiscoveryExceptionType.UNKNOWN,
-            "WebfingerLink has neither an href or template field."
-          ));
-        UriTemplate uriTemplate = new UriTemplate(template);
-        URI expandedTemplate = uriTemplate.expand(payID.account());
-        return expandedTemplate.toString();
-      });
-
-    return HttpUrl.parse(expandedUrl);
+  // TODO: replace UriTemplate with simple simple template parser.
+  protected HttpUrl expandUrlTemplate(String urlTemplate, PayID payID) {
+    UriTemplate uriTemplate = new UriTemplate(urlTemplate);
+    URI expandedTemplate = uriTemplate.expand(payID.account());
+    return HttpUrl.parse(expandedTemplate.toString());
   }
 
   /**
@@ -149,8 +148,9 @@ public class AutoModePayIDResolver implements PayIDResolver {
       String jrdString = this.executeForJrdString(webfingerUrl);
       WebFingerJrd typedJrd = objectMapper.readValue(jrdString, WebFingerJrd.class);
 
+      // TODO: PAY_ID_URL should take precedence over DISCOVERY_URL
       return typedJrd.links().stream()
-        .filter(link -> link.rel().equals(DISCOVERY_URL) || link.rel().equals(PAY_ID_URL)) // TODO: Can a JRD have both a Discovery URL and a PayIDUrl? Which should take precedence?
+        .filter(link -> link.rel().equals(DISCOVERY_URL) || link.rel().equals(PAY_ID_URL))
         .findFirst()
         .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "No acceptable link rel found."));
     } catch (JsonProcessingException e) {
@@ -173,36 +173,43 @@ public class AutoModePayIDResolver implements PayIDResolver {
   // TODO: Throw some better errors here
   protected String executeForJrdString(HttpUrl webfingerUrl) {
     Request webfingerRequest = new Request.Builder()
-        .header(HttpHeaders.CONTENT_TYPE, "application/json")
-        .header(HttpHeaders.ACCEPT, "application/json")
-        .url(webfingerUrl)
-        .get()
-        .build();
+      .header(HttpHeaders.CONTENT_TYPE, "application/json")
+      .header(HttpHeaders.ACCEPT, "application/json")
+      .url(webfingerUrl)
+      .get()
+      .build();
 
     try (Response response = this.okHttpClient.newCall(webfingerRequest).execute()) {
-      // Auto mode not enabled
-      if (response.code() >= 400 && response.code() < 500) {
-        logger.warn("Client error occurred during WebFinger request. code = {}", response.code());
-        throw new PayIDDiscoveryException(
-          PayIDDiscoveryExceptionType.UNKNOWN,
-          "WebFinger server returned Client Error code " + response.code()
-        );
-      }
 
-      if (response.code() >= 500) {
-        logger.warn("Server error occurred during WebFinger request. code = {}", response.code());
-        throw new PayIDDiscoveryException(
-          PayIDDiscoveryExceptionType.UNKNOWN,
-          "WebFinger server returned Server Error code " + response.code()
-        );
-      }
+      if (response.code() == 200) {
+        ResponseBody body = response.body();
+        if (body == null) {
+          throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "WebFinger server didn't return a JRD.");
+        }
 
-      ResponseBody body = response.body();
-      if (body == null) {
-        throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "WebFinger server didn't return a JRD.");
+        return body.string();
+      } else {
+        // Auto mode not enabled
+        if (response.code() >= 400 && response.code() < 500) {
+          logger.warn("Client error occurred during WebFinger request. code = {}", response.code());
+          throw new PayIDDiscoveryException(
+            PayIDDiscoveryExceptionType.UNKNOWN,
+            "WebFinger server returned Client Error code " + response.code()
+          );
+        } else if (response.code() >= 500) {
+          logger.warn("Server error occurred during WebFinger request. code = {}", response.code());
+          throw new PayIDDiscoveryException(
+            PayIDDiscoveryExceptionType.UNKNOWN,
+            "WebFinger server returned Server Error code " + response.code()
+          );
+        } else {
+          logger.warn("Server error occurred during WebFinger request. code = {}", response.code());
+          throw new PayIDDiscoveryException(
+            PayIDDiscoveryExceptionType.UNKNOWN,
+            "WebFinger server returned Server Error code " + response.code()
+          );
+        }
       }
-
-      return body.string();
     } catch (IOException e) {
       logger.warn("Failed to execute WebFingerRequest. message: {}", e.getMessage());
       throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "Failed to execute WebFinger request.");

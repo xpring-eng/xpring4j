@@ -2,17 +2,16 @@ package io.xpring.payid;
 
 import okhttp3.HttpUrl;
 
-// TODO: Rename this class to something better
-public class PayIDResolverImpl implements PayIDResolver {
+public class DefaultPayIDResolver implements PayIDResolver {
 
   private PayIDResolver autoModePayIDResolver;
   private PayIDResolver manualModePayIDResolver;
 
-  public PayIDResolverImpl() {
+  public DefaultPayIDResolver() {
     this(new AutoModePayIDResolver(), new ManualModePayIDResolver());
   }
 
-  public PayIDResolverImpl(PayIDResolver autoModePayIDResolver, PayIDResolver manualModePayIDResolver) {
+  public DefaultPayIDResolver(PayIDResolver autoModePayIDResolver, PayIDResolver manualModePayIDResolver) {
     this.autoModePayIDResolver = autoModePayIDResolver;
     this.manualModePayIDResolver = manualModePayIDResolver;
   }
