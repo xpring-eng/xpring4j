@@ -31,6 +31,8 @@ public class AutoModePayIDResolver implements PayIDResolver {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  protected static final String DISCOVERY_URL = "http://payid.org/rel/discovery/1.0";
+  protected static final String PAY_ID_URL = "http://payid.org/rel/payid/1.0";
   protected static final String WEBFINGER_URL = ".well-known/webfinger";
   private OkHttpClient okHttpClient;
   private ObjectMapper objectMapper;
@@ -76,31 +78,39 @@ public class AutoModePayIDResolver implements PayIDResolver {
    *          if there is no WebFinger server running at the PayID's host URL.
    */
   @Override
-  public Optional<HttpUrl> resolveHttpUrl(PayID payID) {
-    try {
-      Optional<WebFingerLink> webFingerLink = this.getWebFingerPayIDLink(payID);
+  public HttpUrl resolvePayIDUrl(PayID payID) {
+    WebFingerLink webFingerLink = this.getWebFingerPayIDLink(payID);
 
-      // Recurse through webfinger href responses until either the webfinger redirect doesn't exist or until
-      // we get a non webfinger href URL, in which case we can infer that the href is a PayID server URL.
-      while (webFingerLink.isPresent() && webFingerLink.get().href().endsWith(WEBFINGER_URL)) {
-        webFingerLink = this.getWebFingerPayIDLink(HttpUrl.parse(webFingerLink.get().href()));
-      }
-
-      // On the last webfinger call, the webfinger href was invalid or doesnt exist, in which case we should fall back
-      // to manual mode resolution.
-      Optional<WebFingerLink> finalWebFingerLink = webFingerLink;
-      return finalWebFingerLink
-        .map(link -> {
-          // webfinger href for payid servers may or may not be templatized.  This should expand the template if it is a
-          // template, otherwise will just return the href.
-          UriTemplate uriTemplate = new UriTemplate(link.href());
-          URI expandedTemplate = uriTemplate.expand(payID.account());
-          return HttpUrl.parse(expandedTemplate.toString());
-        });
-    } catch (JsonProcessingException e) {
-      logger.warn("Unable to deserialize WebFinger JRD! message: {}", e.getMessage());
-      return Optional.empty();
+    // Recurse through webfinger href responses until either the webfinger redirect doesn't exist or until
+    // we get a non webfinger href URL, in which case we can infer that the href is a PayID server URL.
+    while (webFingerLink.rel().equals(DISCOVERY_URL)) {
+      HttpUrl nextWebfingerUrl = expandUrlTemplate(webFingerLink, payID);
+      webFingerLink = this.getWebFingerPayIDLink(nextWebfingerUrl);
     }
+
+    // On the last webfinger call, the webfinger href was invalid or doesnt exist, in which case we should fall back
+    // to manual mode resolution.
+    return expandUrlTemplate(webFingerLink, payID);
+  }
+
+  /**
+   * Expands a {@link WebFingerLink#template()} if no href exists, otherwise returns the href.
+   *
+   * @param webFingerLink A {@link WebFingerLink} with either an href or template.
+   * @param payID A {@link PayID} which should be used to expand the template.
+   * @return The href if it exists, or the expanded template.
+   */
+  protected HttpUrl expandUrlTemplate(WebFingerLink webFingerLink, PayID payID) {
+    String expandedUrl = webFingerLink.href()
+      .orElseGet(() -> {
+        String template = webFingerLink.template()
+          .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, ""));
+        UriTemplate uriTemplate = new UriTemplate(template);
+        URI expandedTemplate = uriTemplate.expand(payID.account());
+        return expandedTemplate.toString();
+      });
+
+    return HttpUrl.parse(expandedUrl);
   }
 
   /**
@@ -111,7 +121,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
    *          server was unreachable or did not provide an appropriate link.
    * @throws JsonProcessingException if the WebFinger response could not be parsed.
    */
-  protected Optional<WebFingerLink> getWebFingerPayIDLink(PayID payID) throws JsonProcessingException {
+  protected WebFingerLink getWebFingerPayIDLink(PayID payID) {
     HttpUrl webfingerUrl = new HttpUrl.Builder()
         .scheme("https")
         .host(payID.host())
@@ -130,16 +140,19 @@ public class AutoModePayIDResolver implements PayIDResolver {
    *          server was unreachable or did not provide an appropriate link.
    * @throws JsonProcessingException if the WebFinger response could not be parsed.
    */
-  protected Optional<WebFingerLink> getWebFingerPayIDLink(HttpUrl webfingerUrl) throws JsonProcessingException {
-    Optional<String> jrdString = this.executeForJrdString(webfingerUrl);
-    if (jrdString.isPresent()) {
-      WebFingerJrd typedJrd = objectMapper.readValue(jrdString.get(), WebFingerJrd.class);
-      return typedJrd.links().stream()
-        .filter(link -> link.rel().equals("http://payid.org/rel/discovery/1.0"))
-        .findFirst();
-    }
+  protected WebFingerLink getWebFingerPayIDLink(HttpUrl webfingerUrl) {
+    try {
+      String jrdString = this.executeForJrdString(webfingerUrl);
+      WebFingerJrd typedJrd = objectMapper.readValue(jrdString, WebFingerJrd.class);
 
-    return Optional.empty();
+      return typedJrd.links().stream()
+        .filter(link -> link.rel().equals(DISCOVERY_URL) || link.rel().equals(PAY_ID_URL))
+        .findFirst()
+        .orElseThrow(() -> null);  // TODO: throw somethin
+    } catch (JsonProcessingException e) {
+      logger.warn("Unable to deserialize WebFinger JRD! message: {}", e.getMessage());
+      throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "Unable to deserialize WebFinger JRD!");
+    }
   }
 
   /**
@@ -153,7 +166,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
    * @return A present {@link String} containing the JSON payload of the request response, or {@link Optional#empty()}
    *          if the request failed.
    */
-  protected Optional<String> executeForJrdString(HttpUrl webfingerUrl) {
+  protected String executeForJrdString(HttpUrl webfingerUrl) {
     Request webfingerRequest = new Request.Builder()
         .header(HttpHeaders.CONTENT_TYPE, "application/json")
         .header(HttpHeaders.ACCEPT, "application/json")
@@ -164,18 +177,18 @@ public class AutoModePayIDResolver implements PayIDResolver {
     try (Response response = this.okHttpClient.newCall(webfingerRequest).execute()) {
       // Auto mode not enabled
       if (response.code() >= 400 && response.code() <= 500) {
-        return Optional.empty();
+        throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "WebFinger server returned an exception.");
       }
 
       ResponseBody body = response.body();
       if (body == null) {
-        return Optional.empty();
+        throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "WebFinger server didn't return a JRD.");
       }
 
-      return Optional.of(body.string());
+      return body.string();
     } catch (IOException e) {
       logger.warn("Failed to execute WebFingerRequest. message: {}", e.getMessage());
-      return Optional.empty();
+      throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "Failed to execute WebFinger request.");
     }
   }
 

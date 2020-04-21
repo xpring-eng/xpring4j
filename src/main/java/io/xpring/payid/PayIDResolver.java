@@ -20,6 +20,6 @@ public interface PayIDResolver {
    * @throws PayIDDiscoveryException if the inputs were invalid or the PayID was unresolvable.
    * @see "https://github.com/xpring-eng/rfcs/blob/master/payid/src/spec/payid-discovery.md"
    */
-  Optional<HttpUrl> resolvePayIDUrl(PayID payID) throws PayIDDiscoveryException;
+  HttpUrl resolvePayIDUrl(PayID payID) throws PayIDDiscoveryException;
 
 }
