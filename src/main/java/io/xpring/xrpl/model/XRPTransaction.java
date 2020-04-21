@@ -6,6 +6,7 @@ import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,10 @@ public interface XRPTransaction {
    *
    * @return A byte array containing the hash value of another transaction.
    */
-  byte[] accountTransactionID();
+  @Value.Default
+  default byte[] accountTransactionID() {
+    return new byte[0];
+  };
 
   /**
    * The amount of XRP, in drops, to be destroyed as a cost for distributing this transaction to the network.
@@ -50,7 +54,7 @@ public interface XRPTransaction {
   /**
    * (Optional) set of bit-flags for this transaction.
    *
-   * @return An {@link Integer} representing the set of bit-flags for this transaction.
+   * @return An {@link Optional<Integer>} representing the set of bit-flags for this transaction.
    */
   Optional<Integer> flags();
 
@@ -58,7 +62,7 @@ public interface XRPTransaction {
    * (Optional; strongly recommended) Highest ledger index this transaction can appear in.
    * Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.
    *
-   * @return An {@link Integer} representing the highest ledger index this transaction can appear in.
+   * @return An {@link Optional<Integer>} representing the highest ledger index this transaction can appear in.
    */
   Optional<Integer> lastLedgerSequence();
 
@@ -67,7 +71,10 @@ public interface XRPTransaction {
    *
    * @return A {@link List} of {@link XRPMemo}s containing additional information for this transaction.
    */
-  List<XRPMemo> memos();
+  @Value.Default
+  default List<XRPMemo> memos() {
+    return new ArrayList<XRPMemo>();
+  };
 
   /**
    * The sequence number of the account sending the transaction.
@@ -84,7 +91,10 @@ public interface XRPTransaction {
    * @return An optional {@link List} of {@link XRPSigner}s that represent a multi-signature which
    *          authorizes this transaction.
    */
-  List<XRPSigner> signers();
+  @Value.Default
+  default List<XRPSigner> signers() {
+    return new ArrayList<XRPSigner>();
+  };
 
   /**
    * Hex representation of the public key that corresponds to the private key used to sign this transaction.
@@ -99,7 +109,7 @@ public interface XRPTransaction {
    * transaction is made.
    * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
    *
-   * @return An {@link Integer} representing the source tag of this transaction.
+   * @return An {@link Optional<Integer>} representing the source tag of this transaction.
    */
   Optional<Integer> sourceTag();
 

@@ -23,7 +23,7 @@ public interface XRPCurrencyAmount {
    * (Optional) An amount of XRP, specified in drops.
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
    *
-   * @return The {@link String} representation of an amount of XRP, specified in drops.
+   * @return The {@link Optional<String>} representation of an amount of XRP, specified in drops.
    */
   Optional<String> drops();
 
@@ -31,7 +31,7 @@ public interface XRPCurrencyAmount {
    * (Optional) An amount of an issued currency.
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
    *
-   * @return The {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
+   * @return The {@link Optional<XRPIssuedCurrency>} of this {@link XRPCurrencyAmount}.
    */
   Optional<XRPIssuedCurrency> issuedCurrency();
 
