@@ -21,7 +21,7 @@ public interface XRPPathElement {
    * (Optional) If present, this path step represents rippling through the specified address.
    * MUST NOT be provided if this path element specifies the currency or issuer fields.
    *
-   * @return A {@link String} representing the account of this {@link XRPPathElement}.
+   * @return An {@link Optional<String>} representing the account of this {@link XRPPathElement}.
    */
   Optional<String> account();
 
@@ -30,7 +30,7 @@ public interface XRPPathElement {
    * The currency specified indicates the new currency. MUST NOT be provided if this path
    * element specifies the account field.
    *
-   * @return The {@link XRPCurrency} of this {@link XRPPathElement}.
+   * @return The {@link Optional<XRPCurrency>} of this {@link XRPPathElement}.
    */
   Optional<XRPCurrency> currency();
 
@@ -41,7 +41,7 @@ public interface XRPPathElement {
    * indicates a path element that uses an order book between same-named currencies with different issuers.
    * MUST be omitted if the currency is XRP. MUST NOT be provided if this element specifies the account field.
    *
-   * @return A {@link String} representing the issuer of a new currency.
+   * @return An {@link Optional<String>} representing the issuer of a new currency.
    */
   Optional<String> issuer();
 
