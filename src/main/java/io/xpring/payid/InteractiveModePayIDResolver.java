@@ -4,7 +4,6 @@ import static okhttp3.CookieJar.NO_COOKIES;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.Http;
 import com.google.common.net.HttpHeaders;
 import io.xpring.common.ObjectMapperFactory;
 import okhttp3.ConnectionSpec;
@@ -15,10 +14,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.util.UriTemplate;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -29,7 +26,7 @@ import java.util.Optional;
  * @see "https://github.com/xpring-eng/rfcs/blob/master/payid/src/spec/payid-discovery.md#automated-mode"
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class AutoModePayIDResolver implements PayIDResolver {
+public class InteractiveModePayIDResolver implements PayIDResolver {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -45,7 +42,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
   /**
    * No-args constructor.
    */
-  public AutoModePayIDResolver() {
+  public InteractiveModePayIDResolver() {
     this(newOkHttpClient(), ObjectMapperFactory.create());
   }
 
@@ -54,7 +51,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
    *
    * @param okHttpClient An {@link OkHttpClient} to be used by this resolver.
    */
-  public AutoModePayIDResolver(OkHttpClient okHttpClient) {
+  public InteractiveModePayIDResolver(OkHttpClient okHttpClient) {
     this(okHttpClient, ObjectMapperFactory.create());
   }
 
@@ -64,7 +61,7 @@ public class AutoModePayIDResolver implements PayIDResolver {
    * @param okHttpClient An {@link OkHttpClient} to be used by this resolver.
    * @param objectMapper An {@link ObjectMapper} to be used by this resolver.
    */
-  public AutoModePayIDResolver(OkHttpClient okHttpClient, ObjectMapper objectMapper) {
+  public InteractiveModePayIDResolver(OkHttpClient okHttpClient, ObjectMapper objectMapper) {
     this.okHttpClient = okHttpClient;
     this.objectMapper = objectMapper;
   }

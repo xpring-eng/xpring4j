@@ -1,8 +1,8 @@
 package io.xpring.payid;
 
-import static io.xpring.payid.AutoModePayIDResolver.DISCOVERY_URL;
-import static io.xpring.payid.AutoModePayIDResolver.PAY_ID_URL;
-import static io.xpring.payid.AutoModePayIDResolver.WEBFINGER_URL;
+import static io.xpring.payid.InteractiveModePayIDResolver.DISCOVERY_URL;
+import static io.xpring.payid.InteractiveModePayIDResolver.PAY_ID_URL;
+import static io.xpring.payid.InteractiveModePayIDResolver.WEBFINGER_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class AutoModePayIDResolverTest {
+public class InteractiveModePayIDResolverTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private AutoModePayIDResolver autoModePayIDResolver;
+  private InteractiveModePayIDResolver interactiveModePayIDResolver;
   private ObjectMapper objectMapper;
 
   /**
@@ -40,11 +40,11 @@ public class AutoModePayIDResolverTest {
   public void setUp() {
     initMocks(this);
     objectMapper = ObjectMapperFactory.create();
-    autoModePayIDResolver = Mockito.spy(new AutoModePayIDResolver());
+    interactiveModePayIDResolver = Mockito.spy(new InteractiveModePayIDResolver());
   }
 
   /**
-   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
+   * Test that a call to {@link InteractiveModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
    * returns a PayID URL resolves correctly.
    *
    * @throws IOException if the mock response we want is not serializable.
@@ -64,16 +64,16 @@ public class AutoModePayIDResolverTest {
     PayID payID = PayID.of("payid:doug$payid.ml");
 
     doReturn(objectMapper.writeValueAsString(webFingerResponse))
-        .when(autoModePayIDResolver)
+        .when(interactiveModePayIDResolver)
         .executeForJrdString(any());
 
-    HttpUrl httpUrl = autoModePayIDResolver.resolvePayIDUrl(payID);
-    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
+    HttpUrl httpUrl = interactiveModePayIDResolver.resolvePayIDUrl(payID);
+    verify(interactiveModePayIDResolver, times(1)).executeForJrdString(any());
     assertThat(httpUrl.toString()).isEqualTo(payIDUrl);
   }
 
   /**
-   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
+   * Test that a call to {@link InteractiveModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
    * returns another WebFinger URL correctly recurses to a WebFinger server which returns a PayID URL, which is resolved
    * correctly.
    *
@@ -109,19 +109,19 @@ public class AutoModePayIDResolverTest {
         .build();
 
     doReturn(objectMapper.writeValueAsString(firstWebFingerResponse))
-        .when(autoModePayIDResolver)
+        .when(interactiveModePayIDResolver)
         .executeForJrdString(firstWebfingerUrl);
     doReturn(objectMapper.writeValueAsString(secondWebFingerResponse))
-        .when(autoModePayIDResolver)
+        .when(interactiveModePayIDResolver)
         .executeForJrdString(HttpUrl.parse(firstPayIDUrl));
 
-    HttpUrl httpUrl = autoModePayIDResolver.resolvePayIDUrl(payID);
-    verify(autoModePayIDResolver, times(2)).executeForJrdString(any());
+    HttpUrl httpUrl = interactiveModePayIDResolver.resolvePayIDUrl(payID);
+    verify(interactiveModePayIDResolver, times(2)).executeForJrdString(any());
     assertThat(httpUrl.toString()).isEqualTo(ultimatePayIDUrl);
   }
 
   /**
-   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
+   * Test that a call to {@link InteractiveModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
    * returns a PayID URL with a URL template resolves correctly and expands the template with the account part of
    * the PayID.
    *
@@ -141,33 +141,33 @@ public class AutoModePayIDResolverTest {
     PayID payID = PayID.of("payid:doug$payid.ml");
 
     doReturn(objectMapper.writeValueAsString(webFingerResponse))
-        .when(autoModePayIDResolver)
+        .when(interactiveModePayIDResolver)
         .executeForJrdString(any());
 
-    HttpUrl httpUrl = autoModePayIDResolver.resolvePayIDUrl(payID);
-    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
+    HttpUrl httpUrl = interactiveModePayIDResolver.resolvePayIDUrl(payID);
+    verify(interactiveModePayIDResolver, times(1)).executeForJrdString(any());
     assertThat(httpUrl.toString()).isEqualTo(payIDUrl + "/doug");
   }
 
   /**
-   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} which makes WebFinger requests to a server
+   * Test that a call to {@link InteractiveModePayIDResolver#resolvePayIDUrl(PayID)} which makes WebFinger requests to a server
    * that doesn't exist or does not have a mapping for the PayID returns {@link Optional#empty()}.
    *
    * @throws IOException if the mock response we want is not serializable.
    */
   @Test
   public void resolvePayIDUrlNoJrdAvailable() {
-    doThrow(PayIDDiscoveryException.class).when(autoModePayIDResolver).executeForJrdString(any());
+    doThrow(PayIDDiscoveryException.class).when(interactiveModePayIDResolver).executeForJrdString(any());
 
     PayID payID = PayID.of("payid:doug$payid.ml");
 
     expectedException.expect(PayIDDiscoveryException.class);
-    autoModePayIDResolver.resolvePayIDUrl(payID);
-    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
+    interactiveModePayIDResolver.resolvePayIDUrl(payID);
+    verify(interactiveModePayIDResolver, times(1)).executeForJrdString(any());
   }
 
   /**
-   * Test that a call to {@link AutoModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
+   * Test that a call to {@link InteractiveModePayIDResolver#resolvePayIDUrl(PayID)} with a mocked WebFinger server which
    * returns a JRD which has no link with rel="http://payid.org/rel/discovery/1.0" returns {@link Optional#empty()}.
    *
    * @throws IOException if the mock response we want is not serializable.
@@ -187,11 +187,11 @@ public class AutoModePayIDResolverTest {
     PayID payID = PayID.of("payid:doug$payid.ml");
 
     doReturn(objectMapper.writeValueAsString(webFingerResponse))
-        .when(autoModePayIDResolver)
+        .when(interactiveModePayIDResolver)
         .executeForJrdString(any());
 
     expectedException.expect(PayIDDiscoveryException.class);
-    autoModePayIDResolver.resolvePayIDUrl(payID);
-    verify(autoModePayIDResolver, times(1)).executeForJrdString(any());
+    interactiveModePayIDResolver.resolvePayIDUrl(payID);
+    verify(interactiveModePayIDResolver, times(1)).executeForJrdString(any());
   }
 }

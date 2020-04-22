@@ -8,7 +8,7 @@ public class DefaultPayIDResolver implements PayIDResolver {
   private PayIDResolver manualModePayIDResolver;
 
   public DefaultPayIDResolver() {
-    this(new AutoModePayIDResolver(), new ManualModePayIDResolver());
+    this(new InteractiveModePayIDResolver(), new ManualModePayIDResolver());
   }
 
   public DefaultPayIDResolver(PayIDResolver autoModePayIDResolver, PayIDResolver manualModePayIDResolver) {
