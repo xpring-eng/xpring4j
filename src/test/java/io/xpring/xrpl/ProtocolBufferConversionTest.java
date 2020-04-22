@@ -361,7 +361,7 @@ public class ProtocolBufferConversionTest {
     XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
 
     // THEN the deliveredAmount field converted correctly to a drops amount.
-    assertThat(xrpTransaction.deliveredAmount()).isEqualTo(FakeXRPProtobufs.testDeliveredDrops);
+    assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(Long.toString(FakeXRPProtobufs.testDeliveredDrops));
   }
 
   @Test
@@ -373,7 +373,7 @@ public class ProtocolBufferConversionTest {
     XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
 
     // THEN the deliveredAmount field converted correctly to an issued currency value.
-    assertThat(xrpTransaction.deliveredAmount()).isEqualTo(FakeXRPProtobufs.testIssuedCurrencyValue);
+    assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(FakeXRPProtobufs.testIssuedCurrencyValue);
   }
 
   @Test
