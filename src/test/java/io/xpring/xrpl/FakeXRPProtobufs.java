@@ -130,7 +130,7 @@ public class FakeXRPProtobufs {
   static Integer testSourceTag = 6;
   static Integer testLastLedgerSequence = 5;
   static Integer testTimestamp = 0; // expected to convert to a Unix time of 946684800, the beginning of Ripple epoch
-  static Integer expectedTimestamp = 946684800;
+  static Long expectedTimestamp = 946684800L;
 
   static ByteString testTransactionHash;
 
