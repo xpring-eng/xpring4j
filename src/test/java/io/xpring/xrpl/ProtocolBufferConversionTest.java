@@ -353,7 +353,7 @@ public class ProtocolBufferConversionTest {
   }
 
   @Test
-  public void convertPaymentTransactionWithXRPDeliveredAmountTest() {
+  public void convertPaymentTransactionWithXrpDeliveredAmountTest() {
     // GIVEN a GetTransactionResponse protocol buffer containing a transaction of XRP.
     GetTransactionResponse getTransactionResponseProto = FakeXRPProtobufs.getTransactionResponsePaymentXRP;
 
