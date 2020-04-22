@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Check;
 
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ abstract class AbstractPayID implements PayID {
   // per RFC-3986.
 
   // ACCOUNT (allowed-chars)
-  private static final String ALLOWED_ACCOUNT_CHARS = UNRESERVED + SUB_DELIMS + PERCENT;
+  private static final String ALLOWED_ACCOUNT_CHARS = UNRESERVED + SUB_DELIMS + PERCENT + "@:";
   private static final String ALLOWED_ACCOUNT_CHARS_REGEX = "^([" + ALLOWED_ACCOUNT_CHARS + "]+)*$";
 
   // HOST (allowed-chars)

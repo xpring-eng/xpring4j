@@ -22,6 +22,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")

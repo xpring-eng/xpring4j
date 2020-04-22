@@ -49,44 +49,29 @@ public interface PayID {
     } else {
       throw new IllegalArgumentException(format("PayID `%s` must start with the 'payid:' scheme", value));
     }
-
     if (!value.contains("$")) {
       throw new IllegalArgumentException(format("PayID `%s` must contain a $", value));
     } else {
       Preconditions
         .checkArgument(value.length() > 6, format("PayID `%s` must specify a valid account and host", value));
     }
-
-    // Ensure no more than a single dollar-sign ($) without using a library.
-    // See https://stackoverflow.com/a/35242882
-    int numDollarSigns = new StringTokenizer(" " + value + " ", "$").countTokens() - 1;
-    Preconditions.checkArgument(numDollarSigns == 1,
-        format("PayID `%s` may only contain a single dollar-sign. All other dollar-signs must be percent-encoded.",
-          value));
     Preconditions.checkArgument(!value.startsWith("%"),
-        format("PayID `%s` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
-          + "A PayID may not start with a percent-encoded value.", value));
-
-    final String[] parts = value.split("\\$");
-
-    String account = parts[0];
-    String host = parts[1];
-
+      format("PayID `%s` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
+        + "A PayID may not start with a percent-encoded value.", value));
+    int lastDollar = value.lastIndexOf("$");
+    String account = value.substring(0, lastDollar);
+    String host = value.substring(lastDollar + 1);
     // NORMALIZATION: Capitalization
     account = account.toLowerCase(Locale.ENGLISH);
     host = host.toLowerCase(Locale.ENGLISH);
-
     // NORMALIZATION: Percent-encoding
     account = upperCasePercentEncoded(account);
     host = upperCasePercentEncoded(host);
-
     final ImmutablePayID.Builder builder = builder();
     if (account.length() > 0) {
       builder.account(account);
     }
-
     builder.host(host);
-
     return builder.build();
   }
 

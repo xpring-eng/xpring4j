@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -107,23 +109,51 @@ public class InteractiveModePayIDResolver implements PayIDResolver {
     WebFingerLink finalWebFingerLink = webFingerLink;
     String payIDUriTemplate = webFingerLink.template()
       .orElseGet(() -> finalWebFingerLink.href()
-        .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "no href or template found."))
+        .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.INVALID_RESPONSE, "no href or template found."))
       );
     return expandUrlTemplate(payIDUriTemplate, payID);
   }
 
   /**
-   * Expands a urlTemplate with a simple format of scheme://host/{acctpart} by replacing {acctpart} with the PayID
-   * account. The PayID Discovery RFC is very specific about the format of templates, therefore this simple
-   * replacement will always suffice for templates returned by a WebFinger query.
+   * Expands a {@link WebFingerLink#template()}} if no href exists, otherwise returns the href.
    *
-   * @param urlTemplate A {@link String} containing a URL template.
-   * @param payID A {@link PayID} which should be used to expand the template.
-   * @return The expanded template.
+   * @param urlTemplate A {@link String} with either an href or template.
+   * @param payID       A {@link PayID} which should be used to expand the template.
+   *
+   * @return The href if it exists, or the expanded template.
    */
   protected HttpUrl expandUrlTemplate(String urlTemplate, PayID payID) {
-    String expandedTemplate = urlTemplate.replace(TEMPLATE_ACCT_PART, payID.account());
-    return HttpUrl.parse(expandedTemplate);
+    // If `{acctpart}` is in query --> %-encode the account before putting into URL
+    // else
+    String accountToUse;
+    if (this.inQuery(urlTemplate)) {
+      try {
+        // TODO: Best way to Percent encode strings??
+        accountToUse = URLEncoder.encode(payID.account(), "UTF-8").replaceAll(" ", "%20");
+      } catch (UnsupportedEncodingException e) {
+        accountToUse = payID.account();
+      }
+    } else {
+      accountToUse = payID.account();
+    }
+
+    String expandedTemplate = urlTemplate.replace(TEMPLATE_ACCT_PART, accountToUse);
+    HttpUrl parsedUrl = HttpUrl.parse(expandedTemplate);
+    HttpUrl.Builder returnable = new HttpUrl.Builder()
+      .scheme("https")
+      .host(parsedUrl.host())
+      .fragment(parsedUrl.fragment());
+    // alice&bob --> acct
+    parsedUrl.queryParameterNames().forEach(queryParamName ->
+      returnable.addQueryParameter(queryParamName, parsedUrl.queryParameter(queryParamName))
+    );
+    parsedUrl.pathSegments().forEach(returnable::addPathSegment);
+    return returnable.build();
+  }
+  private boolean inQuery(String urlTemplate) {
+    HttpUrl parsedTemplate = HttpUrl.parse(urlTemplate);
+    // TODO: parse query params and look for encoded template.
+    return !parsedTemplate.pathSegments().contains(TEMPLATE_ACCT_PART);
   }
 
   /**
@@ -163,12 +193,12 @@ public class InteractiveModePayIDResolver implements PayIDResolver {
           .filter(link -> link.rel().equals(DISCOVERY_URL))
           .findFirst()
           .orElseThrow(() -> new PayIDDiscoveryException(
-            PayIDDiscoveryExceptionType.UNKNOWN,
+            PayIDDiscoveryExceptionType.INVALID_RESPONSE,
             "No acceptable link rel found.")
           ));
     } catch (JsonProcessingException e) {
       logger.warn("Unable to deserialize WebFinger JRD! message: {}", e.getMessage());
-      throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "Unable to deserialize WebFinger JRD!");
+      throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.INVALID_RESPONSE, "Unable to deserialize WebFinger JRD!");
     }
   }
 
@@ -183,7 +213,6 @@ public class InteractiveModePayIDResolver implements PayIDResolver {
    * @return A present {@link String} containing the JSON payload of the request response, or {@link Optional#empty()}
    *          if the request failed.
    */
-  // TODO: Throw some better errors here
   protected String executeForJrdString(HttpUrl webfingerUrl) {
     Request webfingerRequest = new Request.Builder()
       .header(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -193,39 +222,24 @@ public class InteractiveModePayIDResolver implements PayIDResolver {
       .build();
 
     try (Response response = this.okHttpClient.newCall(webfingerRequest).execute()) {
-
       if (response.code() == 200) {
         ResponseBody body = response.body();
         if (body == null) {
-          throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "WebFinger server didn't return a JRD.");
+          throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.INVALID_RESPONSE, "WebFinger server didn't return a JRD.");
         }
 
         return body.string();
       } else {
         // Auto mode not enabled
-        if (response.code() >= 400 && response.code() < 500) {
-          logger.warn("Client error occurred during WebFinger request. code = {}", response.code());
-          throw new PayIDDiscoveryException(
-            PayIDDiscoveryExceptionType.UNKNOWN,
-            "WebFinger server returned Client Error code " + response.code()
-          );
-        } else if (response.code() >= 500) {
-          logger.warn("Server error occurred during WebFinger request. code = {}", response.code());
-          throw new PayIDDiscoveryException(
-            PayIDDiscoveryExceptionType.UNKNOWN,
-            "WebFinger server returned Server Error code " + response.code()
-          );
-        } else {
-          logger.warn("Server error occurred during WebFinger request. code = {}", response.code());
-          throw new PayIDDiscoveryException(
-            PayIDDiscoveryExceptionType.UNKNOWN,
-            "WebFinger server returned Server Error code " + response.code()
-          );
-        }
+        logger.warn("Error occurred during WebFinger request. code = {}", response.code());
+        throw new PayIDDiscoveryException(
+          PayIDDiscoveryExceptionType.ERROR_RESPONSE,
+          "WebFinger server returned Error code " + response.code()
+        );
       }
     } catch (IOException e) {
       logger.warn("Failed to execute WebFingerRequest. message: {}", e.getMessage());
-      throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN, "Failed to execute WebFinger request.");
+      throw new PayIDDiscoveryException(PayIDDiscoveryExceptionType.REQUEST_FAILED, "Failed to execute WebFinger request.");
     }
   }
 

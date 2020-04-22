@@ -5,8 +5,8 @@ package io.xpring.payid;
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public enum PayIDDiscoveryExceptionType {
-  INVALID_PAY_ID,
-  URL_NOT_FOUND,
-  MAPPING_NOT_FOUND,
-  UNKNOWN
+  UNKNOWN,
+  INVALID_RESPONSE,
+  ERROR_RESPONSE,
+  REQUEST_FAILED
 }
