@@ -353,6 +353,30 @@ public class ProtocolBufferConversionTest {
   }
 
   @Test
+  public void convertPaymentTransactionWithXRPDeliveredAmountTest() {
+    // GIVEN a GetTransactionResponse protocol buffer containing a transaction of XRP.
+    GetTransactionResponse getTransactionResponseProto = FakeXRPProtobufs.getTransactionResponsePaymentXRP;
+
+    // WHEN the protocol buffer is converted to a native Java type.
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+
+    // THEN the deliveredAmount field converted correctly to a drops amount.
+    assertThat(xrpTransaction.deliveredAmount()).isEqualTo(FakeXRPProtobufs.testDeliveredDrops);
+  }
+
+  @Test
+  public void convertPaymentTransactionWithIssuedCurrencyDeliveredAmountTest() {
+    // GIVEN a GetTransactionResponse protocol buffer containing a transaction of issued currency.
+    GetTransactionResponse getTransactionResponseProto = FakeXRPProtobufs.getTransactionResponsePaymentIssued;
+
+    // WHEN the protocol buffer is converted to a native Java type.
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+
+    // THEN the deliveredAmount field converted correctly to an issued currency value.
+    assertThat(xrpTransaction.deliveredAmount()).isEqualTo(FakeXRPProtobufs.testIssuedCurrencyValue);
+  }
+
+  @Test
   public void convertPaymentTransactionWithOnlyMandatoryCommonFieldsSetTest() {
     // GIVEN a GetTransactionResponse protocol buffer containing a Transaction with only mandatory common fields set.
     GetTransactionResponse getTransactionResponseProto = FakeXRPProtobufs.getTransactionResponsePaymentMandatoryFields;

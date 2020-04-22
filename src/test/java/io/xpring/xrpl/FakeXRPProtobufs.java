@@ -27,6 +27,7 @@ import org.xrpl.rpc.v1.Common.TransactionSignature;
 import org.xrpl.rpc.v1.Currency;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
+import org.xrpl.rpc.v1.GetTransaction;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 import org.xrpl.rpc.v1.Memo;
@@ -348,20 +349,32 @@ public class FakeXRPProtobufs {
 
   // Meta with DeliveredAmount
   static XRPDropsAmount deliveredXRPDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDeliveredDrops).build();
-  static CurrencyAmount deliveredAmountCurrencyAmount = CurrencyAmount.newBuilder()
+
+  static CurrencyAmount deliveredAmountXRPCurrencyAmount = CurrencyAmount.newBuilder()
                                                                       .setXrpAmount(deliveredXRPDropsAmount)
                                                                       .build();
-  static Common.DeliveredAmount deliveredAmountProto = Common.DeliveredAmount.newBuilder()
-                                                                              .setValue(deliveredAmountCurrencyAmount)
-                                                                              .build();
 
-  static Meta metaProto = Meta.newBuilder().setDeliveredAmount(deliveredAmountProto).build();
+  static CurrencyAmount deliveredAmountIssuedCurrencyAmount = CurrencyAmount.newBuilder()
+                                                                          .setIssuedCurrencyAmount(issuedCurrencyAmount)
+                                                                          .build();
+
+  static Common.DeliveredAmount deliveredAmountXRPProto = Common.DeliveredAmount.newBuilder()
+                                                                            .setValue(deliveredAmountXRPCurrencyAmount)
+                                                                            .build();
+
+  static Common.DeliveredAmount deliveredAmountIssuedProto = Common.DeliveredAmount.newBuilder()
+                                                                          .setValue(deliveredAmountIssuedCurrencyAmount)
+                                                                          .build();
+
+  static Meta metaProtoXRP = Meta.newBuilder().setDeliveredAmount(deliveredAmountXRPProto).build();
+
+  static Meta metaProtoIssued = Meta.newBuilder().setDeliveredAmount(deliveredAmountIssuedProto).build();
 
   // GetTransactionResponse protos
   static GetTransactionResponse getTransactionResponsePaymentAllFields = GetTransactionResponse.newBuilder()
                                                                   .setTransaction(transactionWithAllFieldsSet)
                                                                   .setDate(dateProto)
-                                                                  .setMeta(metaProto)
+                                                                  .setMeta(metaProtoXRP)
                                                                   .setHash(testTransactionHash)
                                                                   .build();
 
@@ -370,6 +383,18 @@ public class FakeXRPProtobufs {
                                                             .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
                                                             .setHash(testTransactionHash)
                                                             .build();
+
+  static GetTransactionResponse getTransactionResponsePaymentXRP = GetTransactionResponse.newBuilder()
+                                                                            .setTransaction(transactionWithAllFieldsSet)
+                                                                            .setHash(testTransactionHash)
+                                                                            .setMeta(metaProtoXRP)
+                                                                            .build();
+
+  static GetTransactionResponse getTransactionResponsePaymentIssued = GetTransactionResponse.newBuilder()
+                                                                            .setTransaction(transactionWithAllFieldsSet)
+                                                                            .setHash(testTransactionHash)
+                                                                            .setMeta(metaProtoIssued)
+                                                                            .build();
 
   static GetTransactionResponse getTransactionResponseCheckCash = GetTransactionResponse.newBuilder()
                                                                 .setTransaction(checkCashTransactionWithCommonFieldsSet)
