@@ -151,7 +151,7 @@ public interface XRPTransaction {
    * @return An {@link Integer} representing the timestamp of the transaction.
    * @see "https://xrpl.org/basic-data-types.html#specifying-time"
    */
-  Optional<Integer> timestamp();
+  Optional<Long> timestamp();
 
   /**
    * (Optional, omitted for non-Payment transactions) The Currency Amount actually received by the Destination account.
@@ -238,9 +238,9 @@ public interface XRPTransaction {
     // Transactions report their timestamps since the Ripple Epoch, which is 946,684,800 seconds after
     // the unix epoch. Convert transaction's timestamp to a unix timestamp.
     // See: https://xrpl.org/basic-data-types.html#specifying-time
-    Optional<Integer> timestamp = Optional.empty();
+    Optional<Long> timestamp = Optional.empty();
     if (getTransactionResponse.hasDate()) {
-      Integer rippleTransactionDate = getTransactionResponse.getDate().getValue();
+      Long rippleTransactionDate = Integer.toUnsignedLong(getTransactionResponse.getDate().getValue());
       if (rippleTransactionDate != null) {
         timestamp = Optional.of(rippleTransactionDate + 946684800);
       }
@@ -254,7 +254,7 @@ public interface XRPTransaction {
           deliveredAmount = Optional.of(Long.toString(currencyAmountDelivered.getXrpAmount().getDrops()));
           break;
         case ISSUED_CURRENCY_AMOUNT:
-          deliveredAmount = Optional.of(Long.toString(currencyAmountDelivered.getXrpAmount().getDrops()));
+          deliveredAmount = Optional.of(currencyAmountDelivered.getIssuedCurrencyAmount().getValue());
           break;
         default: // there MUST be one of XRP drops or issued currency
           return null;
