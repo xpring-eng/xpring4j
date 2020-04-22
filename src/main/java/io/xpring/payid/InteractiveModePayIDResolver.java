@@ -84,13 +84,21 @@ public class InteractiveModePayIDResolver implements PayIDResolver {
     WebFingerLink webFingerLink = this.getWebFingerPayIDLink(payID);
 
     int retries = 1;
-    // Recurse through webfinger href responses until either the webfinger redirect doesn't exist or until
-    // we get a non webfinger href URL, in which case we can infer that the href is a PayID server URL.
-    while (webFingerLink.rel().equals(DISCOVERY_URL) && retries <= DISCOVERY_RETRIES) {
+    // Recurse through webfinger href responses until we get a non webfinger href URL,
+    // in which case we can infer that the href is a PayID server URL.
+    while (webFingerLink.rel().equals(DISCOVERY_URL)) {
+      if (retries >= DISCOVERY_RETRIES) {
+        throw new PayIDDiscoveryException(
+          PayIDDiscoveryExceptionType.UNKNOWN,
+          "Reached maximum number of WebFinger retries. Continuing will likely result in an infinite loop."
+        );
+      }
+
       String discoveryUrl = webFingerLink.href()
         .orElseThrow(() -> new PayIDDiscoveryException(PayIDDiscoveryExceptionType.UNKNOWN,
           "PayID Discovery delegation was improperly configured. Discovery URL missing href."));
       webFingerLink = this.getWebFingerPayIDLink(HttpUrl.parse(discoveryUrl));
+
       retries++;
     }
 
