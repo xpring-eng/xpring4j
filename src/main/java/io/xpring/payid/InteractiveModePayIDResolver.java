@@ -164,9 +164,12 @@ public class InteractiveModePayIDResolver implements PayIDResolver {
    *          server was unreachable or did not provide an appropriate link.
    */
   protected WebFingerLink getWebFingerPayIDLink(PayID payID) {
+    String[] hostAndPort = payID.host().split(":");
+
     HttpUrl webfingerUrl = new HttpUrl.Builder()
         .scheme("https")
-        .host(payID.host())
+        .host(hostAndPort[0])
+        .port(hostAndPort.length > 1 ? Integer.valueOf(hostAndPort[1]) : null)
         .addEncodedPathSegments(WEBFINGER_URL)
         .addQueryParameter("resource", payID.toString())
         .build();

@@ -5,7 +5,7 @@ package io.xpring.payid;
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public enum PayIDExceptionType {
-    INVALID_PAYMENT_POINTER,
+  INVALID_PAY_ID,
     MAPPING_NOT_FOUND,
     UNEXPECTED_RESPONSE,
     UNIMPLEMENTED,

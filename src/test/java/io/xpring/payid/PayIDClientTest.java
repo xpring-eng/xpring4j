@@ -37,7 +37,7 @@ public class PayIDClientTest {
   @Test
   public void testXRPAddressForPayIDSuccess() throws PayIDException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a match for the PayID.
-    String payID = "$localhost:" + wireMockRule.httpsPort() + "/georgewashington";
+    String payID = "payid:georgewashington$localhost:" + wireMockRule.httpsPort();
     PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
