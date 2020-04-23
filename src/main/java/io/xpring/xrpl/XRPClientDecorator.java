@@ -27,8 +27,10 @@ public interface XRPClientDecorator {
    * set.
    * See: https://xrpl.org/payment.html#payment-flags
    * </p>
+   *
    * @param transactionHash The hash of the transaction.
    * @return The status of the given transaction.
+   * @throws XRPException If the given inputs were invalid.
    */
   public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException;
 
@@ -51,6 +53,7 @@ public interface XRPClientDecorator {
    * Retrieve the latest validated ledger sequence on the XRP Ledger.
    *
    * @return A long representing the sequence of the most recently validated ledger.
+   * @throws XRPException If the given inputs were invalid.
    */
   int getLatestValidatedLedgerSequence() throws XRPException;
 
@@ -59,6 +62,7 @@ public interface XRPClientDecorator {
    *
    * @param transactionHash The hash of the transaction.
    * @return an {@link RawTransactionStatus} containing the raw transaction status.
+   * @throws XRPException If the given inputs were invalid.
    */
   RawTransactionStatus getRawTransactionStatus(String transactionHash) throws XRPException;
 
@@ -80,6 +84,7 @@ public interface XRPClientDecorator {
    *
    * @param address The address to check the existence of.
    * @return A boolean if the account is on the XRPLedger.
+   * @throws XRPException If the given inputs were invalid.
    */
   boolean accountExists(String address) throws XRPException;
 }

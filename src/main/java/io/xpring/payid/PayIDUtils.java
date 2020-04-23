@@ -29,7 +29,7 @@ public class PayIDUtils {
    * Parse the given Pay ID to a set of components.
    *
    * @param payID A PayID to parse.
-   * @return A boolean indicating whether this was a valid address.
+   * @return A set of components parsed from the PayID.
    */
   public static PayIDComponents parsePayID(String payID) {
     return javaScriptPayIDUtils.parsePayID(payID);

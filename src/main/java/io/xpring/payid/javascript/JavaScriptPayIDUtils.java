@@ -36,7 +36,7 @@ public class JavaScriptPayIDUtils {
    * Parse the given Pay ID to a set of components.
    *
    * @param payID A PayID to parse.
-   * @return A boolean indicating whether this was a valid address.
+   * @return A set of components parsed from the PayID.
    */
   public PayIDComponents parsePayID(String payID) {
     Objects.requireNonNull(payID);
@@ -52,5 +52,4 @@ public class JavaScriptPayIDUtils {
 
     return ImmutablePayIDComponents.builder().host(host).path(path).build();
   }
-
 }
