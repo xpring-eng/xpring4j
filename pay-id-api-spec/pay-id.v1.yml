@@ -2,6 +2,29 @@ info:
   title: PayID
   version: '0.0.1'
 paths:
+  /.well-known/webfinger:
+    parameters:
+      - name: resource
+        description: The PayID URI to perform PayID Discovery upon.
+        schema:
+          type: string
+        in: query
+        required: true
+    get:
+      responses:
+        '200':
+          content:
+          application/jrd+json:
+          schema:
+          $ref: '#/components/schemas/PayIdJrd'
+          examples:
+          PayID Discovery Payload:
+          value:
+          subject: 'payid:alice$example.com'
+          links:
+                    - rel: 'http://payid.org/rel/payid-url-template/1.0'
+          template: 'https://example.com/{acctpart}'
+      summary: Discover information about a PayID
   '/{path}':
     parameters:
       - schema:
@@ -322,4 +345,43 @@ components:
       required:
         - invoiceHash
         - transactionConfirmation
+    PayIdJrd:
+      title: Root Type for PayIdJrd
+      description: A PayID JRD
+      required:
+        - links
+      type: object
+      properties:
+        subject:
+          description: A PayID URI that identifies the PayID this JRD applies to.
+          type: string
+        links:
+          description: A collection of PayID JRD Links.
+          type: array
+          items:
+            $ref: '#/components/schemas/PayIdJrdLink'
+      example:
+        subject: 'payid:alice$example.com'
+        links:
+          - rel: 'http://payid.org/rel/payid-url-template/1.0'
+            template: 'https://example.com/{acctpart}'
+    PayIdJrdLink:
+      description: A link in a PayID Discovery payload.
+      required:
+        - rel
+      type: object
+      properties:
+        rel:
+          description: The 'rel' value of a PayID JRD Link.
+          type: string
+        href:
+          description: The 'href' propert in a PayID JRD Link.
+          type: string
+        template:
+          description: A PayID URI Template.
+          type: string
+      example:
+        rel: 'http://payid.org/rel/payid-url-template/1.0'
+        template: 'https://example.com/{acctpart}'
+
 openapi: '3.0.0'
