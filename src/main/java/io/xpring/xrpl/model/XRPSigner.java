@@ -20,17 +20,23 @@ public interface XRPSigner {
 
   /**
    * The address associated with this signature, as it appears in the SignerList.
+   *
+   * @return A {@link String} containing the address associated with this signature, as it appears in the SignerList.
    */
   String account();
 
   /**
    * The public key used to create this signature.
+   *
+   * @return A byte array containing the public key used to create this signature.
    */
   @Nullable
   byte[] signingPublicKey();
 
   /**
-   * A signature for this transaction, verifiable using the SigningPubKey.
+   * A signature for this transaction, verifiable using the {@code signingPublicKey()}.
+   *
+   * @return A byte array containing a signature for this transaction, verifiable using the {@code signingPublicKey()}.
    */
   @Nullable
   byte[] transactionSignature();

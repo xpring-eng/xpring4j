@@ -24,6 +24,8 @@ public interface XRPCurrencyAmount {
    * <p>
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
    * </p>
+   *
+   * @return The {@link String} representation of an amount of XRP, specified in drops.
    */
   @Nullable
   String drops();
@@ -33,6 +35,8 @@ public interface XRPCurrencyAmount {
    * <p>
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
    * </p>
+   *
+   * @return The {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
    */
   @Nullable
   XRPIssuedCurrency issuedCurrency();

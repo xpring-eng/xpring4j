@@ -116,21 +116,27 @@ public class Wallet {
   }
 
   /**
-   * The address of this `Wallet`.
+   * The address of this {@link Wallet}.
+   *
+   * @return The address of this {@link Wallet}.
    */
   public String getAddress() {
     return javaScriptWallet.getAddress();
   }
 
   /**
-   * The public key of this `Wallet`.
+   * The public key of this {@link Wallet}.
+   *
+   * @return The public key of this {@link Wallet}.
    */
   public String getPublicKey() {
     return javaScriptWallet.getPublicKey();
   }
 
   /**
-   * The private key of this `Wallet`.
+   * The private key of this {@link Wallet}.
+   *
+   * @return The private key of this {@link Wallet}.
    */
   public String getPrivateKey() {
     return javaScriptWallet.getPrivateKey();

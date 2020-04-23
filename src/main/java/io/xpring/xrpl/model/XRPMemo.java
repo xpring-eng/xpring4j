@@ -19,7 +19,9 @@ public interface XRPMemo {
   }
 
   /**
-   * Arbitrary hex value, conventionally containing the content of the memo.
+   * An arbitrary hex value, conventionally containing the content of the memo.
+   *
+   * @return A byte array of arbitrary hex value, conventionally containing the content of the memo.
    */
   @Nullable
   byte[] data();
@@ -29,6 +31,8 @@ public interface XRPMemo {
    * <p>
    * Conventionally containing information on how the memo is encoded, for example as a MIME type.
    * </p>
+   *
+   * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
   @Nullable
   byte[] format();
@@ -38,6 +42,8 @@ public interface XRPMemo {
    * <p>
    * Conventionally, a unique relation (according to RFC 5988) that defines the format of this memo.
    * </p>
+   *
+   * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
   @Nullable
   byte[] type();
