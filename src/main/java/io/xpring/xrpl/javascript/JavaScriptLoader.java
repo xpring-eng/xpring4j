@@ -6,6 +6,7 @@ import org.graalvm.polyglot.Value;
 
 import java.io.InputStreamReader;
 
+// TODO(keefertaylor): This class is used across Pay ID and XRP. Refactor to Common.
 /**
  * Provides helper functions for loading JavaScript.
  */
