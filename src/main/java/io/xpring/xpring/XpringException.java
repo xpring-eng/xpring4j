@@ -6,7 +6,7 @@ package io.xpring.xpring;
 public class XpringException extends Exception {
   /**
    * Input entities given to a Xpring component were attached to different networks.
-   * </p>
+   * <p>
    * For instance, this error may be thrown if a XpringClient was constructed with
    * a PayIDClient attached to Testnet and a XRPClient attached to Mainnet.
    * </p>
