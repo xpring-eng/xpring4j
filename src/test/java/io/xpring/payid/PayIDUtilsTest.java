@@ -12,7 +12,7 @@ public class PayIDUtilsTest {
     // GIVEN a payment pointer with a host and a path.
     String rawPaymentPointer = "$example.com/foo";
 
-    // WHEN it is parsed to a PaymentPointer object
+    // WHEN it is parsed to a components
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the host and path are set correctly.
@@ -25,7 +25,7 @@ public class PayIDUtilsTest {
     // GIVEN a payment pointer with a well known path.
     String rawPaymentPointer = "$example.com";
 
-    // WHEN it is parsed to a PaymentPointer object
+    // WHEN it is parsed to a components
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the host and path are set correctly.
@@ -41,7 +41,7 @@ public class PayIDUtilsTest {
     // WHEN it is parsed to a PaymentPointer object
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
-    // THEN the host and path are set correctly.
+    // WHEN it is parsed to a components
     assertEquals(paymentPointer.host(), "example.com");
     assertEquals(paymentPointer.path(), "/.well-known/pay");
   }
@@ -51,7 +51,7 @@ public class PayIDUtilsTest {
     // GIVEN a payment pointer without a '$' prefix
     String rawPaymentPointer = "example.com/";
 
-    // WHEN it is parsed to a PaymentPointer object
+    // WHEN it is parsed to a components
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the result is null
@@ -63,7 +63,7 @@ public class PayIDUtilsTest {
     // GIVEN a payment pointer without a host.
     String rawPaymentPointer = "$";
 
-    // WHEN it is parsed to a PaymentPointer object
+    // WHEN it is parsed to a components
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the result is null
@@ -75,7 +75,7 @@ public class PayIDUtilsTest {
     // GIVEN a payment pointer with non-ascii characters.
     String rawPaymentPointer = "$ZA̡͊͠͝LGΌ IS̯͈͕̹̘̱ͮ TO͇̹̺ͅƝ̴ȳ̳ TH̘Ë͖́̉ ͠P̯͍̭O̚N̐Y̡";
 
-    // WHEN it is parsed to a PaymentPointer object
+    // WHEN it is parsed to a components
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
 
     // THEN the result is null
