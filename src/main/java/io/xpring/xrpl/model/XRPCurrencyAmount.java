@@ -5,7 +5,7 @@ import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * An amount of currency on the XRP Ledger.
@@ -20,26 +20,20 @@ public interface XRPCurrencyAmount {
   }
 
   /**
-   * An amount of XRP, specified in drops.
-   * <p>
+   * (Optional) An amount of XRP, specified in drops.
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
-   * </p>
    *
-   * @return The {@link String} representation of an amount of XRP, specified in drops.
+   * @return The Optional {@link String} representation of an amount of XRP, specified in drops.
    */
-  @Nullable
-  String drops();
+  Optional<String> drops();
 
   /**
-   * An amount of an issued currency.
-   * <p>
+   * (Optional) An amount of an issued currency.
    * Note: Mutually exclusive fields - only drops XOR issuedCurrency should be set.
-   * </p>
    *
-   * @return The {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
+   * @return The Optional {@link XRPIssuedCurrency} of this {@link XRPCurrencyAmount}.
    */
-  @Nullable
-  XRPIssuedCurrency issuedCurrency();
+  Optional<XRPIssuedCurrency> issuedCurrency();
 
   /**
    * Constructs an {@link XRPCurrencyAmount} from a {@link CurrencyAmount}.
@@ -54,12 +48,9 @@ public interface XRPCurrencyAmount {
     switch (currencyAmount.getAmountCase()) {
       // Mutually exclusive: either drops or issuedCurrency is set in an XRPCurrencyAmount
       case ISSUED_CURRENCY_AMOUNT: {
-        IssuedCurrencyAmount issuedCurrencyAmount = currencyAmount.getIssuedCurrencyAmount();
-        if (issuedCurrencyAmount != null) {
-          XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(issuedCurrencyAmount);
-          if (xrpIssuedCurrency != null) {
-            return builder().issuedCurrency(xrpIssuedCurrency).build();
-          }
+        XRPIssuedCurrency xrpIssuedCurrency = XRPIssuedCurrency.from(currencyAmount.getIssuedCurrencyAmount());
+        if (xrpIssuedCurrency != null) {
+          return builder().issuedCurrency(xrpIssuedCurrency).build();
         }
         // if AmountCase is ISSUED_CURRENCY_AMOUNT, we must be able to convert this to an XRPIssuedCurrency
         return null;
@@ -67,8 +58,7 @@ public interface XRPCurrencyAmount {
       case XRP_AMOUNT: {
         long numericDrops = currencyAmount.getXrpAmount().getDrops();
         String drops = Long.toString(numericDrops);
-        return builder().drops(drops)
-            .build();
+        return builder().drops(drops).build();
       }
       // if no AmountCase is set (e.g. empty CurrencyAmount protobuf was passed to constructor)
       default:
