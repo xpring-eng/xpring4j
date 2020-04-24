@@ -19,7 +19,6 @@ public interface XRPClientDecorator {
    */
   BigInteger getBalance(final String xrplAccountAddress) throws XRPException;
 
-
   /**
    * Retrieve the transaction status for a Payment given transaction hash.
    * <p>

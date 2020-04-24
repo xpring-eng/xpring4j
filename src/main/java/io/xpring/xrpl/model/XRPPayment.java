@@ -3,9 +3,10 @@ package io.xpring.xrpl.model;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /**
  * A payment on the XRP Ledger.
@@ -38,8 +39,7 @@ public interface XRPPayment {
    *
    * @return An {@link Integer} containing the tag that identifies the reason for the payment.
    */
-  @Nullable
-  Integer destinationTag();
+  Optional<Integer> destinationTag();
 
   /**
    * (Optional) Minimum amount of destination currency this transaction should deliver.
@@ -47,27 +47,28 @@ public interface XRPPayment {
    * @return An {@link XRPCurrencyAmount} representing the minimum amount of destination currency this
    *          transaction should deliver.
    */
-  @Nullable
-  XRPCurrencyAmount deliverMin();
+  Optional<XRPCurrencyAmount> deliverMin();
 
   /**
    * (Optional) Arbitrary 256-bit hash representing a specific reason or identifier for this payment.
    *
    * @return A byte array containing a 256-bit hash representing a specific reason or identifier for this payment.
    */
-  @Nullable
-  byte[] invoiceID();
+  @Value.Default
+  default byte[] invoiceID() {
+    return new byte[0];
+  }
 
   /**
-   * Array of payment paths to be used for this transaction.
-   * <p>
+   * (Optional) Array of payment paths to be used for this transaction.
    * Must be omitted for XRP-to-XRP transactions.
-   * </p>
    *
    * @return A {@link List} of {@link XRPPath}s containing the paths to be used for this transaction.
    */
-  @Nullable
-  List<XRPPath> paths();
+  @Value.Default
+  default List<XRPPath> paths() {
+    return new ArrayList<>();
+  }
 
   /**
    * (Optional) Highest amount of source currency this transaction is allowed to cost.
@@ -75,8 +76,7 @@ public interface XRPPayment {
    * @return An {@link XRPCurrencyAmount} representing the highest amount of source currency this
    *          transaction is allowed to cost.
    */
-  @Nullable
-  XRPCurrencyAmount sendMax();
+  Optional<XRPCurrencyAmount> sendMax();
 
   /**
    * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}.
@@ -100,48 +100,34 @@ public interface XRPPayment {
     }
     final String destination = payment.getDestination().getValue().getAddress();
 
-    Integer destinationTag;
+    Optional<Integer> destinationTag = Optional.empty();
     if (payment.hasDestinationTag()) {
-      destinationTag = payment.getDestinationTag().getValue();
-    } else {
-      destinationTag = null;
+      destinationTag = Optional.of(payment.getDestinationTag().getValue());
     }
 
     // If the deliverMin field is set, it must be able to be transformed into an XRPCurrencyAmount.
-    XRPCurrencyAmount deliverMin;
+    Optional<XRPCurrencyAmount> deliverMin = Optional.empty();
     if (payment.hasDeliverMin()) {
-      deliverMin = XRPCurrencyAmount.from(payment.getDeliverMin().getValue());
-      if (deliverMin == null) {
+      deliverMin = Optional.ofNullable(XRPCurrencyAmount.from(payment.getDeliverMin().getValue()));
+      if (!deliverMin.isPresent()) {
         return null;
       }
-    } else {
-      deliverMin = null;
     }
 
-    byte[] invoiceID;
-    if (payment.hasInvoiceId()) {
-      invoiceID = payment.getInvoiceId().getValue().toByteArray();
-    } else {
-      invoiceID = null;
-    }
+    byte[] invoiceID = payment.getInvoiceId().getValue().toByteArray();
 
     List<XRPPath> paths = payment.getPathsList()
         .stream()
         .map(XRPPath::from)
         .collect(Collectors.toList());
-    if (paths.isEmpty()) {
-      paths = null;
-    }
 
     // If the sendMax field is set, it must be able to be transformed into an XRPCurrencyAmount.
-    XRPCurrencyAmount sendMax;
+    Optional<XRPCurrencyAmount> sendMax = Optional.empty();
     if (payment.hasSendMax()) {
-      sendMax = XRPCurrencyAmount.from(payment.getSendMax().getValue());
-      if (sendMax == null) {
+      sendMax = Optional.ofNullable(XRPCurrencyAmount.from(payment.getSendMax().getValue()));
+      if (!sendMax.isPresent()) {
         return null;
       }
-    } else {
-      sendMax = null;
     }
 
     return builder()

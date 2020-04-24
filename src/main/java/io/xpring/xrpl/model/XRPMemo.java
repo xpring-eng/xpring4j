@@ -4,8 +4,6 @@ import com.google.protobuf.ByteString;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Memo;
 
-import javax.annotation.Nullable;
-
 /**
  * Represents a memo on the XRPLedger.
  *
@@ -19,34 +17,36 @@ public interface XRPMemo {
   }
 
   /**
-   * An arbitrary hex value, conventionally containing the content of the memo.
+   * (Optional) An arbitrary hex value, conventionally containing the content of the memo.
    *
    * @return A byte array of arbitrary hex value, conventionally containing the content of the memo.
    */
-  @Nullable
-  byte[] data();
+  @Value.Default
+  default byte[] data() {
+    return new byte[0];
+  }
 
   /**
-   * Hex value representing characters allowed in URLs.
-   * <p>
+   * (Optional) Hex value representing characters allowed in URLs.
    * Conventionally containing information on how the memo is encoded, for example as a MIME type.
-   * </p>
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  @Nullable
-  byte[] format();
+  @Value.Default
+  default byte[] format() {
+    return new byte[0];
+  }
 
   /**
-   * Hex value representing characters allowed in URLs.
-   * <p>
+   * (Optional) Hex value representing characters allowed in URLs.
    * Conventionally, a unique relation (according to RFC 5988) that defines the format of this memo.
-   * </p>
    *
    * @return A byte array of arbitrary hex value containing the characters allowed in URLs.
    */
-  @Nullable
-  byte[] type();
+  @Value.Default
+  default byte[] type() {
+    return new byte[0];
+  }
 
   /**
    * Constructs an {@link XRPMemo} from a {@link Memo}.
@@ -59,13 +59,13 @@ public interface XRPMemo {
    */
   static XRPMemo from(Memo memo) {
     ByteString memoData = memo.getMemoData().getValue();
-    byte[] data = memoData.equals(ByteString.EMPTY) ? null : memoData.toByteArray();
+    byte[] data = memoData.toByteArray();
 
     ByteString memoFormat = memo.getMemoFormat().getValue();
-    byte[] format = memoFormat.equals(ByteString.EMPTY) ? null : memoFormat.toByteArray();
+    byte[] format = memoFormat.toByteArray();
 
     ByteString memoType = memo.getMemoType().getValue();
-    byte[] type = memoType.equals(ByteString.EMPTY) ? null : memoType.toByteArray();
+    byte[] type = memoType.toByteArray();
 
     return XRPMemo.builder()
         .data(data)
