@@ -41,7 +41,7 @@ public class JavaScriptPayIDUtils {
   public PayIDComponents parsePayID(String payID) {
     Objects.requireNonNull(payID);
 
-    Value parsePayIDFunction = javaScriptPayIDUtils.getMember("parsePaymentPointer");
+    Value parsePayIDFunction = javaScriptPayIDUtils.getMember("parsePayID");
     Value javaScriptComponents = parsePayIDFunction.execute(payID);
     if (javaScriptComponents.isNull()) {
       return null;
@@ -52,5 +52,4 @@ public class JavaScriptPayIDUtils {
 
     return ImmutablePayIDComponents.builder().host(host).path(path).build();
   }
-
 }

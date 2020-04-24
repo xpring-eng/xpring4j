@@ -8,77 +8,71 @@ import org.junit.Test;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDUtilsTest {
   @Test
-  public void testParsePaymentPointerHostAndPath() {
-    // GIVEN a payment pointer with a host and a path.
-    String rawPaymentPointer = "$example.com/foo";
+  public void testParseValidPayID() {
+    // GIVEN a Pay ID with a host and a path.
+    String host = "xpring.money";
+    String path = "georgewashington";
+    String rawPayID = path + "$" + host;
 
-    // WHEN it is parsed to a components
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
-
-    // THEN the host and path are set correctly.
-    assertEquals(paymentPointer.host(), "example.com");
-    assertEquals(paymentPointer.path(), "/foo");
-  }
-
-  @Test
-  public void testParsePaymentPointerWithWellKnownPath() {
-    // GIVEN a payment pointer with a well known path.
-    String rawPaymentPointer = "$example.com";
-
-    // WHEN it is parsed to a components
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
 
     // THEN the host and path are set correctly.
-    assertEquals(paymentPointer.host(), "example.com");
-    assertEquals(paymentPointer.path(), "/.well-known/pay");
+    assertEquals(payIDComponents.host(), host);
+    assertEquals(payIDComponents.path(), "/" + path);
   }
 
   @Test
-  public void testParsePaymentPointerWithWellKnownPathAndTrailingSlash() {
-    // GIVEN a payment pointer with a well known path and a trailing slash.
-    String rawPaymentPointer = "$example.com";
+  public void testParsePayIDTooManyDollarSigns() {
+    // GIVEN a Pay ID with too many '$'.
+    String host = "xpring$money"; // Extra '$'
+    String path = "georgewashington";
+    String rawPayID = path + "$" + host;
 
-    // WHEN it is parsed to a PaymentPointer object
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
 
-    // WHEN it is parsed to a components
-    assertEquals(paymentPointer.host(), "example.com");
-    assertEquals(paymentPointer.path(), "/.well-known/pay");
+    // THEN the Pay ID failed to parse.
+    assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePaymentPointerIncorrectPrefix() {
-    // GIVEN a payment pointer without a '$' prefix
-    String rawPaymentPointer = "example.com/";
+  public void testParsePayIDEmptyHost() {
+    // GIVEN a Pay ID with an empty host.
+    String host = "";
+    String path = "georgewashington";
+    String rawPayID = path + "$" + host;
 
-    // WHEN it is parsed to a components
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
 
-    // THEN the result is null
-    assertNull(paymentPointer);
+    // THEN the Pay ID failed to parse.
+    assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePaymentPointerEmptyHost() {
-    // GIVEN a payment pointer without a host.
-    String rawPaymentPointer = "$";
+  public void testParsePayIDEmptyPath() {
+    // GIVEN a Pay ID with an empty host.
+    String host = "xpring.money"; // Extra '$'
+    String path = "";
+    String rawPayID = path + "$" + host;
 
-    // WHEN it is parsed to a components
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
 
-    // THEN the result is null
-    assertNull(paymentPointer);
+    // THEN the Pay ID failed to parse.
+    assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePaymentPointerNonAscii() {
-    // GIVEN a payment pointer with non-ascii characters.
-    String rawPaymentPointer = "$ZA̡͊͠͝LGΌ IS̯͈͕̹̘̱ͮ TO͇̹̺ͅƝ̴ȳ̳ TH̘Ë͖́̉ ͠P̯͍̭O̚N̐Y̡";
+  public void testParsePayIDNonASCII() {
+    // GIVEN a Pay ID with non-ascii characters.
+    String rawPayID = "ZA̡͊͠͝LGΌIS̯͈͕̹̘̱ͮ$TO͇̹̺ͅƝ̴ȳ̳TH̘Ë͖́̉ ͠P̯͍̭O̚N̐Y̡";
 
-    // WHEN it is parsed to a components
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(rawPaymentPointer);
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
 
-    // THEN the result is null
-    assertNull(paymentPointer);
+    // THEN the Pay ID failed to parse.
+    assertNull(payIDComponents);
   }
 }
