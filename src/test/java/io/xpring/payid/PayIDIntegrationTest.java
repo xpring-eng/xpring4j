@@ -12,14 +12,12 @@ public class PayIDIntegrationTest {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  // Commented out to get Circle to pass while nkramer44 works on PayID resolution.
-
-  /*@Test
+  @Test
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void testXRPAddressForPayIDKnownAddressMainnet() throws PayIDException {
     // GIVEN a Pay ID that will resolve on Mainnet.
     PayIDClient payIDClient = new PayIDClient(XRPLNetwork.MAIN);
-    String payID = "z.payid.xpring.money/hbergren";
+    String payID = "alice$dev.payid.xpring.money";
 
     // WHEN it is resolved to an XRP address
     String xrpAddress = payIDClient.xrpAddressForPayID(payID);
@@ -33,7 +31,7 @@ public class PayIDIntegrationTest {
   public void testXRPAddressForPayIDKnownAddressTestnet() throws PayIDException {
     // GIVEN a Pay ID that will resolve on Testnet.
     PayIDClient payIDClient = new PayIDClient(XRPLNetwork.TEST);
-    String payID = "$dev.payid.xpring.money/hbergren";
+    String payID = "alice$dev.payid.xpring.money";
 
     // WHEN it is resolved to an XRP address
     String xrpAddress = payIDClient.xrpAddressForPayID(payID);
@@ -47,11 +45,11 @@ public class PayIDIntegrationTest {
   public void testXRPAddressForPayIDKnownAddressDevnet() throws PayIDException {
     // GIVEN a Pay ID that will not resolve on Devnet.
     PayIDClient payIDClient = new PayIDClient(XRPLNetwork.DEV);
-    String payID = "$dev.payid.xpring.money/hbergren";
+    String payID = "doesNotExist.payid.xpring.money";
 
     // WHEN it is resolved to an XRP address THEN a PayID is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
     expectedException.expect(PayIDException.class);
     payIDClient.xrpAddressForPayID(payID);
-  }*/
+  }
 }

@@ -1,7 +1,5 @@
 package io.xpring.xrpl;
 
-import io.xpring.xrpl.javascript.JavaScriptLoaderException;
-import io.xpring.xrpl.javascript.JavaScriptUtils;
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -29,16 +27,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ProtocolBufferConversionTest {
-
-  public static JavaScriptUtils javaScriptUtils;
-
-  static {
-    try {
-      javaScriptUtils = new JavaScriptUtils();
-    } catch (JavaScriptLoaderException e) {
-      e.printStackTrace();
-    }
-  }
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

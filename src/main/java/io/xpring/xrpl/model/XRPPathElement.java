@@ -57,17 +57,19 @@ public interface XRPPathElement {
   static XRPPathElement from(PathElement pathElement) {
     Optional<String> account = Optional.empty();
     if (pathElement.hasAccount()) {
-      account = Optional.of(pathElement.getAccount().getAddress());
+      account = Optional.ofNullable(pathElement.getAccount().getAddress().isEmpty()
+              ? null : pathElement.getAccount().getAddress());
     }
 
     Optional<XRPCurrency> currency = Optional.empty();
     if (pathElement.hasCurrency()) {
-      currency = Optional.of(XRPCurrency.from(pathElement.getCurrency()));
+      currency = Optional.ofNullable(XRPCurrency.from(pathElement.getCurrency()));
     }
 
     Optional<String> issuer = Optional.empty();
     if (pathElement.hasIssuer()) {
-      issuer = Optional.of(pathElement.getIssuer().getAddress());
+      issuer = Optional.ofNullable(pathElement.getIssuer().getAddress().isEmpty()
+              ? null : pathElement.getIssuer().getAddress());
     }
 
     return builder()

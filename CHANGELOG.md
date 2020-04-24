@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `XRPTransaction` contains additional synthetic fields to represent the timestamp, hash, and deliveredAmount of the transaction.
 
+### Changed
+- `XRPClient` requires a new parameter in it's constructor that identifies the network it is attached to.
+
 ## 4.0.0
 
 This major release contains new features in XRP to check for existence of an account and to retrieve payment history for an account.
