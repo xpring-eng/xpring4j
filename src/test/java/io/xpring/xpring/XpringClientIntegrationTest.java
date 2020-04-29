@@ -3,7 +3,7 @@ package io.xpring.xpring;
 import static org.junit.Assert.assertNotNull;
 
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.PayIDClient;
+import io.xpring.payid.XRPPayIDClient;
 import io.xpring.payid.PayIDException;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClient;
@@ -21,7 +21,7 @@ public class XpringClientIntegrationTest {
   /**
    * A PayIDClient under test.
    */
-  public static final PayIDClient PAY_ID_CLIENT = new PayIDClient(NETWORK);
+  public static final XRPPayIDClient PAY_ID_CLIENT = new XRPPayIDClient(NETWORK);
 
   /**
    * An XRPClient under test.
@@ -33,12 +33,11 @@ public class XpringClientIntegrationTest {
    */
   public static final XpringClient XPRING_CLIENT = new XpringClient(PAY_ID_CLIENT, XRP_CLIENT);
 
-  // Commented out to get Circle to pass while nkramer44 works on PayID resolution.
-  /*@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
   public void testSendXRP() throws XRPException, PayIDException {
     // GIVEN a Pay ID that will resolve and a wallet with a balance on TestNet.
-    String payID = "$dev.payid.xpring.money/hbergren";
+    String payID = "alice$dev.payid.xpring.money";
     Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
 
     // WHEN XRP is sent to the Pay ID.
@@ -46,5 +45,5 @@ public class XpringClientIntegrationTest {
 
     // THEN a transaction hash is returned.
     assertNotNull(transactionHash);
-  }*/
+  }
 }

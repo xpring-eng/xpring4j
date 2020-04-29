@@ -16,7 +16,7 @@ public class PayIDIntegrationTest {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void testXRPAddressForPayIDKnownAddressMainnet() throws PayIDException {
     // GIVEN a Pay ID that will resolve on Mainnet.
-    PayIDClient payIDClient = new PayIDClient(XRPLNetwork.MAIN);
+    PayIDClient payIDClient = new XRPPayIDClient(XRPLNetwork.MAIN);
     String payID = "alice$dev.payid.xpring.money";
 
     // WHEN it is resolved to an XRP address
@@ -30,7 +30,7 @@ public class PayIDIntegrationTest {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void testXRPAddressForPayIDKnownAddressTestnet() throws PayIDException {
     // GIVEN a Pay ID that will resolve on Testnet.
-    PayIDClient payIDClient = new PayIDClient(XRPLNetwork.TEST);
+    PayIDClient payIDClient = new XRPPayIDClient(XRPLNetwork.TEST);
     String payID = "alice$dev.payid.xpring.money";
 
     // WHEN it is resolved to an XRP address
@@ -44,7 +44,7 @@ public class PayIDIntegrationTest {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void testXRPAddressForPayIDKnownAddressDevnet() throws PayIDException {
     // GIVEN a Pay ID that will not resolve on Devnet.
-    PayIDClient payIDClient = new PayIDClient(XRPLNetwork.DEV);
+    PayIDClient payIDClient = new XRPPayIDClient(XRPLNetwork.DEV);
     String payID = "doesNotExist.payid.xpring.money";
 
     // WHEN it is resolved to an XRP address THEN a PayID is thrown.

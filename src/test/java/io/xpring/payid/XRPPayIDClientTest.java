@@ -15,7 +15,7 @@ import org.junit.rules.ExpectedException;
 
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class PayIDClientTest {
+public class XRPPayIDClientTest {
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort());
 
@@ -26,7 +26,7 @@ public class PayIDClientTest {
   public void testXRPAddressForPayIDInvalidPaymentPointer() throws PayIDException {
     // GIVEN a PayIDClient and an invalid PayID.
     String invalidPayID = "georgewashington$xpring$money"; // Too many '$'
-    PayIDClient payIDClient = new PayIDClient(XRPLNetwork.MAIN);
+    XRPPayIDClient payIDClient = new XRPPayIDClient(XRPLNetwork.MAIN);
 
     // WHEN an XRPAddress is requested for an invalid pay ID THEN an invalid payment pointer error is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
@@ -38,7 +38,7 @@ public class PayIDClientTest {
   public void testXRPAddressForPayIDSuccess() throws PayIDException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a match for the PayID.
     String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -67,7 +67,7 @@ public class PayIDClientTest {
   public void testXRPAddressForPayIDMatchNotFound() throws PayIDException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a 404 for the payID.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -85,7 +85,7 @@ public class PayIDClientTest {
   public void testXRPAddressForPayIDBadMIMEType() throws PayIDException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a 415 for the payID.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -103,7 +103,7 @@ public class PayIDClientTest {
   public void testXRPAddressForPayIDServerFailure() throws PayIDException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a 503 for the payID.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    PayIDClient client = new PayIDClient(XRPLNetwork.MAIN);
+    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
