@@ -2,6 +2,9 @@ package io.xpring.xrpl;
 
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
+import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides utility functions for working in the XRP Ecosystem.
@@ -115,5 +118,104 @@ public class Utils {
    */
   public static String toTransactionHash(String transactionBlobHex) {
     return javaScriptUtils.toTransactionHash(transactionBlobHex);
+  }
+
+  /**
+   * Convert from units in drops to xrp.
+   *
+   * @param drops An amount of xrp expressed in units of drops.
+   * @return A String representing the drops amount in units of xrp.
+   * @throws Exception if drops is in an invalid format.
+   */
+  public static String dropsToXrp(String drops) throws Exception {
+    String dropsRegex = "/^-?[0-9]*\\.?[0-9]*$/";
+    Pattern dropsPattern = Pattern.compile(dropsRegex);
+
+    if (drops instanceof String) {
+      Matcher dropsMatcher = dropsPattern.matcher(drops);
+      if (!dropsMatcher.find()) {
+        throw new Exception(String.format(
+                "dropsToXrp: invalid value %s, should be a number matching %s.", drops, dropsRegex));
+      } else if (drops == ".") {
+        throw new Exception(String.format(
+                "dropsToXrp: invalid value %s, should be a BigNumber or string-encoded number.", drops));
+      }
+    } // end if drops instanceof String
+    // TODO: what if drops ISN'T a string?
+
+    // Converting to BigDecimal and then back to string should remove any
+    // decimal point followed by zeros, e.g. '1.00'.
+    // Important: use toPlainString() to avoid exponential notation, e.g. '1e-7'.
+    drops = new BigDecimal(drops).toPlainString();
+
+    // drops are only whole units
+    if (drops.contains(".")) {
+      throw new Exception(String.format("dropsToXrp: value %s has too many decimal places.", drops));
+    }
+
+    // This should never happen; the value has already been
+    // validated above. This just ensures BigNumber did not do
+    // something unexpected.
+    Matcher dropsMatcher = dropsPattern.matcher(drops);
+    if (!dropsMatcher.find()) {
+      throw new Exception(String.format(
+              "dropsToXrp: failed sanity check - value %s does not match %s.", drops, dropsRegex));
+    }
+
+    return new BigDecimal(drops).divide(new BigDecimal(1000000.0)).toPlainString();
+  }
+
+  /**
+   * Convert from units in xrp to drops.
+   *
+   * @param xrp An amount of xrp expressed in units of xrp.
+   * @return A String representing an amount of xrp expressed in units of drops.
+   * @throws Exception if xrp is in invalid format.
+   */
+  public static String xrpToDrops(String xrp) throws Exception {
+    String xrpRegex = "/^-?[0-9]*\\.?[0-9]*$/";
+    Pattern xrpPattern = Pattern.compile(xrpRegex);
+
+    if (xrp instanceof String) {
+      Matcher xrpMatcher = xrpPattern.matcher(xrp);
+      if (!xrpMatcher.find()) {
+        throw new Exception(String.format(
+                "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
+      } else if (xrp == ".") {
+        throw new Exception(String.format(
+                "xrpToDrops: invalid value, %s should be a BigDecimal or string-encoded number.", xrp));
+      }
+    } // end if xrp instanceof String
+
+    // Converting to BigDecimal and then back to string should remove any
+    // decimal point followed by zeros, e.g. '1.00'.
+    // Important: use toPlainString() to avoid exponential notation, e.g. '1e-7'.
+    xrp = new BigDecimal(xrp).toPlainString();
+
+    // This should never happen; the value has already been
+    // validated above. This just ensures BigDecimal did not do
+    // something unexpected.
+    Matcher xrpMatcher = xrpPattern.matcher(xrp);
+    if (!xrpMatcher.find()) {
+      throw new Exception(String.format(
+              "xrpToDrops: failed sanity check - value %s does not match %s.", xrp, xrpRegex));
+    }
+
+    String[] components = xrp.split(".");
+    if (components.length > 2) {
+      throw new Exception(String.format(
+              "xrpToDrops: failed sanity check - value %s has too many decimal points.", xrp));
+    }
+    String fraction = "0";
+    if (components.length == 2) {
+      fraction = components[1];
+    }
+    if (fraction.length() > 6) {
+      throw new Exception(String.format("xrpToDrops: value %s has too many decimal places.", xrp));
+    }
+    return new BigDecimal(xrp)
+            .multiply(new BigDecimal(1000000.0))
+            .toBigInteger()
+            .toString(10);
   }
 }
