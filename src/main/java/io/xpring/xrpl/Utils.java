@@ -3,6 +3,7 @@ package io.xpring.xrpl;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -128,25 +129,23 @@ public class Utils {
    * @throws Exception if drops is in an invalid format.
    */
   public static String dropsToXrp(String drops) throws Exception {
-    String dropsRegex = "/^-?[0-9]*\\.?[0-9]*$/";
+    String dropsRegex = "^-?[0-9]*['.']?[0-9]*$";
     Pattern dropsPattern = Pattern.compile(dropsRegex);
 
-    if (drops instanceof String) {
-      Matcher dropsMatcher = dropsPattern.matcher(drops);
-      if (!dropsMatcher.find()) {
-        throw new Exception(String.format(
-                "dropsToXrp: invalid value %s, should be a number matching %s.", drops, dropsRegex));
-      } else if (drops == ".") {
-        throw new Exception(String.format(
-                "dropsToXrp: invalid value %s, should be a BigNumber or string-encoded number.", drops));
-      }
-    } // end if drops instanceof String
-    // TODO: what if drops ISN'T a string?
+    Matcher dropsMatcher = dropsPattern.matcher(drops);
+    if (!dropsMatcher.matches()) {
+      throw new Exception(String.format(
+              "dropsToXrp: invalid value %s, should be a number matching %s.", drops, dropsRegex));
+    } else if (drops == ".") {
+      throw new Exception(String.format(
+              "dropsToXrp: invalid value %s, should be a BigNumber or string-encoded number.", drops));
+    }
 
-    // Converting to BigDecimal and then back to string should remove any
-    // decimal point followed by zeros, e.g. '1.00'.
-    // Important: use toPlainString() to avoid exponential notation, e.g. '1e-7'.
-    drops = new BigDecimal(drops).toPlainString();
+    // Converting to BigInteger and then back to string should remove any
+    // decimal point followed by zeros, e.g. '1.00', which is the only valid decimal
+    // representation of drops, which must be whole numbers.
+    // Important: specify base 10 to avoid exponential notation, e.g. '1e-7'
+    drops = new BigDecimal(drops).toBigIntegerExact().toString(10);
 
     // drops are only whole units
     if (drops.contains(".")) {
@@ -156,8 +155,7 @@ public class Utils {
     // This should never happen; the value has already been
     // validated above. This just ensures BigNumber did not do
     // something unexpected.
-    Matcher dropsMatcher = dropsPattern.matcher(drops);
-    if (!dropsMatcher.find()) {
+    if (!dropsMatcher.matches()) {
       throw new Exception(String.format(
               "dropsToXrp: failed sanity check - value %s does not match %s.", drops, dropsRegex));
     }
@@ -173,35 +171,32 @@ public class Utils {
    * @throws Exception if xrp is in invalid format.
    */
   public static String xrpToDrops(String xrp) throws Exception {
-    String xrpRegex = "/^-?[0-9]*\\.?[0-9]*$/";
+    String xrpRegex = "^-?[0-9]*['.']?[0-9]*$";
     Pattern xrpPattern = Pattern.compile(xrpRegex);
 
-    if (xrp instanceof String) {
-      Matcher xrpMatcher = xrpPattern.matcher(xrp);
-      if (!xrpMatcher.find()) {
-        throw new Exception(String.format(
-                "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
-      } else if (xrp == ".") {
-        throw new Exception(String.format(
-                "xrpToDrops: invalid value, %s should be a BigDecimal or string-encoded number.", xrp));
-      }
-    } // end if xrp instanceof String
+    Matcher xrpMatcher = xrpPattern.matcher(xrp);
+    if (!xrpMatcher.matches()) {
+      throw new Exception(String.format(
+              "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
+    } else if (xrp == ".") {
+      throw new Exception(String.format(
+              "xrpToDrops: invalid value, %s should be a BigDecimal or string-encoded number.", xrp));
+    }
 
     // Converting to BigDecimal and then back to string should remove any
     // decimal point followed by zeros, e.g. '1.00'.
     // Important: use toPlainString() to avoid exponential notation, e.g. '1e-7'.
-    xrp = new BigDecimal(xrp).toPlainString();
+    xrp = new BigDecimal(xrp).stripTrailingZeros().toPlainString();
 
     // This should never happen; the value has already been
     // validated above. This just ensures BigDecimal did not do
     // something unexpected.
-    Matcher xrpMatcher = xrpPattern.matcher(xrp);
-    if (!xrpMatcher.find()) {
+    if (!xrpMatcher.matches()) {
       throw new Exception(String.format(
               "xrpToDrops: failed sanity check - value %s does not match %s.", xrp, xrpRegex));
     }
 
-    String[] components = xrp.split(".");
+    String[] components = xrp.split("[.]");
     if (components.length > 2) {
       throw new Exception(String.format(
               "xrpToDrops: failed sanity check - value %s has too many decimal points.", xrp));
