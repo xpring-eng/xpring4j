@@ -129,6 +129,9 @@ public class Utils {
    * @throws Exception if drops is in an invalid format.
    */
   public static String dropsToXrp(String drops) throws Exception {
+    if (drops == null) {
+      return null;
+    }
     String dropsRegex = "^-?[0-9]*['.']?[0-9]*$";
     Pattern dropsPattern = Pattern.compile(dropsRegex);
 
@@ -171,6 +174,9 @@ public class Utils {
    * @throws Exception if xrp is in invalid format.
    */
   public static String xrpToDrops(String xrp) throws Exception {
+    if (xrp == null) {
+      return null;
+    }
     String xrpRegex = "^-?[0-9]*['.']?[0-9]*$";
     Pattern xrpPattern = Pattern.compile(xrpRegex);
 
