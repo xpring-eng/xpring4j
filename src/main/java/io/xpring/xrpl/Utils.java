@@ -137,10 +137,10 @@ public class Utils {
 
     if (!dropsMatcher.matches()) {
       throw new IllegalArgumentException(String.format(
-              "dropsToXrp: invalid value %s, should be a number matching %s.", drops, dropsRegex));
+              "dropsToXrp: invalid value %s, should be a string-encoded number matching %s.", drops, dropsRegex));
     } else if (drops.equals(".")) {
       throw new IllegalArgumentException(String.format(
-              "dropsToXrp: invalid value %s, should be a BigNumber or string-encoded number.", drops));
+              "dropsToXrp: invalid value %s, should be a string-encoded number.", drops));
     }
 
     // Converting with toBigIntegerExact() will throw an ArithmeticException if there is a fractional remainder.
@@ -181,11 +181,10 @@ public class Utils {
               "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
     } else if (xrp.equals(".")) {
       throw new IllegalArgumentException(String.format(
-              "xrpToDrops: invalid value, %s should be a BigDecimal or string-encoded number.", xrp));
+              "xrpToDrops: invalid value, %s should be a string-encoded number.", xrp));
     }
 
-    // Converting to BigDecimal and then back to string should remove any
-    // decimal point followed by zeros, e.g. '1.00'.
+    // Remove any trailing zeroes and convert back to String.
     // Important: use toPlainString() to avoid exponential notation, e.g. '1e-7'.
     xrp = new BigDecimal(xrp).stripTrailingZeros().toPlainString();
 
