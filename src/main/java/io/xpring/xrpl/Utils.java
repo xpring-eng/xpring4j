@@ -136,7 +136,7 @@ public class Utils {
     if (!dropsMatcher.matches()) {
       throw new Exception(String.format(
               "dropsToXrp: invalid value %s, should be a number matching %s.", drops, dropsRegex));
-    } else if (drops == ".") {
+    } else if (drops.equals(".")) {
       throw new Exception(String.format(
               "dropsToXrp: invalid value %s, should be a BigNumber or string-encoded number.", drops));
     }
@@ -178,7 +178,7 @@ public class Utils {
     if (!xrpMatcher.matches()) {
       throw new Exception(String.format(
               "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
-    } else if (xrp == ".") {
+    } else if (xrp.equals(".")) {
       throw new Exception(String.format(
               "xrpToDrops: invalid value, %s should be a BigDecimal or string-encoded number.", xrp));
     }
