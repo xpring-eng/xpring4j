@@ -144,20 +144,17 @@ public class Utils {
               "dropsToXrp: invalid value %s, should be a BigNumber or string-encoded number.", drops));
     }
 
-    // Converting to BigInteger and then back to string should remove any
-    // decimal point followed by zeros, e.g. '1.00', which is the only valid decimal
-    // representation of drops, which must be whole numbers.
+    // Converting with toBigIntegerExact() will throw an ArithmeticException if there is a fractional remainder.
+    // Drops values can be expressed as a decimal (i.e. 2.00) but still must be whole numbers.
     // Important: specify base 10 to avoid exponential notation, e.g. '1e-7'
-    drops = new BigDecimal(drops).toBigIntegerExact().toString(10);
-
-    // drops are only whole units
-    if (drops.contains(".")) {
-      throw new Exception(String.format("dropsToXrp: value %s has too many decimal places.", drops));
+    try {
+      drops = new BigDecimal(drops).toBigIntegerExact().toString(10);
+    } catch (ArithmeticException exception) {     // drops are only whole units
+      throw new IllegalArgumentException(String.format("dropsToXrp: value %s must be a whole number.", drops));
     }
 
-    // This should never happen; the value has already been
-    // validated above. This just ensures BigNumber did not do
-    // something unexpected.
+    // This should never happen; the value has already been validated above.
+    // This just ensures BigDecimal did not do something unexpected.
     if (!dropsMatcher.matches()) {
       throw new Exception(String.format(
               "dropsToXrp: failed sanity check - value %s does not match %s.", drops, dropsRegex));
