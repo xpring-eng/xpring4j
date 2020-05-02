@@ -1,9 +1,9 @@
 package io.xpring.xrpl;
 
+import com.google.common.base.Preconditions;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,20 +122,19 @@ public class Utils {
   }
 
   /**
-   * Convert from units in drops to xrp.
+   * Convert from units in drops to XRP.
    *
-   * @param drops An amount of xrp expressed in units of drops.
-   * @return A String representing the drops amount in units of xrp.
+   * @param drops An amount of XRP expressed in units of drops.
+   * @return A String representing the drops amount in units of XRP.
    * @throws IllegalArgumentException if drops is in an invalid format.
    */
   public static String dropsToXrp(String drops) throws IllegalArgumentException {
-    if (drops == null) {
-      return null;
-    }
+    Preconditions.checkNotNull(drops);
+
     String dropsRegex = "^-?[0-9]*['.']?[0-9]*$";
     Pattern dropsPattern = Pattern.compile(dropsRegex);
-
     Matcher dropsMatcher = dropsPattern.matcher(drops);
+
     if (!dropsMatcher.matches()) {
       throw new IllegalArgumentException(String.format(
               "dropsToXrp: invalid value %s, should be a number matching %s.", drops, dropsRegex));
@@ -164,20 +163,19 @@ public class Utils {
   }
 
   /**
-   * Convert from units in xrp to drops.
+   * Convert from units in XRP to drops.
    *
-   * @param xrp An amount of xrp expressed in units of xrp.
-   * @return A String representing an amount of xrp expressed in units of drops.
+   * @param xrp An amount of XRP expressed in units of XRP.
+   * @return A String representing an amount of XRP expressed in units of drops.
    * @throws IllegalArgumentException if xrp is in invalid format.
    */
   public static String xrpToDrops(String xrp) throws IllegalArgumentException {
-    if (xrp == null) {
-      return null;
-    }
+    Preconditions.checkNotNull(xrp);
+
     String xrpRegex = "^-?[0-9]*['.']?[0-9]*$";
     Pattern xrpPattern = Pattern.compile(xrpRegex);
-
     Matcher xrpMatcher = xrpPattern.matcher(xrp);
+
     if (!xrpMatcher.matches()) {
       throw new IllegalArgumentException(String.format(
               "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
@@ -191,9 +189,8 @@ public class Utils {
     // Important: use toPlainString() to avoid exponential notation, e.g. '1e-7'.
     xrp = new BigDecimal(xrp).stripTrailingZeros().toPlainString();
 
-    // This should never happen; the value has already been
-    // validated above. This just ensures BigDecimal did not do
-    // something unexpected.
+    // This should never happen; the value has already been validated above.
+    // This just ensures BigDecimal did not do something unexpected.
     if (!xrpMatcher.matches()) {
       throw new IllegalArgumentException(String.format(
               "xrpToDrops: failed sanity check - value %s does not match %s.", xrp, xrpRegex));
