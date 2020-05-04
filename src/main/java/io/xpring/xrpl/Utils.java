@@ -207,8 +207,9 @@ public class Utils {
     if (fraction.length() > 6) {
       throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format("xrpToDrops: value %s has too many decimal places.", xrp));
     }
+    Integer dropsPerXrp = 1000000;
     return new BigDecimal(xrp)
-            .multiply(new BigDecimal(1000000.0))
+            .multiply(new BigDecimal(dropsPerXrp))
             .toBigInteger()
             .toString(10);
   }
