@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 5.0.0
+
+### Added
+- `XRPTransaction` contains additional synthetic fields to represent the timestamp, hash, and deliveredAmount of the transaction.
+
 ### Changed
 - `XRPClient` requires a new parameter in it's constructor that identifies the network it is attached to.
 
