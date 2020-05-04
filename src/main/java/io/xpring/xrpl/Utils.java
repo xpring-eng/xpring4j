@@ -126,7 +126,7 @@ public class Utils {
    *
    * @param drops An amount of XRP expressed in units of drops.
    * @return A String representing the drops amount in units of XRP.
-   * @throws IllegalArgumentException if drops is in an invalid format.
+   * @throws XRPException if drops is in an invalid format.
    */
   public static String dropsToXrp(String drops) throws XRPException {
     Preconditions.checkNotNull(drops);
@@ -169,7 +169,7 @@ public class Utils {
    *
    * @param xrp An amount of XRP expressed in units of XRP.
    * @return A String representing an amount of XRP expressed in units of drops.
-   * @throws IllegalArgumentException if xrp is in invalid format.
+   * @throws XRPException if xrp is in invalid format.
    */
   public static String xrpToDrops(String xrp) throws XRPException {
     Preconditions.checkNotNull(xrp);
