@@ -149,7 +149,9 @@ public class Utils {
     try {
       drops = new BigDecimal(drops).toBigIntegerExact().toString(10);
     } catch (ArithmeticException exception) {     // drops are only whole units
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format("dropsToXrp: value %s must be a whole number.", drops));
+      throw new XRPException(XRPExceptionType.INVALID_INPUTS,
+              String.format("dropsToXrp: value %s must be a whole number.", drops)
+      );
     }
 
     // This should never happen; the value has already been validated above.
@@ -205,7 +207,9 @@ public class Utils {
       fraction = components[1];
     }
     if (fraction.length() > 6) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format("xrpToDrops: value %s has too many decimal places.", xrp));
+      throw new XRPException(XRPExceptionType.INVALID_INPUTS,
+              String.format("xrpToDrops: value %s has too many decimal places.", xrp)
+      );
     }
     Integer dropsPerXrp = 1000000;
     return new BigDecimal(xrp)
