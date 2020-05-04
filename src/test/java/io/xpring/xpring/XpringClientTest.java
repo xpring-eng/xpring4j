@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.PayIDClientInterface;
+import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.PayIDException;
 import io.xpring.payid.PayIDExceptionType;
-import io.xpring.payid.fakes.FakePayIDClient;
+import io.xpring.payid.fakes.FakeXRPPayIDClient;
 import io.xpring.xrpl.FakeXRPClient;
 import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.TransactionStatus;
@@ -84,7 +84,7 @@ public class XpringClientTest {
     );
 
     String fakeResolvedPayID = "r123";
-    PayIDClientInterface payIDClient = new FakePayIDClient(XRPLNetwork.TEST, Result.ok(fakeResolvedPayID));
+    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.ok(fakeResolvedPayID));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -111,7 +111,7 @@ public class XpringClientTest {
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
     );
 
-    PayIDClientInterface payIDClient = new FakePayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
+    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -136,7 +136,7 @@ public class XpringClientTest {
     );
 
     String fakeResolvedPayID = "r123";
-    PayIDClientInterface payIDClient = new FakePayIDClient(XRPLNetwork.TEST, Result.ok(fakeResolvedPayID));
+    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.ok(fakeResolvedPayID));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -160,7 +160,7 @@ public class XpringClientTest {
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
     );
 
-    PayIDClientInterface payIDClient = new FakePayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
+    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 

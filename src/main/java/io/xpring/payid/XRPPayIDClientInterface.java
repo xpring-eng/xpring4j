@@ -6,13 +6,13 @@ import io.xpring.common.XRPLNetwork;
  * An interface for a PayID client.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public interface PayIDClientInterface {
+public interface XRPPayIDClientInterface {
   /**
    * The {@link XRPLNetwork} that addresses will be resolved on.
    *
    * @return The {@link XRPLNetwork} that addresses will be resolved on.
    */
-  XRPLNetwork getNetwork();
+  XRPLNetwork getXRPLNetwork();
 
   /**
    * Resolve the given PayID to an XRP Address.
