@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import java.util.Optional;
+
 /**
  * Unit tests for {@link Utils}.
  */
@@ -88,6 +90,22 @@ public class UtilsTest {
 
     // THEN the result is as expected.
     assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH");
+  }
+
+  @Test
+  public void testEncodeXAddressWithAddressOnlyOnTestnet() {
+    // GIVEN a valid classic address without a tag on testnet.
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+        .address("rU6K7V3Po4snVhBBaU29sesqs2qTQJWDw1")
+        .tag(Optional.empty())
+        .isTest(true)
+        .build();
+
+    // WHEN it is encoded to an X-Address.
+    String xAddress = Utils.encodeXAddress(classicAddress);
+
+    // THEN the result is as expected.
+    assertEquals(xAddress, "TVsBZmcewpEHgajPi1jApLeYnHPJw8VrMCKS5g28oDXYiVA");
   }
 
   @SuppressWarnings("checkstyle:LocalVariableName")

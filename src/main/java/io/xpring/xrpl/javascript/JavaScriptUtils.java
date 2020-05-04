@@ -53,9 +53,14 @@ public class JavaScriptUtils {
     Objects.requireNonNull(classicAddress);
 
     Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
+
     Value result = classicAddress.tag().isPresent()
-        ? encodeXAddressFunction.execute(classicAddress.address(), classicAddress.tag().get(), classicAddress.isTest())
-        : encodeXAddressFunction.execute(classicAddress.address(), classicAddress.isTest());
+        ? encodeXAddressFunction.execute(classicAddress.address(), classicAddress.tag().isPresent(), classicAddress.isTest())
+        : encodeXAddressFunction.execute(
+            classicAddress.address(),
+            JavaScriptLoader.getContext().eval("js", "undefined"),
+            classicAddress.isTest()
+          );
     return result.asString();
   }
 
