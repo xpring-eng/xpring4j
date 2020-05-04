@@ -7,6 +7,7 @@ import io.xpring.payid.generated.ApiClient;
 import io.xpring.payid.generated.ApiException;
 import io.xpring.payid.generated.ApiResponse;
 import io.xpring.payid.generated.Pair;
+import io.xpring.payid.generated.model.CryptoAddressDetails;
 import io.xpring.payid.generated.model.PaymentInformation;
 
 import java.lang.reflect.Type;
@@ -72,7 +73,7 @@ public class PayIDClient {
    * @param payID The payID to resolve for an address.
    * @return An XRP address representing the given PayID.
    */
-  public String xrpAddressForPayID(String payID) throws PayIDException {
+  public CryptoAddressDetails addressForPayID(String payID) throws PayIDException {
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(payID);
     if (paymentPointer == null) {
       throw PayIDException.invalidPaymentPointerException;
@@ -121,7 +122,7 @@ public class PayIDClient {
       }.getType();
       ApiResponse<PaymentInformation> response = apiClient.execute(call, localVarReturnType);
       PaymentInformation result = response.getData();
-      return result.getAddressDetails().getAddress();
+      return result.getAddressDetails();
     } catch (ApiException exception) {
       int code = exception.getCode();
       if (code == 404) {
