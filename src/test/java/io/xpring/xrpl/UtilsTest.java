@@ -92,6 +92,7 @@ public class UtilsTest {
     assertEquals(xAddress, "XVfC9CTCJh6GN2x8bnrw3LtdbqiVCUFyQVMzRrMGUZpokKH");
   }
 
+  @SuppressWarnings("checkstyle:LocalVariableName")
   @Test
   public void testEncodeXAddressWithAddressOnlyOnTestnet() {
     // GIVEN a valid classic address without a tag on testnet.

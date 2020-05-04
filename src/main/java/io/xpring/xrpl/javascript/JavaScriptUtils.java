@@ -49,13 +49,18 @@ public class JavaScriptUtils {
    * @return A new X-Address if inputs were valid, otherwise null.
    * @see <a href="https://xrpaddress.info/">https://xrpaddress.info/</a>
    */
+  @SuppressWarnings("checkstyle:LocalVariableName")
   public String encodeXAddress(ClassicAddress classicAddress) {
     Objects.requireNonNull(classicAddress);
 
     Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
 
     if (classicAddress.tag().isPresent()) {
-      Value xAddress = encodeXAddressFunction.execute(classicAddress.address(), classicAddress.tag().get(), classicAddress.isTest());
+      Value xAddress = encodeXAddressFunction.execute(
+          classicAddress.address(),
+          classicAddress.tag().get(),
+          classicAddress.isTest()
+      );
       return xAddress.asString();
     } else {
       Value undefined = JavaScriptLoader.getContext().eval("js", "undefined");
