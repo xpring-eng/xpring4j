@@ -2,18 +2,18 @@ package io.xpring.payid.fakes;
 
 import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.PayIDClientInterface;
+import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.PayIDException;
 
 /**
  * Fakes a PayID client.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class FakePayIDClient implements PayIDClientInterface {
+public class FakeXRPPayIDClient implements XRPPayIDClientInterface {
   /**
    * The network this PayID client resolves on.
    */
-  private XRPLNetwork network;
+  private XRPLNetwork xrplNetwork;
 
   /**
    * Results from method calls.
@@ -23,17 +23,17 @@ public class FakePayIDClient implements PayIDClientInterface {
   /**
    * Initialize a new fake Pay ID client.
    *
-   * @param network                  The network that addresses will be resolved on.
+   * @param xrplNetwork                  The network that addresses will be resolved on.
    * @param xrpAddressForPayIDResult The result that will be returned from `xrpAddressForPayID`.
    */
-  public FakePayIDClient(XRPLNetwork network, Result<String, PayIDException> xrpAddressForPayIDResult) {
-    this.network = network;
+  public FakeXRPPayIDClient(XRPLNetwork xrplNetwork, Result<String, PayIDException> xrpAddressForPayIDResult) {
+    this.xrplNetwork = xrplNetwork;
     this.xrpAddressForPayIDResult = xrpAddressForPayIDResult;
   }
 
   @Override
-  public XRPLNetwork getNetwork() {
-    return this.network;
+  public XRPLNetwork getXRPLNetwork() {
+    return this.xrplNetwork;
   }
 
   @Override

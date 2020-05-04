@@ -20,11 +20,11 @@ import java.util.Map;
  * Warning:  This class is experimental and should not be used in production applications.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class PayIDClient implements PayIDClientInterface {
+public class PayIDClient {
   /**
    * The network this PayID client resolves on.
    */
-  private XRPLNetwork network;
+  private String network;
 
   /**
    * Whether to enable SSL Verification.
@@ -36,7 +36,7 @@ public class PayIDClient implements PayIDClientInterface {
    *
    * @param network The network that addresses will be resolved on.
    */
-  public PayIDClient(XRPLNetwork network) {
+  public PayIDClient(String network) {
     this.network = network;
     this.enableSSLVerification = true;
   }
@@ -46,7 +46,7 @@ public class PayIDClient implements PayIDClientInterface {
    *
    * @return The {@link XRPLNetwork} of this {@link PayIDClient}
    */
-  public XRPLNetwork getNetwork() {
+  public String getNetwork() {
     return this.network;
   }
 
@@ -84,7 +84,7 @@ public class PayIDClient implements PayIDClientInterface {
 
     String path = paymentPointer.path().substring(1);
     final String[] localVarAccepts = {
-        "application/xrpl-" + this.network.getNetworkName() + "+json"
+        "application/" + this.network + "+json"
     };
 
     // NOTE: Swagger produces a higher level client that does not require this level of configuration,
@@ -127,7 +127,7 @@ public class PayIDClient implements PayIDClientInterface {
       if (code == 404) {
         throw new PayIDException(
             PayIDExceptionType.MAPPING_NOT_FOUND,
-            "Could not resolve " + payID + " on network " + this.network.getNetworkName()
+            "Could not resolve " + payID + " on network " + this.network
         );
       } else {
         throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
