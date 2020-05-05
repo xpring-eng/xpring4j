@@ -239,11 +239,11 @@ public class DefaultXRPClient implements XRPClientDecorator {
     ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
     AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
-    LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
-                                                      .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
+    //LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
+    //                                                  .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
     GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
                                                                                     .setAccount(account)
-                                                                                    .setLedgerSpecifier(ledgerSpecifier)
+                                                                                    //.setLedgerSpecifier(ledgerSpecifier)
                                                                                     .build();
     GetAccountTransactionHistoryResponse transactionHistory = stub.getAccountTransactionHistory(request);
 
@@ -307,11 +307,8 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
     byte[] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
     ByteString transactionHashByteString = ByteString.copyFrom(transactionHashBytes);
-    // Note, if ledger_index_min is non-zero and ledger_index_max is 0, the
-    // software will use the max validated ledger in place of ledger_index_max
-    LedgerRange ledgerRange = LedgerRange.newBuilder().setLedgerIndexMin(1).setLedgerIndexMax(0).build();
     GetTransactionRequest request = GetTransactionRequest.newBuilder()
-                                              .setHash(transactionHashByteString).setLedgerRange(ledgerRange).build();
+                                              .setHash(transactionHashByteString).build();
 
     GetTransactionResponse response = this.stub.getTransaction(request);
 
