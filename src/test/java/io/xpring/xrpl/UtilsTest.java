@@ -1,9 +1,12 @@
 package io.xpring.xrpl;
 
+import static io.xpring.xrpl.Utils.dropsToXrp;
+import static io.xpring.xrpl.Utils.xrpToDrops;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -220,5 +223,193 @@ public class UtilsTest {
   public void testToTransactionHashInvalidTransaction() {
     String hash = Utils.toTransactionHash("xrp");
     assertNull(hash, null);
+  }
+
+  // xrpToDrops and dropsToXrp tests =====================================================
+  @Test
+  public void dropsToXrpWorksWithTypicalAmount() throws XRPException {
+    // GIVEN a typical, valid drops value, WHEN converted to xrp
+    String xrp = dropsToXrp("2000000");
+
+    // THEN the conversion is as expected
+    assertEquals("2 million drops equals 2 XRP", "2", xrp);
+  }
+
+  @Test
+  public void dropsToXrpWorksWithFractions() throws XRPException {
+    // GIVEN drops amounts that convert to fractional xrp amounts
+    // WHEN converted to xrp THEN the conversion is as expected
+    String xrp = dropsToXrp("3456789");
+    assertEquals("3,456,789 drops equals 3.456789 XRP","3.456789", xrp);
+
+    xrp = dropsToXrp("3400000");
+    assertEquals("3,400,000 drops equals 3.4 XRP", "3.4", xrp);
+
+    xrp = dropsToXrp("1");
+    assertEquals("1 drop equals 0.000001 XRP", "0.000001", xrp);
+
+    xrp = dropsToXrp("1.0");
+    assertEquals("1.0 drops equals 0.000001 XRP", "0.000001", xrp);
+
+    xrp = dropsToXrp("1.00");
+    assertEquals("1.00 drops equals 0.000001 XRP", "0.000001", xrp);
+  }
+
+  @Test
+  public void dropsToXrpWorksWithZero() throws XRPException {
+    // GIVEN several equivalent representations of zero
+    // WHEN converted to xrp, THEN the result is zero
+    String xrp = dropsToXrp("0");
+    assertEquals("0 drops equals 0 XRP", "0", xrp);
+
+    // negative zero is equivalent to zero
+    xrp = dropsToXrp("-0");
+    assertEquals("-0 drops equals 0 XRP", "0", xrp);
+
+    xrp = dropsToXrp("0.00");
+    assertEquals("0.00 drops equals 0 XRP", "0", xrp);
+
+    xrp = dropsToXrp("000000000");
+    assertEquals("000000000 drops equals 0 XRP", "0", xrp);
+  }
+
+  @Test
+  public void dropsToXrpWorksWithNegativeValues() throws XRPException {
+    // GIVEN a negative drops amount
+    // WHEN converted to xrp
+    String xrp = dropsToXrp("-2000000");
+
+    // THEN the conversion is also negative
+    assertEquals("-2 million drops equals -2 XRP", "-2", xrp);
+  }
+
+  @Test
+  public void dropsToXrpWorksWithValueEndingWithDecimalPoint() throws XRPException {
+    // GIVEN a positive or negative drops amount that ends with a decimal point
+    // WHEN converted to xrp THEN the conversion is successful and correct
+    String xrp = dropsToXrp("2000000.");
+    assertEquals("2000000. drops equals 2 XRP", "2", xrp);
+
+    xrp = dropsToXrp("-2000000.");
+    assertEquals("-2000000. drops equals -2 XRP", "-2", xrp);
+  }
+
+  @Test
+  public void dropsToXrpThrowsWithAnAmountWithTooManyDecimalPlaces() {
+    assertThrows("has too many decimal places", XRPException.class, () -> dropsToXrp("1.2"));
+    assertThrows("has too many decimal places", XRPException.class, () -> dropsToXrp("0.10"));
+  }
+
+  @Test
+  public void dropsToXrpThrowsWithAnInvalidValue() {
+    // GIVEN invalid drops values, WHEN converted to xrp, THEN an exception is thrown
+    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("FOO"));
+    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("1e-7"));
+    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("2,0"));
+    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("."));
+  }
+
+  @Test
+  public void dropsToXrpThrowsWithAnAmountMoreThanOneDecimalPoint() {
+    // GIVEN invalid drops values that contain more than one decimal point
+    // WHEN converted to xrp THEN an exception is thrown
+    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("1.0.0"));
+    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("..."));
+  }
+
+  @Test
+  public void dropsToXrpThrowsWithNullArgument() {
+    // GIVEN a null drops value, WHEN converted to XRP,
+    // THEN an exception is thrown
+    assertThrows("null argument", NullPointerException.class, () -> dropsToXrp(null));
+  }
+
+  @Test
+  public void xrpToDropsWorksWithATypicalAmount() throws XRPException {
+    // GIVEN an xrp amount that is typical and valid
+    // WHEN converted to drops
+    String drops = xrpToDrops("2");
+
+    // THEN the conversion is successful and correct
+    assertEquals("2 XRP equals 2 million drops", "2000000", drops);
+  }
+
+  @Test
+  public void xrpToDropsWorksWithFractions() throws XRPException {
+    // GIVEN xrp amounts that are fractional
+    // WHEN converted to drops THEN the conversions are successful and correct
+    String drops = xrpToDrops("3.456789");
+    assertEquals("3.456789 XRP equals 3,456,789 drops", "3456789", drops);
+    drops = xrpToDrops("3.400000");
+    assertEquals("3.400000 XRP equals 3,400,000 drops", "3400000", drops);
+    drops = xrpToDrops("0.000001");
+    assertEquals("0.000001 XRP equals 1 drop", "1", drops);
+    drops = xrpToDrops("0.0000010");
+    assertEquals("0.0000010 XRP equals 1 drop", "1", drops);
+  }
+
+  @Test
+  public void xrpToDropsWorksWithZero() throws XRPException {
+    // GIVEN xrp amounts that are various equivalent representations of zero
+    // WHEN converted to drops THEN the conversions are equal to zero
+    String drops = xrpToDrops("0");
+    assertEquals("0 XRP equals 0 drops", "0", drops);
+    drops = xrpToDrops("-0"); // negative zero is equivalent to zero
+    assertEquals("-0 XRP equals 0 drops", "0", drops);
+    drops = xrpToDrops("0.000000");
+    assertEquals("0.000000 XRP equals 0 drops", "0", drops);
+    drops = xrpToDrops("0.0000000");
+    assertEquals( "0.0000000 XRP equals 0 drops", "0", drops);
+  }
+
+  @Test
+  public void xrpToDropsWorksWithNegativeValues() throws XRPException {
+    // GIVEN a negative xrp amount
+    // WHEN converted to drops THEN the conversion is also negative
+    String drops = xrpToDrops("-2");
+    assertEquals("-2 XRP equals -2 million drops", "-2000000", drops);
+  }
+
+  @Test
+  public void xrpToDropsWorksWithAValueEndingWithADecimalPoint() throws XRPException {
+    // GIVEN an xrp amount that ends with a decimal point
+    // WHEN converted to drops THEN the conversion is correct and successful
+    String drops = xrpToDrops("2.");
+    assertEquals("2. XRP equals 2000000 drops", "2000000", drops);
+    drops = xrpToDrops("-2.");
+    assertEquals( "-2. XRP equals -2000000 drops", "-2000000", drops);
+  }
+
+  @Test
+  public void xrpToDropsThrowsWithAnAmountWithTooManyDecimalPlaces() {
+    // GIVEN an xrp amount with too many decimal places
+    // WHEN converted to a drops amount THEN an exception is thrown
+    assertThrows("has too many decimal places", XRPException.class, () -> xrpToDrops("1.1234567"));
+    assertThrows("has too many decimal places", XRPException.class, () -> xrpToDrops("0.0000001"));
+  }
+
+  @Test
+  public void xrpToDropsThrowsWithAnInvalidValue() {
+    // GIVEN xrp amounts represented as various invalid values
+    // WHEN converted to drops THEN an exception is thrown
+    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("FOO"));
+    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("1e-7"));
+    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("2,0"));
+    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("."));
+  }
+
+  @Test
+  public void xrpToDropsThrowsWithAnAmountMoreThanOneDecimalPoint() {
+    // GIVEN an xrp amount with more than one decimal point, or all decimal points
+    // WHEN converted to drops THEN an exception is thrown
+    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("1.0.0"));
+    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("..."));
+  }
+
+  @Test
+  public void xrpToDropsThrowsWithNullArgument() {
+    // GIVEN a null xrp value, WHEN converted to drops,
+    // THEN an exception is thrown
+    assertThrows("null argument", NullPointerException.class, () -> xrpToDrops(null));
   }
 }

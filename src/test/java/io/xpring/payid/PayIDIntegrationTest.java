@@ -1,12 +1,12 @@
 package io.xpring.payid;
 
-    import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-    import io.xpring.common.XRPLNetwork;
-    import io.xpring.payid.generated.model.CryptoAddressDetails;
-    import org.junit.Rule;
-    import org.junit.Test;
-    import org.junit.rules.ExpectedException;
+import io.xpring.common.XRPLNetwork;
+import io.xpring.payid.generated.model.CryptoAddressDetails;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDIntegrationTest {
