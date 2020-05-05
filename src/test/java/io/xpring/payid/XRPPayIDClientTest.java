@@ -123,7 +123,8 @@ public class XRPPayIDClientTest {
             .withBody("{ "
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
-                + "address: '" + classicAddress.address() + "' "
+                + "address: '" + classicAddress.address() + "', "
+                + "tag: '" + classicAddress.tag().get() + "' "
                 + "}"
                 + "}"
             )
