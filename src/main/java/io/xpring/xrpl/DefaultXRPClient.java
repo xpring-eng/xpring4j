@@ -238,8 +238,8 @@ public class DefaultXRPClient implements XRPClientDecorator {
     ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
     AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
-    //LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
-//                                                  .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
+    // LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
+    //                                               .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
     GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
                                                                                 .setAccount(account)
                                                                                 //.setLedgerSpecifier(ledgerSpecifier)
