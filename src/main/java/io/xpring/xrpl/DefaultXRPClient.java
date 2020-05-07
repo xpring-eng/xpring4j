@@ -24,7 +24,6 @@ import org.xrpl.rpc.v1.GetFeeRequest;
 import org.xrpl.rpc.v1.GetFeeResponse;
 import org.xrpl.rpc.v1.GetTransactionRequest;
 import org.xrpl.rpc.v1.GetTransactionResponse;
-import org.xrpl.rpc.v1.LedgerRange;
 import org.xrpl.rpc.v1.LedgerSpecifier;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
@@ -240,11 +239,11 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
     AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
     //LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
-    //                                                  .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
+//                                                  .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
     GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
-                                                                                    .setAccount(account)
-                                                                                    //.setLedgerSpecifier(ledgerSpecifier)
-                                                                                    .build();
+                                                                                .setAccount(account)
+                                                                                //.setLedgerSpecifier(ledgerSpecifier)
+                                                                                .build();
     GetAccountTransactionHistoryResponse transactionHistory = stub.getAccountTransactionHistory(request);
 
     List<GetTransactionResponse> getTransactionResponses = transactionHistory.getTransactionsList();
