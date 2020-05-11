@@ -39,8 +39,9 @@ public class XRPPayIDClient extends PayIDClient implements XRPPayIDClientInterfa
   /**
    * Resolve the given PayID to an XRP Address.
    *
-   * Note: The returned value will always be in an X-Address format.
+   * <p>Note: The returned value will always be in an X-Address format.
    * @see "https://xrpaddress.info"
+   * </p>
    *
    * @param payID The payID to resolve for an address.
    * @return An XRP address representing the given PayID.
