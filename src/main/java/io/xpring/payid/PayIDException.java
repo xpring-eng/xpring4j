@@ -1,6 +1,8 @@
 package io.xpring.payid;
 
 /**
+ * Represents an exception thrown from PayID Components.
+ *
  * @deprecated Please use the idiomatically cased `PayIdException` class instead.
  */
 @Deprecated

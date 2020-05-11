@@ -1,5 +1,8 @@
 package io.xpring.payid;
 
+/**
+ * Represents an exception thrown from PayID Components.
+ */
 public class PayIdException extends Exception {
   /**
    * Static exception for when a classic address is passed to an X-Address API.
