@@ -322,8 +322,10 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
   private AccountRoot getAccountData(String xrplAccountAddress) {
     AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
+
     LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
                                                       .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
+
     GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder()
                                                           .setAccount(account).setLedger(ledgerSpecifier).build();
 
