@@ -1,5 +1,9 @@
 package io.xpring.payid;
 
+/**
+ * @deprecated Please use the idiomatically cased `PayIdException` class instead.
+ */
+@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDException extends Exception {
   /**
