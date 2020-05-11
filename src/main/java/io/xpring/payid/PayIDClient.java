@@ -33,7 +33,7 @@ public class PayIDClient {
   private boolean enableSSLVerification;
 
   /**
-   *   Initialize a new PayID client.
+   * Initialize a new PayID client.
    *
    * @param network The network that addresses will be resolved on.
    *
