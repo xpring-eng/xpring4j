@@ -34,17 +34,15 @@ public class PayIDClient {
 
   /**
    * Initialize a new PayID client.
+   *  Note: Networks in this constructor take the form of an asset and an optional network (asset-network).
+   *  For instance:
+   *    - xrpl-testnet
+   *    - xrpl-mainnet
+   *    - eth-rinkeby
+   *    - ach
+   *  TODO: Link a canonical list at payid.org when available.
    *
    * @param network The network that addresses will be resolved on.
-   *
-   * Note: Networks in this constructor take the form of an asset and an optional network (<asset>-<network>).
-   * For instance:
-   * - xrpl-testnet
-   * - xrpl-mainnet
-   * - eth-rinkeby
-   * - ach
-   *
-   * TODO: Link a canonical list at payid.org when available.
    */
   public PayIDClient(String network) {
     this.network = network;
