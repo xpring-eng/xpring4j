@@ -293,6 +293,25 @@ public class DefaultXRPClient implements XRPClientDecorator {
   }
 
   @Override
+  /**
+   * Retrieve the transaction corresponding to the given transaction hash.
+   *
+   * @param transactionHash The hash of the transaction to retrieve.
+   * @return An XRPTransaction object representing an XRP Ledger transaction.
+   * @throws XRPException If the transaction hash was invalid.
+   */
+  public XRPTransaction getTransaction(String transactionHash) throws XRPException {
+    Objects.requireNonNull(transactionHash);
+
+    byte[] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
+    ByteString transactionHashByteString = ByteString.copyFrom(transactionHashBytes);
+    GetTransactionRequest request = GetTransactionRequest.newBuilder()
+            .setHash(transactionHashByteString).build();
+    GetTransactionResponse response = this.stub.getTransaction(request);
+    return XRPTransaction.from(response);
+  }
+
+  @Override
   public int getLatestValidatedLedgerSequence() throws XRPException {
     return this.getFeeResponse().getLedgerCurrentIndex();
   }
