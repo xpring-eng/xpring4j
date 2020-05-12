@@ -1,5 +1,7 @@
 package io.xpring.xrpl;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -23,8 +25,6 @@ import org.xrpl.rpc.v1.Transaction;
 
 import java.math.BigInteger;
 import java.util.stream.Collectors;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ProtocolBufferConversionTest {
 
