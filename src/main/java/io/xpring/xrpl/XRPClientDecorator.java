@@ -86,4 +86,13 @@ public interface XRPClientDecorator {
    * @throws XRPException If the given inputs were invalid.
    */
   boolean accountExists(String address) throws XRPException;
+
+  /**
+   * Retrieve the transaction corresponding to the given transaction hash.
+   *
+   * @param transactionHash The hash of the transaction to retrieve.
+   * @return An XRPTransaction object representing an XRP Ledger transaction.
+   * @throws XRPException If the transaction hash was invalid.
+   */
+  XRPTransaction getTransaction(String transactionHash) throws XRPException;
 }
