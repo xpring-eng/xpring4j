@@ -24,6 +24,7 @@ import org.xrpl.rpc.v1.GetFeeRequest;
 import org.xrpl.rpc.v1.GetFeeResponse;
 import org.xrpl.rpc.v1.GetTransactionRequest;
 import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.LedgerSpecifier;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
@@ -237,10 +238,9 @@ public class DefaultXRPClient implements XRPClientDecorator {
     ClassicAddress classicAddress = Utils.decodeXAddress(address);
 
     AccountAddress account = AccountAddress.newBuilder().setAddress(classicAddress.address()).build();
-
     GetAccountTransactionHistoryRequest request = GetAccountTransactionHistoryRequest.newBuilder()
-        .setAccount(account)
-        .build();
+                                                                                .setAccount(account)
+                                                                                .build();
     GetAccountTransactionHistoryResponse transactionHistory = stub.getAccountTransactionHistory(request);
 
     List<GetTransactionResponse> getTransactionResponses = transactionHistory.getTransactionsList();
@@ -303,7 +303,8 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
     byte[] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
     ByteString transactionHashByteString = ByteString.copyFrom(transactionHashBytes);
-    GetTransactionRequest request = GetTransactionRequest.newBuilder().setHash(transactionHashByteString).build();
+    GetTransactionRequest request = GetTransactionRequest.newBuilder()
+                                              .setHash(transactionHashByteString).build();
 
     GetTransactionResponse response = this.stub.getTransaction(request);
 
@@ -321,7 +322,12 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
   private AccountRoot getAccountData(String xrplAccountAddress) {
     AccountAddress account = AccountAddress.newBuilder().setAddress(xrplAccountAddress).build();
-    GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).build();
+
+    LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
+                                                      .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
+
+    GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder()
+                                                          .setAccount(account).setLedger(ledgerSpecifier).build();
 
     GetAccountInfoResponse response = this.stub.getAccountInfo(request);
 
