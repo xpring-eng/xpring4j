@@ -33,7 +33,14 @@ public class PayIDClient {
   private boolean enableSSLVerification;
 
   /**
-   * Initialize a new PayIDClient.
+   * Initialize a new PayID client.
+   *  Note: Networks in this constructor take the form of an asset and an optional network (asset-network).
+   *  For instance:
+   *    - xrpl-testnet
+   *    - xrpl-mainnet
+   *    - eth-rinkeby
+   *    - ach
+   *  TODO: Link a canonical list at payid.org when available.
    *
    * @param network The network that addresses will be resolved on.
    */
@@ -53,9 +60,7 @@ public class PayIDClient {
 
   /**
    * Set whether to enable or disable SSL verification.
-   * <p>
    * Exposed for testing purposes.
-   * </p>
    *
    * @param enableSSLVerification true if SSL should be enabled.
    */
@@ -65,13 +70,10 @@ public class PayIDClient {
   }
 
   /**
-   * Resolve the given PayID to an XRP Address.
-   * <p>
-   * Note: The returned value will always be in an X-Address format.
-   * </p>
+   * Resolve the given PayID to an address.
    *
    * @param payID The payID to resolve for an address.
-   * @return An XRP address representing the given PayID.
+   * @return A CryptoAddressDetails that contains an address representing the given PayID.
    */
   public CryptoAddressDetails addressForPayID(String payID) throws PayIDException {
     PayIDComponents paymentPointer = PayIDUtils.parsePayID(payID);
