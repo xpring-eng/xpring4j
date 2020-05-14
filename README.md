@@ -324,7 +324,7 @@ All calls to `IlpClient` must pass an access token, which can be generated in yo
 ```java
 import io.xpring.ilp.IlpClient;
 
-String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
+String grpcUrl = "prod.grpcng.wallet.xpring.io:443"; // Testnet ILP Wallet URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 ```
 
@@ -335,7 +335,7 @@ An `IlpClient` can check the balance of an account on a connector.
 import io.xpring.ilp.IlpClient;
 import io.xpring.ilp.model.AccountBalance;
 
-String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
+String grpcUrl = "prod.grpcng.wallet.xpring.io:443"; // Testnet ILP Wallet URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 
 AccountBalance balance = ilpClient.getBalance("demo_user", "2S1PZh3fEKnKg"); // Just a demo user on Testnet
@@ -351,7 +351,7 @@ import io.xpring.ilp.IlpClient;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResponse;
 
-String grpcUrl = "hermes-envoy-test.xpring.io"; // Testnet Hermes URL
+String grpcUrl = "prod.grpcng.wallet.xpring.io:443"; // Testnet ILP Wallet URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 
 PaymentRequest paymentRequest = PaymentRequest.builder()
