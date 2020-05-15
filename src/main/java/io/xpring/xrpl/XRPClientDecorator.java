@@ -9,7 +9,7 @@ import java.util.List;
  * An common interface shared between XRPClient and the internal hierarchy of decorators.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public interface XRPClientDecorator {
+interface XRPClientDecorator {
   /**
    * Get the balance of the specified account on the XRP Ledger.
    *
@@ -51,10 +51,19 @@ public interface XRPClientDecorator {
   /**
    * Retrieve the latest validated ledger sequence on the XRP Ledger.
    *
-   * @return A long representing the sequence of the most recently validated ledger.
-   * @throws XRPException If the given inputs were invalid.
+   * Note: This call will throw if the given account does not exist on the ledger at the current time. It is the
+   * *caller's responsibility* to ensure this invariant is met.
+   *
+   * Note: The input address *must* be in a classic address form. Inputs are not checked to this internal method.
+   *
+   * TODO(keefertaylor): The above requirements are onerous, difficult to reason about and the logic of this method is
+   * brittle. Replace this method's implementation when rippled supports a `ledger` RPC via gRPC.
+   *
+   * @param address An address that exists at the current time. The address is unchecked and must be a classic address.
+   * @return The index of the latest validated ledger.
+   * @throws XRPException If there was a problem communicating with the XRP Ledger.
    */
-  int getLatestValidatedLedgerSequence() throws XRPException;
+  int getLatestValidatedLedgerSequence(String address) throws XRPException;
 
   /**
    * Retrieve the raw transaction status for the given transaction hash.
