@@ -142,6 +142,9 @@ public class FakeXRPProtobufs {
     }
   }
 
+  static boolean testIsValidated = true;
+  static int testLedgerIndex = 1000;
+
   // VALID OBJECTS ===============================================================
 
   // Currency proto
@@ -376,6 +379,8 @@ public class FakeXRPProtobufs {
                                                                   .setDate(dateProto)
                                                                   .setMeta(metaProtoXRP)
                                                                   .setHash(testTransactionHash)
+                                                                  .setValidated(testIsValidated)
+                                                                  .setLedgerIndex(testLedgerIndex)
                                                                   .build();
 
   static GetTransactionResponse getTransactionResponsePaymentMandatoryFields =
