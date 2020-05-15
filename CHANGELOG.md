@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- A new class, `PayIdException`, replaces the functionality in `PayIDException` with an idiomatically cased name.
+- A new enum, `PayIdExceptionType`, replaces the functionality in `PayIDExceptionType` with an idiomatically cased name.
+
+### Deprecated
+- `PayIDException` is deprecated. Please use the idiomatically cased `PayIdException` class instead.
+- `PayIDExceptionType` is deprecated. Please use the idiomatically cased `PayIdExceptionType` enum instead.
+
 ## 5.1.0 - May 6, 2020
 
 ### Added
