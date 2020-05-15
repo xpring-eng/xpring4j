@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 5.1.1 - 2020-05-15
+
+This release contains minor deprecations of names of methods and classes to make this library more idiomatic with the wider Java ecosystem.
+
 ### Added
 - A new class, `PayIdException`, replaces the functionality in `PayIDException` with an idiomatically cased name.
 - A new enum, `PayIdExceptionType`, replaces the functionality in `PayIDExceptionType` with an idiomatically cased name.
