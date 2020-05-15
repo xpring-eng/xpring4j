@@ -7,7 +7,24 @@ import io.grpc.StatusRuntimeException;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.AccountAddress;
+import org.xrpl.rpc.v1.AccountRoot;
+import org.xrpl.rpc.v1.CurrencyAmount;
+import org.xrpl.rpc.v1.GetAccountInfoRequest;
+import org.xrpl.rpc.v1.GetAccountInfoResponse;
+import org.xrpl.rpc.v1.GetAccountTransactionHistoryRequest;
+import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
+import org.xrpl.rpc.v1.GetFeeRequest;
+import org.xrpl.rpc.v1.GetFeeResponse;
+import org.xrpl.rpc.v1.GetTransactionRequest;
+import org.xrpl.rpc.v1.GetTransactionResponse;
+import org.xrpl.rpc.v1.LedgerSpecifier;
+import org.xrpl.rpc.v1.Payment;
+import org.xrpl.rpc.v1.SubmitTransactionRequest;
+import org.xrpl.rpc.v1.SubmitTransactionResponse;
+import org.xrpl.rpc.v1.Transaction;
+import org.xrpl.rpc.v1.XRPDropsAmount;
+import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.Amount;
 import org.xrpl.rpc.v1.Common.Destination;
@@ -281,15 +298,15 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
   /**
    * Retrieve the latest validated ledger sequence on the XRP Ledger.
-   *
+   * <p>
    * Note: This call will throw if the given account does not exist on the ledger at the current time. It is the
    * *caller's responsibility* to ensure this invariant is met.
-   *
+   * </p><p>
    * Note: The input address *must* be in a classic address form. Inputs are not checked to this internal method.
-   *
+   * </p><p>
    * TODO(keefertaylor): The above requirements are onerous, difficult to reason about and the logic of this method is
    * brittle. Replace this method's implementation when rippled supports a `ledger` RPC via gRPC.
-   *
+   * </p>
    * @param address An address that exists at the current time. The address is unchecked and must be a classic address.
    * @return The index of the latest validated ledger.
    * @throws XRPException If there was a problem communicating with the XRP Ledger.
@@ -300,8 +317,13 @@ public class DefaultXRPClient implements XRPClientDecorator {
     // query the account info for an account which will exist, using a shortcut for the latest validated ledger. The
     // response will contain the ledger the information was retrieved at.
     AccountAddress accountAddress = AccountAddress.newBuilder().setAddress(address).build();
-    LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder().setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED).build();
-    GetAccountInfoRequest getAccountInfoRequest = GetAccountInfoRequest.newBuilder().setAccount(accountAddress).setLedger(ledgerSpecifier).build();
+    LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
+        .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED)
+        .build();
+    GetAccountInfoRequest getAccountInfoRequest = GetAccountInfoRequest.newBuilder()
+        .setAccount(accountAddress)
+        .setLedger(ledgerSpecifier)
+        .build();
 
     GetAccountInfoResponse getAccountInfoResponse = this.stub.getAccountInfo(getAccountInfoRequest);
 

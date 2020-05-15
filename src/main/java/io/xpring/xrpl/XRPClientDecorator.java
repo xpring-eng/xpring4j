@@ -50,15 +50,15 @@ interface XRPClientDecorator {
 
   /**
    * Retrieve the latest validated ledger sequence on the XRP Ledger.
-   *
+   * <p>
    * Note: This call will throw if the given account does not exist on the ledger at the current time. It is the
    * *caller's responsibility* to ensure this invariant is met.
-   *
+   * </p><p>
    * Note: The input address *must* be in a classic address form. Inputs are not checked to this internal method.
-   *
+   * </p><p>
    * TODO(keefertaylor): The above requirements are onerous, difficult to reason about and the logic of this method is
    * brittle. Replace this method's implementation when rippled supports a `ledger` RPC via gRPC.
-   *
+   * </p>
    * @param address An address that exists at the current time. The address is unchecked and must be a classic address.
    * @return The index of the latest validated ledger.
    * @throws XRPException If there was a problem communicating with the XRP Ledger.

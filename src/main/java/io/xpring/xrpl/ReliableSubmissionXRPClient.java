@@ -55,7 +55,10 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
       // This logic is brittle and should be replaced when we have an RPC that can give us this data.
       ClassicAddress classicAddress = Utils.decodeXAddress(sourceWallet.getAddress());
       if (classicAddress == null) {
-        throw new XRPException(XRPExceptionType.UNKNOWN, "The source wallet reported an address which could not be decoded to a classic address");
+        throw new XRPException(
+            XRPExceptionType.UNKNOWN,
+            "The source wallet reported an address which could not be decoded to a classic address"
+        );
       }
       String sourceClassicAddress = classicAddress.address();
 
