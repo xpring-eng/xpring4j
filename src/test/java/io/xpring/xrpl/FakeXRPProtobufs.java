@@ -47,13 +47,13 @@ public class FakeXRPProtobufs {
   private static final Logger logger = LoggerFactory.getLogger(FakeXRPProtobufs.class);
 
   // primitive test values
-  static String testCurrencyName = "currencyName";
-  static ByteString testCurrencyCode;
+  public static String testCurrencyName = "currencyName";
+  public static ByteString testCurrencyCode;
 
-  static String fakeAddress1 = "r123";
-  static String fakeAddress2 = "r456";
+  public static String fakeAddress1 = "r123";
+  public static String fakeAddress2 = "r456";
 
-  static {
+  public static {
     try {
       testCurrencyCode = ByteString.copyFrom("123", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -61,17 +61,17 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static String testIssuedCurrencyValue = "100";
-  static String testInvalidIssuedCurrencyValue = "xrp"; // non-numeric
-  static long testDrops = 10;
-  static long testDeliveredDrops = 20;
-  static int testDestinationTag = 2;
+  public static String testIssuedCurrencyValue = "100";
+  public static String testInvalidIssuedCurrencyValue = "xrp"; // non-numeric
+  public static long testDrops = 10;
+  public static long testDeliveredDrops = 20;
+  public static int testDestinationTag = 2;
 
-  static ByteString memoDataBytes;
-  static ByteString memoFormatBytes;
-  static ByteString memoTypeBytes;
+  public static ByteString memoDataBytes;
+  public static ByteString memoFormatBytes;
+  public static ByteString memoTypeBytes;
 
-  static {
+  public static {
     try {
       memoDataBytes = ByteString.copyFrom("123", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -79,7 +79,7 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static {
+  public static {
     try {
       memoFormatBytes = ByteString.copyFrom("456", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -87,7 +87,7 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static {
+  public static {
     try {
       memoTypeBytes = ByteString.copyFrom("789", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -95,9 +95,9 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static ByteString testSigningPublicKey;
+  public static ByteString testSigningPublicKey;
 
-  static {
+  public static {
     try {
       testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -105,9 +105,9 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static ByteString testTransactionSignature;
+  public static ByteString testTransactionSignature;
 
-  static {
+  public static {
     try {
       testTransactionSignature = ByteString.copyFrom("456", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -115,9 +115,9 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static ByteString testAccountTransactionID;
+  public static ByteString testAccountTransactionID;
 
-  static {
+  public static {
     try {
       testAccountTransactionID = ByteString.copyFrom("789", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -125,16 +125,16 @@ public class FakeXRPProtobufs {
     }
   }
 
-  static Integer testSequence = 1;
-  static Integer testFlags = 4;
-  static Integer testSourceTag = 6;
-  static Integer testLastLedgerSequence = 5;
-  static Integer testTimestamp = 0; // expected to convert to a Unix time of 946684800, the beginning of Ripple epoch
-  static Long expectedTimestamp = 946684800L;
+  public static Integer testSequence = 1;
+  public static Integer testFlags = 4;
+  public static Integer testSourceTag = 6;
+  public static Integer testLastLedgerSequence = 5;
+  public static Integer testTimestamp = 0; // expected to convert to a Unix time of 946684800, the beginning of Ripple epoch
+  public static Long expectedTimestamp = 946684800L;
 
-  static ByteString testTransactionHash;
+  public static ByteString testTransactionHash;
 
-  static {
+  public static {
     try {
       testTransactionHash = ByteString.copyFrom("faketransactionhash", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -145,42 +145,42 @@ public class FakeXRPProtobufs {
   // VALID OBJECTS ===============================================================
 
   // Currency proto
-  static Currency currency = Currency.newBuilder()
+  public static Currency currency = Currency.newBuilder()
       .setName(testCurrencyName)
       .setCode(testCurrencyCode)
       .build();
 
   // AccountAddress protos
-  static AccountAddress accountAddress = AccountAddress.newBuilder()
+  public static AccountAddress accountAddress = AccountAddress.newBuilder()
       .setAddress(fakeAddress1)
       .build();
 
-  static AccountAddress accountAddress_issuer = AccountAddress.newBuilder()
+  public static AccountAddress accountAddress_issuer = AccountAddress.newBuilder()
       .setAddress(fakeAddress2)
       .build();
 
   // PathElement proto
-  static Payment.PathElement pathElement = Payment.PathElement.newBuilder()
+  public static Payment.PathElement pathElement = Payment.PathElement.newBuilder()
       .setAccount(accountAddress)
       .setCurrency(currency)
       .setIssuer(accountAddress_issuer)
       .build();
 
   // Path protos
-  static Payment.Path emptyPath = Payment.Path.newBuilder().build();
+  public static Payment.Path emptyPath = Payment.Path.newBuilder().build();
 
-  static Payment.Path pathWithOneElement = Payment.Path.newBuilder()
+  public static Payment.Path pathWithOneElement = Payment.Path.newBuilder()
       .addElements(pathElement)
       .build();
 
-  static Payment.Path pathWithThreeElements = Payment.Path.newBuilder()
+  public static Payment.Path pathWithThreeElements = Payment.Path.newBuilder()
       .addElements(pathElement)
       .addElements(pathElement)
       .addElements(pathElement)
       .build();
 
   // IssuedCurrencyAmount protos
-  static IssuedCurrencyAmount issuedCurrencyAmount = IssuedCurrencyAmount.newBuilder()
+  public static IssuedCurrencyAmount issuedCurrencyAmount = IssuedCurrencyAmount.newBuilder()
       .setCurrency(currency)
       .setIssuer(accountAddress)
       .setValue(testIssuedCurrencyValue)
@@ -188,54 +188,54 @@ public class FakeXRPProtobufs {
 
   // CurrencyAmount protos
   // XRPDropsAmount proto
-  static XRPDropsAmount xrpDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDrops).build();
-  static CurrencyAmount dropsCurrencyAmount = CurrencyAmount.newBuilder().setXrpAmount(xrpDropsAmount).build();
+  public static XRPDropsAmount xrpDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDrops).build();
+  public static CurrencyAmount dropsCurrencyAmount = CurrencyAmount.newBuilder().setXrpAmount(xrpDropsAmount).build();
 
-  static CurrencyAmount issuedCurrencyCurrencyAmount = CurrencyAmount.newBuilder()
+  public static CurrencyAmount issuedCurrencyCurrencyAmount = CurrencyAmount.newBuilder()
       .setIssuedCurrencyAmount(issuedCurrencyAmount)
       .build();
 
   // Payment protos
   // Amount
-  static Amount amount = Amount.newBuilder().setValue(issuedCurrencyCurrencyAmount).build();
+  public static Amount amount = Amount.newBuilder().setValue(issuedCurrencyCurrencyAmount).build();
 
   // Destination
-  static Destination destination = Destination.newBuilder().setValue(accountAddress).build();
+  public static Destination destination = Destination.newBuilder().setValue(accountAddress).build();
 
   // DestinationTag
-  static DestinationTag destinationTag = DestinationTag.newBuilder()
+  public static DestinationTag destinationTag = DestinationTag.newBuilder()
       .setValue(testDestinationTag).build();
 
   // DeliverMin
-  static DeliverMin deliverMin = DeliverMin.newBuilder().setValue(dropsCurrencyAmount).build();
+  public static DeliverMin deliverMin = DeliverMin.newBuilder().setValue(dropsCurrencyAmount).build();
 
   // InvoiceID
-  static InvoiceID invoiceID = InvoiceID.newBuilder().setValue(testCurrencyCode).build();
+  public static InvoiceID invoiceID = InvoiceID.newBuilder().setValue(testCurrencyCode).build();
 
   // Paths
-  static AccountAddress accountAddress_456 = AccountAddress.newBuilder().setAddress("r456").build();
-  static AccountAddress accountAddress_789 = AccountAddress.newBuilder().setAddress("r789").build();
-  static AccountAddress accountAddress_abc = AccountAddress.newBuilder().setAddress("rabc").build();
+  public static AccountAddress accountAddress_456 = AccountAddress.newBuilder().setAddress("r456").build();
+  public static AccountAddress accountAddress_789 = AccountAddress.newBuilder().setAddress("r789").build();
+  public static AccountAddress accountAddress_abc = AccountAddress.newBuilder().setAddress("rabc").build();
 
-  static Payment.PathElement pathElement_456 = Payment.PathElement.newBuilder()
+  public static Payment.PathElement pathElement_456 = Payment.PathElement.newBuilder()
       .setAccount(accountAddress_456).build();
-  static Payment.PathElement pathElement_789 = Payment.PathElement.newBuilder()
+  public static Payment.PathElement pathElement_789 = Payment.PathElement.newBuilder()
       .setAccount(accountAddress_789).build();
-  static Payment.PathElement pathElement_abc = Payment.PathElement.newBuilder()
+  public static Payment.PathElement pathElement_abc = Payment.PathElement.newBuilder()
       .setAccount(accountAddress_abc).build();
 
 
-  static Payment.Path pathProtoOneElement = Payment.Path.newBuilder().addElements(pathElement_456).build();
-  static Payment.Path pathProtoTwoElements = Payment.Path.newBuilder()
+  public static Payment.Path pathProtoOneElement = Payment.Path.newBuilder().addElements(pathElement_456).build();
+  public static Payment.Path pathProtoTwoElements = Payment.Path.newBuilder()
       .addElements(pathElement_789)
       .addElements(pathElement_abc)
       .build();
 
   // SendMax
-  static SendMax sendMax = SendMax.newBuilder().setValue(dropsCurrencyAmount).build();
+  public static SendMax sendMax = SendMax.newBuilder().setValue(dropsCurrencyAmount).build();
 
   // finally, populate Payment
-  static Payment paymentWithAllFieldsSet = Payment.newBuilder()
+  public static Payment paymentWithAllFieldsSet = Payment.newBuilder()
       .setAmount(amount)
       .setDestination(destination)
       .setDestinationTag(destinationTag)
@@ -246,23 +246,23 @@ public class FakeXRPProtobufs {
       .setSendMax(sendMax)
       .build();
 
-  static Payment paymentWithMandatoryFieldsSet = Payment.newBuilder()
+  public static Payment paymentWithMandatoryFieldsSet = Payment.newBuilder()
       .setAmount(amount)
       .setDestination(destination)
       .build();
 
   // Memo protos
-  static MemoData memoData = MemoData.newBuilder()
+  public static MemoData memoData = MemoData.newBuilder()
       .setValue(memoDataBytes)
       .build();
-  static MemoFormat memoFormat = MemoFormat.newBuilder()
+  public static MemoFormat memoFormat = MemoFormat.newBuilder()
       .setValue(memoFormatBytes)
       .build();
-  static MemoType memoType = MemoType.newBuilder()
+  public static MemoType memoType = MemoType.newBuilder()
       .setValue(memoTypeBytes)
       .build();
 
-  static Memo memoWithAllFieldsSet = Memo.newBuilder()
+  public static Memo memoWithAllFieldsSet = Memo.newBuilder()
       .setMemoData(memoData)
       .setMemoFormat(memoFormat)
       .setMemoType(memoType)
@@ -270,47 +270,47 @@ public class FakeXRPProtobufs {
 
   // Signer protos
   // Account
-  static Account account = Account.newBuilder().setValue(accountAddress).build();
+  public static Account account = Account.newBuilder().setValue(accountAddress).build();
 
   // SigningPublicKey
-  static SigningPublicKey signingPublicKey = SigningPublicKey.newBuilder()
+  public static SigningPublicKey signingPublicKey = SigningPublicKey.newBuilder()
       .setValue(testSigningPublicKey)
       .build();
 
   // TransactionSignature
-  static TransactionSignature transactionSignature = TransactionSignature.newBuilder()
+  public static TransactionSignature transactionSignature = TransactionSignature.newBuilder()
       .setValue(testTransactionSignature)
       .build();
 
-  static Signer signerWithAllFieldsSet = Signer.newBuilder()
+  public static Signer signerWithAllFieldsSet = Signer.newBuilder()
       .setAccount(account)
       .setSigningPublicKey(signingPublicKey)
       .setTransactionSignature(transactionSignature)
       .build();
 
   // CheckCash proto
-  static CheckCash checkCash = CheckCash.newBuilder().build();
+  public static CheckCash checkCash = CheckCash.newBuilder().build();
 
   // Transaction protos
   // Common.Sequence proto
-  static Sequence sequence = Sequence.newBuilder().setValue(testSequence).build();
+  public static Sequence sequence = Sequence.newBuilder().setValue(testSequence).build();
 
   // Common.AccountTransactionID proto
-  static AccountTransactionID accountTransactionID = AccountTransactionID.newBuilder()
+  public static AccountTransactionID accountTransactionID = AccountTransactionID.newBuilder()
       .setValue(testAccountTransactionID)
       .build();
   // Common.Flags proto
-  static Flags flags = Flags.newBuilder().setValue(testFlags).build();
+  public static Flags flags = Flags.newBuilder().setValue(testFlags).build();
 
   // Common.LastLedgerSequence proto
-  static LastLedgerSequence lastLedgerSequence = LastLedgerSequence.newBuilder()
+  public static LastLedgerSequence lastLedgerSequence = LastLedgerSequence.newBuilder()
       .setValue(testLastLedgerSequence)
       .build();
 
   // Common.SourceTag proto
-  static SourceTag sourceTag = SourceTag.newBuilder().setValue(testSourceTag).build();
+  public static SourceTag sourceTag = SourceTag.newBuilder().setValue(testSourceTag).build();
 
-  static Transaction transactionWithAllFieldsSet = Transaction.newBuilder()
+  public static Transaction transactionWithAllFieldsSet = Transaction.newBuilder()
       .setAccount(account)
       .setAccountTransactionId(accountTransactionID)
       .setFee(xrpDropsAmount)
@@ -325,7 +325,7 @@ public class FakeXRPProtobufs {
       .setPayment(paymentWithAllFieldsSet)
       .build();
 
-  static Transaction transactionWithOnlyMandatoryCommonFieldsSet = Transaction.newBuilder()
+  public static Transaction transactionWithOnlyMandatoryCommonFieldsSet = Transaction.newBuilder()
       .setAccount(account)
       .setFee(xrpDropsAmount)
       .setSequence(sequence)
@@ -334,7 +334,7 @@ public class FakeXRPProtobufs {
       .setPayment(paymentWithAllFieldsSet)
       .build();
 
-  static Transaction checkCashTransactionWithCommonFieldsSet = Transaction.newBuilder()
+  public static Transaction checkCashTransactionWithCommonFieldsSet = Transaction.newBuilder()
       .setAccount(account)
       .setFee(xrpDropsAmount)
       .setSequence(sequence)
@@ -345,71 +345,71 @@ public class FakeXRPProtobufs {
 
   // Additional Transaction metadata protos for GetTransactionResponse protos
   // Date
-  static Date dateProto = Date.newBuilder().setValue(testTimestamp).build();
+  public static Date dateProto = Date.newBuilder().setValue(testTimestamp).build();
 
   // Meta with DeliveredAmount
-  static XRPDropsAmount deliveredXRPDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDeliveredDrops).build();
+  public static XRPDropsAmount deliveredXRPDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDeliveredDrops).build();
 
-  static CurrencyAmount deliveredAmountXRPCurrencyAmount = CurrencyAmount.newBuilder()
+  public static CurrencyAmount deliveredAmountXRPCurrencyAmount = CurrencyAmount.newBuilder()
                                                                       .setXrpAmount(deliveredXRPDropsAmount)
                                                                       .build();
 
-  static CurrencyAmount deliveredAmountIssuedCurrencyAmount = CurrencyAmount.newBuilder()
+  public static CurrencyAmount deliveredAmountIssuedCurrencyAmount = CurrencyAmount.newBuilder()
                                                                           .setIssuedCurrencyAmount(issuedCurrencyAmount)
                                                                           .build();
 
-  static Common.DeliveredAmount deliveredAmountXRPProto = Common.DeliveredAmount.newBuilder()
+  public static Common.DeliveredAmount deliveredAmountXRPProto = Common.DeliveredAmount.newBuilder()
                                                                             .setValue(deliveredAmountXRPCurrencyAmount)
                                                                             .build();
 
-  static Common.DeliveredAmount deliveredAmountIssuedProto = Common.DeliveredAmount.newBuilder()
+  public static Common.DeliveredAmount deliveredAmountIssuedProto = Common.DeliveredAmount.newBuilder()
                                                                           .setValue(deliveredAmountIssuedCurrencyAmount)
                                                                           .build();
 
-  static Meta metaProtoXRP = Meta.newBuilder().setDeliveredAmount(deliveredAmountXRPProto).build();
+  public static Meta metaProtoXRP = Meta.newBuilder().setDeliveredAmount(deliveredAmountXRPProto).build();
 
-  static Meta metaProtoIssued = Meta.newBuilder().setDeliveredAmount(deliveredAmountIssuedProto).build();
+  public static Meta metaProtoIssued = Meta.newBuilder().setDeliveredAmount(deliveredAmountIssuedProto).build();
 
   // GetTransactionResponse protos
-  static GetTransactionResponse getTransactionResponsePaymentAllFields = GetTransactionResponse.newBuilder()
+  public static GetTransactionResponse getTransactionResponsePaymentAllFields = GetTransactionResponse.newBuilder()
                                                                   .setTransaction(transactionWithAllFieldsSet)
                                                                   .setDate(dateProto)
                                                                   .setMeta(metaProtoXRP)
                                                                   .setHash(testTransactionHash)
                                                                   .build();
 
-  static GetTransactionResponse getTransactionResponsePaymentMandatoryFields =
+  public static GetTransactionResponse getTransactionResponsePaymentMandatoryFields =
                                                             GetTransactionResponse.newBuilder()
                                                             .setTransaction(transactionWithOnlyMandatoryCommonFieldsSet)
                                                             .setHash(testTransactionHash)
                                                             .build();
 
-  static GetTransactionResponse getTransactionResponsePaymentXRP = GetTransactionResponse.newBuilder()
+  public static GetTransactionResponse getTransactionResponsePaymentXRP = GetTransactionResponse.newBuilder()
                                                                             .setTransaction(transactionWithAllFieldsSet)
                                                                             .setHash(testTransactionHash)
                                                                             .setMeta(metaProtoXRP)
                                                                             .build();
 
-  static GetTransactionResponse getTransactionResponsePaymentIssued = GetTransactionResponse.newBuilder()
+  public static GetTransactionResponse getTransactionResponsePaymentIssued = GetTransactionResponse.newBuilder()
                                                                             .setTransaction(transactionWithAllFieldsSet)
                                                                             .setHash(testTransactionHash)
                                                                             .setMeta(metaProtoIssued)
                                                                             .build();
 
-  static GetTransactionResponse getTransactionResponseCheckCash = GetTransactionResponse.newBuilder()
+  public static GetTransactionResponse getTransactionResponseCheckCash = GetTransactionResponse.newBuilder()
                                                                 .setTransaction(checkCashTransactionWithCommonFieldsSet)
                                                                 .setDate(dateProto)
                                                                 .setHash(testTransactionHash)
                                                                 .build();
 
   // GetAccountTransactionHistoryResponse protos
-  static GetAccountTransactionHistoryResponse paymentOnlyGetAccountTransactionHistoryResponse =
+  public static GetAccountTransactionHistoryResponse paymentOnlyGetAccountTransactionHistoryResponse =
       GetAccountTransactionHistoryResponse.newBuilder()
           .addTransactions(getTransactionResponsePaymentAllFields)
           .addTransactions(getTransactionResponsePaymentMandatoryFields)
           .build();
 
-  static GetAccountTransactionHistoryResponse mixedGetAccountTransactionHistoryResponse =
+  public static GetAccountTransactionHistoryResponse mixedGetAccountTransactionHistoryResponse =
       GetAccountTransactionHistoryResponse.newBuilder()
           .addTransactions(getTransactionResponsePaymentAllFields)
           .addTransactions(getTransactionResponsePaymentMandatoryFields)
@@ -419,49 +419,49 @@ public class FakeXRPProtobufs {
   // INVALID OBJECTS ===============================================================
 
   // Invalid IssuedCurrencyAmount proto
-  static IssuedCurrencyAmount invalidIssuedCurrencyAmount = IssuedCurrencyAmount.newBuilder()
+  public static IssuedCurrencyAmount invalidIssuedCurrencyAmount = IssuedCurrencyAmount.newBuilder()
       .setCurrency(currency)
       .setIssuer(accountAddress)
       .setValue(testInvalidIssuedCurrencyValue)
       .build();
 
   // Invalid CurrencyAmount proto
-  static CurrencyAmount invalidCurrencyAmount = CurrencyAmount.newBuilder()
+  public static CurrencyAmount invalidCurrencyAmount = CurrencyAmount.newBuilder()
       .setIssuedCurrencyAmount(invalidIssuedCurrencyAmount)
       .build();
 
   // Invalid Amount proto
-  static Amount invalidAmount = Amount.newBuilder().setValue(invalidCurrencyAmount).build();
+  public static Amount invalidAmount = Amount.newBuilder().setValue(invalidCurrencyAmount).build();
 
   // Invalid DeliverMin proto
-  static DeliverMin invalidDeliverMin = DeliverMin.newBuilder().setValue(invalidCurrencyAmount).build();
+  public static DeliverMin invalidDeliverMin = DeliverMin.newBuilder().setValue(invalidCurrencyAmount).build();
 
   // Invalid SendMax proto
-  static SendMax invalidSendMax = SendMax.newBuilder().setValue(invalidCurrencyAmount).build();
+  public static SendMax invalidSendMax = SendMax.newBuilder().setValue(invalidCurrencyAmount).build();
 
   // Invalid Payment protos
   // invalid amount field
-  static Payment invalidPaymentBadAmount = Payment.newBuilder()
+  public static Payment invalidPaymentBadAmount = Payment.newBuilder()
       .setAmount(invalidAmount)
       .setDestination(destination)
       .build();
 
   // invalid deliverMin field
-  static Payment invalidPaymentBadDeliverMin = Payment.newBuilder()
+  public static Payment invalidPaymentBadDeliverMin = Payment.newBuilder()
       .setAmount(amount)
       .setDestination(destination)
       .setDeliverMin(invalidDeliverMin)
       .build();
 
   // invalid sendMax field
-  static Payment invalidPaymentBadSendMax = Payment.newBuilder()
+  public static Payment invalidPaymentBadSendMax = Payment.newBuilder()
       .setAmount(amount)
       .setDestination(destination)
       .setSendMax(invalidSendMax)
       .build();
 
   // Invalid Transaction with empty Payment
-  static Transaction invalidTransactionWithEmptyPaymentFields = Transaction.newBuilder()
+  public static Transaction invalidTransactionWithEmptyPaymentFields = Transaction.newBuilder()
       .setAccount(account)
       .setFee(xrpDropsAmount)
       .setSequence(sequence)
@@ -471,7 +471,7 @@ public class FakeXRPProtobufs {
       .build();
 
   // Invalid Transaction due to unsupported transaction type
-  static Transaction invalidTransactionUnsupportedType = Transaction.newBuilder()
+  public static Transaction invalidTransactionUnsupportedType = Transaction.newBuilder()
       .setAccount(account)
       .setFee(xrpDropsAmount)
       .setSequence(sequence)
@@ -481,16 +481,16 @@ public class FakeXRPProtobufs {
       .build();
 
   // Invalid GetTransactionResponse protos
-  static GetTransactionResponse invalidGetTransactionResponseEmptyPaymentFields = GetTransactionResponse.newBuilder()
+  public static GetTransactionResponse invalidGetTransactionResponseEmptyPaymentFields = GetTransactionResponse.newBuilder()
       .setTransaction(invalidTransactionWithEmptyPaymentFields)
       .build();
 
-  static GetTransactionResponse invalidGetTransactionResponseUnsupportedTransactionType =
+  public static GetTransactionResponse invalidGetTransactionResponseUnsupportedTransactionType =
                                                               GetTransactionResponse.newBuilder()
                                                                       .setTransaction(invalidTransactionUnsupportedType)
                                                                       .build();
   // Invalid GetAccountTransactionHistoryResponse protos
-  static GetAccountTransactionHistoryResponse invalidPaymentGetAccountTransactionHistoryResponse =
+  public static GetAccountTransactionHistoryResponse invalidPaymentGetAccountTransactionHistoryResponse =
       GetAccountTransactionHistoryResponse.newBuilder()
           .addTransactions(invalidGetTransactionResponseEmptyPaymentFields)
           .addTransactions(getTransactionResponsePaymentAllFields)
