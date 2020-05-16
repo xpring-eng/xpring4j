@@ -15,6 +15,7 @@ import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
 import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
+import org.immutables.value.internal.$guava$.base.$Throwables;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,6 +29,7 @@ import org.xrpl.rpc.v1.GetAccountTransactionHistoryRequest;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetFeeRequest;
 import org.xrpl.rpc.v1.GetFeeResponse;
+import org.xrpl.rpc.v1.GetTransaction;
 import org.xrpl.rpc.v1.GetTransactionRequest;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Meta;
@@ -432,7 +434,7 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void accountExistsTestWithUnkonwnError() throws IOException, XRPException {
+  public void accountExistsTestWithUnknownError() throws IOException, XRPException {
     // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
     StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
@@ -448,6 +450,32 @@ public class DefaultXRPClientTest {
     expectedException.expect(StatusRuntimeException.class);
     client.getBalance(XRPL_ADDRESS);
   }
+
+  @Test
+  public void getTransactionWithSuccessfulResponseTest() throws XRPException, IOException {
+    // GIVEN a DefaultXRPClient with mocked networking that will succeed for getTransaction.
+    Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
+            FakeXRPProtobufs.getTransactionResponsePaymentAllFields
+    );
+
+    DefaultXRPClient xrpClient = getClient(
+        Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+        getTransactionResult,
+        Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+        Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+        Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+    // WHEN a transaction is requested.
+    XRPTransaction transaction = xrpClient.getTransaction(TRANSACTION_HASH);
+
+    // THEN the returned transaction is as expected.
+    assertThat(transaction).isEqualTo(XRPTransaction.from(FakeXRPProtobufs.getTransactionResponsePaymentAllFields));
+  }
+
+  // malformed transaction
+  // non-payment transaction
+  // network error?? redundant?
+  // not-found on network??
 
   /**
    * Convenience method to get an XRPClient which has successful network calls.
