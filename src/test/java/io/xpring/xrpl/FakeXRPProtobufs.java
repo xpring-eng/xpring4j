@@ -53,7 +53,7 @@ public class FakeXRPProtobufs {
   public static String fakeAddress1 = "r123";
   public static String fakeAddress2 = "r456";
 
-  public static {
+  static {
     try {
       testCurrencyCode = ByteString.copyFrom("123", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -71,7 +71,7 @@ public class FakeXRPProtobufs {
   public static ByteString memoFormatBytes;
   public static ByteString memoTypeBytes;
 
-  public static {
+  static {
     try {
       memoDataBytes = ByteString.copyFrom("123", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -79,7 +79,7 @@ public class FakeXRPProtobufs {
     }
   }
 
-  public static {
+  static {
     try {
       memoFormatBytes = ByteString.copyFrom("456", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -87,7 +87,7 @@ public class FakeXRPProtobufs {
     }
   }
 
-  public static {
+  static {
     try {
       memoTypeBytes = ByteString.copyFrom("789", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -97,7 +97,7 @@ public class FakeXRPProtobufs {
 
   public static ByteString testSigningPublicKey;
 
-  public static {
+  static {
     try {
       testSigningPublicKey = ByteString.copyFrom("123", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -107,7 +107,7 @@ public class FakeXRPProtobufs {
 
   public static ByteString testTransactionSignature;
 
-  public static {
+  static {
     try {
       testTransactionSignature = ByteString.copyFrom("456", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -117,7 +117,7 @@ public class FakeXRPProtobufs {
 
   public static ByteString testAccountTransactionID;
 
-  public static {
+  static {
     try {
       testAccountTransactionID = ByteString.copyFrom("789", "Utf8");
     } catch (UnsupportedEncodingException exception) {
@@ -134,7 +134,7 @@ public class FakeXRPProtobufs {
 
   public static ByteString testTransactionHash;
 
-  public static {
+  static {
     try {
       testTransactionHash = ByteString.copyFrom("faketransactionhash", "Utf8");
     } catch (UnsupportedEncodingException exception) {
