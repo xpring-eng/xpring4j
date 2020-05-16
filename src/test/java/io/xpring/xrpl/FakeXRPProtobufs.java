@@ -129,7 +129,7 @@ public class FakeXRPProtobufs {
   public static Integer testFlags = 4;
   public static Integer testSourceTag = 6;
   public static Integer testLastLedgerSequence = 5;
-  public static Integer testTimestamp = 0; // expected to convert to a Unix time of 946684800, the beginning of Ripple epoch
+  public static Integer testTimestamp = 0; // expected to convert to a Unix time of 946684800, beginning of Ripple epoch
   public static Long expectedTimestamp = 946684800L;
 
   public static ByteString testTransactionHash;
@@ -348,7 +348,9 @@ public class FakeXRPProtobufs {
   public static Date dateProto = Date.newBuilder().setValue(testTimestamp).build();
 
   // Meta with DeliveredAmount
-  public static XRPDropsAmount deliveredXRPDropsAmount = XRPDropsAmount.newBuilder().setDrops(testDeliveredDrops).build();
+  public static XRPDropsAmount deliveredXRPDropsAmount = XRPDropsAmount.newBuilder()
+                                                                        .setDrops(testDeliveredDrops)
+                                                                        .build();
 
   public static CurrencyAmount deliveredAmountXRPCurrencyAmount = CurrencyAmount.newBuilder()
                                                                       .setXrpAmount(deliveredXRPDropsAmount)
@@ -481,9 +483,10 @@ public class FakeXRPProtobufs {
       .build();
 
   // Invalid GetTransactionResponse protos
-  public static GetTransactionResponse invalidGetTransactionResponseEmptyPaymentFields = GetTransactionResponse.newBuilder()
-      .setTransaction(invalidTransactionWithEmptyPaymentFields)
-      .build();
+  public static GetTransactionResponse invalidGetTransactionResponseEmptyPaymentFields = GetTransactionResponse
+                                                              .newBuilder()
+                                                              .setTransaction(invalidTransactionWithEmptyPaymentFields)
+                                                              .build();
 
   public static GetTransactionResponse invalidGetTransactionResponseUnsupportedTransactionType =
                                                               GetTransactionResponse.newBuilder()
