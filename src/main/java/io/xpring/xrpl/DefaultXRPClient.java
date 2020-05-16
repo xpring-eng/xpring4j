@@ -296,6 +296,9 @@ public class DefaultXRPClient implements XRPClientDecorator {
   /**
    * Retrieve the transaction corresponding to the given transaction hash.
    *
+   * Note: This method can return transactions that are not included in a fully validated ledger.
+   *       See the `validated` field to make this distinction.
+   *
    * @param transactionHash The hash of the transaction to retrieve.
    * @return An XRPTransaction object representing an XRP Ledger transaction.
    * @throws XRPException If the transaction hash was invalid.
