@@ -415,7 +415,7 @@ public class DefaultXRPClientTest {
 
   @Test
   public void accountExistsTestWithNotFoundError() throws IOException, XRPException {
-    // GIVEN a XRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
+    // GIVEN a DefaultXRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
     StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
     DefaultXRPClient client = getClient(
@@ -435,9 +435,9 @@ public class DefaultXRPClientTest {
 
   @Test
   public void accountExistsTestWithUnknownError() throws IOException, XRPException {
-    // GIVEN a XpringClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
-    StatusRuntimeException notFoundError = new StatusRuntimeException(Status.UNKNOWN);
-    Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
+    // GIVEN a DefaultXRPClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
+    StatusRuntimeException unknownError = new StatusRuntimeException(Status.UNKNOWN);
+    Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(unknownError);
     DefaultXRPClient client = getClient(
         accountInfoResult,
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -472,10 +472,66 @@ public class DefaultXRPClientTest {
     assertThat(transaction).isEqualTo(XRPTransaction.from(FakeXRPProtobufs.getTransactionResponsePaymentAllFields));
   }
 
-  // malformed transaction
-  // non-payment transaction
-  // network error?? redundant?
-  // not-found on network??
+  @Test
+  public void getTransactionWithNotFoundErrorTest() throws XRPException, IOException {
+    // GIVEN a DefaultXRPClient with mocked networking that will fail to retrieve a transaction w/ NOT_FOUND error code.
+    StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
+    Result<GetTransactionResponse, Throwable> getTransactionResult = Result.error(notFoundError);
+
+    DefaultXRPClient client = getClient(
+            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+            getTransactionResult,
+            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+            Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+            Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+
+    // WHEN a transaction is requested, THEN the error is re-thrown.
+    expectedException.expect(StatusRuntimeException.class);
+    client.getTransaction(TRANSACTION_HASH);
+  }
+
+  @Test
+  public void getTransactionWithMalformedPaymentTest() throws XRPException, IOException {
+    // GIVEN a DefaultXRPClient with mocked networking that will return a malformed payment transaction.
+    Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
+            FakeXRPProtobufs.invalidGetTransactionResponseEmptyPaymentFields
+    );
+    DefaultXRPClient client = getClient(
+            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+            getTransactionResult,
+            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+            Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+            Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+
+    // WHEN a transaction is requested.
+    XRPTransaction transaction = client.getTransaction(TRANSACTION_HASH);
+
+    // THEN the result is null.
+    assertThat(transaction).isNull();
+  }
+
+  @Test
+  public void getTransactionWithUnsupportedTypeTest() throws XRPException, IOException {
+    // GIVEN a DefaultXRPClient with mocked networking that will return an unsupported transaction type.
+    Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
+            FakeXRPProtobufs.invalidGetTransactionResponseUnsupportedTransactionType
+    );
+    DefaultXRPClient client = getClient(
+            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+            getTransactionResult,
+            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+            Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+            Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+
+    // WHEN a transaction is requested.
+    XRPTransaction transaction = client.getTransaction(TRANSACTION_HASH);
+
+    // THEN the result is null.
+    assertThat(transaction).isNull();
+  }
 
   /**
    * Convenience method to get an XRPClient which has successful network calls.
