@@ -95,7 +95,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
   }
 
   @Override
-  public int getLatestValidatedLedgerSequence() throws XRPException {
+  public int getLatestValidatedLedgerSequence(String address) throws XRPException {
     if (this.latestValidatedLedgerResult.isError()) {
       throw this.latestValidatedLedgerResult.getError();
     } else {

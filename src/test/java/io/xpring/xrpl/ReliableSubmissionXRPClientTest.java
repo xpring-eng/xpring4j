@@ -114,7 +114,7 @@ public class ReliableSubmissionXRPClientTest {
   @Test
   public void testGetLatestValidatedLedgerSequence() throws XRPException {
     // GIVEN a `ReliableSubmissionClient` decorating a FakeXRPClient WHEN the latest ledger sequence is retrieved
-    int latestSequence = reliableSubmissionXRPClient.getLatestValidatedLedgerSequence();
+    int latestSequence = reliableSubmissionXRPClient.getLatestValidatedLedgerSequence(XRPL_ADDRESS);
 
     // THEN the result is returned unaltered.
     assertThat(latestSequence).isEqualTo(DEFAULT_LATEST_LEDGER_VALUE);

@@ -9,12 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.AccountAddress;
 import org.xrpl.rpc.v1.AccountRoot;
-import org.xrpl.rpc.v1.Common.Account;
-import org.xrpl.rpc.v1.Common.Amount;
-import org.xrpl.rpc.v1.Common.Destination;
-import org.xrpl.rpc.v1.Common.DestinationTag;
-import org.xrpl.rpc.v1.Common.LastLedgerSequence;
-import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetAccountInfoRequest;
 import org.xrpl.rpc.v1.GetAccountInfoResponse;
@@ -31,6 +25,12 @@ import org.xrpl.rpc.v1.SubmitTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
+import org.xrpl.rpc.v1.Common.Account;
+import org.xrpl.rpc.v1.Common.Amount;
+import org.xrpl.rpc.v1.Common.Destination;
+import org.xrpl.rpc.v1.Common.DestinationTag;
+import org.xrpl.rpc.v1.Common.LastLedgerSequence;
+import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
@@ -162,7 +162,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
     AccountRoot accountData = this.getAccountData(sourceClassicAddress.address());
     XRPDropsAmount fee = this.getMinimumFee();
-    int lastValidatedLedgerSequence = this.getLatestValidatedLedgerSequence();
+    int openLedgerSequence = this.getOpenLedgerSequence();
 
     AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
         .setAddress(destinationClassicAddress.address())
@@ -189,7 +189,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
     Payment payment = paymentBuilder.build();
 
     byte[] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getPublicKey());
-    int lastLedgerSequenceInt = lastValidatedLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
+    int lastLedgerSequenceInt = openLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
 
     Account sourceAccount = Account.newBuilder().setValue(sourceAccountAddress).build();
     LastLedgerSequence lastLedgerSequence = LastLedgerSequence.newBuilder().setValue(lastLedgerSequenceInt).build();
@@ -314,9 +314,42 @@ public class DefaultXRPClient implements XRPClientDecorator {
     return XRPTransaction.from(response);
   }
 
-  @Override
-  public int getLatestValidatedLedgerSequence() throws XRPException {
+  public int getOpenLedgerSequence() throws XRPException {
     return this.getFeeResponse().getLedgerCurrentIndex();
+  }
+
+  /**
+   * Retrieve the latest validated ledger sequence on the XRP Ledger.
+   * <p>
+   * Note: This call will throw if the given account does not exist on the ledger at the current time. It is the
+   * *caller's responsibility* to ensure this invariant is met.
+   * </p><p>
+   * Note: The input address *must* be in a classic address form. Inputs are not checked to this internal method.
+   * </p><p>
+   * TODO(keefertaylor): The above requirements are onerous, difficult to reason about and the logic of this method is
+   * brittle. Replace this method's implementation when rippled supports a `ledger` RPC via gRPC.
+   * </p>
+   * @param address An address that exists at the current time. The address is unchecked and must be a classic address.
+   * @return The index of the latest validated ledger.
+   * @throws XRPException If there was a problem communicating with the XRP Ledger.
+   */
+  @Override
+  public int getLatestValidatedLedgerSequence(String address) throws XRPException {
+    // rippled doesn't support a gRPC call that tells us the latest validated ledger sequence. To get around this,
+    // query the account info for an account which will exist, using a shortcut for the latest validated ledger. The
+    // response will contain the ledger the information was retrieved at.
+    AccountAddress accountAddress = AccountAddress.newBuilder().setAddress(address).build();
+    LedgerSpecifier ledgerSpecifier = LedgerSpecifier.newBuilder()
+        .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED)
+        .build();
+    GetAccountInfoRequest getAccountInfoRequest = GetAccountInfoRequest.newBuilder()
+        .setAccount(accountAddress)
+        .setLedger(ledgerSpecifier)
+        .build();
+
+    GetAccountInfoResponse getAccountInfoResponse = this.stub.getAccountInfo(getAccountInfoRequest);
+
+    return getAccountInfoResponse.getLedgerIndex();
   }
 
   @Override
