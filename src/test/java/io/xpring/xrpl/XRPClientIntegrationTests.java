@@ -84,4 +84,17 @@ public class XRPClientIntegrationTests {
     List<XRPTransaction> paymentHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
     assertThat(paymentHistory.size()).isGreaterThan(0);
   }
+
+  @Test
+  public void getTransactionTest() throws XRPException {
+    // GIVEN a hash of a payment transaction.
+    Wallet wallet = new Wallet(WALLET_SEED);
+    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+
+    // WHEN the transaction is requested.
+    XRPTransaction transaction = xrpClient.getTransaction(transactionHash);
+
+    // THEN it is found and returned.
+    assertThat(transaction).isNotNull();
+  }
 }
