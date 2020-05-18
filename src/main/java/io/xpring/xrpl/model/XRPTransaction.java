@@ -163,6 +163,21 @@ public interface XRPTransaction {
   Optional<String> deliveredAmount();
 
   /**
+   * A boolean indicating whether this transaction was found on a validated ledger, and not an open or closed ledger.
+   *
+   * @return A boolean indicating whether or not this transactionw as found on a validated ledger.
+   * @see "https://xrpl.org/ledgers.html#open-closed-and-validated-ledgers"
+   */
+  boolean validated();
+
+  /**
+   * The index of the ledger on which this transaction was found.
+   *
+   * @return An integer indicating the ledger index of the ledger on which this transaction was found.
+   */
+  int ledgerIndex();
+
+  /**
    * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
    *
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
@@ -261,6 +276,10 @@ public interface XRPTransaction {
       }
     }
 
+    final boolean validated = getTransactionResponse.getValidated();
+
+    final int ledgerIndex = getTransactionResponse.getLedgerIndex();
+
     return XRPTransaction.builder()
         .hash(hash)
         .account(account)
@@ -278,6 +297,8 @@ public interface XRPTransaction {
         .paymentFields(paymentFields)
         .timestamp(timestamp)
         .deliveredAmount(deliveredAmount)
+        .validated(validated)
+        .ledgerIndex(ledgerIndex)
         .build();
   }
 }
