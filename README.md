@@ -351,7 +351,7 @@ import io.xpring.ilp.IlpClient;
 import io.xpring.ilp.model.PaymentRequest;
 import io.xpring.ilp.model.PaymentResponse;
 
-String grpcUrl = "prod.grpcng.wallet.xpring.io:443"; // Testnet ILP Wallet URL
+String grpcUrl = "prod.grpcng.wallet.xpring.io"; // Testnet ILP Wallet URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 
 PaymentRequest paymentRequest = PaymentRequest.builder()
