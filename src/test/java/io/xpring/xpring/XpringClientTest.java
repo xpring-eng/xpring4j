@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.PayIDException;
 import io.xpring.payid.PayIDExceptionType;
+import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.fakes.FakeXRPPayIDClient;
 import io.xpring.xrpl.FakeXRPClient;
 import io.xpring.xrpl.RawTransactionStatus;
