@@ -338,6 +338,8 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
     assertThat(xrpTransaction.timestamp().get()).isEqualTo(FakeXRPProtobufs.expectedTimestamp);
     assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(Long.toString(FakeXRPProtobufs.testDeliveredDrops));
+    assertThat(xrpTransaction.validated()).isEqualTo(FakeXRPProtobufs.testIsValidated);
+    assertThat(xrpTransaction.ledgerIndex()).isEqualTo(FakeXRPProtobufs.testLedgerIndex);
   }
 
   @Test
