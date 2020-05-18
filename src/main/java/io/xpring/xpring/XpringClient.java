@@ -1,7 +1,7 @@
 package io.xpring.xpring;
 
-import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.PayIDException;
+import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClientInterface;
 import io.xpring.xrpl.XRPException;
