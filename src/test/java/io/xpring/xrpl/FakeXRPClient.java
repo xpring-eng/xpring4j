@@ -25,7 +25,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
   public Result<RawTransactionStatus, XRPException> rawTransactionStatusResult;
   public Result<List<XRPTransaction>, XRPException> paymentHistoryResult;
   public Result<Boolean, XRPException> accountExistsResult;
-  public Result<XRPTransaction, XRPException> getTransactionResult;
+  public Result<XRPTransaction, XRPException> getPaymentResult;
 
   /**
    * Create a new FakeXRPClient.
