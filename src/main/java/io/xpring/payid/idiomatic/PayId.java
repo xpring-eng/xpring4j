@@ -1,6 +1,6 @@
-package io.xpring.payid;
+package io.xpring.payid.idiomatic;
 
-import static io.xpring.payid.AbstractPayID.upperCasePercentEncoded;
+import static io.xpring.payid.idiomatic.AbstractPayId.upperCasePercentEncoded;
 import static java.lang.String.format;
 
 import com.google.common.base.Preconditions;
@@ -13,19 +13,17 @@ import java.util.StringTokenizer;
  * A standardized identifier for payment accounts.
  *
  * @see "https://github.com/xpring-eng/rfcs/blob/master/TBD.md"
- *
- * @deprecated Please use the idiomatically named `PayId` interface instead.
  */
-public interface PayID {
+public interface PayId {
 
-  String PAYID_SCHEME = "payid:";
+  String PAY_ID_SCHEME = "payid:";
 
-  static ImmutablePayID.Builder builder() {
-    return ImmutablePayID.builder();
+  static ImmutablePayId.Builder builder() {
+    return ImmutablePayId.builder();
   }
 
   /**
-   * <p>Parses a PayId URI string into a @{code PayId}, applying normalization rules defined in the PayID RFC.</p>
+   * <p>Parses a PayId URI string into a @{code PayId}, applying normalization rules defined in the Pay ID RFC.</p>
    *
    * <p>Normalization includes the following:
    *
@@ -36,38 +34,38 @@ public interface PayID {
    *   <li>For any hex-encoded String, upper-case the Hexadecimal letters (e.g., 'f' to 'F')</li>
    * </ul>
    *
-   * @param value text of a complete PayID.
+   * @param value text of a complete Pay ID.
    *
-   * @return A valid {@link PayID}.
+   * @return A valid {@link PayId}.
    *
    * @throws NullPointerException     if {@code value} is null.
-   * @throws IllegalArgumentException if {@code value} cannot be properly parsed or has invalid characters per the PayID
-   *                                  RFC.
+   * @throws IllegalArgumentException if {@code value} cannot be properly parsed or has invalid characters per the Pay
+   *                                  ID RFC.
    */
-  static PayID of(String value) {
-    Objects.requireNonNull(value, "PayID must not be null");
-    if (value.toLowerCase(Locale.ENGLISH).startsWith(PAYID_SCHEME)) {
+  static PayId of(String value) {
+    Objects.requireNonNull(value, "Pay ID must not be null");
+    if (value.toLowerCase(Locale.ENGLISH).startsWith(PAY_ID_SCHEME)) {
       value = value.substring(6);
     } else {
-      throw new IllegalArgumentException(format("PayID `%s` must start with the 'payid:' scheme", value));
+      throw new IllegalArgumentException(format("Pay ID `%s` must start with the 'payid:' scheme", value));
     }
 
     if (!value.contains("$")) {
-      throw new IllegalArgumentException(format("PayID `%s` must contain a $", value));
+      throw new IllegalArgumentException(format("Pay ID `%s` must contain a $", value));
     } else {
       Preconditions
-        .checkArgument(value.length() > 6, format("PayID `%s` must specify a valid account and host", value));
+        .checkArgument(value.length() > 6, format("Pay ID `%s` must specify a valid account and host", value));
     }
 
     // Ensure no more than a single dollar-sign ($) without using a library.
     // See https://stackoverflow.com/a/35242882
     int numDollarSigns = new StringTokenizer(" " + value + " ", "$").countTokens() - 1;
     Preconditions.checkArgument(numDollarSigns == 1,
-        format("PayID `%s` may only contain a single dollar-sign. All other dollar-signs must be percent-encoded.",
+        format("Pay ID `%s` may only contain a single dollar-sign. All other dollar-signs must be percent-encoded.",
           value));
     Preconditions.checkArgument(!value.startsWith("%"),
-        format("PayID `%s` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
-          + "A PayID may not start with a percent-encoded value.", value));
+        format("Pay ID `%s` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
+          + "A Pay ID may not start with a percent-encoded value.", value));
 
     final String[] parts = value.split("\\$");
 
@@ -82,7 +80,7 @@ public interface PayID {
     account = upperCasePercentEncoded(account);
     host = upperCasePercentEncoded(host);
 
-    final ImmutablePayID.Builder builder = builder();
+    final ImmutablePayId.Builder builder = builder();
     if (account.length() > 0) {
       builder.account(account);
     }

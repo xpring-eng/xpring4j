@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- A new class, `AbstractPayId`, replaces the functionality in `AbstractPayID` with an idiomatically cased name.
+- A new interface, `PayId`, replaces the functionality in `PayID` with an idiomatically cased name.
+- A new interface, `PayIdComponents`, replaces the functionality in `PayIDComponents` with an idiomatically cased name.
+
+### Deprecated
+- `AbstractPayID` is deprecated. Please use the idiomatically cased `AbstractPayId` class instead.
+- `PayId` is deprecated. Please use the idiomatically cased `PayID` interface instead.
+- `PayIdComponents` is deprecated. Please use the idiomatically cased `PayIDComponents` interface instead.
+
 ## 5.1.1 - 2020-05-15
 
 This release contains minor deprecations of names of methods and classes to make this library more idiomatic with the wider Java ecosystem.
