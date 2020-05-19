@@ -103,7 +103,7 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
   }
 
   @Override
-  public XRPTransaction getTransaction(String transactionHash) throws XRPException {
-    return this.decoratedClient.getTransaction(transactionHash);
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+    return this.decoratedClient.getPayment(transactionHash);
   }
 }

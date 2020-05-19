@@ -38,7 +38,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
    * @param rawTransactionStatusResult The result of requesting a raw transaction status.
    * @param paymentHistoryResult The result of requesting payment history.
    * @param accountExistsResult The result of checking existence of an account.
-   * @param getTransactionResult The result of a call to get a transaction by hash.
+   * @param getPaymentResult The result of a call to get a transaction by hash.
    */
   public FakeXRPClient(
       XRPLNetwork network,
@@ -49,7 +49,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
       Result<RawTransactionStatus, XRPException> rawTransactionStatusResult,
       Result<List<XRPTransaction>, XRPException> paymentHistoryResult,
       Result<Boolean, XRPException> accountExistsResult,
-      Result<XRPTransaction, XRPException> getTransactionResult
+      Result<XRPTransaction, XRPException> getPaymentResult
   ) {
     this.network = network;
     this.getBalanceResult = getBalanceResult;
@@ -59,7 +59,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
     this.rawTransactionStatusResult = rawTransactionStatusResult;
     this.paymentHistoryResult = paymentHistoryResult;
     this.accountExistsResult = accountExistsResult;
-    this.getTransactionResult = getTransactionResult;
+    this.getPaymentResult = getPaymentResult;
   }
 
   @Override
@@ -131,11 +131,11 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
   }
 
   @Override
-  public XRPTransaction getTransaction(String transactionHash) throws XRPException {
-    if (this.getTransactionResult.isError()) {
-      throw this.getTransactionResult.getError();
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+    if (this.getPaymentResult.isError()) {
+      throw this.getPaymentResult.getError();
     } else {
-      return getTransactionResult.getValue();
+      return getPaymentResult.getValue();
     }
   }
 }

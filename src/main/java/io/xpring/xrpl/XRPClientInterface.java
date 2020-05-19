@@ -71,5 +71,5 @@ public interface XRPClientInterface {
    * @return An XRPTransaction object representing an XRP Ledger transaction.
    * @throws XRPException If the transaction hash was invalid.
    */
-  public XRPTransaction getTransaction(String transactionHash) throws XRPException;
+  public XRPTransaction getPayment(String transactionHash) throws XRPException;
 }

@@ -86,13 +86,13 @@ public class XRPClientIntegrationTests {
   }
 
   @Test
-  public void getTransactionTest() throws XRPException {
+  public void getPaymentTest() throws XRPException {
     // GIVEN a hash of a payment transaction.
     Wallet wallet = new Wallet(WALLET_SEED);
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
 
     // WHEN the transaction is requested.
-    XRPTransaction transaction = xrpClient.getTransaction(transactionHash);
+    XRPTransaction transaction = xrpClient.getPayment(transactionHash);
 
     // THEN it is found and returned.
     assertThat(transaction).isNotNull();

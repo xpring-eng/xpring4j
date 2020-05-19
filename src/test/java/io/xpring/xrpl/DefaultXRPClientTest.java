@@ -29,7 +29,6 @@ import org.xrpl.rpc.v1.GetAccountTransactionHistoryRequest;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetFeeRequest;
 import org.xrpl.rpc.v1.GetFeeResponse;
-import org.xrpl.rpc.v1.GetTransaction;
 import org.xrpl.rpc.v1.GetTransactionRequest;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Meta;
@@ -466,7 +465,7 @@ public class DefaultXRPClientTest {
         Result.ok(makeGetAccountTransactionHistoryResponse())
     );
     // WHEN a transaction is requested.
-    XRPTransaction transaction = xrpClient.getTransaction(TRANSACTION_HASH);
+    XRPTransaction transaction = xrpClient.getPayment(TRANSACTION_HASH);
 
     // THEN the returned transaction is as expected.
     assertThat(transaction).isEqualTo(XRPTransaction.from(FakeXRPProtobufs.getTransactionResponsePaymentAllFields));
@@ -488,7 +487,7 @@ public class DefaultXRPClientTest {
 
     // WHEN a transaction is requested, THEN the error is re-thrown.
     expectedException.expect(StatusRuntimeException.class);
-    client.getTransaction(TRANSACTION_HASH);
+    client.getPayment(TRANSACTION_HASH);
   }
 
   @Test
@@ -506,7 +505,7 @@ public class DefaultXRPClientTest {
     );
 
     // WHEN a transaction is requested.
-    XRPTransaction transaction = client.getTransaction(TRANSACTION_HASH);
+    XRPTransaction transaction = client.getPayment(TRANSACTION_HASH);
 
     // THEN the result is null.
     assertThat(transaction).isNull();
@@ -527,7 +526,7 @@ public class DefaultXRPClientTest {
     );
 
     // WHEN a transaction is requested.
-    XRPTransaction transaction = client.getTransaction(TRANSACTION_HASH);
+    XRPTransaction transaction = client.getPayment(TRANSACTION_HASH);
 
     // THEN the result is null.
     assertThat(transaction).isNull();

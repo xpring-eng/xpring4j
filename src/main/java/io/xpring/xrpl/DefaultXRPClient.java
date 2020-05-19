@@ -303,7 +303,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
    * @return An XRPTransaction object representing an XRP Ledger transaction.
    * @throws XRPException If the transaction hash was invalid.
    */
-  public XRPTransaction getTransaction(String transactionHash) throws XRPException {
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
     Objects.requireNonNull(transactionHash);
 
     byte[] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);

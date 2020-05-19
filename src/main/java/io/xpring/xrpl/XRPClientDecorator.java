@@ -106,5 +106,5 @@ interface XRPClientDecorator {
    * @return An XRPTransaction object representing an XRP Ledger transaction.
    * @throws XRPException If the transaction hash was invalid.
    */
-  XRPTransaction getTransaction(String transactionHash) throws XRPException;
+  XRPTransaction getPayment(String transactionHash) throws XRPException;
 }
