@@ -97,7 +97,7 @@ interface XRPClientDecorator {
   boolean accountExists(String address) throws XRPException;
 
   /**
-   * Retrieve the transaction corresponding to the given transaction hash.
+   * Retrieve the payment transaction corresponding to the given transaction hash.
    * <p>
    * Note: This method can return transactions that are not included in a fully validated ledger.
    *       See the `validated` field to make this distinction.
