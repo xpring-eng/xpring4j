@@ -331,7 +331,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
    * </p>
    * @param address An address that exists at the current time. The address is unchecked and must be a classic address.
    * @return The index of the latest validated ledger.
-   * @throws XRPException If there was a problem communicating with the XRP Ledger.
+   * @throws io.grpc.StatusRuntimeException If there was a problem communicating with the XRP Ledger.
    */
   @Override
   public int getLatestValidatedLedgerSequence(String address) throws XRPException {

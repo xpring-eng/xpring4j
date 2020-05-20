@@ -104,7 +104,7 @@ interface XRPClientDecorator {
    * </p>
    * @param transactionHash The hash of the transaction to retrieve.
    * @return An XRPTransaction object representing an XRP Ledger transaction.
-   * @throws XRPException If the transaction hash was invalid.
+   * @throws io.grpc.StatusRuntimeException If the transaction hash was invalid.
    */
   XRPTransaction getPayment(String transactionHash) throws XRPException;
 }
