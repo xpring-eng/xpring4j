@@ -25,6 +25,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
   public Result<RawTransactionStatus, XRPException> rawTransactionStatusResult;
   public Result<List<XRPTransaction>, XRPException> paymentHistoryResult;
   public Result<Boolean, XRPException> accountExistsResult;
+  public Result<XRPTransaction, XRPException> getPaymentResult;
 
   /**
    * Create a new FakeXRPClient.
@@ -37,6 +38,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
    * @param rawTransactionStatusResult The result of requesting a raw transaction status.
    * @param paymentHistoryResult The result of requesting payment history.
    * @param accountExistsResult The result of checking existence of an account.
+   * @param getPaymentResult The result of a call to get a transaction by hash.
    */
   public FakeXRPClient(
       XRPLNetwork network,
@@ -46,7 +48,8 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
       Result<Integer, XRPException> latestValidatedLedgerResult,
       Result<RawTransactionStatus, XRPException> rawTransactionStatusResult,
       Result<List<XRPTransaction>, XRPException> paymentHistoryResult,
-      Result<Boolean, XRPException> accountExistsResult
+      Result<Boolean, XRPException> accountExistsResult,
+      Result<XRPTransaction, XRPException> getPaymentResult
   ) {
     this.network = network;
     this.getBalanceResult = getBalanceResult;
@@ -56,6 +59,7 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
     this.rawTransactionStatusResult = rawTransactionStatusResult;
     this.paymentHistoryResult = paymentHistoryResult;
     this.accountExistsResult = accountExistsResult;
+    this.getPaymentResult = getPaymentResult;
   }
 
   @Override
@@ -123,6 +127,15 @@ public class FakeXRPClient implements XRPClientDecorator, XRPClientInterface {
       throw this.paymentHistoryResult.getError();
     } else {
       return paymentHistoryResult.getValue();
+    }
+  }
+
+  @Override
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+    if (this.getPaymentResult.isError()) {
+      throw this.getPaymentResult.getError();
+    } else {
+      return getPaymentResult.getValue();
     }
   }
 }

@@ -60,4 +60,16 @@ public interface XRPClientInterface {
    * @throws XRPException If there was a problem communicating with the XRP Ledger.
    */
   public List<XRPTransaction> paymentHistory(String address) throws XRPException;
+
+  /**
+   * Retrieve the payment transaction corresponding to the given transaction hash.
+   * <p>
+   * Note: This method can return transactions that are not included in a fully validated ledger.
+   *       See the `validated` field to make this distinction.
+   * </p>
+   * @param transactionHash The hash of the transaction to retrieve.
+   * @return An XRPTransaction object representing an XRP Ledger transaction.
+   * @throws io.grpc.StatusRuntimeException If the transaction hash was invalid.
+   */
+  public XRPTransaction getPayment(String transactionHash) throws XRPException;
 }

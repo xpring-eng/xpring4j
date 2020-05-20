@@ -101,4 +101,9 @@ public class ReliableSubmissionXRPClient implements XRPClientDecorator {
   public boolean accountExists(String address) throws XRPException {
     return this.decoratedClient.accountExists(address);
   }
+
+  @Override
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+    return this.decoratedClient.getPayment(transactionHash);
+  }
 }
