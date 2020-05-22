@@ -124,6 +124,7 @@ public class PayIDClient {
       }.getType();
       ApiResponse<PaymentInformation> response = apiClient.execute(call, localVarReturnType);
       PaymentInformation result = response.getData();
+      // TODO(amiecorso): what if addresses is empty or has more than one address?
       return result.getAddresses().get(0).getAddressDetails();
     } catch (ApiException exception) {
       int code = exception.getCode();
