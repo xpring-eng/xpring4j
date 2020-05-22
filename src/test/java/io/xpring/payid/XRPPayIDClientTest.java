@@ -50,10 +50,12 @@ public class XRPPayIDClientTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/xrpl-mainnet+json")
             .withBody("{ "
+                + "addresses: [{"
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
                 + "address: '" + expectedAddress + "' "
                 + "}"
+                + "}]"
                 + "}"
             )
         )
@@ -85,10 +87,12 @@ public class XRPPayIDClientTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/xrpl-mainnet+json")
             .withBody("{ "
+                + "addresses: [{"
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
                 + "address: '" + classicAddress.address() + "' "
                 + "}"
+                + "}]"
                 + "}"
             )
         )
@@ -121,11 +125,13 @@ public class XRPPayIDClientTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/xrpl-mainnet+json")
             .withBody("{ "
+                + "addresses: [{"
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
                 + "address: '" + classicAddress.address() + "', "
                 + "tag: '" + classicAddress.tag().get() + "' "
                 + "}"
+                + "}]"
                 + "}"
             )
         )
