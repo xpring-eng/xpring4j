@@ -124,7 +124,7 @@ public class PayIDClient {
       }.getType();
       ApiResponse<PaymentInformation> response = apiClient.execute(call, localVarReturnType);
       PaymentInformation result = response.getData();
-      return result.getAddressDetails();
+      return result.getAddresses().get(0).getAddressDetails();
     } catch (ApiException exception) {
       int code = exception.getCode();
       if (code == 404) {
