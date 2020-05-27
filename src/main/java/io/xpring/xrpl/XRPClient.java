@@ -108,4 +108,18 @@ public class XRPClient implements XRPClientInterface {
   public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
     return decoratedClient.paymentHistory(xrplAccountAddress);
   }
+
+  /**
+   * Retrieve the payment transaction corresponding to the given transaction hash.
+   * <p>
+   * Note: This method can return transactions that are not included in a fully validated ledger.
+   *       See the `validated` field to make this distinction.
+   * </p>
+   * @param transactionHash The hash of the transaction to retrieve.
+   * @return An XRPTransaction object representing an XRP Ledger transaction.
+   * @throws io.grpc.StatusRuntimeException If the transaction hash was invalid.
+   */
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+    return decoratedClient.getPayment(transactionHash);
+  }
 }

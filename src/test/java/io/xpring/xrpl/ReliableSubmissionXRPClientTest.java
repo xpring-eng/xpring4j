@@ -62,6 +62,9 @@ public class ReliableSubmissionXRPClientTest {
   private static final List<XRPTransaction> DEFAULT_PAYMENT_HISTORY_VALUE = XRPTestUtils
       .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
   private static final boolean DEFAULT_ACCOUNT_EXISTS_VALUE = true;
+  private static final XRPTransaction DEFAULT_GET_TRANSACTION_VALUE = XRPTransaction.from(
+          FakeXRPProtobufs.getTransactionResponsePaymentAllFields
+  );
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   FakeXRPClient fakeXRPClient;
@@ -82,7 +85,8 @@ public class ReliableSubmissionXRPClientTest {
         Result.ok(DEFAULT_LATEST_LEDGER_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(DEFAULT_PAYMENT_HISTORY_VALUE),
-        Result.ok(DEFAULT_ACCOUNT_EXISTS_VALUE)
+        Result.ok(DEFAULT_ACCOUNT_EXISTS_VALUE),
+        Result.ok(DEFAULT_GET_TRANSACTION_VALUE)
     );
 
     this.reliableSubmissionXRPClient = new ReliableSubmissionXRPClient(fakeXRPClient);
@@ -158,7 +162,7 @@ public class ReliableSubmissionXRPClientTest {
   }
 
   @Test(timeout = 10000)
-  public void testSendWithUnxpiredLedgerSequenceAndValidatedTransaction() throws XRPException {
+  public void testSendWithUnexpiredLedgerSequenceAndValidatedTransaction() throws XRPException {
     // GIVEN A transaction that will validate in one second
     final String transactionStatusCode = "tesSuccess";
     this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(

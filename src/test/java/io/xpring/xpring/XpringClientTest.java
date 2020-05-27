@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.PayIDException;
 import io.xpring.payid.PayIDExceptionType;
+import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.fakes.FakeXRPPayIDClient;
 import io.xpring.xrpl.FakeXRPClient;
+import io.xpring.xrpl.FakeXRPProtobufs;
 import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Wallet;
@@ -41,6 +42,9 @@ public class XpringClientTest {
   );
   public static final List<XRPTransaction> FAKE_PAYMENT_HISTORY_VALUE = new LinkedList<XRPTransaction>();
   public static final Boolean FAKE_ACCOUNT_EXISTS_VALUE = true;
+  public static final XRPTransaction FAKE_GET_TRANSACTION_VALUE = XRPTransaction.from(
+          FakeXRPProtobufs.getTransactionResponsePaymentAllFields
+  );
 
   /**
    * An amount to send.
@@ -80,7 +84,8 @@ public class XpringClientTest {
         Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
-        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
+        Result.ok(FAKE_GET_TRANSACTION_VALUE)
     );
 
     String fakeResolvedPayID = "r123";
@@ -108,7 +113,8 @@ public class XpringClientTest {
         Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
-        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
+        Result.ok(FAKE_GET_TRANSACTION_VALUE)
     );
 
     XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
@@ -132,7 +138,8 @@ public class XpringClientTest {
         Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
-        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
+        Result.ok(FAKE_GET_TRANSACTION_VALUE)
     );
 
     String fakeResolvedPayID = "r123";
@@ -157,7 +164,8 @@ public class XpringClientTest {
         Result.ok(FAKE_LAST_LEDGER_SEQUENCE_VALUE),
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
-        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE)
+        Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
+        Result.ok(FAKE_GET_TRANSACTION_VALUE)
     );
 
     XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
