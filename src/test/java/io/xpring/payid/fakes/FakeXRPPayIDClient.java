@@ -2,8 +2,8 @@ package io.xpring.payid.fakes;
 
 import io.xpring.common.Result;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.XRPPayIDClientInterface;
 import io.xpring.payid.PayIDException;
+import io.xpring.payid.XRPPayIDClientInterface;
 
 /**
  * Fakes a PayID client.

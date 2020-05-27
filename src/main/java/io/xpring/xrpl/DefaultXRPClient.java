@@ -9,6 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.AccountAddress;
 import org.xrpl.rpc.v1.AccountRoot;
+import org.xrpl.rpc.v1.Common.Account;
+import org.xrpl.rpc.v1.Common.Amount;
+import org.xrpl.rpc.v1.Common.Destination;
+import org.xrpl.rpc.v1.Common.DestinationTag;
+import org.xrpl.rpc.v1.Common.LastLedgerSequence;
+import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetAccountInfoRequest;
 import org.xrpl.rpc.v1.GetAccountInfoResponse;
@@ -25,12 +31,6 @@ import org.xrpl.rpc.v1.SubmitTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
-import org.xrpl.rpc.v1.Common.Account;
-import org.xrpl.rpc.v1.Common.Amount;
-import org.xrpl.rpc.v1.Common.Destination;
-import org.xrpl.rpc.v1.Common.DestinationTag;
-import org.xrpl.rpc.v1.Common.LastLedgerSequence;
-import org.xrpl.rpc.v1.Common.SigningPublicKey;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
@@ -292,6 +292,28 @@ public class DefaultXRPClient implements XRPClientDecorator {
     }
   }
 
+  @Override
+  /**
+   * Retrieve the payment transaction corresponding to the given transaction hash.
+   * <p>
+   * Note: This method can return transactions that are not included in a fully validated ledger.
+   *       See the `validated` field to make this distinction.
+   * </p>
+   * @param transactionHash The hash of the transaction to retrieve.
+   * @return An XRPTransaction object representing an XRP Ledger transaction.
+   * @throws XRPException If the transaction hash was invalid.
+   */
+  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+    Objects.requireNonNull(transactionHash);
+
+    byte[] transactionHashBytes = Utils.hexStringToByteArray(transactionHash);
+    ByteString transactionHashByteString = ByteString.copyFrom(transactionHashBytes);
+    GetTransactionRequest request = GetTransactionRequest.newBuilder()
+            .setHash(transactionHashByteString).build();
+    GetTransactionResponse response = this.stub.getTransaction(request);
+    return XRPTransaction.from(response);
+  }
+
   public int getOpenLedgerSequence() throws XRPException {
     return this.getFeeResponse().getLedgerCurrentIndex();
   }
@@ -309,7 +331,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
    * </p>
    * @param address An address that exists at the current time. The address is unchecked and must be a classic address.
    * @return The index of the latest validated ledger.
-   * @throws XRPException If there was a problem communicating with the XRP Ledger.
+   * @throws io.grpc.StatusRuntimeException If there was a problem communicating with the XRP Ledger.
    */
   @Override
   public int getLatestValidatedLedgerSequence(String address) throws XRPException {

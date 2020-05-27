@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- A new method, `getPayment`, added to `XRPClient` for retrieving payment transactions by hash.
+
+## 5.1.1 - 2020-05-15
+
+This release contains minor deprecations of names of methods and classes to make this library more idiomatic with the wider Java ecosystem.
+
+### Added
+- A new class, `PayIdException`, replaces the functionality in `PayIDException` with an idiomatically cased name.
+- A new enum, `PayIdExceptionType`, replaces the functionality in `PayIDExceptionType` with an idiomatically cased name.
+
+### Deprecated
+- `PayIDException` is deprecated. Please use the idiomatically cased `PayIdException` class instead.
+- `PayIDExceptionType` is deprecated. Please use the idiomatically cased `PayIdExceptionType` enum instead.
 
 ## 5.1.0 - May 6, 2020
 
