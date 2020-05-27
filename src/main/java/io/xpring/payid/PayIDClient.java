@@ -124,8 +124,14 @@ public class PayIDClient {
       }.getType();
       ApiResponse<PaymentInformation> response = apiClient.execute(call, localVarReturnType);
       PaymentInformation result = response.getData();
-      // TODO(amiecorso): what if addresses is empty or has more than one address?
-      return result.getAddresses().get(0).getAddressDetails();
+      if (result.getAddresses().size() == 1 ) {
+        return result.getAddresses().get(0).getAddressDetails();
+      } else {
+        // With a specific network, exactly one address should be returned by a PayId lookup.
+        throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE,
+                "Expected one address for " + payID + " on network " + this.network +
+                " but got " + result.getAddresses().size());
+      }
     } catch (ApiException exception) {
       int code = exception.getCode();
       if (code == 404) {
