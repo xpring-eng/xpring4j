@@ -202,7 +202,7 @@ public class XRPPayIDClientTest {
   @Test
   public void testXRPAddressForPayIdMultipleAddressesReturned() throws PayIDException {
     // GIVEN a PayID client, a valid PayID and mocked networking to return multiple addresses.
-    String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
+    final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
     XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.TEST);
     client.setEnableSSLVerification(false);
 

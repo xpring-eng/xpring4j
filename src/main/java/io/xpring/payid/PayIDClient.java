@@ -129,8 +129,8 @@ public class PayIDClient {
       } else {
         // With a specific network, exactly one address should be returned by a PayId lookup.
         throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE,
-                "Expected one address for " + payID + " on network " + this.network +
-                " but got " + result.getAddresses().size());
+                "Expected one address for " + payID + " on network " + this.network
+                + " but got " + result.getAddresses().size());
       }
     } catch (ApiException exception) {
       int code = exception.getCode();
