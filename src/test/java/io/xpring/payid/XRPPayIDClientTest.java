@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.xpring.common.XRPLNetwork;
+import io.xpring.payid.idiomatic.PayIdException;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.Utils;
@@ -50,10 +51,12 @@ public class XRPPayIDClientTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/xrpl-mainnet+json")
             .withBody("{ "
+                + "addresses: [{"
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
                 + "address: '" + expectedAddress + "' "
                 + "}"
+                + "}]"
                 + "}"
             )
         )
@@ -85,10 +88,12 @@ public class XRPPayIDClientTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/xrpl-mainnet+json")
             .withBody("{ "
+                + "addresses: [{"
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
                 + "address: '" + classicAddress.address() + "' "
                 + "}"
+                + "}]"
                 + "}"
             )
         )
@@ -121,11 +126,13 @@ public class XRPPayIDClientTest {
             .withStatus(200)
             .withHeader("Content-Type", "application/xrpl-mainnet+json")
             .withBody("{ "
+                + "addresses: [{"
                 + "addressDetailsType: 'CryptoAddressDetails', "
                 + "addressDetails: { "
                 + "address: '" + classicAddress.address() + "', "
                 + "tag: '" + classicAddress.tag().get() + "' "
                 + "}"
+                + "}]"
                 + "}"
             )
         )
@@ -188,6 +195,48 @@ public class XRPPayIDClientTest {
 
     // WHEN an XRPAddress is requested THEN a unexpected response error is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
+    expectedException.expect(PayIDException.class);
+    client.xrpAddressForPayID(payID);
+  }
+
+  @Test
+  public void testXRPAddressForPayIdMultipleAddressesReturned() throws PayIDException {
+    // GIVEN a PayID client, a valid PayID and mocked networking to return multiple addresses.
+    final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
+    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.TEST);
+    client.setEnableSSLVerification(false);
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+            .address("rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY")
+            .isTest(true)
+            .build();
+
+    String expectedAddress = Utils.encodeXAddress(classicAddress);
+
+    stubFor(get(urlEqualTo("/georgewashington"))
+            .willReturn(aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/xrpl-mainnet+json")
+                    .withBody("{ "
+                            + "addresses: [{"
+                            + "addressDetailsType: 'CryptoAddressDetails', "
+                            + "addressDetails: { "
+                            + "address: '" + classicAddress.address() + "' "
+                            + "}"
+                            + "}, "
+                            + "{"
+                            + "addressDetailsType: 'CryptoAddressDetails', "
+                            + "addressDetails: { "
+                            + "address: '" + classicAddress.address() + "' "
+                            + "}"
+                            + "}"
+                            + "]"
+                            + "}"
+                    )
+            )
+    );
+
+    // WHEN an XRPAddress is requested THEN a unexpected response error is thrown.
     expectedException.expect(PayIDException.class);
     client.xrpAddressForPayID(payID);
   }
