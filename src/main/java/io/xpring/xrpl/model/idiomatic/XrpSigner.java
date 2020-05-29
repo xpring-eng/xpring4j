@@ -1,4 +1,4 @@
-package io.xpring.xrpl.model;
+package io.xpring.xrpl.model.idiomatic;
 
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Signer;
@@ -6,16 +6,13 @@ import org.xrpl.rpc.v1.Signer;
 /**
  * Represents a signer of a transaction on the XRP Ledger.
  *
- * @deprecated Please use the idiomatically named {@link XrpSigner} instead.
- *
  * @see "https://xrpl.org/transaction-common-fields.html#signers-field"
  */
-@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
-public interface XRPSigner {
-  static ImmutableXRPSigner.Builder builder() {
-    return ImmutableXRPSigner.builder();
+public interface XrpSigner {
+  static ImmutableXrpSigner.Builder builder() {
+    return ImmutableXrpSigner.builder();
   }
 
   /**
@@ -40,22 +37,22 @@ public interface XRPSigner {
   byte[] transactionSignature();
 
   /**
-   * Constructs an {@link XRPSigner} from a {@link Signer}.
+   * Constructs an {@link XrpSigner} from a {@link Signer}.
    *
    * @param signer a {@link Signer} (protobuf object) whose field values will be used
-   *               to construct an {@link XRPSigner}
-   * @return an {@link XRPSigner} with its fields set via the analogous protobuf fields.
+   *               to construct an {@link XrpSigner}
+   * @return an {@link XrpSigner} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L90">
    * Signer protocol buffer</a>
    */
-  static XRPSigner from(Signer signer) {
+  static XrpSigner from(Signer signer) {
     String account = signer.getAccount().getValue().getAddress();
 
     byte[] signingPublicKey = signer.getSigningPublicKey().getValue().toByteArray();
 
     byte[] transactionSignature = signer.getTransactionSignature().getValue().toByteArray();
 
-    return XRPSigner.builder()
+    return XrpSigner.builder()
         .account(account)
         .signingPublicKey(signingPublicKey)
         .transactionSignature(transactionSignature)

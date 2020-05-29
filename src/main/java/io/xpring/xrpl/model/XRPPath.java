@@ -9,8 +9,11 @@ import java.util.stream.Collectors;
 /**
  * A path in the XRP Ledger.
  *
+ * @deprecated Please use the idiomatically named {@link XrpPath} instead.
+ *
  * @see "https://xrpl.org/paths.html"
  */
+@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
 public interface XRPPath {

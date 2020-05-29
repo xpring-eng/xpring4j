@@ -1,4 +1,4 @@
-package io.xpring.xrpl.model;
+package io.xpring.xrpl.model.idiomatic;
 
 import com.google.protobuf.ByteString;
 import org.immutables.value.Value;
@@ -7,16 +7,13 @@ import org.xrpl.rpc.v1.Memo;
 /**
  * Represents a memo on the XRPLedger.
  *
- * @deprecated Please use the idiomatically named {@link XrpMemo} instead.
- *
  * @see "https://xrpl.org/transaction-common-fields.html#memos-field"
  */
-@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
-public interface XRPMemo {
-  static ImmutableXRPMemo.Builder builder() {
-    return ImmutableXRPMemo.builder();
+public interface XrpMemo {
+  static ImmutableXrpMemo.Builder builder() {
+    return ImmutableXrpMemo.builder();
   }
 
   /**
@@ -52,15 +49,15 @@ public interface XRPMemo {
   }
 
   /**
-   * Constructs an {@link XRPMemo} from a {@link Memo}.
+   * Constructs an {@link XrpMemo} from a {@link Memo}.
    *
    * @param memo a {@link Memo} (protobuf object) whose field values will be used
-   *             to construct an {@link XRPMemo}
-   * @return an {@link XRPMemo} with its fields set via the analogous protobuf fields.
+   *             to construct an {@link XrpMemo}
+   * @return an {@link XrpMemo} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L80">
    * Memo protocol buffer</a>
    */
-  static XRPMemo from(Memo memo) {
+  static XrpMemo from(Memo memo) {
     ByteString memoData = memo.getMemoData().getValue();
     byte[] data = memoData.toByteArray();
 
@@ -70,7 +67,7 @@ public interface XRPMemo {
     ByteString memoType = memo.getMemoType().getValue();
     byte[] type = memoType.toByteArray();
 
-    return XRPMemo.builder()
+    return XrpMemo.builder()
         .data(data)
         .format(format)
         .type(type)

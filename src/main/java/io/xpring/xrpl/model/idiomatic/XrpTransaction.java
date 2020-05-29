@@ -1,4 +1,4 @@
-package io.xpring.xrpl.model;
+package io.xpring.xrpl.model.idiomatic;
 
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.Utils;
@@ -16,17 +16,14 @@ import java.util.stream.Collectors;
 /**
  * A transaction on the XRP Ledger.
  *
- * @deprecated Please use the idiomatically named {@link XrpTransaction} instead.
- *
  * @see "https://xrpl.org/transaction-formats.html"
  */
 // TODO(amiecorso): Modify this object to use X-Address format.
-@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
-public interface XRPTransaction {
-  static ImmutableXRPTransaction.Builder builder() {
-    return ImmutableXRPTransaction.builder();
+public interface XrpTransaction {
+  static ImmutableXrpTransaction.Builder builder() {
+    return ImmutableXrpTransaction.builder();
   }
 
   /**
@@ -81,10 +78,10 @@ public interface XRPTransaction {
   /**
    * (Optional) Additional arbitrary information used to identify this transaction.
    *
-   * @return A {@link List} of {@link XRPMemo}s containing additional information for this transaction.
+   * @return A {@link List} of {@link XrpMemo}s containing additional information for this transaction.
    */
   @Value.Default
-  default List<XRPMemo> memos() {
+  default List<XrpMemo> memos() {
     return new ArrayList<>();
   }
 
@@ -100,11 +97,11 @@ public interface XRPTransaction {
   /**
    * (Optional) A collection of signers that represent a multi-signature which authorizes this transaction.
    *
-   * @return An optional {@link List} of {@link XRPSigner}s that represent a multi-signature which
+   * @return An optional {@link List} of {@link XrpSigner}s that represent a multi-signature which
    *          authorizes this transaction.
    */
   @Value.Default
-  default List<XRPSigner> signers() {
+  default List<XrpSigner> signers() {
     return new ArrayList<>();
   }
 
@@ -141,12 +138,12 @@ public interface XRPTransaction {
   TransactionType type();
 
   /**
-   * Additional fields present in an {@link XRPPayment}.
+   * Additional fields present in an {@link XrpPayment}.
    *
-   * @return A {@link XRPPayment} representing the additional fields present in an {@link XRPPayment}.
+   * @return A {@link XrpPayment} representing the additional fields present in an {@link XrpPayment}.
    * @see "https://xrpl.org/payment.html#payment-fields"
    */
-  XRPPayment paymentFields();
+  XrpPayment paymentFields();
 
   /**
    * (Optional) The timestamp of the transaction reported in Unix time (seconds).
@@ -181,15 +178,15 @@ public interface XRPTransaction {
   int ledgerIndex();
 
   /**
-   * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
+   * Constructs an {@link XrpTransaction} from a {@link GetTransactionResponse}.
    *
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
-   *                    to construct an {@link XRPTransaction}
-   * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
+   *                    to construct an {@link XrpTransaction}
+   * @return an {@link XrpTransaction} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
    * GetTransactionResponse protocol buffer</a>
    */
-  static XRPTransaction from(GetTransactionResponse getTransactionResponse) {
+  static XrpTransaction from(GetTransactionResponse getTransactionResponse) {
     final Transaction transaction = getTransactionResponse.getTransaction();
     if (transaction == null) {
       return null;
@@ -214,16 +211,16 @@ public interface XRPTransaction {
       lastLedgerSequence = Optional.of(transaction.getLastLedgerSequence().getValue());
     }
 
-    final List<XRPMemo> memos = transaction.getMemosList()
+    final List<XrpMemo> memos = transaction.getMemosList()
         .stream()
-        .map(XRPMemo::from)
+        .map(XrpMemo::from)
         .collect(Collectors.toList());
 
     final Integer sequence = transaction.getSequence().getValue();
 
-    final List<XRPSigner> signers = transaction.getSignersList()
+    final List<XrpSigner> signers = transaction.getSignersList()
         .stream()
-        .map(XRPSigner::from)
+        .map(XrpSigner::from)
         .collect(Collectors.toList());
 
     final byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
@@ -236,11 +233,11 @@ public interface XRPTransaction {
     final byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
 
     TransactionType type;
-    XRPPayment paymentFields;
+    XrpPayment paymentFields;
     switch (transaction.getTransactionDataCase()) {
       case PAYMENT: {
         Payment payment = transaction.getPayment();
-        paymentFields = XRPPayment.from(payment);
+        paymentFields = XrpPayment.from(payment);
         if (paymentFields == null) {
           return null;
         }
@@ -283,7 +280,7 @@ public interface XRPTransaction {
 
     final int ledgerIndex = getTransactionResponse.getLedgerIndex();
 
-    return XRPTransaction.builder()
+    return XrpTransaction.builder()
         .hash(hash)
         .account(account)
         .accountTransactionID(accountTransactionID)

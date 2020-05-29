@@ -1,4 +1,4 @@
-package io.xpring.xrpl.model;
+package io.xpring.xrpl.model.idiomatic;
 
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Currency;
@@ -6,16 +6,13 @@ import org.xrpl.rpc.v1.Currency;
 /**
  * An issued currency on the XRP Ledger.
  *
- * @deprecated Please use the idiomatically named {@link XrpCurrency} instead.
- *
  * @see "https://xrpl.org/currency-formats.html#currency-codes"
  */
-@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
-public interface XRPCurrency {
-  static ImmutableXRPCurrency.Builder builder() {
-    return ImmutableXRPCurrency.builder();
+public interface XrpCurrency {
+  static ImmutableXrpCurrency.Builder builder() {
+    return ImmutableXrpCurrency.builder();
   }
 
   /**
@@ -33,15 +30,15 @@ public interface XRPCurrency {
   byte[] code();
 
   /**
-   * Constructs an {@link XRPCurrency} from a {@link Currency}.
+   * Constructs an {@link XrpCurrency} from a {@link Currency}.
    *
    * @param currency a {@link Currency} (protobuf object) whose field values will be used
-   *                 to construct an {@link XRPCurrency}
-   * @return an {@link XRPCurrency} with its fields set via the analogous protobuf fields.
+   *                 to construct an {@link XrpCurrency}
+   * @return an {@link XrpCurrency} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/amount.proto#L41">
    * Currency protocol buffer</a>
    */
-  static XRPCurrency from(Currency currency) {
+  static XrpCurrency from(Currency currency) {
     return builder()
         .name(currency.getName())
         .code(currency.getCode().toByteArray())

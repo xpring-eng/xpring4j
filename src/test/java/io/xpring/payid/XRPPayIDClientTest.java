@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.idiomatic.PayIdException;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.Utils;
