@@ -2,6 +2,7 @@ package io.xpring.xrpl.model;
 
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetTransactionResponse;

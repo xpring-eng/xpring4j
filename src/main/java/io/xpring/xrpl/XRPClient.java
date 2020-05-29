@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.idiomatic.DefaultXrpClient;
+import io.xpring.xrpl.idiomatic.XrpClient;
 import io.xpring.xrpl.model.XRPTransaction;
 
 import java.math.BigInteger;

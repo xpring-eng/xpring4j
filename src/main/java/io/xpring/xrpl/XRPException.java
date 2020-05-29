@@ -1,5 +1,7 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.idiomatic.XrpException;
+
 /**
  * Exceptions which occur when working with xpring4j.
  *

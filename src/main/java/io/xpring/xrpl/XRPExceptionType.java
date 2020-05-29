@@ -1,5 +1,8 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.idiomatic.XrpException;
+import io.xpring.xrpl.idiomatic.XrpExceptionType;
+
 /**
  * Types of {@link XrpException}s.
  *
