@@ -1,9 +1,11 @@
 package io.xpring.common;
 
+import io.xpring.common.idiomatic.XrplNetwork;
+
 /**
  * Possible networks to resolve.
  *
- * @deprecate Pleaseuse the idiomatically named {@link XrplNetwork} enum instead.
+ * @deprecated Pleaseuse the idiomatically named {@link XrplNetwork} enum instead.
  */
 @Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
