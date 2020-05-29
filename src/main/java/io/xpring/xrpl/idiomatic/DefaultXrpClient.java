@@ -62,9 +62,9 @@ public class DefaultXrpClient implements XrpClientDecorator {
   /**
    * No-args Constructor.
    */
-  DefaultXrpClient(String grpcURL) {
+  DefaultXrpClient(String grpcUrl) {
     this(ManagedChannelBuilder
-        .forTarget(grpcURL)
+        .forTarget(grpcUrl)
         .usePlaintext()
         .build()
     );

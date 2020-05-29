@@ -1,14 +1,14 @@
 package io.xpring.xrpl.idiomatic;
 
-import io.xpring.xrpl.TransactionStatus;
-import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.RawTransactionStatus;
+import io.xpring.xrpl.TransactionStatus;
+import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 
-import java.util.List;
 import java.math.BigInteger;
+import java.util.List;
 
 public class ReliableSubmissionXrpClient implements XrpClientDecorator {
   XrpClientDecorator decoratedClient;

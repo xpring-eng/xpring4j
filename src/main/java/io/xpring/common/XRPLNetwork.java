@@ -5,7 +5,7 @@ import io.xpring.common.idiomatic.XrplNetwork;
 /**
  * Possible networks to resolve.
  *
- * @deprecated Pleaseuse the idiomatically named {@link XrplNetwork} enum instead.
+ * @deprecated Please use the idiomatically named {@link XrplNetwork} enum instead.
  */
 @Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")

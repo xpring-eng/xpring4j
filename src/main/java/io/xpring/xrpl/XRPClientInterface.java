@@ -7,6 +7,8 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
+ * An interface for an {@link XrpClient}.
+ *
  * @deprecated Please use the idiomatically named {@link XrpClientInterface} class instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")

@@ -1,9 +1,9 @@
 package io.xpring.xrpl.idiomatic;
 
 import io.xpring.common.idiomatic.XrplNetwork;
-import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -24,11 +24,11 @@ public class XrpClient implements XrpClientInterface {
   /**
    * Initialize a new client with the given options.
    *
-   * @param grpcURL The remote URL to use for gRPC calls.
+   * @param grpcUrl The remote URL to use for gRPC calls.
    * @param network The network this XRPClient is connecting to.
    */
-  public XrpClient(String grpcURL, XrplNetwork network) {
-    XrpClientDecorator defaultXrpClient = new DefaultXrpClient(grpcURL);
+  public XrpClient(String grpcUrl, XrplNetwork network) {
+    XrpClientDecorator defaultXrpClient = new DefaultXrpClient(grpcUrl);
     this.decoratedClient = new ReliableSubmissionXrpClient(defaultXrpClient);
 
     this.network = network;

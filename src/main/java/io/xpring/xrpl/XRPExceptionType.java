@@ -1,6 +1,8 @@
 package io.xpring.xrpl;
 
 /**
+ * Types of {@link XrpException}s.
+ *
  * @deprecated Please use the idiomatically named {@link XrpExceptionType} class instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")

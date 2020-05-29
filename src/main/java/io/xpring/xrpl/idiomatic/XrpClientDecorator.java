@@ -1,9 +1,9 @@
 package io.xpring.xrpl.idiomatic;
 
-import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 
 import java.math.BigInteger;
 import java.util.List;
