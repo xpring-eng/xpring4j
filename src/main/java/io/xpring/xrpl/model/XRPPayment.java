@@ -1,5 +1,9 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 
@@ -40,6 +44,12 @@ public interface XRPPayment {
    * @return An {@link Integer} containing the tag that identifies the reason for the payment.
    */
   Optional<Integer> destinationTag();
+
+  /**
+   * The address and (optional) destination tag of the account receiving the payment, encoded in X-address format.
+   * @see "https://xrpaddress.info/"
+   */
+  String destinationXAddress();
 
   /**
    * (Optional) Minimum amount of destination currency this transaction should deliver.
@@ -83,11 +93,28 @@ public interface XRPPayment {
    *
    * @param payment a {@link org.xrpl.rpc.v1.Payment} (protobuf object) whose field values will be used
    *                to construct an {@link XRPPayment}
+   * @param xrplNetwork The XRPL network from which this object was retrieved, defaults to XRPLNetwork.MAIN (Mainnet).
    * @return an {@link XRPPayment} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L224">
    * Payment protocol buffer</a>
    */
+  static XRPPayment from(Payment payment, XRPLNetwork xrplNetwork) {
+    return convertFields(payment, xrplNetwork);
+  }
+
   static XRPPayment from(Payment payment) {
+    return convertFields(payment, XRPLNetwork.MAIN);
+  }
+
+  /**
+   * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}.
+   *
+   * @param payment a {@link org.xrpl.rpc.v1.Payment} (protobuf object) whose field values will be used
+   *                to construct an {@link XRPPayment}
+   * @param xrplNetwork The XRPL network from which this object was retrieved, defaults to XRPLNetwork.MAIN (Mainnet).
+   * @return an {@link XRPPayment} with its fields set via the analogous protobuf fields.
+   */
+  static XRPPayment convertFields(Payment payment, XRPLNetwork xrplNetwork) {
     // amount is required
     XRPCurrencyAmount amount = XRPCurrencyAmount.from(payment.getAmount().getValue());
     if (amount == null) {
@@ -104,6 +131,14 @@ public interface XRPPayment {
     if (payment.hasDestinationTag()) {
       destinationTag = Optional.of(payment.getDestinationTag().getValue());
     }
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+            .address(destination)
+            .tag(destinationTag)
+            .isTest(xrplNetwork == XRPLNetwork.TEST)
+            .build();
+
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // If the deliverMin field is set, it must be able to be transformed into an XRPCurrencyAmount.
     Optional<XRPCurrencyAmount> deliverMin = Optional.empty();
@@ -134,6 +169,7 @@ public interface XRPPayment {
         .amount(amount)
         .destination(destination)
         .destinationTag(destinationTag)
+        .destinationXAddress(destinationXAddress)
         .deliverMin(deliverMin)
         .invoiceID(invoiceID)
         .paths(paths)
