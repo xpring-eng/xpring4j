@@ -270,7 +270,7 @@ public interface XRPTransaction {
     switch (transaction.getTransactionDataCase()) {
       case PAYMENT: {
         Payment payment = transaction.getPayment();
-        paymentFields = XRPPayment.from(payment);
+        paymentFields = XRPPayment.from(payment, xrplNetwork);
         if (paymentFields == null) {
           return null;
         }
