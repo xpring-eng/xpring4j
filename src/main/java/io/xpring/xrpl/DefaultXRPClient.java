@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +54,17 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
   // Channel is the abstraction to connect to a service endpoint
   private final XRPLedgerAPIServiceBlockingStub stub;
+  private final XRPLNetwork xrplNetwork;
 
   /**
    * No-args Constructor.
    */
-  DefaultXRPClient(String grpcURL) {
+  DefaultXRPClient(String grpcURL, XRPLNetwork xrplNetwork) {
     this(ManagedChannelBuilder
         .forTarget(grpcURL)
         .usePlaintext()
-        .build()
+        .build(),
+        xrplNetwork
     );
   }
 
@@ -70,7 +73,9 @@ public class DefaultXRPClient implements XRPClientDecorator {
    *
    * @param channel A {@link ManagedChannel}.
    */
-  DefaultXRPClient(final ManagedChannel channel) {
+  DefaultXRPClient(final ManagedChannel channel, XRPLNetwork network) {
+    this.xrplNetwork = network;
+
     // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
     // stub, or an async stub with Future are always possible.
     this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
