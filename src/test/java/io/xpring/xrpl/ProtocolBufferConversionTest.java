@@ -206,7 +206,7 @@ public class ProtocolBufferConversionTest {
                     .isTest(false)
                     .build()
             )
-          );
+    );
     assertThat(xrpPayment.deliverMin().get())
             .isEqualTo(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
     assertThat(xrpPayment.invoiceID()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
