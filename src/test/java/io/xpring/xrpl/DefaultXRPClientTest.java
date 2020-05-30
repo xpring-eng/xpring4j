@@ -469,7 +469,11 @@ public class DefaultXRPClientTest {
     XRPTransaction transaction = xrpClient.getPayment(TRANSACTION_HASH);
 
     // THEN the returned transaction is as expected.
-    assertThat(transaction).isEqualTo(XRPTransaction.from(FakeXRPProtobufs.getTransactionResponsePaymentAllFields));
+    assertThat(transaction).isEqualTo(XRPTransaction.from(
+            FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
+            XRPLNetwork.TEST
+      )
+    );
   }
 
   @Test
