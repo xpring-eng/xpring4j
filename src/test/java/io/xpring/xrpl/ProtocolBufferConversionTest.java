@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -11,6 +12,7 @@ import io.xpring.xrpl.model.XRPPathElement;
 import io.xpring.xrpl.model.XRPPayment;
 import io.xpring.xrpl.model.XRPSigner;
 import io.xpring.xrpl.model.XRPTransaction;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,6 +26,7 @@ import org.xrpl.rpc.v1.Signer;
 import org.xrpl.rpc.v1.Transaction;
 
 import java.math.BigInteger;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProtocolBufferConversionTest {
@@ -196,6 +199,14 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
     assertThat(xrpPayment.destinationTag().get()).isEqualTo(paymentProto.getDestinationTag().getValue());
+    assertThat(xrpPayment.destinationXAddress()).isEqualTo(Utils.encodeXAddress(
+            ImmutableClassicAddress.builder()
+                    .address(xrpPayment.destination())
+                    .tag(xrpPayment.destinationTag())
+                    .isTest(false)
+                    .build()
+            )
+          );
     assertThat(xrpPayment.deliverMin().get())
             .isEqualTo(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
     assertThat(xrpPayment.invoiceID()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
@@ -212,13 +223,20 @@ public class ProtocolBufferConversionTest {
     Payment paymentProto = FakeXRPProtobufs.paymentWithMandatoryFieldsSet;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPPayment xrpPayment = XRPPayment.from(paymentProto);
+    XRPPayment xrpPayment = XRPPayment.from(paymentProto, XRPLNetwork.TEST);
 
     // THEN the result is as expected.
     assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
     assertThat(xrpPayment.destinationTag()).isEmpty();
-    assertThat(xrpPayment.destinationTag()).isEmpty();
+    assertThat(xrpPayment.destinationXAddress()).isEqualTo(Utils.encodeXAddress(
+            ImmutableClassicAddress.builder()
+                    .address(xrpPayment.destination())
+                    .tag(xrpPayment.destinationTag())
+                    .isTest(true)
+                    .build()
+            )
+    );
     assertThat(xrpPayment.deliverMin()).isEmpty();
     assertThat(xrpPayment.invoiceID()).isEmpty();
     assertThat(xrpPayment.paths()).isEmpty();
@@ -314,6 +332,14 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.hash())
             .isEqualTo(Utils.byteArrayToHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
+    assertThat(xrpTransaction.accountXAddress()).isEqualTo(Utils.encodeXAddress(
+            ImmutableClassicAddress.builder()
+                    .address(xrpTransaction.account())
+                    .tag(Optional.empty())
+                    .isTest(false)
+                    .build()
+            )
+    );
     assertThat(xrpTransaction.accountTransactionID())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
@@ -379,6 +405,14 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.hash())
             .isEqualTo(Utils.byteArrayToHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
+    assertThat(xrpTransaction.accountXAddress()).isEqualTo(Utils.encodeXAddress(
+            ImmutableClassicAddress.builder()
+                    .address(xrpTransaction.account())
+                    .tag(Optional.empty())
+                    .isTest(false)
+                    .build()
+            )
+    );
     assertThat(xrpTransaction.accountTransactionID()).isEmpty();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
     assertThat(xrpTransaction.flags()).isEmpty();
