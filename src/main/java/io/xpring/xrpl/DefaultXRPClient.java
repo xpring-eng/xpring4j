@@ -257,7 +257,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse);
+          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse, xrplNetwork);
           if (xrpTransaction == null) {
             throw XRPException.paymentConversionFailure;
           } else {
@@ -316,7 +316,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
     GetTransactionRequest request = GetTransactionRequest.newBuilder()
             .setHash(transactionHashByteString).build();
     GetTransactionResponse response = this.stub.getTransaction(request);
-    return XRPTransaction.from(response);
+    return XRPTransaction.from(response, xrplNetwork);
   }
 
   public int getOpenLedgerSequence() throws XRPException {
