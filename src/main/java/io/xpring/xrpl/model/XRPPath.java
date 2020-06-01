@@ -1,5 +1,6 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.xrpl.model.idiomatic.XrpPath;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment.Path;
 
@@ -9,8 +10,11 @@ import java.util.stream.Collectors;
 /**
  * A path in the XRP Ledger.
  *
+ * @deprecated Please use the idiomatically named {@link XrpPath} instead.
+ *
  * @see "https://xrpl.org/paths.html"
  */
+@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
 public interface XRPPath {
