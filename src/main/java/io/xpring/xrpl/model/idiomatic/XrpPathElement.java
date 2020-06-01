@@ -1,6 +1,5 @@
-package io.xpring.xrpl.model;
+package io.xpring.xrpl.model.idiomatic;
 
-import io.xpring.xrpl.model.idiomatic.XrpPathElement;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment.PathElement;
 
@@ -9,23 +8,20 @@ import java.util.Optional;
 /**
  * A path step in an XRP Ledger Path.
  *
- * @deprecated Please use the idiomatically named {@link XrpPathElement} instead.
- *
  * @see "https://xrpl.org/paths.html#path-steps"
  */
-@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
-public interface XRPPathElement {
-  static ImmutableXRPPathElement.Builder builder() {
-    return ImmutableXRPPathElement.builder();
+public interface XrpPathElement {
+  static ImmutableXrpPathElement.Builder builder() {
+    return ImmutableXrpPathElement.builder();
   }
 
   /**
    * (Optional) If present, this path step represents rippling through the specified address.
    * MUST NOT be provided if this path element specifies the currency or issuer fields.
    *
-   * @return An Optional {@link String} representing the account of this {@link XRPPathElement}.
+   * @return An Optional {@link String} representing the account of this {@link XrpPathElement}.
    */
   Optional<String> account();
 
@@ -34,9 +30,9 @@ public interface XRPPathElement {
    * The currency specified indicates the new currency. MUST NOT be provided if this path
    * element specifies the account field.
    *
-   * @return The Optional {@link XRPCurrency} of this {@link XRPPathElement}.
+   * @return The Optional {@link XrpCurrency} of this {@link XrpPathElement}.
    */
-  Optional<XRPCurrency> currency();
+  Optional<XrpCurrency> currency();
 
   /**
    * (Optional) If present, this path element represents changing currencies and this address
@@ -50,24 +46,24 @@ public interface XRPPathElement {
   Optional<String> issuer();
 
   /**
-   * Constructs an {@link XRPPathElement} from a {@link org.xrpl.rpc.v1.Payment.PathElement}.
+   * Constructs an {@link XrpPathElement} from a {@link org.xrpl.rpc.v1.Payment.PathElement}.
    *
    * @param pathElement a {@link org.xrpl.rpc.v1.Payment.PathElement} (protobuf object) whose field values will be used
-   *                    to construct an {@link XRPPathElement}
-   * @return an {@link XRPPathElement} with its fields set via the analogous protobuf fields.
+   *                    to construct an {@link XrpPathElement}
+   * @return an {@link XrpPathElement} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L227">
    * PathElement protocol buffer</a>
    */
-  static XRPPathElement from(PathElement pathElement) {
+  static XrpPathElement from(PathElement pathElement) {
     Optional<String> account = Optional.empty();
     if (pathElement.hasAccount()) {
       account = Optional.ofNullable(pathElement.getAccount().getAddress().isEmpty()
               ? null : pathElement.getAccount().getAddress());
     }
 
-    Optional<XRPCurrency> currency = Optional.empty();
+    Optional<XrpCurrency> currency = Optional.empty();
     if (pathElement.hasCurrency()) {
-      currency = Optional.ofNullable(XRPCurrency.from(pathElement.getCurrency()));
+      currency = Optional.ofNullable(XrpCurrency.from(pathElement.getCurrency()));
     }
 
     Optional<String> issuer = Optional.empty();

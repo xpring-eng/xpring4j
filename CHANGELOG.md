@@ -6,7 +6,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
 - A new method, `getPayment`, added to `XRPClient` for retrieving payment transactions by hash.
+- `XrplNetwork` provides the functionality of `XRPLNetwork` under an idiomatic cased name.
+- `DefaultXrpClient` provides the functionality of `DefaultXRPClient` under an idiomatic cased name.
+- `XrpClient` provides the functionality of `XRPClient` under an idiomatic cased name.
+- `XrpClientDecorator` provides the functionality of `XRPClientDecorator` under an idiomatic cased name.
+- `XrpClientInterface` provides the functionality of `XRPClientInterface` under an idiomatic cased name.
+- `XrpException` provides the functionality of `XRPException` under an idiomatic cased name.
+- `XrpExceptionType` provides the functionality of `XRPExceptionType` under an idiomatic cased name.
+- `XrpClient` provides the functionality of `XRPClient` under an idiomatic cased name.
+- `XrpCurrencyAmount` provides the functionality of `XRPCurrencyAmount` under an idiomatic cased name.
+- `XrpIssuedCurrency` provides the functionality of `XRPIssuedCurrency` under an idiomatic cased name.
+- `XrpMemo` provides the functionality of `XRPMemo` under an idiomatic cased name.
+- `XrpPath` provides the functionality of `XRPPath` under an idiomatic cased name.
+- `XrpPathElement` provides the functionality of `XRPPathElement` under an idiomatic cased name.
+- `XrpPayment` provides the functionality of `XRPPayment` under an idiomatic cased name.
+- `XrpSigner` provides the functionality of `XRPSigner` under an idiomatic cased name.
+- `XrpTransaction` provides the functionality of `XRPTransaction` under an idiomatic cased name.
+- `XrpCurrency` provides the functionality of `XRPCurrency` under an idiomatic cased name.
+
+### Deprecated
+- `XRPLNetwork` is deprecated, please use the idiomatically named `XRPLNetwork` instead.
+- `DefaultXRPClient` is deprecated, please use the idiomatically named `DefaultXrpClient` instead.
+- `XRPClient` is deprecated, please use the idiomatically named `XrpClient` instead.
+- `XRPClientDecorator` is deprecated, please use the idiomatically named `XrpClientDecorator` instead.
+- `XRPClientInterface` is deprecated, please use the idiomatically named `XrpClientInterface` instead.
+- `XRPException` is deprecated, please use the idiomatically named `XrpException` instead.
+- `XRPExceptionType` is deprecated, please use the idiomatically named `XrpExceptionType` instead.
+- `XRPClient` is deprecated, please use the idiomatically named `XrpClient` instead.
+- `XRPCurrencyAmount` is deprecated, please use the idiomatically named `XrpCurrencyAmount` instead.
+- `XRPIssuedCurrency` is deprecated, please use the idiomatically named `XrpIssuedCurrency` instead.
+- `XRPMemo` is deprecated, please use the idiomatically named `XrpMemo` instead.
+- `XRPPath` is deprecated, please use the idiomatically named `XrpPath` instead.
+- `XRPPathElement` is deprecated, please use the idiomatically named `XrpPathElement` instead.
+- `XRPPayment` is deprecated, please use the idiomatically named `XrpPayment` instead.
+- `XRPSigner` is deprecated, please use the idiomatically named `XrpSigner` instead.
+- `XRPTransaction` is deprecated, please use the idiomatically named `XrpTransaction` instead.
+- `XRPCurrency` is deprecated, please use the idiomatically named `XrpCurrency` instead.
 
 ### Added
 - A new class, `AbstractPayId`, replaces the functionality in `AbstractPayID` with an idiomatically cased name.

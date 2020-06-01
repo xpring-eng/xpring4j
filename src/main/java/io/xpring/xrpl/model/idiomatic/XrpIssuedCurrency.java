@@ -1,6 +1,5 @@
-package io.xpring.xrpl.model;
+package io.xpring.xrpl.model.idiomatic;
 
-import io.xpring.xrpl.model.idiomatic.XrpIssuedCurrency;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.IssuedCurrencyAmount;
 
@@ -9,24 +8,21 @@ import java.math.BigInteger;
 /**
  * An issued currency on the XRP Ledger.
  *
- * @deprecated Please use the idiomatically named {@link XrpIssuedCurrency} instead.
- *
  * @see "https://xrpl.org/basic-data-types.html#specifying-currency-amounts"
  */
-@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
-public interface XRPIssuedCurrency {
-  static ImmutableXRPIssuedCurrency.Builder builder() {
-    return ImmutableXRPIssuedCurrency.builder();
+public interface XrpIssuedCurrency {
+  static ImmutableXrpIssuedCurrency.Builder builder() {
+    return ImmutableXrpIssuedCurrency.builder();
   }
 
   /**
-   * The {@link XRPCurrency} used to value the amount.
+   * The {@link XrpCurrency} used to value the amount.
    *
-   * @return The {@link XRPCurrency} used to value the amount.
+   * @return The {@link XrpCurrency} used to value the amount.
    */
-  XRPCurrency currency();
+  XrpCurrency currency();
 
   /**
    * The value of the amount.
@@ -43,15 +39,15 @@ public interface XRPIssuedCurrency {
   String issuer();
 
   /**
-   * Constructs an {@link XRPIssuedCurrency} from a {@link IssuedCurrencyAmount}.
+   * Constructs an {@link XrpIssuedCurrency} from a {@link IssuedCurrencyAmount}.
    *
    * @param issuedCurrency a {@link IssuedCurrencyAmount} (protobuf object) whose field values will be used
-   *                       to construct an {@link XRPIssuedCurrency}
-   * @return an {@link XRPIssuedCurrency} with its fields set via the analogous protobuf fields.
+   *                       to construct an {@link XrpIssuedCurrency}
+   * @return an {@link XrpIssuedCurrency} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/amount.proto#L28">
    * IssuedCurrencyAmount protocol buffer</a>
    */
-  static XRPIssuedCurrency from(IssuedCurrencyAmount issuedCurrency) {
+  static XrpIssuedCurrency from(IssuedCurrencyAmount issuedCurrency) {
     BigInteger value;
     try {
       value = new BigInteger((issuedCurrency.getValue()));
@@ -60,7 +56,7 @@ public interface XRPIssuedCurrency {
     }
 
     return builder()
-        .currency(XRPCurrency.from(issuedCurrency.getCurrency()))
+        .currency(XrpCurrency.from(issuedCurrency.getCurrency()))
         .value(value)
         .issuer(issuedCurrency.getIssuer().getAddress())
         .build();
