@@ -4,8 +4,11 @@ import org.immutables.value.Value;
 
 /**
  * Represents components of a PayID.
+ *
+ * @deprecated Please use the idiomatically named `PayIdComponents` interface instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+@Deprecated
 @Value.Immutable
 public interface PayIDComponents {
   /**
