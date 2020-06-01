@@ -210,6 +210,22 @@ TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash
 
 **Note:** The example transactionHash may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://testnet.xrpl.org)
 
+#### Retrieve specific payment
+
+An `XRPClient` can return a specific payment transaction identified by hash.
+
+```java
+import io.xpring.xrpl.XRPClient;
+import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.model.XRPTransaction;
+
+String remoteURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
+XRPClient xrpClient = new XRPClient(remoteURL, XRPLNetwork.TEST);
+XRPTransaction payment = xrpClient.getPayment(transactionHash);
+```
+
+**Note:** The example transactionHash may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://testnet.xrpl.org)
+
 #### Payment history
 
 An `XRPClient` can return a list of payments to and from an account.
