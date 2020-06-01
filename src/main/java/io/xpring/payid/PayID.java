@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
  *
  * @deprecated Please use the idiomatically named `PayId` interface instead.
  */
+@Deprecated
 public interface PayID {
 
   String PAYID_SCHEME = "payid:";
