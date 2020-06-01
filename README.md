@@ -208,7 +208,7 @@ String transactionHash = "9FC7D277C1C8ED9CE133CC17AEA9978E71FC644CE6F5F0C8E26F1C
 TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash); // TransactionStatus.SUCCEEDED
 ```
 
-**Note:** The example transactionHash may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://testnet.xrpl.org)
+**Note:** The example `transactionHash` may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://testnet.xrpl.org)
 
 #### Retrieve specific payment
 
@@ -224,7 +224,7 @@ XRPClient xrpClient = new XRPClient(remoteURL, XRPLNetwork.TEST);
 XRPTransaction payment = xrpClient.getPayment(transactionHash);
 ```
 
-**Note:** The example transactionHash may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://testnet.xrpl.org)
+**Note:** The example `transactionHash` may lead to a "Transaction not found." error because the Testnet is regularly reset, or the accessed node may only maintain one month of history.  Recent transaction hashes can be found in the [XRP Ledger Explorer](https://testnet.xrpl.org)
 
 #### Payment history
 
