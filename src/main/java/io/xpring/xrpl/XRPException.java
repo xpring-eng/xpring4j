@@ -1,9 +1,14 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.idiomatic.XrpException;
+
 /**
  * Exceptions which occur when working with xpring4j.
+ *
+ * @deprecated Please use the idiomatically named {@link XrpException} class instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+@Deprecated
 public class XRPException extends Exception {
   /**
    * Static exception for when a classic address is passed to an X-Address API.
