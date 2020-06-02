@@ -23,7 +23,7 @@ import java.util.Map;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDClient {
   /**
-   * The version of PayID
+   * The version of PayID.
    */
   private static final String PAY_ID_VERSION = "1.0";
   
