@@ -6,7 +6,7 @@
 
     <groupId>io.xpring</groupId>
     <artifactId>xpring4j</artifactId>
-    <version>5.1.1</version>
+    <version>5.2.0</version>
     <name>xpring4j</name>
     <url>https://github.com/xpring-eng/xpring4j</url>
     <description>
