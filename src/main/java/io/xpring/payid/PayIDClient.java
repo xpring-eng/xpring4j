@@ -106,6 +106,9 @@ public class PayIDClient {
     final String[] localVarContentTypes = {};
     final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
     localVarHeaderParams.put("Content-Type", localVarContentType);
+    localVarHeaderParams.put("PayID-Version", "1.0");
+
+    
     String[] localVarAuthNames = new String[]{};
 
     try {
