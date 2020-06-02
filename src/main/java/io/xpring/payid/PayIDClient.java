@@ -23,6 +23,11 @@ import java.util.Map;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDClient {
   /**
+   * The version of PayID
+   */
+  private static final String PAY_ID_VERSION = "1.0";
+  
+  /**
    * The network this PayID client resolves on.
    */
   private String network;
@@ -106,9 +111,8 @@ public class PayIDClient {
     final String[] localVarContentTypes = {};
     final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
     localVarHeaderParams.put("Content-Type", localVarContentType);
-    localVarHeaderParams.put("PayID-Version", "1.0");
+    localVarHeaderParams.put("PayID-Version", PayIDClient.PAY_ID_VERSION);
 
-    
     String[] localVarAuthNames = new String[]{};
 
     try {
