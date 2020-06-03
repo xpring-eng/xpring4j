@@ -1,4 +1,4 @@
-package io.xpring.payid;
+package io.xpring.payid.idiomatic;
 
 import static java.lang.String.format;
 
@@ -10,13 +10,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * An abstract implementation of {@link PayID} for use by Immutables.
- *
- * @deprecated Please use the idiomatically named `AbstractPayId` class instead.
+ * An abstract implementation of {@link PayId} for use by Immutables.
  */
-@Deprecated
 @Value.Immutable
-abstract class AbstractPayID implements PayID {
+abstract class AbstractPayId implements PayId {
 
   private static final String ALPHA = "a-zA-Z";
   private static final String DIGIT = "0-9";
@@ -78,12 +75,12 @@ abstract class AbstractPayID implements PayID {
   }
 
   /**
-   * Validate a PayID per the rules defined in the PayID RFC.
+   * Validate a Pay ID per the rules defined in the PayID RFC.
    *
-   * @return A normalized and valid {@link AbstractPayID}.
+   * @return A normalized and valid {@link AbstractPayId}.
    */
   @Check
-  AbstractPayID validate() {
+  AbstractPayId validate() {
 
     // Verify Account
     Preconditions.checkArgument(
@@ -100,6 +97,6 @@ abstract class AbstractPayID implements PayID {
 
   @Override
   public String toString() {
-    return PAYID_SCHEME + account() + "$" + host();
+    return PAY_ID_SCHEME + account() + "$" + host();
   }
 }

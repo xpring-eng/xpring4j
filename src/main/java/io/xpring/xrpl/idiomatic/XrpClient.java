@@ -1,9 +1,9 @@
-package io.xpring.xrpl;
+package io.xpring.xrpl.idiomatic;
 
-import io.xpring.common.XRPLNetwork;
-import io.xpring.xrpl.idiomatic.DefaultXrpClient;
-import io.xpring.xrpl.idiomatic.XrpClient;
-import io.xpring.xrpl.model.XRPTransaction;
+import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.xrpl.TransactionStatus;
+import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -11,37 +11,33 @@ import java.util.List;
 /**
  * A client that can submit transactions to the XRP Ledger.
  *
- * @deprecated Please use the idiomatically named {@link XrpClient} class instead.
- *
  * @see "https://xrpl.org"
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-@Deprecated
-public class XRPClient implements XRPClientInterface {
-  private XRPClientDecorator decoratedClient;
+public class XrpClient implements XrpClientInterface {
+  private XrpClientDecorator decoratedClient;
 
   /**
    * The XRPL Network of the node that this client is communicating with.
    */
-  private XRPLNetwork network;
+  private XrplNetwork network;
 
   /**
    * Initialize a new client with the given options.
    *
-   * @param grpcURL The remote URL to use for gRPC calls.
+   * @param grpcUrl The remote URL to use for gRPC calls.
    * @param network The network this XRPClient is connecting to.
    */
-  public XRPClient(String grpcURL, XRPLNetwork network) {
-    XRPClientDecorator defaultXRPClient = new DefaultXRPClient(grpcURL, network);
-    this.decoratedClient = new ReliableSubmissionXRPClient(defaultXRPClient);
+  public XrpClient(String grpcUrl, XrplNetwork network) {
+    XrpClientDecorator defaultXrpClient = new DefaultXrpClient(grpcUrl);
+    this.decoratedClient = new ReliableSubmissionXrpClient(defaultXrpClient);
 
     this.network = network;
   }
 
   /**
-   * Retrieve the network that this XRPClient connects to.
+   * Retrieve the network that this XrpClient connects to.
    */
-  public XRPLNetwork getNetwork() {
+  public XrplNetwork getNetwork() {
     return this.network;
   }
 
@@ -51,9 +47,9 @@ public class XRPClient implements XRPClientInterface {
    *
    * @param xrplAccountAddress The X-Address to retrieve the balance for.
    * @return A {@link BigInteger} with the number of drops in this account.
-   * @throws XRPException If the given inputs were invalid.
+   * @throws XrpException If the given inputs were invalid.
    */
-  public BigInteger getBalance(final String xrplAccountAddress) throws XRPException {
+  public BigInteger getBalance(final String xrplAccountAddress) throws XrpException {
     return decoratedClient.getBalance(xrplAccountAddress);
   }
 
@@ -67,7 +63,7 @@ public class XRPClient implements XRPClientInterface {
    * @param transactionHash The hash of the transaction.
    * @return The status of the given transaction.
    */
-  public TransactionStatus getPaymentStatus(String transactionHash) throws XRPException {
+  public TransactionStatus getPaymentStatus(String transactionHash) throws XrpException {
     return decoratedClient.getPaymentStatus(transactionHash);
   }
 
@@ -78,13 +74,13 @@ public class XRPClient implements XRPClientInterface {
    * @param destinationAddress The X-Address to send the XRP to.
    * @param sourceWallet       The {@link Wallet} which holds the XRP.
    * @return A transaction hash for the payment.
-   * @throws XRPException If the given inputs were invalid.
+   * @throws XrpException If the given inputs were invalid.
    */
   public String send(
       final BigInteger amount,
       final String destinationAddress,
       final Wallet sourceWallet
-  ) throws XRPException {
+  ) throws XrpException {
     return decoratedClient.send(amount, destinationAddress, sourceWallet);
   }
 
@@ -93,9 +89,9 @@ public class XRPClient implements XRPClientInterface {
    *
    * @param xrplAccountAddress The address to check the existence of.
    * @return A boolean if the account is on the XRP Ledger.
-   * @throws XRPException If the given inputs were invalid.
+   * @throws XrpException If the given inputs were invalid.
    */
-  public boolean accountExists(final String xrplAccountAddress) throws XRPException {
+  public boolean accountExists(final String xrplAccountAddress) throws XrpException {
     return decoratedClient.accountExists(xrplAccountAddress);
   }
 
@@ -108,9 +104,9 @@ public class XRPClient implements XRPClientInterface {
    * </p>
    * @param xrplAccountAddress The address (account) for which to retrieve payment history.
    * @return An array of transactions associated with the account.
-   * @throws XRPException If there was a problem communicating with the XRP Ledger.
+   * @throws XrpException If there was a problem communicating with the XRP Ledger.
    */
-  public List<XRPTransaction> paymentHistory(String xrplAccountAddress) throws XRPException {
+  public List<XrpTransaction> paymentHistory(String xrplAccountAddress) throws XrpException {
     return decoratedClient.paymentHistory(xrplAccountAddress);
   }
 
@@ -121,10 +117,10 @@ public class XRPClient implements XRPClientInterface {
    *       See the `validated` field to make this distinction.
    * </p>
    * @param transactionHash The hash of the transaction to retrieve.
-   * @return An XRPTransaction object representing an XRP Ledger transaction.
+   * @return An XrpTransaction object representing an XRP Ledger transaction.
    * @throws io.grpc.StatusRuntimeException If the transaction hash was invalid.
    */
-  public XRPTransaction getPayment(String transactionHash) throws XRPException {
+  public XrpTransaction getPayment(String transactionHash) throws XrpException {
     return decoratedClient.getPayment(transactionHash);
   }
 }
