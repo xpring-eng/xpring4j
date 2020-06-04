@@ -35,8 +35,7 @@ public class JavaScriptWalletFactory {
   }
 
   public String getDefaultDerivationPath() throws JavaScriptLoaderException {
-    Value getDefaultDerivationPathFunction = JavaScriptLoader.loadResource("getDefaultDerivationPath", wallet);
-    return getDefaultDerivationPathFunction.execute().asString();
+    return this.wallet.getMember("defaultDerivationPath").asString();
   }
 
   /**
