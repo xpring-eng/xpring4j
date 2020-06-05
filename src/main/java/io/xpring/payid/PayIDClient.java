@@ -20,7 +20,7 @@ import java.util.Map;
  * Implements interaction with a PayID service.
  * Warning:  This class is experimental and should not be used in production applications.
  *
- * @deprecated Please use the idiomatically named `PayId` interface instead.
+ * @deprecated Use the idiomatically named `PayIdClient` class instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Deprecated
