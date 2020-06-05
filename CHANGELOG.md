@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `PayIdClient` provides the functionality of `PayIDClient` under an idiomatic cased name.
+
+### Deprecated
+- `PayIDClient` is deprecated, use the idiomatically named `PayIdClient` instead.
+
 ## 5.2.0 - 2020-06-01
 
 ### Added

@@ -1,8 +1,8 @@
-package io.xpring.payid;
+package io.xpring.payid.idiomatic;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
-import io.xpring.common.XRPLNetwork;
+import io.xpring.common.idiomatic.XrplNetwork;
 import io.xpring.payid.generated.ApiClient;
 import io.xpring.payid.generated.ApiException;
 import io.xpring.payid.generated.ApiResponse;
@@ -19,12 +19,8 @@ import java.util.Map;
 /**
  * Implements interaction with a PayID service.
  * Warning:  This class is experimental and should not be used in production applications.
- *
- * @deprecated Please use the idiomatically named `PayId` interface instead.
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-@Deprecated
-public class PayIDClient {
+public class PayIdClient {
   /**
    * The version of PayID.
    */
@@ -52,7 +48,7 @@ public class PayIDClient {
    *
    * @param network The network that addresses will be resolved on.
    */
-  public PayIDClient(String network) {
+  public PayIdClient(String network) {
     this.network = network;
     this.enableSSLVerification = true;
   }
@@ -60,7 +56,7 @@ public class PayIDClient {
   /**
    * Retrieve the network that addresses will be resolved on.
    *
-   * @return The {@link XRPLNetwork} of this {@link PayIDClient}
+   * @return The {@link XrplNetwork} of this {@link PayIdClient}
    */
   public String getNetwork() {
     return this.network;
@@ -83,10 +79,10 @@ public class PayIDClient {
    * @param payID The payID to resolve for an address.
    * @return A CryptoAddressDetails that contains an address representing the given PayID.
    */
-  public CryptoAddressDetails addressForPayID(String payID) throws PayIDException {
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(payID);
+  public CryptoAddressDetails addressForPayID(String payID) throws PayIdException {
+    PayIdComponents paymentPointer = PayIdUtils.parsePayID(payID);
     if (paymentPointer == null) {
-      throw PayIDException.invalidPaymentPointerException;
+      throw PayIdException.invalidPaymentPointerException;
     }
 
     ApiClient apiClient = new ApiClient();
@@ -114,7 +110,7 @@ public class PayIDClient {
     final String[] localVarContentTypes = {};
     final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
     localVarHeaderParams.put("Content-Type", localVarContentType);
-    localVarHeaderParams.put("PayID-Version", PayIDClient.PAY_ID_VERSION);
+    localVarHeaderParams.put("PayID-Version", PayIdClient.PAY_ID_VERSION);
 
     String[] localVarAuthNames = new String[]{};
 
@@ -138,19 +134,19 @@ public class PayIDClient {
         return result.getAddresses().get(0).getAddressDetails();
       } else {
         // With a specific network, exactly one address should be returned by a PayId lookup.
-        throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE,
+        throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE,
                 "Expected one address for " + payID + " on network " + this.network
                 + " but got " + result.getAddresses().size());
       }
     } catch (ApiException exception) {
       int code = exception.getCode();
       if (code == 404) {
-        throw new PayIDException(
-            PayIDExceptionType.MAPPING_NOT_FOUND,
+        throw new PayIdException(
+            PayIdExceptionType.MAPPING_NOT_FOUND,
             "Could not resolve " + payID + " on network " + this.network
         );
       } else {
-        throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
+        throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
       }
     }
   }
