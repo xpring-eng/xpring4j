@@ -1,6 +1,6 @@
 package io.xpring.payid.idiomatic;
 
-import io.xpring.payid.javascript.idiomatic.JavaScriptPayIdUtils;
+import io.xpring.payid.idiomatic.javascript.JavaScriptPayIdUtils;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 
 /**
@@ -8,11 +8,11 @@ import io.xpring.xrpl.javascript.JavaScriptLoaderException;
  */
 public class PayIdUtils {
 
-  private static final JavaScriptPayIdUtils javaScriptPayIDUtils;
+  private static final JavaScriptPayIdUtils javaScriptPayIdUtils;
 
   static {
     try {
-      javaScriptPayIDUtils = new JavaScriptPayIdUtils();
+      javaScriptPayIdUtils = new JavaScriptPayIdUtils();
     } catch (JavaScriptLoaderException e) {
       throw new RuntimeException(e);
     }
@@ -27,10 +27,10 @@ public class PayIdUtils {
   /**
    * Parse the given Pay ID to a set of components.
    *
-   * @param payID A PayID to parse.
+   * @param payId A PayID to parse.
    * @return A set of components parsed from the PayID.
    */
-  public static PayIdComponents parsePayID(String payID) {
-    return javaScriptPayIDUtils.parsePayId(payID);
+  public static PayIdComponents parsePayID(String payId) {
+    return javaScriptPayIdUtils.parsePayId(payId);
   }
 }

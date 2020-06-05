@@ -36,7 +36,7 @@ public class JavaScriptPayIdUtils {
    * @param payId A PayID to parse.
    * @return A set of components parsed from the PayID.
    */
-  public PayIdComponents parsePayID(String payId) {
+  public PayIdComponents parsePayId(String payId) {
     Objects.requireNonNull(payId);
 
     Value parsePayIDFunction = javaScriptPayIdUtils.getMember("parsePayId");

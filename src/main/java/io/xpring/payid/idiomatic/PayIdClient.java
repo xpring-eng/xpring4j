@@ -34,7 +34,7 @@ public class PayIdClient {
   /**
    * Whether to enable SSL Verification.
    */
-  private boolean enableSSLVerification;
+  private boolean enableSslVerification;
 
   /**
    * Initialize a new PayID client.
@@ -50,7 +50,7 @@ public class PayIdClient {
    */
   public PayIdClient(String network) {
     this.network = network;
-    this.enableSSLVerification = true;
+    this.enableSslVerification = true;
   }
 
   /**
@@ -66,28 +66,28 @@ public class PayIdClient {
    * Set whether to enable or disable SSL verification.
    * Exposed for testing purposes.
    *
-   * @param enableSSLVerification true if SSL should be enabled.
+   * @param enableSslVerification true if SSL should be enabled.
    */
   @VisibleForTesting
-  public void setEnableSSLVerification(boolean enableSSLVerification) {
-    this.enableSSLVerification = enableSSLVerification;
+  public void setEnableSslVerification(boolean enableSslVerification) {
+    this.enableSslVerification = enableSslVerification;
   }
 
   /**
    * Resolve the given PayID to an address.
    *
-   * @param payID The payID to resolve for an address.
+   * @param payId The PayID to resolve for an address.
    * @return A CryptoAddressDetails that contains an address representing the given PayID.
    */
-  public CryptoAddressDetails addressForPayID(String payID) throws PayIdException {
-    PayIdComponents paymentPointer = PayIdUtils.parsePayID(payID);
+  public CryptoAddressDetails addressForPayId(String payId) throws PayIdException {
+    PayIdComponents paymentPointer = PayIdUtils.parsePayID(payId);
     if (paymentPointer == null) {
       throw PayIdException.invalidPaymentPointerException;
     }
 
     ApiClient apiClient = new ApiClient();
     apiClient.setBasePath("https://" + paymentPointer.host());
-    apiClient.setVerifyingSsl(enableSSLVerification);
+    apiClient.setVerifyingSsl(enableSslVerification);
 
     String path = paymentPointer.path().substring(1);
     final String[] localVarAccepts = {
@@ -135,7 +135,7 @@ public class PayIdClient {
       } else {
         // With a specific network, exactly one address should be returned by a PayId lookup.
         throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE,
-                "Expected one address for " + payID + " on network " + this.network
+                "Expected one address for " + payId + " on network " + this.network
                 + " but got " + result.getAddresses().size());
       }
     } catch (ApiException exception) {
@@ -143,7 +143,7 @@ public class PayIdClient {
       if (code == 404) {
         throw new PayIdException(
             PayIdExceptionType.MAPPING_NOT_FOUND,
-            "Could not resolve " + payID + " on network " + this.network
+            "Could not resolve " + payId + " on network " + this.network
         );
       } else {
         throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());

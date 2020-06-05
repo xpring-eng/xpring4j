@@ -11,7 +11,7 @@ public interface XrpPayIdClientInterface {
    *
    * @return The {@link XrplNetwork} that addresses will be resolved on.
    */
-  XrplNetwork getXRPLNetwork();
+  XrplNetwork getXrplNetwork();
 
   /**
    * Resolve the given PayID to an XRP Address.

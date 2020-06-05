@@ -47,7 +47,7 @@ public class XrpPayIdClient extends PayIdClient implements XrpPayIdClientInterfa
    * @return An XRP address representing the given PayID.
    * @throws PayIdException if the inputs were invalid.
    */
-  public String xrpAddressForPayID(String payId) throws PayIdException {
+  public String xrpAddressForPayId(String payId) throws PayIdException {
     CryptoAddressDetails addressDetails = super.addressForPayId(payId);
 
     // Return address immediately if it is an X-Address.
