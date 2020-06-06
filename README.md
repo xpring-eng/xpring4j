@@ -379,6 +379,37 @@ PaymentRequest paymentRequest = PaymentRequest.builder()
 PaymentResponse payment = ilpClient.sendPayment(paymentRequest, "2S1PZh3fEKnKg");
 ```
 
+## Usage: PayID
+
+### PayIDClient
+
+`PayIDClient` is a gateway into the PayID Network. `PayIDClient` is initialized with a String containing the Network and the Environment (Testnet or Mainnet):
+
+```java
+import io.xpring.payid.PayIDClient;
+
+String payID = "alice$dev.payid.xpring.money";
+PayIDClient payIDClient = new PayIDClient("btc-mainnet");
+String payIdAddress = payIDClient.addressForPayID(payID).getAddress();
+// 3P3QsMVK89JBNqZQv5zMAKG8FK3kJM4rjt
+```
+
+### Utils
+
+The `PayIDUtils` object provides an easy way to parse PayID's.
+
+```java
+import io.xpring.payid.PayIDUtils;
+
+String validPayID = "georgewashington$xpring.money";
+System.out.println(PayIDUtils.parsePayID(validPayID));
+// PayIDComponents{host=xpring.money, path=/georgewashington}
+
+String inValidPayID = "$xpring.money/georgewashington";
+System.out.println(PayIDUtils.parsePayID(inValidPayID));
+// null
+```
+
 # Contributing
 
 Pull requests are welcome! To get started with building this library and opening pull requests, please see [contributing.md](CONTRIBUTING.md).
