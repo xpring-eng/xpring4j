@@ -396,7 +396,7 @@ String payIdAddress = payIDClient.addressForPayID(payID).getAddress();
 
 ### Utils
 
-The `PayIDUtils` object provides an easy way to parse PayID's.
+The `PayIDUtils` object provides an easy way to parse PayIDs.
 
 ```java
 import io.xpring.payid.PayIDUtils;
