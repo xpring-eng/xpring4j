@@ -52,6 +52,9 @@ public interface XRPPayment {
   /**
    * The address and (optional) destination tag of the account receiving the payment, encoded in X-address format.
    * @see "https://xrpaddress.info/"
+   *
+   * @return An {@link String} representing the X-address encoding of the address and destination tag receiving the
+   *         payment.
    */
   String destinationXAddress();
 
@@ -97,28 +100,12 @@ public interface XRPPayment {
    *
    * @param payment a {@link org.xrpl.rpc.v1.Payment} (protobuf object) whose field values will be used
    *                to construct an {@link XRPPayment}
-   * @param xrplNetwork The XRPL network from which this object was retrieved, defaults to XRPLNetwork.MAIN (Mainnet).
+   * @param xrplNetwork The XRPL network from which this object was retrieved.
    * @return an {@link XRPPayment} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L224">
    * Payment protocol buffer</a>
    */
   static XRPPayment from(Payment payment, XRPLNetwork xrplNetwork) {
-    return convertFields(payment, xrplNetwork);
-  }
-
-  static XRPPayment from(Payment payment) {
-    return convertFields(payment, XRPLNetwork.MAIN);
-  }
-
-  /**
-   * Constructs an {@link XRPPayment} from a {@link org.xrpl.rpc.v1.Payment}.
-   *
-   * @param payment a {@link org.xrpl.rpc.v1.Payment} (protobuf object) whose field values will be used
-   *                to construct an {@link XRPPayment}
-   * @param xrplNetwork The XRPL network from which this object was retrieved, defaults to XRPLNetwork.MAIN (Mainnet).
-   * @return an {@link XRPPayment} with its fields set via the analogous protobuf fields.
-   */
-  static XRPPayment convertFields(Payment payment, XRPLNetwork xrplNetwork) {
     // amount is required
     XRPCurrencyAmount amount = XRPCurrencyAmount.from(payment.getAmount().getValue());
     if (amount == null) {

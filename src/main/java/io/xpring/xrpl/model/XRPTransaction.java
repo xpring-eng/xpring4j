@@ -49,6 +49,8 @@ public interface XRPTransaction {
 
   /**
    * The unique address of the account that initiated the transaction, encoded as an X-address.
+   *
+   * @return A {@link String} representing the X-address encoding of the account that initiated the transaction.
    * @see "https://xrpaddress.info/"
    */
   String accountXAddress();
@@ -136,6 +138,16 @@ public interface XRPTransaction {
   Optional<Integer> sourceTag();
 
   /**
+   * The unique address and source tag of the sender that initiated the transaction, encoded as an X-address.
+   * In the absence of a source tag, this field will be identical to accountXAddress.
+   *
+   * @return A {@link String} representing the X-address encoding of the account and source tag that initiated
+   *          the transaction.
+   * @see "https://xrpaddress.info"
+   */
+  String sourceXAddress();
+
+  /**
    * The signature that verifies this transaction as originating from the account it says it is from.
    *
    * @return A byte array containing the signature that verifies this transaction as originating from
@@ -195,28 +207,12 @@ public interface XRPTransaction {
    *
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
    *                    to construct an {@link XRPTransaction}
-   * @param xrplNetwork The XRPL network from which this object was retrieved, defaults to XRPLNetwork.Main (Mainnet).
+   * @param xrplNetwork The XRPL network from which this object was retrieved.
    * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
    * GetTransactionResponse protocol buffer</a>
    */
   static XRPTransaction from(GetTransactionResponse getTransactionResponse, XRPLNetwork xrplNetwork) {
-    return convertFields(getTransactionResponse, xrplNetwork);
-  }
-
-  static XRPTransaction from(GetTransactionResponse getTransactionResponse) {
-    return convertFields(getTransactionResponse, XRPLNetwork.MAIN);
-  }
-
-  /**
-   * Constructs an {@link XRPTransaction} from a {@link GetTransactionResponse}.
-   *
-   * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
-   *                    to construct an {@link XRPTransaction}
-   * @param xrplNetwork The XRPL network from which this object was retrieved, defaults to XRPLNetwork.Main (Mainnet).
-   * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
-   */
-  static XRPTransaction convertFields(GetTransactionResponse getTransactionResponse, XRPLNetwork xrplNetwork) {
     final Transaction transaction = getTransactionResponse.getTransaction();
     if (transaction == null) {
       return null;
@@ -266,6 +262,14 @@ public interface XRPTransaction {
     if (transaction.hasSourceTag()) {
       sourceTag = Optional.of(transaction.getSourceTag().getValue());
     }
+
+    ClassicAddress sourceClassicAddress = ImmutableClassicAddress.builder()
+            .address(account)
+            .tag(sourceTag)
+            .isTest(xrplNetwork == XRPLNetwork.TEST)
+            .build();
+
+    final String sourceXAddress = Utils.encodeXAddress(sourceClassicAddress);
 
     final byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
 
@@ -330,6 +334,7 @@ public interface XRPTransaction {
         .signers(signers)
         .signingPublicKey(signingPublicKey)
         .sourceTag(sourceTag)
+        .sourceXAddress(sourceXAddress)
         .transactionSignature(transactionSignature)
         .type(type)
         .paymentFields(paymentFields)
