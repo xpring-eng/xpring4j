@@ -39,8 +39,8 @@ public class JavaScriptPayIdUtils {
   public PayIdComponents parsePayId(String payId) {
     Objects.requireNonNull(payId);
 
-    Value parsePayIDFunction = javaScriptPayIdUtils.getMember("parsePayId");
-    Value javaScriptComponents = parsePayIDFunction.execute(payId);
+    Value parsePayIdFunction = javaScriptPayIdUtils.getMember("parsePayId");
+    Value javaScriptComponents = parsePayIdFunction.execute(payId);
     if (javaScriptComponents.isNull()) {
       return null;
     }
