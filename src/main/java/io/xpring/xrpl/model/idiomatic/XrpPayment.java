@@ -1,5 +1,14 @@
 package io.xpring.xrpl.model.idiomatic;
 
+import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.model.idiomatic.ImmutableXrpPayment;
+import io.xpring.xrpl.model.idiomatic.XrpCurrencyAmount;
+import io.xpring.xrpl.model.idiomatic.XrpCurrencyAmount;
+import io.xpring.xrpl.model.idiomatic.XrpCurrencyAmount;
+import io.xpring.xrpl.model.idiomatic.XrpPath;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 
@@ -42,6 +51,15 @@ public interface XrpPayment {
   Optional<Integer> destinationTag();
 
   /**
+   * The address and (optional) destination tag of the account receiving the payment, encoded in X-address format.
+   * @see "https://xrpaddress.info/"
+   *
+   * @return An {@link String} representing the X-address encoding of the address and destination tag receiving the
+   *         payment.
+   */
+  String destinationXAddress();
+
+  /**
    * (Optional) Minimum amount of destination currency this transaction should deliver.
    *
    * @return An {@link XrpCurrencyAmount} representing the minimum amount of destination currency this
@@ -79,15 +97,16 @@ public interface XrpPayment {
   Optional<XrpCurrencyAmount> sendMax();
 
   /**
-   * Constructs an {@link XrpPayment} from a {@link org.xrpl.rpc.v1.Payment}.
+   * Constructs an {@link io.xpring.xrpl.model.idiomatic.XrpPayment} from a {@link org.xrpl.rpc.v1.Payment}.
    *
    * @param payment a {@link org.xrpl.rpc.v1.Payment} (protobuf object) whose field values will be used
-   *                to construct an {@link XrpPayment}
-   * @return an {@link XrpPayment} with its fields set via the analogous protobuf fields.
+   *                to construct an {@link io.xpring.xrpl.model.idiomatic.XrpPayment}
+   * @param xrplNetwork The Xrpl network from which this object was retrieved.
+   * @return an {@link io.xpring.xrpl.model.idiomatic.XrpPayment} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L224">
    * Payment protocol buffer</a>
    */
-  static XrpPayment from(Payment payment) {
+  static io.xpring.xrpl.model.idiomatic.XrpPayment from(Payment payment, XrplNetwork xrplNetwork) {
     // amount is required
     XrpCurrencyAmount amount = XrpCurrencyAmount.from(payment.getAmount().getValue());
     if (amount == null) {
@@ -105,7 +124,15 @@ public interface XrpPayment {
       destinationTag = Optional.of(payment.getDestinationTag().getValue());
     }
 
-    // If the deliverMin field is set, it must be able to be transformed into an XRPCurrencyAmount.
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+            .address(destination)
+            .tag(destinationTag)
+            .isTest(xrplNetwork == XrplNetwork.TEST)
+            .build();
+
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
+
+    // If the deliverMin field is set, it must be able to be transformed into an XrpCurrencyAmount.
     Optional<XrpCurrencyAmount> deliverMin = Optional.empty();
     if (payment.hasDeliverMin()) {
       deliverMin = Optional.ofNullable(XrpCurrencyAmount.from(payment.getDeliverMin().getValue()));
@@ -117,11 +144,11 @@ public interface XrpPayment {
     byte[] invoiceID = payment.getInvoiceId().getValue().toByteArray();
 
     List<XrpPath> paths = payment.getPathsList()
-        .stream()
-        .map(XrpPath::from)
-        .collect(Collectors.toList());
+            .stream()
+            .map(XrpPath::from)
+            .collect(Collectors.toList());
 
-    // If the sendMax field is set, it must be able to be transformed into an XRPCurrencyAmount.
+    // If the sendMax field is set, it must be able to be transformed into an XrpCurrencyAmount.
     Optional<XrpCurrencyAmount> sendMax = Optional.empty();
     if (payment.hasSendMax()) {
       sendMax = Optional.ofNullable(XrpCurrencyAmount.from(payment.getSendMax().getValue()));
@@ -131,13 +158,14 @@ public interface XrpPayment {
     }
 
     return builder()
-        .amount(amount)
-        .destination(destination)
-        .destinationTag(destinationTag)
-        .deliverMin(deliverMin)
-        .invoiceID(invoiceID)
-        .paths(paths)
-        .sendMax(sendMax)
-        .build();
+            .amount(amount)
+            .destination(destination)
+            .destinationTag(destinationTag)
+            .destinationXAddress(destinationXAddress)
+            .deliverMin(deliverMin)
+            .invoiceID(invoiceID)
+            .paths(paths)
+            .sendMax(sendMax)
+            .build();
   }
 }

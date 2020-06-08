@@ -1,7 +1,14 @@
 package io.xpring.xrpl.model.idiomatic;
 
+import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.model.idiomatic.ImmutableXrpTransaction;
+import io.xpring.xrpl.model.idiomatic.XrpMemo;
+import io.xpring.xrpl.model.idiomatic.XrpPayment;
+import io.xpring.xrpl.model.idiomatic.XrpSigner;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetTransactionResponse;
@@ -18,7 +25,6 @@ import java.util.stream.Collectors;
  *
  * @see "https://xrpl.org/transaction-formats.html"
  */
-// TODO(amiecorso): Modify this object to use X-Address format.
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
 public interface XrpTransaction {
@@ -39,6 +45,14 @@ public interface XrpTransaction {
    * @return A {@link String} containing the unique address of the account that initiated the transaction.
    */
   String account();
+
+  /**
+   * The unique address of the account that initiated the transaction, encoded as an X-address.
+   *
+   * @return A {@link String} representing the X-address encoding of the account that initiated the transaction.
+   * @see "https://xrpaddress.info/"
+   */
+  String accountXAddress();
 
   /**
    * (Optional) Hash value identifying another transaction.
@@ -123,6 +137,16 @@ public interface XrpTransaction {
   Optional<Integer> sourceTag();
 
   /**
+   * The unique address and source tag of the sender that initiated the transaction, encoded as an X-address.
+   * In the absence of a source tag, this field will be identical to accountXAddress.
+   *
+   * @return A {@link String} representing the X-address encoding of the account and source tag that initiated
+   *          the transaction.
+   * @see "https://xrpaddress.info"
+   */
+  String sourceXAddress();
+
+  /**
    * The signature that verifies this transaction as originating from the account it says it is from.
    *
    * @return A byte array containing the signature that verifies this transaction as originating from
@@ -178,15 +202,20 @@ public interface XrpTransaction {
   int ledgerIndex();
 
   /**
-   * Constructs an {@link XrpTransaction} from a {@link GetTransactionResponse}.
+   * Constructs an {@link io.xpring.xrpl.model.idiomatic.XrpTransaction} from a {@link GetTransactionResponse}.
    *
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
-   *                    to construct an {@link XrpTransaction}
-   * @return an {@link XrpTransaction} with its fields set via the analogous protobuf fields.
+   *                    to construct an {@link io.xpring.xrpl.model.idiomatic.XrpTransaction}
+   * @param xrplNetwork The XrpL network from which this object was retrieved.
+   * @return an {@link io.xpring.xrpl.model.idiomatic.XrpTransaction} with its fields set via the analogous
+   *         protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
    * GetTransactionResponse protocol buffer</a>
    */
-  static XrpTransaction from(GetTransactionResponse getTransactionResponse) {
+  static io.xpring.xrpl.model.idiomatic.XrpTransaction from(
+          GetTransactionResponse getTransactionResponse,
+          XrplNetwork xrplNetwork
+  ) {
     final Transaction transaction = getTransactionResponse.getTransaction();
     if (transaction == null) {
       return null;
@@ -196,6 +225,13 @@ public interface XrpTransaction {
     final String hash = Utils.byteArrayToHex(transactionHashBytes);
 
     final String account = transaction.getAccount().getValue().getAddress();
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+            .address(account)
+            .isTest(xrplNetwork == XrplNetwork.TEST)
+            .build();
+
+    final String accountXAddress = Utils.encodeXAddress(classicAddress);
 
     final byte[] accountTransactionID = transaction.getAccountTransactionId().getValue().toByteArray();
 
@@ -212,16 +248,16 @@ public interface XrpTransaction {
     }
 
     final List<XrpMemo> memos = transaction.getMemosList()
-        .stream()
-        .map(XrpMemo::from)
-        .collect(Collectors.toList());
+            .stream()
+            .map(XrpMemo::from)
+            .collect(Collectors.toList());
 
     final Integer sequence = transaction.getSequence().getValue();
 
     final List<XrpSigner> signers = transaction.getSignersList()
-        .stream()
-        .map(XrpSigner::from)
-        .collect(Collectors.toList());
+            .stream()
+            .map(XrpSigner::from)
+            .collect(Collectors.toList());
 
     final byte[] signingPublicKey = transaction.getSigningPublicKey().getValue().toByteArray();
 
@@ -230,6 +266,14 @@ public interface XrpTransaction {
       sourceTag = Optional.of(transaction.getSourceTag().getValue());
     }
 
+    ClassicAddress sourceClassicAddress = ImmutableClassicAddress.builder()
+            .address(account)
+            .tag(sourceTag)
+            .isTest(xrplNetwork == XrplNetwork.TEST)
+            .build();
+
+    final String sourceXAddress = Utils.encodeXAddress(sourceClassicAddress);
+
     final byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
 
     TransactionType type;
@@ -237,7 +281,7 @@ public interface XrpTransaction {
     switch (transaction.getTransactionDataCase()) {
       case PAYMENT: {
         Payment payment = transaction.getPayment();
-        paymentFields = XrpPayment.from(payment);
+        paymentFields = XrpPayment.from(payment, xrplNetwork);
         if (paymentFields == null) {
           return null;
         }
@@ -280,25 +324,27 @@ public interface XrpTransaction {
 
     final int ledgerIndex = getTransactionResponse.getLedgerIndex();
 
-    return XrpTransaction.builder()
-        .hash(hash)
-        .account(account)
-        .accountTransactionID(accountTransactionID)
-        .fee(fee)
-        .flags(flags)
-        .lastLedgerSequence(lastLedgerSequence)
-        .memos(memos)
-        .sequence(sequence)
-        .signers(signers)
-        .signingPublicKey(signingPublicKey)
-        .sourceTag(sourceTag)
-        .transactionSignature(transactionSignature)
-        .type(type)
-        .paymentFields(paymentFields)
-        .timestamp(timestamp)
-        .deliveredAmount(deliveredAmount)
-        .validated(validated)
-        .ledgerIndex(ledgerIndex)
-        .build();
+    return io.xpring.xrpl.model.idiomatic.XrpTransaction.builder()
+            .hash(hash)
+            .account(account)
+            .accountXAddress(accountXAddress)
+            .accountTransactionID(accountTransactionID)
+            .fee(fee)
+            .flags(flags)
+            .lastLedgerSequence(lastLedgerSequence)
+            .memos(memos)
+            .sequence(sequence)
+            .signers(signers)
+            .signingPublicKey(signingPublicKey)
+            .sourceTag(sourceTag)
+            .sourceXAddress(sourceXAddress)
+            .transactionSignature(transactionSignature)
+            .type(type)
+            .paymentFields(paymentFields)
+            .timestamp(timestamp)
+            .deliveredAmount(deliveredAmount)
+            .validated(validated)
+            .ledgerIndex(ledgerIndex)
+            .build();
   }
 }

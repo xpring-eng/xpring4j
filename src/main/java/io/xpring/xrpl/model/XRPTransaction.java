@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
  *
  * @see "https://xrpl.org/transaction-formats.html"
  */
-// TODO(amiecorso): Modify this object to use X-Address format.
 @Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
