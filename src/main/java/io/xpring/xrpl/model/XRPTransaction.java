@@ -136,7 +136,6 @@ public interface XRPTransaction {
 
   /**
    * The unique address and source tag of the sender that initiated the transaction, encoded as an X-address.
-   * In the absence of a source tag, this field will be identical to accountXAddress.
    *
    * @return A {@link String} representing the X-address encoding of the account and source tag that initiated
    *          the transaction.
