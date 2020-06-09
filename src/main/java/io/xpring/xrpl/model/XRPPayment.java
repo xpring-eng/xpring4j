@@ -35,14 +35,20 @@ public interface XRPPayment {
    */
   XRPCurrencyAmount amount();
 
+  @Deprecated
   /**
+   * @deprecated Please use destinationXAddress, which encodes both the destination and the destinationTag.
+   *
    * The unique address of the account receiving the payment.
    *
    * @return A {@link String} containing the unique address of the account receiving the payment.
    */
   String destination();
 
+  @Deprecated
   /**
+   * @deprecated Please use destinationXAddress, which encodes both the destination and destinationTag.
+   *
    * (Optional) Arbitrary tag that identifies a hosted recipient to pay, or the reason for the payment.
    *
    * @return An {@link Integer} containing the tag that identifies the reason for the payment.
