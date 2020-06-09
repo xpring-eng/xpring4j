@@ -39,20 +39,15 @@ public interface XrpTransaction {
    */
   String hash();
 
+  @Deprecated
   /**
+   * @deprecated Please use sourceXAddress, which encodes both the account and sourceTag.
+   *
    * The unique address of the account that initiated the transaction.
    *
    * @return A {@link String} containing the unique address of the account that initiated the transaction.
    */
   String account();
-
-  /**
-   * The unique address of the account that initiated the transaction, encoded as an X-address.
-   *
-   * @return A {@link String} representing the X-address encoding of the account that initiated the transaction.
-   * @see "https://xrpaddress.info/"
-   */
-  String accountXAddress();
 
   /**
    * (Optional) Hash value identifying another transaction.
@@ -127,7 +122,10 @@ public interface XrpTransaction {
    */
   byte[] signingPublicKey();
 
+  @Deprecated
   /**
+   * @deprecated Please use sourceXAddress, which encodes both the account and sourceTag.
+   *
    * (Optional) Arbitrary integer used to identify the reason for this payment or a sender on whose behalf this
    * transaction is made.
    * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
@@ -226,13 +224,6 @@ public interface XrpTransaction {
 
     final String account = transaction.getAccount().getValue().getAddress();
 
-    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-            .address(account)
-            .isTest(xrplNetwork == XrplNetwork.TEST)
-            .build();
-
-    final String accountXAddress = Utils.encodeXAddress(classicAddress);
-
     final byte[] accountTransactionID = transaction.getAccountTransactionId().getValue().toByteArray();
 
     final Long fee = transaction.getFee().getDrops();
@@ -327,7 +318,6 @@ public interface XrpTransaction {
     return io.xpring.xrpl.model.idiomatic.XrpTransaction.builder()
             .hash(hash)
             .account(account)
-            .accountXAddress(accountXAddress)
             .accountTransactionID(accountTransactionID)
             .fee(fee)
             .flags(flags)
