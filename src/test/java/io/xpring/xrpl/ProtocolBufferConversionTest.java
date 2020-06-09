@@ -332,14 +332,6 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.hash())
             .isEqualTo(Utils.byteArrayToHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
-    assertThat(xrpTransaction.accountXAddress()).isEqualTo(Utils.encodeXAddress(
-            ImmutableClassicAddress.builder()
-                    .address(xrpTransaction.account())
-                    .tag(Optional.empty())
-                    .isTest(true)
-                    .build()
-            )
-    );
     assertThat(xrpTransaction.accountTransactionID())
         .isEqualTo(transactionProto.getAccountTransactionId().getValue().toByteArray());
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
@@ -406,14 +398,6 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.hash())
             .isEqualTo(Utils.byteArrayToHex(FakeXRPProtobufs.testTransactionHash.toByteArray()));
     assertThat(xrpTransaction.account()).isEqualTo(transactionProto.getAccount().getValue().getAddress());
-    assertThat(xrpTransaction.accountXAddress()).isEqualTo(Utils.encodeXAddress(
-            ImmutableClassicAddress.builder()
-                    .address(xrpTransaction.account())
-                    .tag(Optional.empty())
-                    .isTest(true)
-                    .build()
-            )
-    );
     assertThat(xrpTransaction.accountTransactionID()).isEmpty();
     assertThat(xrpTransaction.fee()).isEqualTo(transactionProto.getFee().getDrops());
     assertThat(xrpTransaction.flags()).isEmpty();
