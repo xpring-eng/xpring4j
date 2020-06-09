@@ -203,7 +203,7 @@ public class ProtocolBufferConversionTest {
             ImmutableClassicAddress.builder()
                     .address(xrpPayment.destination())
                     .tag(xrpPayment.destinationTag())
-                    .isTest(false)
+                    .isTest(true)
                     .build()
             )
     );
@@ -336,7 +336,7 @@ public class ProtocolBufferConversionTest {
             ImmutableClassicAddress.builder()
                     .address(xrpTransaction.account())
                     .tag(Optional.empty())
-                    .isTest(false)
+                    .isTest(true)
                     .build()
             )
     );
@@ -410,7 +410,7 @@ public class ProtocolBufferConversionTest {
             ImmutableClassicAddress.builder()
                     .address(xrpTransaction.account())
                     .tag(Optional.empty())
-                    .isTest(false)
+                    .isTest(true)
                     .build()
             )
     );
