@@ -63,7 +63,8 @@ public class ReliableSubmissionXRPClientTest {
       .transactionHistoryToPaymentsList(FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse);
   private static final boolean DEFAULT_ACCOUNT_EXISTS_VALUE = true;
   private static final XRPTransaction DEFAULT_GET_TRANSACTION_VALUE = XRPTransaction.from(
-          FakeXRPProtobufs.getTransactionResponsePaymentAllFields
+          FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
+          XRPLNetwork.TEST
   );
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")

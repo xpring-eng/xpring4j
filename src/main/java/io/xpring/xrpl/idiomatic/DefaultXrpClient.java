@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import io.xpring.common.idiomatic.XrplNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.Signer;
@@ -58,15 +59,17 @@ public class DefaultXrpClient implements XrpClientDecorator {
 
   // Channel is the abstraction to connect to a service endpoint
   private final XRPLedgerAPIServiceBlockingStub stub;
+  private final XrplNetwork xrplNetwork;
 
   /**
    * No-args Constructor.
    */
-  DefaultXrpClient(String grpcUrl) {
+  DefaultXrpClient(String grpcUrl, XrplNetwork xrplNetwork) {
     this(ManagedChannelBuilder
         .forTarget(grpcUrl)
         .usePlaintext()
-        .build()
+        .build(),
+        xrplNetwork
     );
   }
 
@@ -75,7 +78,9 @@ public class DefaultXrpClient implements XrpClientDecorator {
    *
    * @param channel A {@link ManagedChannel}.
    */
-  DefaultXrpClient(final ManagedChannel channel) {
+  DefaultXrpClient(final ManagedChannel channel, XrplNetwork xrplNetwork) {
+    this.xrplNetwork = xrplNetwork;
+
     // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
     // stub, or an async stub with Future are always possible.
     this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
@@ -257,7 +262,7 @@ public class DefaultXrpClient implements XrpClientDecorator {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XrpTransaction xrpTransaction = XrpTransaction.from(transactionResponse);
+          XrpTransaction xrpTransaction = XrpTransaction.from(transactionResponse, this.xrplNetwork);
           if (xrpTransaction == null) {
             throw XrpException.paymentConversionFailure;
           } else {
@@ -316,7 +321,7 @@ public class DefaultXrpClient implements XrpClientDecorator {
     GetTransactionRequest request = GetTransactionRequest.newBuilder()
             .setHash(transactionHashByteString).build();
     GetTransactionResponse response = this.stub.getTransaction(request);
-    return XrpTransaction.from(response);
+    return XrpTransaction.from(response, this.xrplNetwork);
   }
 
   public int getOpenLedgerSequence() throws XrpException {
