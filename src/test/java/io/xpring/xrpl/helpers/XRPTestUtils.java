@@ -1,5 +1,6 @@
 package io.xpring.xrpl.helpers;
 
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetTransactionResponse;
@@ -30,7 +31,7 @@ public class XRPTestUtils {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse);
+          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse, XRPLNetwork.TEST);
           if (xrpTransaction != null) {
             payments.add(xrpTransaction);
           }

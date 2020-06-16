@@ -13,6 +13,7 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.immutables.value.internal.$guava$.base.$Throwables;
@@ -468,7 +469,11 @@ public class DefaultXRPClientTest {
     XRPTransaction transaction = xrpClient.getPayment(TRANSACTION_HASH);
 
     // THEN the returned transaction is as expected.
-    assertThat(transaction).isEqualTo(XRPTransaction.from(FakeXRPProtobufs.getTransactionResponsePaymentAllFields));
+    assertThat(transaction).isEqualTo(XRPTransaction.from(
+            FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
+            XRPLNetwork.TEST
+      )
+    );
   }
 
   @Test
@@ -575,7 +580,7 @@ public class DefaultXRPClientTest {
         InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
     // Create a new XRPClient using the in-process channel;
-    return new DefaultXRPClient(channel);
+    return new DefaultXRPClient(channel, XRPLNetwork.TEST);
   }
 
 
