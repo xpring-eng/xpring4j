@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -11,6 +12,7 @@ import io.xpring.xrpl.model.XRPPathElement;
 import io.xpring.xrpl.model.XRPPayment;
 import io.xpring.xrpl.model.XRPSigner;
 import io.xpring.xrpl.model.XRPTransaction;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,6 +26,7 @@ import org.xrpl.rpc.v1.Signer;
 import org.xrpl.rpc.v1.Transaction;
 
 import java.math.BigInteger;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProtocolBufferConversionTest {
@@ -190,12 +193,20 @@ public class ProtocolBufferConversionTest {
     Payment paymentProto = FakeXRPProtobufs.paymentWithAllFieldsSet;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPPayment xrpPayment = XRPPayment.from(paymentProto);
+    XRPPayment xrpPayment = XRPPayment.from(paymentProto, XRPLNetwork.TEST);
 
     // THEN the result is as expected.
     assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
     assertThat(xrpPayment.destinationTag().get()).isEqualTo(paymentProto.getDestinationTag().getValue());
+    assertThat(xrpPayment.destinationXAddress()).isEqualTo(Utils.encodeXAddress(
+            ImmutableClassicAddress.builder()
+                    .address(xrpPayment.destination())
+                    .tag(xrpPayment.destinationTag())
+                    .isTest(true)
+                    .build()
+            )
+    );
     assertThat(xrpPayment.deliverMin().get())
             .isEqualTo(XRPCurrencyAmount.from(paymentProto.getDeliverMin().getValue()));
     assertThat(xrpPayment.invoiceID()).isEqualTo(paymentProto.getInvoiceId().getValue().toByteArray());
@@ -212,13 +223,20 @@ public class ProtocolBufferConversionTest {
     Payment paymentProto = FakeXRPProtobufs.paymentWithMandatoryFieldsSet;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPPayment xrpPayment = XRPPayment.from(paymentProto);
+    XRPPayment xrpPayment = XRPPayment.from(paymentProto, XRPLNetwork.TEST);
 
     // THEN the result is as expected.
     assertThat(xrpPayment.amount()).isEqualTo(XRPCurrencyAmount.from(paymentProto.getAmount().getValue()));
     assertThat(xrpPayment.destination()).isEqualTo(paymentProto.getDestination().getValue().getAddress());
     assertThat(xrpPayment.destinationTag()).isEmpty();
-    assertThat(xrpPayment.destinationTag()).isEmpty();
+    assertThat(xrpPayment.destinationXAddress()).isEqualTo(Utils.encodeXAddress(
+            ImmutableClassicAddress.builder()
+                    .address(xrpPayment.destination())
+                    .tag(xrpPayment.destinationTag())
+                    .isTest(true)
+                    .build()
+            )
+    );
     assertThat(xrpPayment.deliverMin()).isEmpty();
     assertThat(xrpPayment.invoiceID()).isEmpty();
     assertThat(xrpPayment.paths()).isEmpty();
@@ -231,7 +249,7 @@ public class ProtocolBufferConversionTest {
     // WHEN the protocol buffer is converted to a native Java type.
     // THEN a NumberFormatException is re-thrown.
     expectedException.expect(NumberFormatException.class);
-    XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadAmount);
+    XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadAmount, XRPLNetwork.TEST);
   }
 
   @Test
@@ -240,7 +258,7 @@ public class ProtocolBufferConversionTest {
     // WHEN the protocol buffer is converted to a native Java type.
     // THEN a NumberFormatException is re-thrown.
     expectedException.expect(NumberFormatException.class);
-    XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadDeliverMin);
+    XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadDeliverMin, XRPLNetwork.TEST);
   }
 
   @Test
@@ -249,7 +267,7 @@ public class ProtocolBufferConversionTest {
     // WHEN the protocol buffer is converted to a native Java type.
     // THEN a NumberFormatException is re-thrown.
     expectedException.expect(NumberFormatException.class);
-    XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadSendMax);
+    XRPPayment.from(FakeXRPProtobufs.invalidPaymentBadSendMax, XRPLNetwork.TEST);
   }
 
   // Memo
@@ -308,7 +326,7 @@ public class ProtocolBufferConversionTest {
     Transaction transactionProto = getTransactionResponseProto.getTransaction();
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto, XRPLNetwork.TEST);
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.hash())
@@ -335,7 +353,8 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
-    assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    assertThat(xrpTransaction.paymentFields())
+            .isEqualTo(XRPPayment.from(transactionProto.getPayment(), XRPLNetwork.TEST));
     assertThat(xrpTransaction.timestamp().get()).isEqualTo(FakeXRPProtobufs.expectedTimestamp);
     assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(Long.toString(FakeXRPProtobufs.testDeliveredDrops));
     assertThat(xrpTransaction.validated()).isEqualTo(FakeXRPProtobufs.testIsValidated);
@@ -348,7 +367,7 @@ public class ProtocolBufferConversionTest {
     GetTransactionResponse getTransactionResponseProto = FakeXRPProtobufs.getTransactionResponsePaymentXRP;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto, XRPLNetwork.TEST);
 
     // THEN the deliveredAmount field converted correctly to a drops amount.
     assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(Long.toString(FakeXRPProtobufs.testDeliveredDrops));
@@ -360,7 +379,7 @@ public class ProtocolBufferConversionTest {
     GetTransactionResponse getTransactionResponseProto = FakeXRPProtobufs.getTransactionResponsePaymentIssued;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto, XRPLNetwork.TEST);
 
     // THEN the deliveredAmount field converted correctly to an issued currency value.
     assertThat(xrpTransaction.deliveredAmount().get()).isEqualTo(FakeXRPProtobufs.testIssuedCurrencyValue);
@@ -373,7 +392,7 @@ public class ProtocolBufferConversionTest {
     Transaction transactionProto = getTransactionResponseProto.getTransaction();
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto, XRPLNetwork.TEST);
 
     // THEN all fields are present and converted correctly.
     assertThat(xrpTransaction.hash())
@@ -392,7 +411,8 @@ public class ProtocolBufferConversionTest {
     assertThat(xrpTransaction.transactionSignature())
         .isEqualTo(transactionProto.getTransactionSignature().getValue().toByteArray());
     assertThat(xrpTransaction.type()).isEqualTo(TransactionType.PAYMENT);
-    assertThat(xrpTransaction.paymentFields()).isEqualTo(XRPPayment.from(transactionProto.getPayment()));
+    assertThat(xrpTransaction.paymentFields())
+            .isEqualTo(XRPPayment.from(transactionProto.getPayment(), XRPLNetwork.TEST));
     assertThat(xrpTransaction.timestamp().isPresent()).isFalse();
     assertThat(xrpTransaction.deliveredAmount().isPresent()).isFalse();
   }
@@ -404,7 +424,7 @@ public class ProtocolBufferConversionTest {
                                                       FakeXRPProtobufs.invalidGetTransactionResponseEmptyPaymentFields;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto, XRPLNetwork.TEST);
 
     // THEN the result is null.
     assertThat(xrpTransaction).isNull();
@@ -417,7 +437,7 @@ public class ProtocolBufferConversionTest {
                                               FakeXRPProtobufs.invalidGetTransactionResponseUnsupportedTransactionType;
 
     // WHEN the protocol buffer is converted to a native Java type.
-    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto);
+    XRPTransaction xrpTransaction = XRPTransaction.from(getTransactionResponseProto, XRPLNetwork.TEST);
 
     // THEN the result is null.
     assertThat(xrpTransaction).isNull();

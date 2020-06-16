@@ -43,7 +43,8 @@ public class XpringClientTest {
   public static final List<XRPTransaction> FAKE_PAYMENT_HISTORY_VALUE = new LinkedList<XRPTransaction>();
   public static final Boolean FAKE_ACCOUNT_EXISTS_VALUE = true;
   public static final XRPTransaction FAKE_GET_TRANSACTION_VALUE = XRPTransaction.from(
-          FakeXRPProtobufs.getTransactionResponsePaymentAllFields
+          FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
+          XRPLNetwork.TEST
   );
 
   /**

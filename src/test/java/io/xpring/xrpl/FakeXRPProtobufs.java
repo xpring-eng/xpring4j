@@ -50,8 +50,8 @@ public class FakeXRPProtobufs {
   public static String testCurrencyName = "currencyName";
   public static ByteString testCurrencyCode;
 
-  public static String fakeAddress1 = "r123";
-  public static String fakeAddress2 = "r456";
+  public static String fakeAddress1 = "rsKouRxYLWGseFwXSAo57qXjcGiNqR55wr";
+  public static String fakeAddress2 = "rPuNV4oA6f3SrKA4pLEpdVZW6QLvn3UJxK";
 
   static {
     try {
