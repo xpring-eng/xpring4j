@@ -38,7 +38,7 @@ public class JavaScriptWallet {
    * @return A hexadecimal encoded representation of the wallet's public key.
    */
   public String getPublicKey() {
-    return javaScriptWallet.invokeMember("getPublicKey").asString();
+    return javaScriptWallet.getMember("publicKey").asString();
   }
 
   /**
@@ -47,7 +47,7 @@ public class JavaScriptWallet {
    * @return A hexadecimal encoded representation of the wallet's private key.
    */
   public String getPrivateKey() {
-    return javaScriptWallet.invokeMember("getPrivateKey").asString();
+    return javaScriptWallet.getMember("privateKey").asString();
   }
 
   /**
