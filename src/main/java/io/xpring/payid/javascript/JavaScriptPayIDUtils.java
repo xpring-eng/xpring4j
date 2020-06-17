@@ -27,7 +27,7 @@ public class JavaScriptPayIDUtils {
    */
   public JavaScriptPayIDUtils() throws JavaScriptLoaderException {
     Context context = JavaScriptLoader.getContext();
-    Value javaScriptUtils = JavaScriptLoader.loadResource("PayIDUtils", context);
+    Value javaScriptUtils = JavaScriptLoader.loadResource("PayIdUtils", context);
 
     this.javaScriptPayIDUtils = javaScriptUtils;
   }
