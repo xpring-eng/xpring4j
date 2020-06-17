@@ -330,6 +330,34 @@ System.out.println(decodedClassicAddress.address()); // rnysDDrRXxz9z66DmCmfWpq4
 System.out.println(decodedClassicAddress.tag()); // 12345
 ```
 
+## Usage: PayID
+
+Two classes are used to work with PayID: `PayIDClient` and `XrpPayIDClient`.
+
+`PayIdClient` can resolve addresses on arbitrary cryptocurrency networks.
+
+```java
+// Resolve on Bitcoin Mainnet.
+String btcNetwork = "btc-testnet";
+
+PayIDClient btcPayIdClient = new PayIDClient(btcNetwork);
+String payID = "georgewashington$xpring.money";
+
+CryptoAddressDetails btcAddressComponents = btcPayIdClient.addressForPayID(payId);
+System.out.println("Resolved to " + btcAddressComponents.getAddress());
+```
+
+### XrpPayIdClient
+
+`XrpPayIdClient` can resolve addresses on the XRP Ledger network. The class always coerces returned addresses into an X-Address. (See https://xrpaddress.info/)
+
+```java
+XRPLNetwork xrpNetwork = XRPLNetwork.MAIN;
+
+XRPPayIDClient xrpPayIdClient = new XRPPayIDClient(xrpNetwork);
+String xrpAddress = xrpPayIdClient.xrpAddressForPayID(payId);
+```
+
 ## Usage: ILP
 ### IlpClient
 `IlpClient` is the main interface into the ILP network.  `IlpClient` must be initialized with the URL of a Hermes instance.
@@ -377,6 +405,33 @@ PaymentRequest paymentRequest = PaymentRequest.builder()
   .build();
 
 PaymentResponse payment = ilpClient.sendPayment(paymentRequest, "2S1PZh3fEKnKg");
+```
+
+## Usage: Xpring
+
+Xpring components compose PayID and XRP components to make complex interactions easy.
+
+```java
+// The expected address of the gRPC server.
+String grpcURL = "test.xrp.xpring.io:50051";
+
+// A wallet with funds on testnet.
+Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB", true);
+
+// The number of drops to send.
+BigInteger dropsToSend = BigInteger.valueOf(10);
+
+// The Pay ID to resolve.
+String payID = "georgewashington$xpring.money";
+
+// The network to resolve on.
+XRPLNetwork network = XRPLNetwork.TEST;
+
+XRPClient xrpClient = new XRPClient(grpcURL, network);
+XRPPayIDClient payIdClient = new XRPPayIDClient(network);
+XpringClient xpringClient = new XpringClient(payIdClient, xrpClient);
+
+String hash = xpringClient.send(dropsToSend, payID, wallet);
 ```
 
 # Contributing
