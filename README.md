@@ -347,7 +347,7 @@ CryptoAddressDetails btcAddressComponents = btcPayIdClient.addressForPayID(payId
 System.out.println("Resolved to " + btcAddressComponents.getAddress());
 ```
 
-### XrpPayIdClient
+### XRPPayIDClient
 
 `XRPPayIDClient` can resolve addresses on the XRP Ledger network. The class always coerces returned addresses into an X-Address. (See https://xrpaddress.info/)
 
