@@ -332,7 +332,7 @@ System.out.println(decodedClassicAddress.tag()); // 12345
 
 ## Usage: PayID
 
-Two classes are used to work with PayID: `PayIDClient` and `XrpPayIDClient`.
+Two classes are used to work with PayID: `PayIDClient` and `XRPPayIDClient`.
 
 `PayIdClient` can resolve addresses on arbitrary cryptocurrency networks.
 
