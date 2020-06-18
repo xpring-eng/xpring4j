@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.2.2 - 2020-06-18
 
+## Fixed
+- Destination tags were being dropped from payments. This release fixes the issue.
 
 ## 5.2.1 - 2020-06-16
 

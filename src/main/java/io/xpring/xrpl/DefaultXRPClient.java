@@ -174,7 +174,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
     int openLedgerSequence = this.getOpenLedgerSequence();
 
     AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
-        .setAddress(destinationClassicAddress.address())
+        .setAddress(destinationAddress)
         .build();
     AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
         .setAddress(sourceClassicAddress.address())
@@ -183,17 +183,12 @@ public class DefaultXRPClient implements XRPClientDecorator {
     XRPDropsAmount dropsAmount = XRPDropsAmount.newBuilder().setDrops(drops.longValue()).build();
     CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(dropsAmount).build();
     Amount amount = Amount.newBuilder().setValue(currencyAmount).build();
+
     Destination destination = Destination.newBuilder().setValue(destinationAccountAddress).build();
 
     Payment.Builder paymentBuilder = Payment.newBuilder()
         .setAmount(amount)
         .setDestination(destination);
-    if (destinationClassicAddress.tag().isPresent()) {
-      DestinationTag destinationTag = DestinationTag.newBuilder()
-          .setValue(destinationClassicAddress.tag().get())
-          .build();
-      paymentBuilder.setDestinationTag(destinationTag);
-    }
 
     Payment payment = paymentBuilder.build();
 
