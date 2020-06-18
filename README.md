@@ -349,7 +349,7 @@ System.out.println("Resolved to " + btcAddressComponents.getAddress());
 
 ### XrpPayIdClient
 
-`XrpPayIdClient` can resolve addresses on the XRP Ledger network. The class always coerces returned addresses into an X-Address. (See https://xrpaddress.info/)
+`XRPPayIDClient` can resolve addresses on the XRP Ledger network. The class always coerces returned addresses into an X-Address. (See https://xrpaddress.info/)
 
 ```java
 XRPLNetwork xrpNetwork = XRPLNetwork.MAIN;
