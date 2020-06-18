@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Fixed
+- Payments sent to a destination tag would drop their tag. This release contains a fix for this issue.
+
 ## 5.2.1 - 2020-06-16
 
 ### Added
