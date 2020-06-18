@@ -96,7 +96,7 @@ public class XRPClientIntegrationTests {
     ClassicAddress destinationAddressComponents = Utils.decodeXAddress(destinationXAddress);
     assertThat(destinationAddressComponents.address()).isEqualTo(address);
     assertThat(destinationAddressComponents.tag().get()).isEqualTo(tag);
- }
+  }
 
   @Test
   public void accountExistsTest() throws XRPException {
