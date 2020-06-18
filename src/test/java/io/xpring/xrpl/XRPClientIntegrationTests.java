@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPTransaction;
+import io.xpring.xrpl.model.idiomatic.XrpPayment;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,6 +72,30 @@ public class XRPClientIntegrationTests {
 
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
     assertThat(transactionHash).isNotNull();
+  }
+
+  @Test
+  public void sendXRPWithADestinationTag() throws XRPException {
+    // GIVEN a transaction hash representing a payment with a destination tag.
+    Wallet wallet = new Wallet(WALLET_SEED);
+    int tag = 123;
+    String address = "rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY";
+    ClassicAddress classicAddressWithTag = ImmutableClassicAddress.builder()
+        .address(address)
+        .tag(tag)
+        .isTest(true)
+        .build();
+    String taggedAddress = Utils.encodeXAddress(classicAddressWithTag);
+    String transactionHash = xrpClient.send(AMOUNT, taggedAddress, wallet);
+
+    // WHEN the payment is retrieved
+    XRPTransaction transaction = xrpClient.getPayment(transactionHash);
+
+    // THEN the payment has the correct destination.
+    String destinationXAddress = transaction.paymentFields().destinationXAddress();
+    ClassicAddress destinationAddressComponents = Utils.decodeXAddress(destinationXAddress);
+    assertThat(destinationAddressComponents.address()).isEqualTo(address);
+    assertThat(destinationAddressComponents.tag().get()).isEqualTo(tag);
   }
 
   @Test
