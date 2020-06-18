@@ -95,7 +95,7 @@ public class XRPClientIntegrationTests {
     String destinationXAddress = transaction.paymentFields().destinationXAddress();
     ClassicAddress destinationAddressComponents = Utils.decodeXAddress(destinationXAddress);
     assertThat(destinationAddressComponents.address()).isEqualTo(address);
-    assertThat(destinationAddressComponents.tag()).isEqualTo(tag);
+    assertThat(destinationAddressComponents.tag().get()).isEqualTo(tag);
  }
 
   @Test
