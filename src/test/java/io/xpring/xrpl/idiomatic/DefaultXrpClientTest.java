@@ -377,7 +377,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentHistoryWithInvalidPaymentTest() throws IOException, XrpException {
-    // GIVEN an XRPClient client which will return a transaction history which contains a malformed payment.
+    // GIVEN an XrpClient client which will return a transaction history which contains a malformed payment.
     Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
         Result.ok(FakeXRPProtobufs.invalidPaymentGetAccountTransactionHistoryResponse);
 
