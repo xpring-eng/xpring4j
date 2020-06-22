@@ -541,7 +541,7 @@ public class DefaultXrpClientTest {
   }
 
   /**
-   * Convenience method to get an XRPClient which has successful network calls.
+   * Convenience method to get an XrpClient which has successful network calls.
    */
   private DefaultXrpClient getClient() throws IOException {
     return getClient(
