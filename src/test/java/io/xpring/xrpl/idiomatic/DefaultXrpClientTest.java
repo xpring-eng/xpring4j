@@ -438,7 +438,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void accountExistsTestWithUnknownError() throws IOException, XrpException {
-    // GIVEN a DefaultXRPClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
+    // GIVEN a DefaultXrpClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
     StatusRuntimeException unknownError = new StatusRuntimeException(Status.UNKNOWN);
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(unknownError);
     DefaultXrpClient client = getClient(
