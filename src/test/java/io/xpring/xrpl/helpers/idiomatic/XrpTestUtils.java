@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class XrpTestUtils {
   /**
-   * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XRPTransaction objects,
+   * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XrpTransaction objects,
    * filtered only for PAYMENT type transactions.
    *
    * @param transactionHistoryResponse protocol buffer object containing an array of GetTransactionResponse objects
