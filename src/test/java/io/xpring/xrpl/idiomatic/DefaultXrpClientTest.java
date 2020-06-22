@@ -710,4 +710,3 @@ public class DefaultXrpClientTest {
     return FakeXRPProtobufs.paymentOnlyGetAccountTransactionHistoryResponse;
   }
 }
-g
