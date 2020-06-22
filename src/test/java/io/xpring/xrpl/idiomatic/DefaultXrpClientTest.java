@@ -120,7 +120,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void getBalanceTestWithFailedAccountInfo() throws IOException, XrpException {
-    // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
+    // GIVEN an XrpClient with mocked networking which will fail to retrieve account info.
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(GENERIC_ERROR);
     DefaultXrpClient client = getClient(
         accountInfoResult,
