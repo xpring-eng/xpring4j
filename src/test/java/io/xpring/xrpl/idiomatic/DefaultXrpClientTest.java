@@ -500,7 +500,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void getTransactionWithMalformedPaymentTest() throws XrpException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will return a malformed payment transaction.
+    // GIVEN a DefaultXrpClient with mocked networking that will return a malformed payment transaction.
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
         FakeXRPProtobufs.invalidGetTransactionResponseEmptyPaymentFields
     );
