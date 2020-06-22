@@ -14,7 +14,7 @@ import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
 import io.xpring.common.idiomatic.XrplNetwork;
-import io.xpring.xrpl.XRPExceptionm;
+import io.xpring.xrpl.XRPException;
 import io.xpring.xrpl.helpers.idiomatic.XrpTestUtils;
 import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import org.junit.Rule;
