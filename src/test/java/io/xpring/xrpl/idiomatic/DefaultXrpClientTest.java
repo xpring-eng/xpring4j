@@ -356,7 +356,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XrpException {
-    // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions.
+    // GIVEN an XrpClient client which will return a transaction history which contains non-payment transactions.
     Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
         Result.ok(FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
 
