@@ -216,7 +216,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentStatusWithNodeError() throws IOException, XrpException {
-    // GIVEN an XRPClient which will error when a transaction status is requested..
+    // GIVEN an XrpClient which will error when a transaction status is requested..
     DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.error(GENERIC_ERROR),
