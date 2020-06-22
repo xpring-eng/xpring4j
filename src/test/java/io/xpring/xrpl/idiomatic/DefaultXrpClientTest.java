@@ -257,7 +257,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void submitTransactionWithFailedAccountInfo() throws IOException, XrpException, XRPException {
-    // GIVEN a XRPClient which will fail to return account info.
+    // GIVEN an XrpClient which will fail to return account info.
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(GENERIC_ERROR);
     DefaultXrpClient client = getClient(
         accountInfoResult,
