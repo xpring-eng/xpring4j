@@ -395,7 +395,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void accountExistsTest() throws IOException, XrpException {
-    // GIVEN a DefaultXRPClient with mocked networking which will succeed.
+    // GIVEN a DefaultXrpClient with mocked networking which will succeed.
     DefaultXrpClient client = getClient();
 
     // WHEN the account is checked
