@@ -140,7 +140,7 @@ public class DefaultXrpClientTest {
   public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XrpException {
     // Iterate over different types of transaction status codes which represent failures.
     for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-      // GIVEN an XRPClient which will return an unvalidated transaction with a failed code.
+      // GIVEN an XrpClient which will return an unvalidated transaction with a failed code.
       DefaultXrpClient client = getClient(
           Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
           Result.ok(makeTransactionStatus(false, transactionFailureCode)),
