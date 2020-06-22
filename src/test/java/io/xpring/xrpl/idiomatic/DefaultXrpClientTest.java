@@ -418,7 +418,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void accountExistsTestWithNotFoundError() throws IOException, XrpException {
-    // GIVEN a DefaultXRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
+    // GIVEN a DefaultXrpClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
     StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
     DefaultXrpClient client = getClient(
