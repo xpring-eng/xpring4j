@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Convenience class for utility functions used in test cases for XRPClient infrastructure.
+ * Convenience class for utility functions used in test cases for XrpClient infrastructure.
  */
 public class XrpTestUtils {
   /**
