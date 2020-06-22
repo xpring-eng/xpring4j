@@ -456,7 +456,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void getTransactionWithSuccessfulResponseTest() throws XrpException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will succeed for getTransaction.
+    // GIVEN a DefaultXrpClient with mocked networking that will succeed for getTransaction.
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
         FakeXRPProtobufs.getTransactionResponsePaymentAllFields
     );
