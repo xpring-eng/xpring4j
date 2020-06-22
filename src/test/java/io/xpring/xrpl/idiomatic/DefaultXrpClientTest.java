@@ -481,7 +481,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void getTransactionWithNotFoundErrorTest() throws XrpException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will fail to retrieve a transaction w/ NOT_FOUND error code.
+    // GIVEN a DefaultXrpClient with mocked networking that will fail to retrieve a transaction w/ NOT_FOUND error code.
     StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.error(notFoundError);
 
