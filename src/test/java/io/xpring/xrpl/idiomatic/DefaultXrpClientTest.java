@@ -275,7 +275,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void submitTransactionWithFailedFee() throws IOException, XrpException, XRPException {
-    // GIVEN a XRPClient which will fail to retrieve a fee.
+    // GIVEN an XrpClient which will fail to retrieve a fee.
     Result<GetFeeResponse, Throwable> feeResult = Result.error(GENERIC_ERROR);
     DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
