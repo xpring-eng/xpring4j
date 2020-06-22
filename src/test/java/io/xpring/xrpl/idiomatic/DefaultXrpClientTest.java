@@ -339,7 +339,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentHistoryWithNetworkFailureTest() throws IOException, XrpException {
-    // GIVEN an XRPClient which will return a network error when calling paymentHistory.
+    // GIVEN an XrpClient which will return a network error when calling paymentHistory.
     Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
         Result.error(GENERIC_ERROR);
     DefaultXrpClient xrpClient = getClient(
