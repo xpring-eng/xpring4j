@@ -582,7 +582,7 @@ public class DefaultXrpClientTest {
     ManagedChannel channel = grpcCleanup.register(
         InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-    // Create a new XRPClient using the in-process channel;
+    // Create a new XrpClient using the in-process channel;
     return new DefaultXrpClient(channel, XrplNetwork.TEST);
   }
 
