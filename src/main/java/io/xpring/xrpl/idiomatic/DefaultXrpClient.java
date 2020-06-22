@@ -175,7 +175,7 @@ public class DefaultXrpClient implements XrpClientDecorator {
     int openLedgerSequence = this.getOpenLedgerSequence();
 
     AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
-        .setAddress(destinationClassicAddress.address())
+        .setAddress(destinationAddress)
         .build();
     AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
         .setAddress(sourceClassicAddress.address())
@@ -189,12 +189,6 @@ public class DefaultXrpClient implements XrpClientDecorator {
     Payment.Builder paymentBuilder = Payment.newBuilder()
         .setAmount(amount)
         .setDestination(destination);
-    if (destinationClassicAddress.tag().isPresent()) {
-      DestinationTag destinationTag = DestinationTag.newBuilder()
-          .setValue(destinationClassicAddress.tag().get())
-          .build();
-      paymentBuilder.setDestinationTag(destinationTag);
-    }
 
     Payment payment = paymentBuilder.build();
 
