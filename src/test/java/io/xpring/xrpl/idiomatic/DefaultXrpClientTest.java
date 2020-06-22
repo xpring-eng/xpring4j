@@ -313,7 +313,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XrpException {
-    // GIVEN a DefaultXRPClient with mocked networking that will succeed.
+    // GIVEN a DefaultXrpClient with mocked networking that will succeed.
     DefaultXrpClient xrpClient = getClient();
 
     // WHEN the payment history for an address is requested.
