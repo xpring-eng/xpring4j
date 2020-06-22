@@ -198,7 +198,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XrpException {
-    // GIVEN an XRPClient which will return an validated transaction with a success code.
+    // GIVEN an XrpClient which will return a validated transaction with a success code.
     DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
