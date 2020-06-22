@@ -554,7 +554,7 @@ public class DefaultXrpClientTest {
   }
 
   /**
-   * Return an XRPClient which returns the given results for network calls.
+   * Return an XrpClient which returns the given results for network calls.
    */
   private DefaultXrpClient getClient(
       Result<GetAccountInfoResponse, Throwable> getAccountInfoResponseResult,
