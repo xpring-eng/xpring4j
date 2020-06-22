@@ -328,7 +328,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void paymentHistoryWithClassicAddressTest() throws IOException, XrpException {
-    // GIVEN an XRPClient and a classic address
+    // GIVEN an XrpClient and a classic address
     DefaultXrpClient xrpClient = getClient();
     ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
 
