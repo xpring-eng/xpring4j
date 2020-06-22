@@ -232,7 +232,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void submitTransactionTest() throws IOException, XrpException, XRPException {
-    // GIVEN an XRPClient with mocked networking which will succeed.
+    // GIVEN an XrpClient with mocked networking which will succeed.
     DefaultXrpClient client = getClient();
     Wallet wallet = new Wallet(WALLET_SEED);
 
