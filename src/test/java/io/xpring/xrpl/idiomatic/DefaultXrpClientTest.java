@@ -521,7 +521,7 @@ public class DefaultXrpClientTest {
 
   @Test
   public void getTransactionWithUnsupportedTypeTest() throws XrpException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will return an unsupported transaction type.
+    // GIVEN a DefaultXrpClient with mocked networking that will return an unsupported transaction type.
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
         FakeXRPProtobufs.invalidGetTransactionResponseUnsupportedTransactionType
     );
