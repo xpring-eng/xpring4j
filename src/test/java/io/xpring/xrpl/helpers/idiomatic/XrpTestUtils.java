@@ -23,7 +23,7 @@ public class XrpTestUtils {
       GetAccountTransactionHistoryResponse transactionHistoryResponse) {
     List<GetTransactionResponse> getTransactionResponses = transactionHistoryResponse.getTransactionsList();
 
-    // Filter transactions to payments only and convert them to XRPTransactions.
+    // Filter transactions to payments only and convert them to XrpTransactions.
     // If a payment transaction fails conversion, throw an error.
     List<XrpTransaction> payments = new ArrayList<XrpTransaction>();
     for (GetTransactionResponse transactionResponse : getTransactionResponses) {
