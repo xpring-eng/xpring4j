@@ -3,10 +3,14 @@ package io.xpring.payid;
 import static org.junit.Assert.assertEquals;
 
 import io.xpring.common.XRPLNetwork;
+import io.xpring.payid.generated.model.Address;
 import io.xpring.payid.generated.model.CryptoAddressDetails;
+import io.xpring.payid.idiomatic.PayIdException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.List;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class PayIDIntegrationTest {
@@ -66,5 +70,18 @@ public class PayIDIntegrationTest {
 
     // THEN the address is the expected value.
     assertEquals(btcAddressDetails.getAddress(), "2NF9H32iwQcVcoAiiBmAtjpGmQfsmU5L6SR");
+  }
+
+  @Test
+  public void testAllAddressesForPayId() throws PayIdException, PayIDException {
+    // GIVEN a PayID with multiple addresses.
+    String payId = "alice$dev.payid.xpring.money";
+    PayIDClient payIdClient = new PayIDClient();
+
+    // WHEN the PayID is resolved to a set of addresses.
+    List<Address> addresses = payIdClient.allAddressesForPayId(payId);
+
+    // THEN multiple addresses are returned.
+    assert(addresses.size() > 1);
   }
 }
