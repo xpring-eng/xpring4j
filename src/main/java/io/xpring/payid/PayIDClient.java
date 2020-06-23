@@ -42,8 +42,6 @@ public class PayIDClient {
    *    - ach
    *  TODO: Link a canonical list at payid.org when available.
    */
-  // TODO:(amiecorso) should useHttps be a parameter here, as it is in the JS version of this client?
-  // I know Java doesn't do default arguments so I'm not sure what the right approach is.
   public PayIDClient() {
     this.enableSSLVerification = true;
   }
