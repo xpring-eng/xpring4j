@@ -57,11 +57,12 @@ public class PayIDIntegrationTest {
   @Test
   public void testBTCAddressForKnownAddressTestnet() throws PayIDException {
     // GIVEN a PayID that will resolve on BTC testnet.
-    PayIDClient payIDClient = new PayIDClient("btc-testnet");
+    PayIDClient payIDClient = new PayIDClient();
     String payID = "alice$dev.payid.xpring.money";
+    String network = "btc-testnet";
 
     // WHEN it is resolved to a BTC address
-    CryptoAddressDetails btcAddressDetails = payIDClient.addressForPayID(payID);
+    CryptoAddressDetails btcAddressDetails = payIDClient.cryptoAddressForPayId(payID, network);
 
     // THEN the address is the expected value.
     assertEquals(btcAddressDetails.getAddress(), "2NF9H32iwQcVcoAiiBmAtjpGmQfsmU5L6SR");
