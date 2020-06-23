@@ -82,6 +82,6 @@ public class PayIDIntegrationTest {
     List<Address> addresses = payIdClient.allAddressesForPayId(payId);
 
     // THEN multiple addresses are returned.
-    assert(addresses.size() > 1);
+    assert addresses.size() > 1;
   }
 }

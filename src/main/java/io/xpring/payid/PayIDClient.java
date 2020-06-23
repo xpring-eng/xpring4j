@@ -105,7 +105,7 @@ public class PayIDClient {
 
     String path = paymentPointer.path().substring(1);
     final String[] localVarAccepts = {
-            "application/" + network + "+json"
+        "application/" + network + "+json"
     };
 
     // NOTE: Swagger produces a higher level client that does not require this level of configuration,
