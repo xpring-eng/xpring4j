@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Fixed
+- The fix for destination tags in 5.2.2 was incorrectly applied only to the deprecated class `XRPClient`. This release applies it to `XrpClient` as well.
+
 ## 5.2.2 - 2020-06-18
 
 ## Fixed
