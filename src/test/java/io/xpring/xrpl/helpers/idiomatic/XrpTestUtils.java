@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Convenience class for utility functions used in test cases for XRPClient infrastructure.
+ * Convenience class for utility functions used in test cases for XrpClient infrastructure.
  */
 public class XrpTestUtils {
   /**
-   * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XRPTransaction objects,
+   * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XrpTransaction objects,
    * filtered only for PAYMENT type transactions.
    *
    * @param transactionHistoryResponse protocol buffer object containing an array of GetTransactionResponse objects
@@ -23,7 +23,7 @@ public class XrpTestUtils {
       GetAccountTransactionHistoryResponse transactionHistoryResponse) {
     List<GetTransactionResponse> getTransactionResponses = transactionHistoryResponse.getTransactionsList();
 
-    // Filter transactions to payments only and convert them to XRPTransactions.
+    // Filter transactions to payments only and convert them to XrpTransactions.
     // If a payment transaction fails conversion, throw an error.
     List<XrpTransaction> payments = new ArrayList<XrpTransaction>();
     for (GetTransactionResponse transactionResponse : getTransactionResponses) {
