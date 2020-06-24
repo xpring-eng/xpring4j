@@ -11,7 +11,10 @@ import java.util.Objects;
 
 /**
  * Provides JavaScript based Utils functionality.
+ *
+ * @deprecated Use the idiomatically named `JavaScriptPayIdUtils` class instead.
  */
+@Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class JavaScriptPayIDUtils {
   /**
