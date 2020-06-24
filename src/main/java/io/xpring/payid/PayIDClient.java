@@ -81,7 +81,7 @@ public class PayIDClient {
   }
 
   /**
-   * Retrieve the all addresses associated with a PayId.
+   * Retrieve the all addresses associated with a PayID.
    *
    * @param payId The PayID to resolve.
    * @return a list of all {@link Address}es associated with the given PayID.
