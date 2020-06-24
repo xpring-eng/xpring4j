@@ -1,7 +1,7 @@
-package io.xpring.xrpl.helpers;
+package io.xpring.xrpl.helpers.idiomatic;
 
-import io.xpring.common.XRPLNetwork;
-import io.xpring.xrpl.model.XRPTransaction;
+import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
@@ -10,28 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Convenience class for utility functions used in test cases for XRPClient infrastructure.
+ * Convenience class for utility functions used in test cases for XrpClient infrastructure.
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class XRPTestUtils {
+public class XrpTestUtils {
   /**
-   * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XRPTransaction objects,
+   * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XrpTransaction objects,
    * filtered only for PAYMENT type transactions.
    *
    * @param transactionHistoryResponse protocol buffer object containing an array of GetTransactionResponse objects
    */
-  public static List<XRPTransaction> transactionHistoryToPaymentsList(
+  public static List<XrpTransaction> transactionHistoryToPaymentsList(
       GetAccountTransactionHistoryResponse transactionHistoryResponse) {
     List<GetTransactionResponse> getTransactionResponses = transactionHistoryResponse.getTransactionsList();
 
-    // Filter transactions to payments only and convert them to XRPTransactions.
+    // Filter transactions to payments only and convert them to XrpTransactions.
     // If a payment transaction fails conversion, throw an error.
-    List<XRPTransaction> payments = new ArrayList<XRPTransaction>();
+    List<XrpTransaction> payments = new ArrayList<XrpTransaction>();
     for (GetTransactionResponse transactionResponse : getTransactionResponses) {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse, XRPLNetwork.TEST);
+          XrpTransaction xrpTransaction = XrpTransaction.from(transactionResponse, XrplNetwork.TEST);
           if (xrpTransaction != null) {
             payments.add(xrpTransaction);
           }

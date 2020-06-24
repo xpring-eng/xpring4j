@@ -5,7 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## Unreleased
+
+
+## 5.2.3 - 2020-06-23
+
+### Fixed
+
+- The fix for destination tags in 5.2.2 was incorrectly applied only to the deprecated class `XRPClient`. This release applies it to `XrpClient` as well.
+
+## 5.2.2 - 2020-06-18
+
+### Fixed
+- Destination tags were being dropped from payments. This release fixes the issue.
+
+## 5.2.1 - 2020-06-16
+
+### Added
+- `XrpPayment` and `XrpTransaction` now contain X-address representations of their address and tag fields.
+  (See https://xrpaddress.info/)
+	
+#### Deprecated
+- `XrpTransaction.account` and `XrpTransaction.sourceTag` are deprecated.
+   Please use the X-address encoded field `sourceXAddress` instead.
+- `XrpPayment.destination` and `XrpPayment.destinationTag` are deprecated.  
+   Please use the X-address encoded field `destinationXAddress` instead.
 
 ### Added
 - `PayIdClient` provides the functionality of `PayIDClient` under an idiomatically cased name.
