@@ -3,8 +3,8 @@ package io.xpring.xpring;
 import io.xpring.payid.PayIdException;
 import io.xpring.payid.XrpPayIdClientInterface;
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XRPClientInterface;
-import io.xpring.xrpl.XRPException;
+import io.xpring.xrpl.XrpClientInterface;
+import io.xpring.xrpl.XrpException;
 
 import java.math.BigInteger;
 
@@ -19,9 +19,9 @@ public class XpringClient {
   private XrpPayIdClientInterface payIDClient;
 
   /**
-   * A {@link XRPClientInterface} used to interact with the XRP Ledger protocol.
+   * A {@link XrpClientInterface} used to interact with the XRP Ledger protocol.
    */
-  private XRPClientInterface xrpClient;
+  private XrpClientInterface xrpClient;
 
   /**
    * Create a new XpringClient.
@@ -30,7 +30,7 @@ public class XpringClient {
    * @param xrpClient   An XRP Client used to interact with the XRP Ledger protocol.
    */
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-  public XpringClient(XrpPayIdClientInterface payIDClient, XRPClientInterface xrpClient) {
+  public XpringClient(XrpPayIdClientInterface payIDClient, XrpClientInterface xrpClient) {
     // TODO(keefertaylor): Verify that given inputs are on the same network.
     this.payIDClient = payIDClient;
     this.xrpClient = xrpClient;
@@ -44,13 +44,13 @@ public class XpringClient {
    * @param sourceWallet     The {@link Wallet} which holds the XRP.
    * @return A transaction hash for the payment.
    * @throws PayIdException If there was a problem resolving the Pay ID.
-   * @throws XRPException   If there was a problem sending XRP.
+   * @throws XrpException   If there was a problem sending XRP.
    */
   public String send(
       final BigInteger amount,
       final String destinationPayID,
       final Wallet sourceWallet
-  ) throws PayIdException, XRPException {
+  ) throws PayIdException, XrpException {
     // Resolve the destination address to an XRP address.
     String destinationAddress = this.payIDClient.xrpAddressForPayId(destinationPayID);
 

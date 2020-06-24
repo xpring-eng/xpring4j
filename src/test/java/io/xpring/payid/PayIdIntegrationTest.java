@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import io.xpring.common.XrplNetwork;
 import io.xpring.payid.generated.model.Address;
 import io.xpring.payid.generated.model.CryptoAddressDetails;
-import io.xpring.payid.PayIdException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -58,14 +57,15 @@ public class PayIdIntegrationTest {
   }
 
   @Test
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void testBTCAddressForKnownAddressTestnet() throws PayIdException {
     // GIVEN a PayID that will resolve on BTC testnet.
-    PayIdClient payIDClient = new PayIdClient();
+    PayIdClient payIdClient = new PayIdClient();
     String payID = "alice$dev.payid.xpring.money";
     String network = "btc-testnet";
 
     // WHEN it is resolved to a BTC address
-    CryptoAddressDetails btcAddressDetails = payIDClient.cryptoAddressForPayId(payID, network);
+    CryptoAddressDetails btcAddressDetails = payIdClient.cryptoAddressForPayId(payID, network);
 
     // THEN the address is the expected value.
     assertEquals(btcAddressDetails.getAddress(), "2NF9H32iwQcVcoAiiBmAtjpGmQfsmU5L6SR");

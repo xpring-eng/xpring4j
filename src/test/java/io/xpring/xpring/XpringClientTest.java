@@ -3,17 +3,21 @@ package io.xpring.xpring;
 import static org.junit.Assert.assertEquals;
 
 import io.xpring.common.Result;
-import io.xpring.payid.fakes.FakeXRPPayIDClient;
-import io.xpring.xrpl.FakeXRPClient;
-import io.xpring.xrpl.FakeXRPProtobufs;
+import io.xpring.common.XrplNetwork;
+import io.xpring.payid.PayIdException;
+import io.xpring.payid.PayIdExceptionType;
+import io.xpring.payid.XrpPayIdClientInterface;
+import io.xpring.payid.fakes.FakeXrpPayIdClient;
+import io.xpring.xrpl.FakeXrpClient;
+import io.xpring.xrpl.FakeXrpProtobufs;
 import io.xpring.xrpl.RawTransactionStatus;
 import io.xpring.xrpl.TransactionStatus;
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XRPClientInterface;
-import io.xpring.xrpl.XRPException;
-import io.xpring.xrpl.XRPExceptionType;
+import io.xpring.xrpl.XrpClientInterface;
+import io.xpring.xrpl.XrpException;
+import io.xpring.xrpl.XrpExceptionType;
 import io.xpring.xrpl.fakes.FakeWallet;
-import io.xpring.xrpl.model.XRPTransaction;
+import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,7 +32,7 @@ public class XpringClientTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   /**
-   * Default values for the {@link FakeXRPClient}. These values must be provided but are not varied in testing.
+   * Default values for the {@link FakeXrpClient}. These values must be provided but are not varied in testing.
    */
   public static final BigInteger FAKE_BALANCE_VALUE = new BigInteger("10");
   public static final TransactionStatus FAKE_TRANSACTION_STATUS_VALUE = TransactionStatus.SUCCEEDED;
@@ -36,11 +40,11 @@ public class XpringClientTest {
   private static final RawTransactionStatus DEFAULT_RAW_TRANSACTION_STATUS_VALUE = new RawTransactionStatus(
       GetTransactionResponse.newBuilder().build()
   );
-  public static final List<XRPTransaction> FAKE_PAYMENT_HISTORY_VALUE = new LinkedList<XRPTransaction>();
+  public static final List<XrpTransaction> FAKE_PAYMENT_HISTORY_VALUE = new LinkedList<XrpTransaction>();
   public static final Boolean FAKE_ACCOUNT_EXISTS_VALUE = true;
-  public static final XRPTransaction FAKE_GET_TRANSACTION_VALUE = XRPTransaction.from(
-          FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
-          XRPLNetwork.TEST
+  public static final XrpTransaction FAKE_GET_TRANSACTION_VALUE = XrpTransaction.from(
+          FakeXrpProtobufs.getTransactionResponsePaymentAllFields,
+          XrplNetwork.TEST
   );
 
   /**
@@ -61,20 +65,20 @@ public class XpringClientTest {
   /**
    * Exceptions to throw.
    */
-  public static final PayIDException PAY_ID_EXCEPTION =
-      new PayIDException(PayIDExceptionType.UNKNOWN, "Test PayID error");
-  public static final XRPException XRP_EXCEPTION = new XRPException(XRPExceptionType.UNKNOWN, "Test XRP Error");
+  public static final PayIdException PAY_ID_EXCEPTION =
+      new PayIdException(PayIdExceptionType.UNKNOWN, "Test PayID error");
+  public static final XrpException XRP_EXCEPTION = new XrpException(XrpExceptionType.UNKNOWN, "Test XRP Error");
 
-  public XpringClientTest() throws XRPException {
+  public XpringClientTest() throws XrpException {
   }
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
-  public void testSendSuccess() throws PayIDException, XRPException {
+  public void testSendSuccess() throws PayIdException, XrpException {
     // GIVEN a XpringClient composed of a fake PayIDClient and a fake XRPClient which will both succeed.
     String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
-    XRPClientInterface xrpClient = new FakeXRPClient(
-        XRPLNetwork.TEST,
+    XrpClientInterface xrpClient = new FakeXrpClient(
+        XrplNetwork.TEST,
         Result.ok(FAKE_BALANCE_VALUE),
         Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
         Result.ok(expectedTransactionHash),
@@ -86,7 +90,7 @@ public class XpringClientTest {
     );
 
     String fakeResolvedPayID = "r123";
-    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.ok(fakeResolvedPayID));
+    XrpPayIdClientInterface payIDClient = new FakeXrpPayIdClient(XrplNetwork.TEST, Result.ok(fakeResolvedPayID));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
@@ -99,11 +103,11 @@ public class XpringClientTest {
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
-  public void testSendFailureInPayID() throws PayIDException, XRPException {
+  public void testSendFailureInPayID() throws PayIdException, XrpException {
     // GIVEN a XpringClient composed of a PayIDClient which will throw an error.
     String expectedTransactionHash = "deadbeefdeadbeefdeadbeef";
-    XRPClientInterface xrpClient = new FakeXRPClient(
-        XRPLNetwork.TEST,
+    XrpClientInterface xrpClient = new FakeXrpClient(
+        XrplNetwork.TEST,
         Result.ok(FAKE_BALANCE_VALUE),
         Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
         Result.ok(expectedTransactionHash),
@@ -114,21 +118,21 @@ public class XpringClientTest {
         Result.ok(FAKE_GET_TRANSACTION_VALUE)
     );
 
-    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
+    XrpPayIdClientInterface payIDClient = new FakeXrpPayIdClient(XrplNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
     // WHEN XRP is sent to the Pay ID THEN the exception thrown is from Pay ID.
-    expectedException.expect(PayIDException.class);
+    expectedException.expect(PayIdException.class);
     xpringClient.send(AMOUNT, PAY_ID, this.wallet);
   }
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
-  public void testSendFailureInXRP() throws PayIDException, XRPException {
+  public void testSendFailureInXRP() throws PayIdException, XrpException {
     // GIVEN a XpringClient composed of a XRPClient which will throw an error.
-    XRPClientInterface xrpClient = new FakeXRPClient(
-        XRPLNetwork.TEST,
+    XrpClientInterface xrpClient = new FakeXrpClient(
+        XrplNetwork.TEST,
         Result.ok(FAKE_BALANCE_VALUE),
         Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
         Result.error(XRP_EXCEPTION),
@@ -140,21 +144,21 @@ public class XpringClientTest {
     );
 
     String fakeResolvedPayID = "r123";
-    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.ok(fakeResolvedPayID));
+    XrpPayIdClientInterface payIDClient = new FakeXrpPayIdClient(XrplNetwork.TEST, Result.ok(fakeResolvedPayID));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
     // WHEN XRP is sent to the Pay ID THEN the exception thrown is from XRP.
-    expectedException.expect(XRPException.class);
+    expectedException.expect(XrpException.class);
     xpringClient.send(AMOUNT, PAY_ID, this.wallet);
   }
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
-  public void testSendFailureInBoth() throws PayIDException, XRPException {
+  public void testSendFailureInBoth() throws PayIdException, XrpException {
     // GIVEN a XpringClient composed of an XRPClient and a PayID client which both throw errors.
-    XRPClientInterface xrpClient = new FakeXRPClient(
-        XRPLNetwork.TEST,
+    XrpClientInterface xrpClient = new FakeXrpClient(
+        XrplNetwork.TEST,
         Result.ok(FAKE_BALANCE_VALUE),
         Result.ok(FAKE_TRANSACTION_STATUS_VALUE),
         Result.error(XRP_EXCEPTION),
@@ -165,12 +169,12 @@ public class XpringClientTest {
         Result.ok(FAKE_GET_TRANSACTION_VALUE)
     );
 
-    XRPPayIDClientInterface payIDClient = new FakeXRPPayIDClient(XRPLNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
+    XrpPayIdClientInterface payIDClient = new FakeXrpPayIdClient(XrplNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
 
     XpringClient xpringClient = new XpringClient(payIDClient, xrpClient);
 
     // WHEN XRP is sent to the Pay ID THEN the exception thrown is from Pay ID.
-    expectedException.expect(PayIDException.class);
+    expectedException.expect(PayIdException.class);
     xpringClient.send(AMOUNT, PAY_ID, this.wallet);
   }
 }

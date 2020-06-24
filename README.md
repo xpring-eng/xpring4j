@@ -168,8 +168,6 @@ An `XrpClient` can check the balance of an account on the XRP Ledger.
 
 ```java
 import io.xpring.common.idiomatic.XrplLNetwork;
-import io.xpring.xrpl.idiomatic.XrpClient;
-import java.math.BigInteger;
 
 String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XrpClient xrpClient = new XrpClient(grpcURL, XrplNetwork.TEST);
