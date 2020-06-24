@@ -1,5 +1,8 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XRPLNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.model.idiomatic.XrpTransaction;
@@ -21,7 +24,6 @@ import java.util.stream.Collectors;
  *
  * @see "https://xrpl.org/transaction-formats.html"
  */
-// TODO(amiecorso): Modify this object to use X-Address format.
 @Deprecated
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Value.Immutable
@@ -37,7 +39,10 @@ public interface XRPTransaction {
    */
   String hash();
 
+  @Deprecated
   /**
+   * @deprecated Please use sourceXAddress, which encodes both the account and sourceTag.
+   *
    * The unique address of the account that initiated the transaction.
    *
    * @return A {@link String} containing the unique address of the account that initiated the transaction.
@@ -117,7 +122,10 @@ public interface XRPTransaction {
    */
   byte[] signingPublicKey();
 
+  @Deprecated
   /**
+   * @deprecated Please use sourceXAddress, which encodes both the account and sourceTag.
+   *
    * (Optional) Arbitrary integer used to identify the reason for this payment or a sender on whose behalf this
    * transaction is made.
    * Conventionally, a refund should specify the initial payment's SourceTag as the refund payment's DestinationTag.
@@ -125,6 +133,15 @@ public interface XRPTransaction {
    * @return An Optional {@link Integer} representing the source tag of this transaction.
    */
   Optional<Integer> sourceTag();
+
+  /**
+   * The unique address and source tag of the sender that initiated the transaction, encoded as an X-address.
+   *
+   * @return A {@link String} representing the X-address encoding of the account and source tag that initiated
+   *          the transaction.
+   * @see "https://xrpaddress.info"
+   */
+  String sourceXAddress();
 
   /**
    * The signature that verifies this transaction as originating from the account it says it is from.
@@ -186,11 +203,12 @@ public interface XRPTransaction {
    *
    * @param getTransactionResponse a {@link GetTransactionResponse} (protobuf object) whose field values will be used
    *                    to construct an {@link XRPTransaction}
+   * @param xrplNetwork The XRPL network from which this object was retrieved.
    * @return an {@link XRPTransaction} with its fields set via the analogous protobuf fields.
    * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/get_transaction.proto#L31">
    * GetTransactionResponse protocol buffer</a>
    */
-  static XRPTransaction from(GetTransactionResponse getTransactionResponse) {
+  static XRPTransaction from(GetTransactionResponse getTransactionResponse, XRPLNetwork xrplNetwork) {
     final Transaction transaction = getTransactionResponse.getTransaction();
     if (transaction == null) {
       return null;
@@ -234,6 +252,14 @@ public interface XRPTransaction {
       sourceTag = Optional.of(transaction.getSourceTag().getValue());
     }
 
+    ClassicAddress sourceClassicAddress = ImmutableClassicAddress.builder()
+            .address(account)
+            .tag(sourceTag)
+            .isTest(xrplNetwork == XRPLNetwork.TEST)
+            .build();
+
+    final String sourceXAddress = Utils.encodeXAddress(sourceClassicAddress);
+
     final byte[] transactionSignature = transaction.getTransactionSignature().getValue().toByteArray();
 
     TransactionType type;
@@ -241,7 +267,7 @@ public interface XRPTransaction {
     switch (transaction.getTransactionDataCase()) {
       case PAYMENT: {
         Payment payment = transaction.getPayment();
-        paymentFields = XRPPayment.from(payment);
+        paymentFields = XRPPayment.from(payment, xrplNetwork);
         if (paymentFields == null) {
           return null;
         }
@@ -296,6 +322,7 @@ public interface XRPTransaction {
         .signers(signers)
         .signingPublicKey(signingPublicKey)
         .sourceTag(sourceTag)
+        .sourceXAddress(sourceXAddress)
         .transactionSignature(transactionSignature)
         .type(type)
         .paymentFields(paymentFields)

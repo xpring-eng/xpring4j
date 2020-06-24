@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.idiomatic.DefaultXrpClient;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.slf4j.Logger;
@@ -57,15 +58,17 @@ public class DefaultXRPClient implements XRPClientDecorator {
 
   // Channel is the abstraction to connect to a service endpoint
   private final XRPLedgerAPIServiceBlockingStub stub;
+  private final XRPLNetwork xrplNetwork;
 
   /**
    * No-args Constructor.
    */
-  DefaultXRPClient(String grpcURL) {
+  DefaultXRPClient(String grpcURL, XRPLNetwork xrplNetwork) {
     this(ManagedChannelBuilder
         .forTarget(grpcURL)
         .usePlaintext()
-        .build()
+        .build(),
+        xrplNetwork
     );
   }
 
@@ -74,7 +77,9 @@ public class DefaultXRPClient implements XRPClientDecorator {
    *
    * @param channel A {@link ManagedChannel}.
    */
-  DefaultXRPClient(final ManagedChannel channel) {
+  DefaultXRPClient(final ManagedChannel channel, XRPLNetwork network) {
+    this.xrplNetwork = network;
+
     // It is up to the client to determine whether to block the call. Here we create a blocking stub, but an async
     // stub, or an async stub with Future are always possible.
     this.stub = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
@@ -169,7 +174,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
     int openLedgerSequence = this.getOpenLedgerSequence();
 
     AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
-        .setAddress(destinationClassicAddress.address())
+        .setAddress(destinationAddress)
         .build();
     AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
         .setAddress(sourceClassicAddress.address())
@@ -178,17 +183,12 @@ public class DefaultXRPClient implements XRPClientDecorator {
     XRPDropsAmount dropsAmount = XRPDropsAmount.newBuilder().setDrops(drops.longValue()).build();
     CurrencyAmount currencyAmount = CurrencyAmount.newBuilder().setXrpAmount(dropsAmount).build();
     Amount amount = Amount.newBuilder().setValue(currencyAmount).build();
+
     Destination destination = Destination.newBuilder().setValue(destinationAccountAddress).build();
 
     Payment.Builder paymentBuilder = Payment.newBuilder()
         .setAmount(amount)
         .setDestination(destination);
-    if (destinationClassicAddress.tag().isPresent()) {
-      DestinationTag destinationTag = DestinationTag.newBuilder()
-          .setValue(destinationClassicAddress.tag().get())
-          .build();
-      paymentBuilder.setDestinationTag(destinationTag);
-    }
 
     Payment payment = paymentBuilder.build();
 
@@ -256,7 +256,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
       Transaction transaction = transactionResponse.getTransaction();
       switch (transaction.getTransactionDataCase()) {
         case PAYMENT: {
-          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse);
+          XRPTransaction xrpTransaction = XRPTransaction.from(transactionResponse, xrplNetwork);
           if (xrpTransaction == null) {
             throw XRPException.paymentConversionFailure;
           } else {
@@ -315,7 +315,7 @@ public class DefaultXRPClient implements XRPClientDecorator {
     GetTransactionRequest request = GetTransactionRequest.newBuilder()
             .setHash(transactionHashByteString).build();
     GetTransactionResponse response = this.stub.getTransaction(request);
-    return XRPTransaction.from(response);
+    return XRPTransaction.from(response, xrplNetwork);
   }
 
   public int getOpenLedgerSequence() throws XRPException {

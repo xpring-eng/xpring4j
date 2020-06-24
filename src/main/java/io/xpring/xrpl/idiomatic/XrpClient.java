@@ -28,7 +28,7 @@ public class XrpClient implements XrpClientInterface {
    * @param network The network this XRPClient is connecting to.
    */
   public XrpClient(String grpcUrl, XrplNetwork network) {
-    XrpClientDecorator defaultXrpClient = new DefaultXrpClient(grpcUrl);
+    XrpClientDecorator defaultXrpClient = new DefaultXrpClient(grpcUrl, network);
     this.decoratedClient = new ReliableSubmissionXrpClient(defaultXrpClient);
 
     this.network = network;

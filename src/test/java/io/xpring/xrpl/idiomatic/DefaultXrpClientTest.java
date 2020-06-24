@@ -1,4 +1,4 @@
-package io.xpring.xrpl;
+package io.xpring.xrpl.idiomatic;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.AdditionalAnswers.delegatesTo;
@@ -13,10 +13,14 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
-import io.xpring.common.XRPLNetwork;
-import io.xpring.xrpl.helpers.XRPTestUtils;
-import io.xpring.xrpl.model.XRPTransaction;
-import org.immutables.value.internal.$guava$.base.$Throwables;
+import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.FakeXRPProtobufs;
+import io.xpring.xrpl.Utils;
+import io.xpring.xrpl.Wallet;
+import io.xpring.xrpl.XRPException;
+import io.xpring.xrpl.helpers.idiomatic.XrpTestUtils;
+import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -44,10 +48,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * Unit tests for {@link DefaultXRPClient}.
+ * Unit tests for {@link DefaultXrpClient}.
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class DefaultXRPClientTest {
+public class DefaultXrpClientTest {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
@@ -55,9 +58,9 @@ public class DefaultXRPClientTest {
   public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
   /**
-   * The DefaultXRPClient under test.
+   * The DefaultXrpClient under test.
    */
-  private DefaultXRPClient client;
+  private DefaultXrpClient client;
 
   /**
    * An address on the XRP Ledger.
@@ -93,9 +96,9 @@ public class DefaultXRPClientTest {
   private static final BigInteger AMOUNT = new BigInteger("1");
 
   @Test
-  public void getBalanceTest() throws IOException, XRPException {
-    // GIVEN a DefaultXRPClient with mocked networking which will succeed.
-    DefaultXRPClient client = getClient();
+  public void getBalanceTest() throws IOException, XrpException {
+    // GIVEN a DefaultXrpClient with mocked networking which will succeed.
+    DefaultXrpClient client = getClient();
 
     // WHEN the balance is retrieved.
     BigInteger balance = client.getBalance(XRPL_ADDRESS);
@@ -105,21 +108,21 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void getBalanceWithClassicAddressTest() throws IOException, XRPException {
+  public void getBalanceWithClassicAddressTest() throws IOException, XrpException {
     // GIVEN a classic address.
     ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
-    DefaultXRPClient client = getClient();
+    DefaultXrpClient client = getClient();
 
     // WHEN the balance for the classic address is retrieved THEN an error is thrown.
-    expectedException.expect(XRPException.class);
+    expectedException.expect(XrpException.class);
     client.getBalance(classicAddress.address());
   }
 
   @Test
-  public void getBalanceTestWithFailedAccountInfo() throws IOException, XRPException {
-    // GIVEN a XRPClient with mocked networking which will fail to retrieve account info.
+  public void getBalanceTestWithFailedAccountInfo() throws IOException, XrpException {
+    // GIVEN an XrpClient with mocked networking which will fail to retrieve account info.
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(GENERIC_ERROR);
-    DefaultXRPClient client = getClient(
+    DefaultXrpClient client = getClient(
         accountInfoResult,
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -134,11 +137,11 @@ public class DefaultXRPClientTest {
 
 
   @Test
-  public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XRPException {
+  public void paymentStatusWithUnvalidatedTransactionAndFailureCode() throws IOException, XrpException {
     // Iterate over different types of transaction status codes which represent failures.
     for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-      // GIVEN an XRPClient which will return an unvalidated transaction with a failed code.
-      DefaultXRPClient client = getClient(
+      // GIVEN an XrpClient which will return an unvalidated transaction with a failed code.
+      DefaultXrpClient client = getClient(
           Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
           Result.ok(makeTransactionStatus(false, transactionFailureCode)),
           Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -155,9 +158,9 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XRPException {
-    // GIVEN an XRPClient which will return an unvalidated transaction with a success code.
-    DefaultXRPClient client = getClient(
+  public void paymentStatusWithUnvalidatedTransactionAndSuccessCode() throws IOException, XrpException {
+    // GIVEN an XrpClient which will return an unvalidated transaction with a success code.
+    DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(false, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -173,11 +176,11 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentStatusWithValidatedTransactionAndFailureCode() throws IOException, XRPException {
+  public void paymentStatusWithValidatedTransactionAndFailureCode() throws IOException, XrpException {
     // Iterate over different types of transaction status codes which represent failures.
     for (String transactionFailureCode : TRANSACTION_FAILURE_STATUS_CODES) {
-      // GIVEN an XRPClient which will return an validated transaction with a failed code.
-      DefaultXRPClient client = getClient(
+      // GIVEN an XrpClient which will return a validated transaction with a failed code.
+      DefaultXrpClient client = getClient(
           Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
           Result.ok(makeTransactionStatus(true, transactionFailureCode)),
           Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -194,9 +197,9 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XRPException {
-    // GIVEN an XRPClient which will return an validated transaction with a success code.
-    DefaultXRPClient client = getClient(
+  public void paymentStatusWithValidatedTransactionAndSuccessCode() throws IOException, XrpException {
+    // GIVEN an XrpClient which will return a validated transaction with a success code.
+    DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -212,9 +215,9 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentStatusWithNodeError() throws IOException, XRPException {
-    // GIVEN an XRPClient which will error when a transaction status is requested..
-    DefaultXRPClient client = getClient(
+  public void paymentStatusWithNodeError() throws IOException, XrpException {
+    // GIVEN an XrpClient which will error when a transaction status is requested..
+    DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.error(GENERIC_ERROR),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -228,9 +231,9 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void submitTransactionTest() throws IOException, XRPException {
-    // GIVEN an XRPClient with mocked networking which will succeed.
-    DefaultXRPClient client = getClient();
+  public void submitTransactionTest() throws IOException, XrpException, XRPException {
+    // GIVEN an XrpClient with mocked networking which will succeed.
+    DefaultXrpClient client = getClient();
     Wallet wallet = new Wallet(WALLET_SEED);
 
     // WHEN a transaction is sent.
@@ -241,22 +244,22 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void submitTransactionWithClassicAddress() throws IOException, XRPException {
+  public void submitTransactionWithClassicAddress() throws IOException, XrpException, XRPException {
     // GIVEN a classic address.
-    DefaultXRPClient client = getClient();
+    DefaultXrpClient client = getClient();
     ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
     Wallet wallet = new Wallet(WALLET_SEED);
 
     // WHEN XRP is sent to the classic address THEN an error is thrown.
-    expectedException.expect(XRPException.class);
+    expectedException.expect(XrpException.class);
     client.send(AMOUNT, classicAddress.address(), wallet);
   }
 
   @Test
-  public void submitTransactionWithFailedAccountInfo() throws IOException, XRPException {
-    // GIVEN a XRPClient which will fail to return account info.
+  public void submitTransactionWithFailedAccountInfo() throws IOException, XrpException, XRPException {
+    // GIVEN an XrpClient which will fail to return account info.
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(GENERIC_ERROR);
-    DefaultXRPClient client = getClient(
+    DefaultXrpClient client = getClient(
         accountInfoResult,
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -271,10 +274,10 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void submitTransactionWithFailedFee() throws IOException, XRPException {
-    // GIVEN a XRPClient which will fail to retrieve a fee.
+  public void submitTransactionWithFailedFee() throws IOException, XrpException, XRPException {
+    // GIVEN an XrpClient which will fail to retrieve a fee.
     Result<GetFeeResponse, Throwable> feeResult = Result.error(GENERIC_ERROR);
-    DefaultXRPClient client = getClient(
+    DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         feeResult,
@@ -291,10 +294,10 @@ public class DefaultXRPClientTest {
 
 
   @Test
-  public void submitTransactionWithFailedSubmit() throws IOException, XRPException {
-    // GIVEN a XRPClient which will fail to submit a transaction.
+  public void submitTransactionWithFailedSubmit() throws IOException, XrpException, XRPException {
+    // GIVEN an XrpClient which will fail to submit a transaction.
     Result<SubmitTransactionResponse, Throwable> submitResult = Result.error(GENERIC_ERROR);
-    DefaultXRPClient client = getClient(
+    DefaultXrpClient client = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -309,14 +312,14 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XRPException {
-    // GIVEN a DefaultXRPClient with mocked networking that will succeed.
-    DefaultXRPClient xrpClient = getClient();
+  public void paymentHistoryWithSuccessfulResponseTest() throws IOException, XrpException {
+    // GIVEN a DefaultXrpClient with mocked networking that will succeed.
+    DefaultXrpClient xrpClient = getClient();
 
     // WHEN the payment history for an address is requested.
-    List<XRPTransaction> paymentHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
+    List<XrpTransaction> paymentHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
 
-    List<XRPTransaction> expectedPaymentHistory = XRPTestUtils.transactionHistoryToPaymentsList(
+    List<XrpTransaction> expectedPaymentHistory = XrpTestUtils.transactionHistoryToPaymentsList(
         makeGetAccountTransactionHistoryResponse());
 
     // THEN the payment history is returned as expected.
@@ -324,22 +327,22 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentHistoryWithClassicAddressTest() throws IOException, XRPException {
-    // GIVEN an XRPClient and a classic address
-    DefaultXRPClient xrpClient = getClient();
+  public void paymentHistoryWithClassicAddressTest() throws IOException, XrpException {
+    // GIVEN an XrpClient and a classic address
+    DefaultXrpClient xrpClient = getClient();
     ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
 
     // WHEN the payment history for an account is requested THEN an error to use X-Addresses is thrown.
-    expectedException.expect(XRPException.class);
+    expectedException.expect(XrpException.class);
     xrpClient.paymentHistory(classicAddress.address());
   }
 
   @Test
-  public void paymentHistoryWithNetworkFailureTest() throws IOException, XRPException {
-    // GIVEN an XRPClient which will return a network error when calling paymentHistory.
+  public void paymentHistoryWithNetworkFailureTest() throws IOException, XrpException {
+    // GIVEN an XrpClient which will return a network error when calling paymentHistory.
     Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
         Result.error(GENERIC_ERROR);
-    DefaultXRPClient xrpClient = getClient(
+    DefaultXrpClient xrpClient = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -352,12 +355,12 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XRPException {
-    // GIVEN an XRPClient client which will return a transaction history which contains non-payment transactions.
+  public void paymentHistoryWithSomeNonPaymentTransactionsTest() throws IOException, XrpException {
+    // GIVEN an XrpClient client which will return a transaction history which contains non-payment transactions.
     Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
         Result.ok(FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
 
-    DefaultXRPClient xrpClient = getClient(
+    DefaultXrpClient xrpClient = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -365,20 +368,20 @@ public class DefaultXRPClientTest {
         getAccountTransactionHistoryResponse);
 
     // WHEN the transactionHistory is requested.
-    List<XRPTransaction> transactionHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
+    List<XrpTransaction> transactionHistory = xrpClient.paymentHistory(XRPL_ADDRESS);
 
     // THEN the returned transactions are conversions of the inputs with non-payment transactions filtered.
-    List<XRPTransaction> expectedTransactionHistory = XRPTestUtils.transactionHistoryToPaymentsList(
+    List<XrpTransaction> expectedTransactionHistory = XrpTestUtils.transactionHistoryToPaymentsList(
         FakeXRPProtobufs.mixedGetAccountTransactionHistoryResponse);
   }
 
   @Test
-  public void paymentHistoryWithInvalidPaymentTest() throws IOException, XRPException {
-    // GIVEN an XRPClient client which will return a transaction history which contains a malformed payment.
+  public void paymentHistoryWithInvalidPaymentTest() throws IOException, XrpException {
+    // GIVEN an XrpClient client which will return a transaction history which contains a malformed payment.
     Result<GetAccountTransactionHistoryResponse, Throwable> getAccountTransactionHistoryResponse =
         Result.ok(FakeXRPProtobufs.invalidPaymentGetAccountTransactionHistoryResponse);
 
-    DefaultXRPClient xrpClient = getClient(
+    DefaultXrpClient xrpClient = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -386,14 +389,14 @@ public class DefaultXRPClientTest {
         getAccountTransactionHistoryResponse);
 
     // WHEN the transactionHistory is requested THEN a conversion error is thrown.
-    expectedException.expect(XRPException.class);
+    expectedException.expect(XrpException.class);
     xrpClient.paymentHistory(XRPL_ADDRESS);
   }
 
   @Test
-  public void accountExistsTest() throws IOException, XRPException {
-    // GIVEN a DefaultXRPClient with mocked networking which will succeed.
-    DefaultXRPClient client = getClient();
+  public void accountExistsTest() throws IOException, XrpException {
+    // GIVEN a DefaultXrpClient with mocked networking which will succeed.
+    DefaultXrpClient client = getClient();
 
     // WHEN the account is checked
     boolean exists = client.accountExists(XRPL_ADDRESS);
@@ -403,22 +406,22 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void accountExistsWithClassicAddressTest() throws IOException, XRPException {
+  public void accountExistsWithClassicAddressTest() throws IOException, XrpException {
     // GIVEN a classic address.
     ClassicAddress classicAddress = Utils.decodeXAddress(XRPL_ADDRESS);
-    DefaultXRPClient client = getClient();
+    DefaultXrpClient client = getClient();
 
     // WHEN the existence of the account is checked for the classic address THEN an error is thrown.
-    expectedException.expect(XRPException.class);
+    expectedException.expect(XrpException.class);
     client.accountExists(classicAddress.address());
   }
 
   @Test
-  public void accountExistsTestWithNotFoundError() throws IOException, XRPException {
-    // GIVEN a DefaultXRPClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
+  public void accountExistsTestWithNotFoundError() throws IOException, XrpException {
+    // GIVEN a DefaultXrpClient with mocked networking which will fail to retrieve account info w/ NOT_FOUND error code.
     StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(notFoundError);
-    DefaultXRPClient client = getClient(
+    DefaultXrpClient client = getClient(
         accountInfoResult,
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -434,11 +437,11 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void accountExistsTestWithUnknownError() throws IOException, XRPException {
-    // GIVEN a DefaultXRPClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
+  public void accountExistsTestWithUnknownError() throws IOException, XrpException {
+    // GIVEN a DefaultXrpClient with mocked networking which will fail to retrieve account info w/ UNKNOWN error code.
     StatusRuntimeException unknownError = new StatusRuntimeException(Status.UNKNOWN);
     Result<GetAccountInfoResponse, Throwable> accountInfoResult = Result.error(unknownError);
-    DefaultXRPClient client = getClient(
+    DefaultXrpClient client = getClient(
         accountInfoResult,
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -452,13 +455,13 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void getTransactionWithSuccessfulResponseTest() throws XRPException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will succeed for getTransaction.
+  public void getTransactionWithSuccessfulResponseTest() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will succeed for getTransaction.
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
-            FakeXRPProtobufs.getTransactionResponsePaymentAllFields
+        FakeXRPProtobufs.getTransactionResponsePaymentAllFields
     );
 
-    DefaultXRPClient xrpClient = getClient(
+    DefaultXrpClient xrpClient = getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         getTransactionResult,
         Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
@@ -466,28 +469,28 @@ public class DefaultXRPClientTest {
         Result.ok(makeGetAccountTransactionHistoryResponse())
     );
     // WHEN a transaction is requested.
-    XRPTransaction transaction = xrpClient.getPayment(TRANSACTION_HASH);
+    XrpTransaction transaction = xrpClient.getPayment(TRANSACTION_HASH);
 
     // THEN the returned transaction is as expected.
-    assertThat(transaction).isEqualTo(XRPTransaction.from(
-            FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
-            XRPLNetwork.TEST
-      )
+    assertThat(transaction).isEqualTo(XrpTransaction.from(
+        FakeXRPProtobufs.getTransactionResponsePaymentAllFields,
+        XrplNetwork.TEST
+        )
     );
   }
 
   @Test
-  public void getTransactionWithNotFoundErrorTest() throws XRPException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will fail to retrieve a transaction w/ NOT_FOUND error code.
+  public void getTransactionWithNotFoundErrorTest() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will fail to retrieve a transaction w/ NOT_FOUND error code.
     StatusRuntimeException notFoundError = new StatusRuntimeException(Status.NOT_FOUND);
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.error(notFoundError);
 
-    DefaultXRPClient client = getClient(
-            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-            getTransactionResult,
-            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-            Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-            Result.ok(makeGetAccountTransactionHistoryResponse())
+    DefaultXrpClient client = getClient(
+        Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+        getTransactionResult,
+        Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+        Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+        Result.ok(makeGetAccountTransactionHistoryResponse())
     );
 
     // WHEN a transaction is requested, THEN the error is re-thrown.
@@ -496,51 +499,51 @@ public class DefaultXRPClientTest {
   }
 
   @Test
-  public void getTransactionWithMalformedPaymentTest() throws XRPException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will return a malformed payment transaction.
+  public void getTransactionWithMalformedPaymentTest() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will return a malformed payment transaction.
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
-            FakeXRPProtobufs.invalidGetTransactionResponseEmptyPaymentFields
+        FakeXRPProtobufs.invalidGetTransactionResponseEmptyPaymentFields
     );
-    DefaultXRPClient client = getClient(
-            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-            getTransactionResult,
-            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-            Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-            Result.ok(makeGetAccountTransactionHistoryResponse())
+    DefaultXrpClient client = getClient(
+        Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+        getTransactionResult,
+        Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+        Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+        Result.ok(makeGetAccountTransactionHistoryResponse())
     );
 
     // WHEN a transaction is requested.
-    XRPTransaction transaction = client.getPayment(TRANSACTION_HASH);
+    XrpTransaction transaction = client.getPayment(TRANSACTION_HASH);
 
     // THEN the result is null.
     assertThat(transaction).isNull();
   }
 
   @Test
-  public void getTransactionWithUnsupportedTypeTest() throws XRPException, IOException {
-    // GIVEN a DefaultXRPClient with mocked networking that will return an unsupported transaction type.
+  public void getTransactionWithUnsupportedTypeTest() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will return an unsupported transaction type.
     Result<GetTransactionResponse, Throwable> getTransactionResult = Result.ok(
-            FakeXRPProtobufs.invalidGetTransactionResponseUnsupportedTransactionType
+        FakeXRPProtobufs.invalidGetTransactionResponseUnsupportedTransactionType
     );
-    DefaultXRPClient client = getClient(
-            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
-            getTransactionResult,
-            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
-            Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
-            Result.ok(makeGetAccountTransactionHistoryResponse())
+    DefaultXrpClient client = getClient(
+        Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+        getTransactionResult,
+        Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+        Result.ok(makeSubmitTransactionResponse(TRANSACTION_HASH)),
+        Result.ok(makeGetAccountTransactionHistoryResponse())
     );
 
     // WHEN a transaction is requested.
-    XRPTransaction transaction = client.getPayment(TRANSACTION_HASH);
+    XrpTransaction transaction = client.getPayment(TRANSACTION_HASH);
 
     // THEN the result is null.
     assertThat(transaction).isNull();
   }
 
   /**
-   * Convenience method to get an XRPClient which has successful network calls.
+   * Convenience method to get an XrpClient which has successful network calls.
    */
-  private DefaultXRPClient getClient() throws IOException {
+  private DefaultXrpClient getClient() throws IOException {
     return getClient(
         Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
         Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
@@ -551,9 +554,9 @@ public class DefaultXRPClientTest {
   }
 
   /**
-   * Return an XRPClient which returns the given results for network calls.
+   * Return an XrpClient which returns the given results for network calls.
    */
-  private DefaultXRPClient getClient(
+  private DefaultXrpClient getClient(
       Result<GetAccountInfoResponse, Throwable> getAccountInfoResponseResult,
       Result<GetTransactionResponse, Throwable> getTransactionResponseResult,
       Result<GetFeeResponse, Throwable> getFeeResult,
@@ -579,8 +582,8 @@ public class DefaultXRPClientTest {
     ManagedChannel channel = grpcCleanup.register(
         InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-    // Create a new XRPClient using the in-process channel;
-    return new DefaultXRPClient(channel, XRPLNetwork.TEST);
+    // Create a new XrpClient using the in-process channel;
+    return new DefaultXrpClient(channel, XrplNetwork.TEST);
   }
 
 
