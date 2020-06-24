@@ -30,7 +30,7 @@ public class JavaScriptPayIDUtils {
    */
   public JavaScriptPayIDUtils() throws JavaScriptLoaderException {
     Context context = JavaScriptLoader.getContext();
-    Value javaScriptUtils = JavaScriptLoader.loadResource("PayIDUtils", context);
+    Value javaScriptUtils = JavaScriptLoader.loadResource("PayIdUtils", context);
 
     this.javaScriptPayIDUtils = javaScriptUtils;
   }
@@ -44,7 +44,7 @@ public class JavaScriptPayIDUtils {
   public PayIDComponents parsePayID(String payID) {
     Objects.requireNonNull(payID);
 
-    Value parsePayIDFunction = javaScriptPayIDUtils.getMember("parsePayID");
+    Value parsePayIDFunction = javaScriptPayIDUtils.getMember("parsePayId");
     Value javaScriptComponents = parsePayIDFunction.execute(payID);
     if (javaScriptComponents.isNull()) {
       return null;
