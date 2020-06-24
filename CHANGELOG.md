@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- `PayIdClient` provides the functionality of `PayIDClient` under an idiomatic cased name.
-- `PayIdUtils` provides the functionality of `PayIDUtils` under an idiomatic cased name.
-- `XrpPayIdClient` provides the functionality of `XRPPayIDClient` under an idiomatic cased name.
-- `XrpPayIdClientInterface` provides the functionality of `XRPPayIDClientInterface` under an idiomatic cased name.
-- `JavaScriptPayIdUtils` provides the functionality of `JavaScriptPayIDUtils` under an idiomatic cased name.
+- `PayIdClient` provides the functionality of `PayIDClient` under an idiomatically cased name.
+- `PayIdUtils` provides the functionality of `PayIDUtils` under an idiomatically cased name.
+- `XrpPayIdClient` provides the functionality of `XRPPayIDClient` under an idiomatically cased name.
+- `XrpPayIdClientInterface` provides the functionality of `XRPPayIDClientInterface` under an idiomatically cased name.
+- `JavaScriptPayIdUtils` provides the functionality of `JavaScriptPayIDUtils` under an idiomatically cased name.
 
 ### Deprecated
 - `PayIDClient` is deprecated, use the idiomatically named `PayIdClient` instead.
