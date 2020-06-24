@@ -40,7 +40,7 @@ public class PayIDClientTest {
   @Test
   public void testAllAddressesForPayIdSuccessfulResponseMatchFound() throws PayIDException {
     // GIVEN a PayIdClient, a valid PayID and mocked networking to return a set of matches for the PayID.
-    final String payId = "georgewashington$xpring.money";
+    final String payId = "georgewashington$localhost:" + wireMockRule.httpsPort();
     PayIDClient payIdClient = new PayIDClient();
     payIdClient.setEnableSSLVerification(false);
 
@@ -94,7 +94,7 @@ public class PayIDClientTest {
   @Test
   public void testAllAddressesForPayIdSuccessfulResponseMatchNotFound() throws PayIDException {
     // GIVEN a PayIdClient, a valid PayID and mocked networking to return a 404 for the payID.
-    String payId = "georgewashington$xpring.money";
+    String payId = "georgewashington$localhost:" + wireMockRule.httpsPort();
     PayIDClient payIdClient = new PayIDClient();
 
     stubFor(get(urlEqualTo("/georgewashington"))
