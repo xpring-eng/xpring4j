@@ -73,7 +73,7 @@ public class PayIDClient {
     if (addresses.size() == 1) {
       return addresses.get(0).getAddressDetails();
     } else {
-      // With a specific network, exactly one address should be returned by a PayId lookup.
+      // With a specific network, exactly one address should be returned by a PayID lookup.
       throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE,
               "Expected one address for " + payId + " on network " + network
                       + " but got " + addresses.size());
