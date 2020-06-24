@@ -31,6 +31,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `XrpPayment.destination` and `XrpPayment.destinationTag` are deprecated.  
    Please use the X-address encoded field `destinationXAddress` instead.
 
+### Added
+- `PayIdClient` provides the functionality of `PayIDClient` under an idiomatically cased name.
+- `PayIdUtils` provides the functionality of `PayIDUtils` under an idiomatically cased name.
+- `XrpPayIdClient` provides the functionality of `XRPPayIDClient` under an idiomatically cased name.
+- `XrpPayIdClientInterface` provides the functionality of `XRPPayIDClientInterface` under an idiomatically cased name.
+- `JavaScriptPayIdUtils` provides the functionality of `JavaScriptPayIDUtils` under an idiomatically cased name.
+
+### Deprecated
+- `PayIDClient` is deprecated, use the idiomatically named `PayIdClient` instead.
+- `PayIDUtils` is deprecated, use the idiomatically named `PayIdUtils` instead.
+- `XRPPayIDClient` is deprecated, use the idiomatically named `XrpPayIdClient` instead.
+- `XRPPayIDClientInterface` is deprecated, use the idiomatically named `XrpPayIdClientInterface` instead.
+- `JavaScriptPayIDUtils` is deprecated, use the idiomatically named `JavaScriptPayIdUtils` instead.
+
 ## 5.2.0 - 2020-06-01
 
 ### Added
