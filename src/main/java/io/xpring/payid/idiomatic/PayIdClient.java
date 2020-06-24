@@ -1,7 +1,11 @@
-package io.xpring.payid;
+package io.xpring.payid.idiomatic;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
+import io.xpring.payid.PayIDComponents;
+import io.xpring.payid.PayIDException;
+import io.xpring.payid.PayIDExceptionType;
+import io.xpring.payid.PayIDUtils;
 import io.xpring.payid.generated.ApiClient;
 import io.xpring.payid.generated.ApiException;
 import io.xpring.payid.generated.ApiResponse;
