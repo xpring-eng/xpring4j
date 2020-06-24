@@ -350,7 +350,7 @@ System.out.println("Resolved to " + btcAddressComponents.getAddress());
 
 ### Resolving All Addresses
 
-`PayIDClient` can resolve all addresses associated with a PayID.
+`PayIdClient` can resolve all addresses associated with a PayID.
 ```java
 PayIDClient payIdClient = new PayIDClient();
 String payID = "georgewashington$xpring.money";
