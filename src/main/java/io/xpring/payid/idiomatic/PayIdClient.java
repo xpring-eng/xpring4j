@@ -34,7 +34,7 @@ public class PayIdClient {
   /**
    * Whether to enable SSL Verification.
    */
-  private boolean enableSSLVerification;
+  private boolean enableSslVerification;
 
   /**
    * Initialize a new PayID client.
@@ -47,18 +47,18 @@ public class PayIdClient {
    *  TODO: Link a canonical list at payid.org when available.
    */
   public PayIdClient() {
-    this.enableSSLVerification = true;
+    this.enableSslVerification = true;
   }
 
   /**
    * Set whether to enable or disable SSL verification.
    * Exposed for testing purposes.
    *
-   * @param enableSSLVerification true if SSL should be enabled.
+   * @param enableSslVerification true if SSL should be enabled.
    */
   @VisibleForTesting
-  public void setEnableSSLVerification(boolean enableSSLVerification) {
-    this.enableSSLVerification = enableSSLVerification;
+  public void setEnableSslVerification(boolean enableSslVerification) {
+    this.enableSslVerification = enableSslVerification;
   }
 
   /**
@@ -106,11 +106,11 @@ public class PayIdClient {
 
     ApiClient apiClient = new ApiClient();
     apiClient.setBasePath("https://" + paymentPointer.host());
-    apiClient.setVerifyingSsl(enableSSLVerification);
+    apiClient.setVerifyingSsl(enableSslVerification);
 
     String path = paymentPointer.path().substring(1);
     final String[] localVarAccepts = {
-            "application/" + network + "+json"
+        "application/" + network + "+json"
     };
 
     // NOTE: Swagger produces a higher level client that does not require this level of configuration,
