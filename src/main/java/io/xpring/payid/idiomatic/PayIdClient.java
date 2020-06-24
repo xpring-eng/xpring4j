@@ -1,8 +1,8 @@
-package io.xpring.payid;
+package io.xpring.payid.idiomatic;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
-import io.xpring.common.XRPLNetwork;
+import io.xpring.common.idiomatic.XrplNetwork;
 import io.xpring.payid.generated.ApiClient;
 import io.xpring.payid.generated.ApiException;
 import io.xpring.payid.generated.ApiResponse;
@@ -19,12 +19,8 @@ import java.util.Map;
 /**
  * Implements interaction with a PayID service.
  * Warning:  This class is experimental and should not be used in production applications.
- *
- * @deprecated Use the idiomatically named `PayIdClient` class instead.
  */
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-@Deprecated
-public class PayIDClient {
+public class PayIdClient {
   /**
    * The version of PayID.
    */
@@ -38,7 +34,7 @@ public class PayIDClient {
   /**
    * Whether to enable SSL Verification.
    */
-  private boolean enableSSLVerification;
+  private boolean enableSslVerification;
 
   /**
    * Initialize a new PayID client.
@@ -52,15 +48,15 @@ public class PayIDClient {
    *
    * @param network The network that addresses will be resolved on.
    */
-  public PayIDClient(String network) {
+  public PayIdClient(String network) {
     this.network = network;
-    this.enableSSLVerification = true;
+    this.enableSslVerification = true;
   }
 
   /**
    * Retrieve the network that addresses will be resolved on.
    *
-   * @return The {@link XRPLNetwork} of this {@link PayIDClient}
+   * @return The {@link XrplNetwork} of this {@link PayIdClient}
    */
   public String getNetwork() {
     return this.network;
@@ -70,28 +66,28 @@ public class PayIDClient {
    * Set whether to enable or disable SSL verification.
    * Exposed for testing purposes.
    *
-   * @param enableSSLVerification true if SSL should be enabled.
+   * @param enableSslVerification true if SSL should be enabled.
    */
   @VisibleForTesting
-  public void setEnableSSLVerification(boolean enableSSLVerification) {
-    this.enableSSLVerification = enableSSLVerification;
+  public void setEnableSslVerification(boolean enableSslVerification) {
+    this.enableSslVerification = enableSslVerification;
   }
 
   /**
    * Resolve the given PayID to an address.
    *
-   * @param payID The payID to resolve for an address.
+   * @param payId The PayID to resolve for an address.
    * @return A CryptoAddressDetails that contains an address representing the given PayID.
    */
-  public CryptoAddressDetails addressForPayID(String payID) throws PayIDException {
-    PayIDComponents paymentPointer = PayIDUtils.parsePayID(payID);
+  public CryptoAddressDetails addressForPayId(String payId) throws PayIdException {
+    PayIdComponents paymentPointer = PayIdUtils.parsePayID(payId);
     if (paymentPointer == null) {
-      throw PayIDException.invalidPaymentPointerException;
+      throw PayIdException.invalidPaymentPointerException;
     }
 
     ApiClient apiClient = new ApiClient();
     apiClient.setBasePath("https://" + paymentPointer.host());
-    apiClient.setVerifyingSsl(enableSSLVerification);
+    apiClient.setVerifyingSsl(enableSslVerification);
 
     String path = paymentPointer.path().substring(1);
     final String[] localVarAccepts = {
@@ -114,7 +110,7 @@ public class PayIDClient {
     final String[] localVarContentTypes = {};
     final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
     localVarHeaderParams.put("Content-Type", localVarContentType);
-    localVarHeaderParams.put("PayID-Version", PayIDClient.PAY_ID_VERSION);
+    localVarHeaderParams.put("PayID-Version", PayIdClient.PAY_ID_VERSION);
 
     String[] localVarAuthNames = new String[]{};
 
@@ -138,19 +134,19 @@ public class PayIDClient {
         return result.getAddresses().get(0).getAddressDetails();
       } else {
         // With a specific network, exactly one address should be returned by a PayId lookup.
-        throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE,
-                "Expected one address for " + payID + " on network " + this.network
+        throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE,
+                "Expected one address for " + payId + " on network " + this.network
                 + " but got " + result.getAddresses().size());
       }
     } catch (ApiException exception) {
       int code = exception.getCode();
       if (code == 404) {
-        throw new PayIDException(
-            PayIDExceptionType.MAPPING_NOT_FOUND,
-            "Could not resolve " + payID + " on network " + this.network
+        throw new PayIdException(
+            PayIdExceptionType.MAPPING_NOT_FOUND,
+            "Could not resolve " + payId + " on network " + this.network
         );
       } else {
-        throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
+        throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
       }
     }
   }

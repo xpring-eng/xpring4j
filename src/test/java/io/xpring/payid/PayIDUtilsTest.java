@@ -23,9 +23,38 @@ public class PayIDUtilsTest {
   }
 
   @Test
-  public void testParsePayIDTooManyDollarSigns() {
-    // GIVEN a Pay ID with too many '$'.
-    String host = "xpring$money"; // Extra '$'
+  public void testParsePayIDMultipleDollarSigns() {
+    // GIVEN a Pay ID with more than one '$'.
+    String host = "xpring.money";
+    String path = "george$$$washington$$$"; // Extra '$'s
+    String rawPayID = path + "$" + host;
+
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+
+    // THEN the host and path are set correctly.
+    assertEquals(payIDComponents.host(), host);
+    assertEquals(payIDComponents.path(), "/" + path);
+  }
+
+  @Test
+  public void testParsePayIDNoDollarSigns() {
+    // GIVEN a Pay ID with no '$'.
+    String host = "xpring.money";
+    String path = "georgewashington";
+    String rawPayID = path + host;  // Assembled without $
+
+    // WHEN it is parsed to components.
+    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+
+    // THEN the Pay ID failed to parse.
+    assertNull(payIDComponents);
+  }
+
+  @Test
+  public void testParsePayIDHostEndsWithDollarSign() {
+    // GIVEN a Pay ID in which the host ends with a $.
+    String host = "xpring.money$";
     String path = "georgewashington";
     String rawPayID = path + "$" + host;
 
