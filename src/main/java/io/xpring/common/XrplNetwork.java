@@ -1,4 +1,4 @@
-package io.xpring.common.idiomatic;
+package io.xpring.common;
 
 /**
  * Possible networks to resolve.

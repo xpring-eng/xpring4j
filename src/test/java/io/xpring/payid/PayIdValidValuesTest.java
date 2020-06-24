@@ -1,6 +1,6 @@
 package io.xpring.payid;
 
-import static io.xpring.payid.AbstractPayID.upperCasePercentEncoded;
+import static io.xpring.payid.AbstractPayId.upperCasePercentEncoded;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
@@ -13,39 +13,39 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * Unit tests for {@link PayID}.
+ * Unit tests for {@link PayId}.
  */
 @RunWith(Parameterized.class)
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class PayIDValidValuesTest {
+public class PayIdValidValuesTest {
 
-  private String sourcePayID;
+  private String sourcePayId;
   private String expectedAccountPart;
   private String expectedHost;
-  private String expectedPayIDToString;
+  private String expectedPayIdToString;
 
   /**
    * Required args constructor. Used by @Parameters annotated method to instantiate several test cases with different
    * inputs.
    *
-   * @param sourcePayID A {@link String} representing a {@link PayID}.
-   * @param expectedAccountPart A {@link String} representing the account part of a PayID that should be derived from
-   *                            {@code sourcePayID}.
-   * @param expectedHost A {@link String} representing the host part of a PayID that should be derived from
-   *                     {@code sourcePayID}.
-   * @param expectedPayIDToString A {@link String} containing the expected value of a {@code toString()} call on
-   *                              a {@link PayID}.
+   * @param sourcePayId A {@link String} representing a {@link PayId}.
+   * @param expectedAccountPart A {@link String} representing the account part of a PayId that should be derived from
+   *                            {@code sourcePayId}.
+   * @param expectedHost A {@link String} representing the host part of a PayId that should be derived from
+   *                     {@code sourcePayId}.
+   * @param expectedPayIdToString A {@link String} containing the expected value of a {@code toString()} call on
+   *                              a {@link PayId}.
    */
-  public PayIDValidValuesTest(
-      String sourcePayID,
+  public PayIdValidValuesTest(
+      String sourcePayId,
       String expectedAccountPart,
       String expectedHost,
-      String expectedPayIDToString
+      String expectedPayIdToString
   ) {
-    this.sourcePayID = Objects.requireNonNull(sourcePayID);
+    this.sourcePayId = Objects.requireNonNull(sourcePayId);
     this.expectedAccountPart = Objects.requireNonNull(expectedAccountPart);
     this.expectedHost = Objects.requireNonNull(expectedHost);
-    this.expectedPayIDToString = Objects.requireNonNull(expectedPayIDToString);
+    this.expectedPayIdToString = Objects.requireNonNull(expectedPayIdToString);
   }
 
   /**
@@ -130,23 +130,23 @@ public class PayIDValidValuesTest {
 
   @Test
   public void testValidValues() {
-    final PayID payID = PayID.of(sourcePayID);
+    final PayId payID = PayId.of(sourcePayId);
 
     assertThat(payID).isNotNull();
     assertThat(payID.account()).isEqualTo(expectedAccountPart);
     assertThat(payID.host()).isEqualTo(expectedHost);
-    assertThat(payID.toString()).isEqualTo(expectedPayIDToString);
+    assertThat(payID.toString()).isEqualTo(expectedPayIdToString);
   }
 
   @Test
   public void testEquality() {
-    final String firstPayID = "payid:alice$sub1.example.net";
-    final String secondPayID = "payid:alice$sub2.example.net";
+    final String firstPayId = "payid:alice$sub1.example.net";
+    final String secondPayId = "payid:alice$sub2.example.net";
 
-    assertThat(firstPayID).isNotEqualTo(secondPayID);
-    assertThat(secondPayID).isNotEqualTo(firstPayID);
-    assertThat(firstPayID).isEqualTo(PayID.of("payid:alice$sub1.example.net").toString());
-    assertThat(firstPayID).isNotEqualTo(PayID.of("payid:alice$sub2.example.net").toString());
+    assertThat(firstPayId).isNotEqualTo(secondPayId);
+    assertThat(secondPayId).isNotEqualTo(firstPayId);
+    assertThat(firstPayId).isEqualTo(PayId.of("payid:alice$sub1.example.net").toString());
+    assertThat(firstPayId).isNotEqualTo(PayId.of("payid:alice$sub2.example.net").toString());
   }
 
   @Test

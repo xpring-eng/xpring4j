@@ -8,7 +8,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import io.xpring.common.XRPLNetwork;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.Utils;
@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class XRPPayIDClientTest {
+public class XrpPayIdClientTest {
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort());
 
@@ -26,22 +26,22 @@ public class XRPPayIDClientTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void testXRPAddressForPayIDInvalidPaymentPointer() throws PayIDException {
+  public void testXRPAddressForPayIDInvalidPaymentPointer() throws PayIdException {
     // GIVEN a PayIDClient and an invalid PayID.
     String invalidPayID = "georgewashington$xpring$money"; // Too many '$'
-    XRPPayIDClient payIDClient = new XRPPayIDClient(XRPLNetwork.MAIN);
+    XrpPayIdClient payIDClient = new XrpPayIdClient(XrplNetwork.MAIN);
 
     // WHEN an XRPAddress is requested for an invalid pay ID THEN an invalid payment pointer error is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
-    expectedException.expect(PayIDException.class);
-    payIDClient.xrpAddressForPayID(invalidPayID);
+    expectedException.expect(PayIdException.class);
+    payIDClient.xrpAddressForPayId(invalidPayID);
   }
 
   @Test
-  public void testXRPAddressForPayIDSuccessWithXAddress() throws PayIDException {
+  public void testXRPAddressForPayIDSuccessWithXAddress() throws PayIdException {
     // GIVEN a PayID client, a valid PayID and mocked networking to return an X-Address for the PayID.
     String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String expectedAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -62,17 +62,17 @@ public class XRPPayIDClientTest {
     );
 
     // WHEN an XRP address is requested.
-    String address = client.xrpAddressForPayID(payID);
+    String address = client.xrpAddressForPayId(payID);
 
     // THEN the address is the one returned in the response.
     assertEquals(address, expectedAddress);
   }
 
   @Test
-  public void testXRPAddressForPayIDSuccessWithClassicAddressNoTag() throws PayIDException {
+  public void testXRPAddressForPayIDSuccessWithClassicAddressNoTag() throws PayIdException {
     // GIVEN a PayID client, a valid PayID and mocked networking to return an classic address without a tag.
     String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.TEST);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.TEST);
     client.setEnableSSLVerification(false);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
@@ -99,17 +99,17 @@ public class XRPPayIDClientTest {
     );
 
     // WHEN an XRP address is requested.
-    String address = client.xrpAddressForPayID(payID);
+    String address = client.xrpAddressForPayId(payID);
 
     // THEN the address is the X-Address encoded version of the response.
     assertEquals(address, expectedAddress);
   }
 
   @Test
-  public void testXRPAddressForPayIDSuccessWithClassicAddressWithTag() throws PayIDException {
+  public void testXRPAddressForPayIDSuccessWithClassicAddressWithTag() throws PayIdException {
     // GIVEN a PayID client, a valid PayID and mocked networking to return an classic address with a tag.
     String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.TEST);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.TEST);
     client.setEnableSSLVerification(false);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
@@ -138,17 +138,17 @@ public class XRPPayIDClientTest {
     );
 
     // WHEN an XRP address is requested.
-    String address = client.xrpAddressForPayID(payID);
+    String address = client.xrpAddressForPayId(payID);
 
     // THEN the address is the X-Address encoded version of the response.
     assertEquals(address, expectedAddress);
   }
 
   @Test
-  public void testXRPAddressForPayIDMatchNotFound() throws PayIDException {
+  public void testXRPAddressForPayIDMatchNotFound() throws PayIdException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a 404 for the payID.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -158,15 +158,15 @@ public class XRPPayIDClientTest {
 
     // WHEN an XRPAddress is requested THEN a mapping not found error is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
-    expectedException.expect(PayIDException.class);
-    client.xrpAddressForPayID(payID);
+    expectedException.expect(PayIdException.class);
+    client.xrpAddressForPayId(payID);
   }
 
   @Test
-  public void testXRPAddressForPayIDBadMIMEType() throws PayIDException {
+  public void testXRPAddressForPayIDBadMIMEType() throws PayIdException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a 415 for the payID.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -176,15 +176,15 @@ public class XRPPayIDClientTest {
 
     // WHEN an XRPAddress is requested THEN a unexpected response error is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
-    expectedException.expect(PayIDException.class);
-    client.xrpAddressForPayID(payID);
+    expectedException.expect(PayIdException.class);
+    client.xrpAddressForPayId(payID);
   }
 
   @Test
-  public void testXRPAddressForPayIDServerFailure() throws PayIDException {
+  public void testXRPAddressForPayIDServerFailure() throws PayIdException {
     // GIVEN a PayID client, valid PayID and mocked networking to return a 503 for the payID.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.MAIN);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.MAIN);
     client.setEnableSSLVerification(false);
     String xrpAddress = "X7cBcY4bdTTzk3LHmrKAK6GyrirkXfLHGFxzke5zTmYMfw4";
 
@@ -194,15 +194,15 @@ public class XRPPayIDClientTest {
 
     // WHEN an XRPAddress is requested THEN a unexpected response error is thrown.
     // TODO(keefertaylor): Tighten this condition to verify the exception is as expected.
-    expectedException.expect(PayIDException.class);
-    client.xrpAddressForPayID(payID);
+    expectedException.expect(PayIdException.class);
+    client.xrpAddressForPayId(payID);
   }
 
   @Test
-  public void testXRPAddressForPayIdMultipleAddressesReturned() throws PayIDException {
+  public void testXRPAddressForPayIdMultipleAddressesReturned() throws PayIdException {
     // GIVEN a PayID client, a valid PayID and mocked networking to return multiple addresses.
     final String payID = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    XRPPayIDClient client = new XRPPayIDClient(XRPLNetwork.TEST);
+    XrpPayIdClient client = new XrpPayIdClient(XrplNetwork.TEST);
     client.setEnableSSLVerification(false);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
@@ -236,8 +236,8 @@ public class XRPPayIDClientTest {
     );
 
     // WHEN an XRPAddress is requested THEN a unexpected response error is thrown.
-    expectedException.expect(PayIDException.class);
-    client.xrpAddressForPayID(payID);
+    expectedException.expect(PayIdException.class);
+    client.xrpAddressForPayId(payID);
   }
 }
 

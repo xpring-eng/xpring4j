@@ -1,4 +1,4 @@
-package io.xpring.payid.idiomatic;
+package io.xpring.payid;
 
 /**
  * Types of {@link PayIdException}s.

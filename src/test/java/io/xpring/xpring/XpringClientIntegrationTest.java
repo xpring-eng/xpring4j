@@ -2,9 +2,6 @@ package io.xpring.xpring;
 
 import static org.junit.Assert.assertNotNull;
 
-import io.xpring.common.XRPLNetwork;
-import io.xpring.payid.PayIDException;
-import io.xpring.payid.XRPPayIDClient;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XRPClient;
 import io.xpring.xrpl.XRPException;

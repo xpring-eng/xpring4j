@@ -10,9 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A new method, `cryptoAddressForPayId`, replaces the `addressForPayId` method in `PayIdClient`.
 - A new method, `allAddressesForPayId`, is added to `PayIdClient`.
 
-### Changed
-
 #### Removed
+- `PayIDClient` was deprecated for two releases and has been removed. Use `PayIdClient` instead.
+- `PayIDUtils` was deprecated for two releases and has been removed. Use `PayIdUtils` instead.
+- `XRPPayIDClient` was deprecated for two releases and has been removed. Use `XrpPayIdClient` instead.
+- `XRPPayIDClientInterface` was deprecated for two releases and has been removed. Use `XrpPayIdClientInterface` instead.
+- `JavaScriptPayIDUtils` was deprecated for two releases and has been removed. Use `JavaScriptPayIdUtils` instead.
+- `AbstractPayID` was deprecated for two releases and has been removed. Use `AbstractPayId` instead.
+- `PayId` is deprecated. Please use the idiomatically cased `PayID` interface instead.
+- `PayIdComponents` was deprecated for two releases and has been removed. Use `PayIDComponents` interface instead.
+- `PayIDException` was deprecated for two releases and has been removed. Use `PayIdException` class instead.
+- `PayIDExceptionType` was deprecated for two releases and has been removed. Use `PayIdExceptionType` enum instead.
+
 - The `network` parameter passed to the constructor of `PayIdClient` has been removed.  Clients should
 favor calling the new `cryptoAddressForPayId` method which allows them to specify the network at request time.
 - `addressForPayId` method has been removed from `PayIdClient` and replaced with `cryptoAddressForPayId`

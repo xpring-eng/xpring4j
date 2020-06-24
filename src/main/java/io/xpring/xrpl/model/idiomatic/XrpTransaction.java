@@ -1,14 +1,10 @@
 package io.xpring.xrpl.model.idiomatic;
 
-import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.TransactionType;
 import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.model.idiomatic.ImmutableXrpTransaction;
-import io.xpring.xrpl.model.idiomatic.XrpMemo;
-import io.xpring.xrpl.model.idiomatic.XrpPayment;
-import io.xpring.xrpl.model.idiomatic.XrpSigner;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.GetTransactionResponse;

@@ -6,16 +6,16 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class PayIDUtilsTest {
+public class PayIdUtilsTest {
   @Test
-  public void testParseValidPayID() {
+  public void testParseValidPayId() {
     // GIVEN a Pay ID with a host and a path.
     String host = "xpring.money";
     String path = "georgewashington";
-    String rawPayID = path + "$" + host;
+    String rawPayId = path + "$" + host;
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the host and path are set correctly.
     assertEquals(payIDComponents.host(), host);
@@ -23,14 +23,14 @@ public class PayIDUtilsTest {
   }
 
   @Test
-  public void testParsePayIDMultipleDollarSigns() {
+  public void testParsePayIdMultipleDollarSigns() {
     // GIVEN a Pay ID with more than one '$'.
     String host = "xpring.money";
     String path = "george$$$washington$$$"; // Extra '$'s
-    String rawPayID = path + "$" + host;
+    String rawPayId = path + "$" + host;
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the host and path are set correctly.
     assertEquals(payIDComponents.host(), host);
@@ -38,68 +38,68 @@ public class PayIDUtilsTest {
   }
 
   @Test
-  public void testParsePayIDNoDollarSigns() {
+  public void testParsePayIdNoDollarSigns() {
     // GIVEN a Pay ID with no '$'.
     String host = "xpring.money";
     String path = "georgewashington";
-    String rawPayID = path + host;  // Assembled without $
+    String rawPayId = path + host;  // Assembled without $
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the Pay ID failed to parse.
     assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePayIDHostEndsWithDollarSign() {
+  public void testParsePayIdHostEndsWithDollarSign() {
     // GIVEN a Pay ID in which the host ends with a $.
     String host = "xpring.money$";
     String path = "georgewashington";
-    String rawPayID = path + "$" + host;
+    String rawPayId = path + "$" + host;
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the Pay ID failed to parse.
     assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePayIDEmptyHost() {
+  public void testParsePayIdEmptyHost() {
     // GIVEN a Pay ID with an empty host.
     String host = "";
     String path = "georgewashington";
-    String rawPayID = path + "$" + host;
+    String rawPayId = path + "$" + host;
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the Pay ID failed to parse.
     assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePayIDEmptyPath() {
+  public void testParsePayIdEmptyPath() {
     // GIVEN a Pay ID with an empty host.
     String host = "xpring.money"; // Extra '$'
     String path = "";
-    String rawPayID = path + "$" + host;
+    String rawPayId = path + "$" + host;
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the Pay ID failed to parse.
     assertNull(payIDComponents);
   }
 
   @Test
-  public void testParsePayIDNonASCII() {
+  public void testParsePayIdNonASCII() {
     // GIVEN a Pay ID with non-ascii characters.
-    String rawPayID = "ZA̡͊͠͝LGΌIS̯͈͕̹̘̱ͮ$TO͇̹̺ͅƝ̴ȳ̳TH̘Ë͖́̉ ͠P̯͍̭O̚N̐Y̡";
+    String rawPayId = "ZA̡͊͠͝LGΌIS̯͈͕̹̘̱ͮ$TO͇̹̺ͅƝ̴ȳ̳TH̘Ë͖́̉ ͠P̯͍̭O̚N̐Y̡";
 
     // WHEN it is parsed to components.
-    PayIDComponents payIDComponents = PayIDUtils.parsePayID(rawPayID);
+    PayIdComponents payIDComponents = PayIdUtils.parsePayID(rawPayId);
 
     // THEN the Pay ID failed to parse.
     assertNull(payIDComponents);

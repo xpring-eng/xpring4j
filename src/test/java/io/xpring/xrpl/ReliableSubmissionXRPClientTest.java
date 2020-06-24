@@ -3,7 +3,6 @@ package io.xpring.xrpl;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.common.Result;
-import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.helpers.XRPTestUtils;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.junit.Before;

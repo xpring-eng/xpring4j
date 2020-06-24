@@ -13,7 +13,7 @@ import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
-import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.FakeXRPProtobufs;
 import io.xpring.xrpl.Utils;

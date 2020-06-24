@@ -1,6 +1,5 @@
 package io.xpring.xrpl.helpers;
 
-import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPTransaction;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetTransactionResponse;

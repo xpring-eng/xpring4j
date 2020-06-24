@@ -1,14 +1,9 @@
 package io.xpring.xrpl.model.idiomatic;
 
-import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.model.idiomatic.ImmutableXrpPayment;
-import io.xpring.xrpl.model.idiomatic.XrpCurrencyAmount;
-import io.xpring.xrpl.model.idiomatic.XrpCurrencyAmount;
-import io.xpring.xrpl.model.idiomatic.XrpCurrencyAmount;
-import io.xpring.xrpl.model.idiomatic.XrpPath;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Payment;
 

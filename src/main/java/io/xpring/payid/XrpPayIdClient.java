@@ -1,7 +1,6 @@
-package io.xpring.payid.idiomatic;
+package io.xpring.payid;
 
-import io.xpring.common.idiomatic.XrplNetwork;
-import io.xpring.payid.PayIDException;
+import io.xpring.common.XrplNetwork;
 import io.xpring.payid.generated.model.CryptoAddressDetails;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
@@ -48,7 +47,7 @@ public class XrpPayIdClient extends PayIdClient implements XrpPayIdClientInterfa
    * @return An XRP address representing the given PayID.
    * @throws PayIdException if the inputs were invalid.
    */
-  public String xrpAddressForPayId(String payId) throws PayIDException, PayIdException {
+  public String xrpAddressForPayId(String payId) throws PayIdException {
     CryptoAddressDetails addressDetails = super.cryptoAddressForPayId(payId, this.xrplNetwork.getNetworkName());
 
     // Return address immediately if it is an X-Address.

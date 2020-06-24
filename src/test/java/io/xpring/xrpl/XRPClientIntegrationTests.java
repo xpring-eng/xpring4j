@@ -2,9 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPTransaction;
-import io.xpring.xrpl.model.idiomatic.XrpPayment;
 import org.junit.Before;
 import org.junit.Test;
 

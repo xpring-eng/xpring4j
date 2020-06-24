@@ -1,6 +1,6 @@
-package io.xpring.payid.idiomatic;
+package io.xpring.payid;
 
-import static io.xpring.payid.idiomatic.AbstractPayId.upperCasePercentEncoded;
+import static io.xpring.payid.AbstractPayId.upperCasePercentEncoded;
 import static java.lang.String.format;
 
 import com.google.common.base.Preconditions;

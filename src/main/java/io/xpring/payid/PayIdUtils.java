@@ -1,6 +1,6 @@
-package io.xpring.payid.idiomatic;
+package io.xpring.payid;
 
-import io.xpring.payid.idiomatic.javascript.JavaScriptPayIdUtils;
+import io.xpring.payid.javascript.JavaScriptPayIdUtils;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 
 /**

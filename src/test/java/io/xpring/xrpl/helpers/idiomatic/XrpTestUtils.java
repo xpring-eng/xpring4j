@@ -1,6 +1,6 @@
 package io.xpring.xrpl.helpers.idiomatic;
 
-import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.idiomatic.XrpTransaction;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetTransactionResponse;

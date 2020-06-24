@@ -2,7 +2,6 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.model.XRPCurrency;
 import io.xpring.xrpl.model.XRPCurrencyAmount;
 import io.xpring.xrpl.model.XRPIssuedCurrency;
@@ -12,7 +11,6 @@ import io.xpring.xrpl.model.XRPPathElement;
 import io.xpring.xrpl.model.XRPPayment;
 import io.xpring.xrpl.model.XRPSigner;
 import io.xpring.xrpl.model.XRPTransaction;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,7 +24,6 @@ import org.xrpl.rpc.v1.Signer;
 import org.xrpl.rpc.v1.Transaction;
 
 import java.math.BigInteger;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProtocolBufferConversionTest {

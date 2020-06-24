@@ -19,7 +19,7 @@ import java.util.List;
 
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class PayIDClientTest {
+public class PayIdClientTest {
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort());
 
@@ -27,21 +27,21 @@ public class PayIDClientTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void testAllAddressesForPayIdInvalidPayId() throws PayIDException {
+  public void testAllAddressesForPayIdInvalidPayId() throws PayIdException {
     // Given a PayIdClient and an invalid PayID.
     String invalidPayId = "xpring.money/georgewashington"; // no "$"
-    PayIDClient payIdClient = new PayIDClient();
+    PayIdClient payIdClient = new PayIdClient();
 
     // WHEN all addresses are resolved THEN an invalid Pay ID error is thrown.
-    expectedException.expect(PayIDException.class);
+    expectedException.expect(PayIdException.class);
     payIdClient.allAddressesForPayId(invalidPayId);
   }
 
   @Test
-  public void testAllAddressesForPayIdSuccessfulResponseMatchFound() throws PayIDException {
+  public void testAllAddressesForPayIdSuccessfulResponseMatchFound() throws PayIdException {
     // GIVEN a PayIdClient, a valid PayID and mocked networking to return a set of matches for the PayID.
     final String payId = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    PayIDClient payIdClient = new PayIDClient();
+    PayIdClient payIdClient = new PayIdClient();
     payIdClient.setEnableSSLVerification(false);
 
     CryptoAddressDetails cryptoAddressDetails1 = new CryptoAddressDetails();
@@ -92,10 +92,10 @@ public class PayIDClientTest {
   }
 
   @Test
-  public void testAllAddressesForPayIdSuccessfulResponseMatchNotFound() throws PayIDException {
+  public void testAllAddressesForPayIdSuccessfulResponseMatchNotFound() throws PayIdException {
     // GIVEN a PayIdClient, a valid PayID and mocked networking to return a 404 for the payID.
     String payId = "georgewashington$localhost:" + wireMockRule.httpsPort();
-    PayIDClient payIdClient = new PayIDClient();
+    PayIdClient payIdClient = new PayIdClient();
 
     stubFor(get(urlEqualTo("/georgewashington"))
             .willReturn(aResponse()
@@ -103,7 +103,7 @@ public class PayIDClientTest {
 
     // WHEN all addresses are resolved THEN a mapping not found error is thrown.
     // TODO(amiecorso): Tighten this condition to verify the exception is as expected.
-    expectedException.expect(PayIDException.class);
+    expectedException.expect(PayIdException.class);
     payIdClient.allAddressesForPayId(payId);
   }
 }

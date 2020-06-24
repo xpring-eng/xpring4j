@@ -1,6 +1,5 @@
 package io.xpring.xrpl.model;
 
-import io.xpring.common.XRPLNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
 import io.xpring.xrpl.Utils;

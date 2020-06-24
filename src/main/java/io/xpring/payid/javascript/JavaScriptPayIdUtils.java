@@ -1,7 +1,7 @@
-package io.xpring.payid.idiomatic.javascript;
+package io.xpring.payid.javascript;
 
-import io.xpring.payid.idiomatic.ImmutablePayIdComponents;
-import io.xpring.payid.idiomatic.PayIdComponents;
+import io.xpring.payid.ImmutablePayIdComponents;
+import io.xpring.payid.PayIdComponents;
 import io.xpring.xrpl.javascript.JavaScriptLoader;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import org.graalvm.polyglot.Context;
