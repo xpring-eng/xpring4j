@@ -59,142 +59,142 @@ public class PayIdInvalidValuesTest {
       {
         null, // input
         NullPointerException.class, // exception to expect
-        "PayId must not be null", // message to expect
+        "Pay ID must not be null", // message to expect
       },
       //1
       {
         "$", // input (missing host)
         IllegalArgumentException.class, // exception to expect
-        "PayId `$` must start with the 'payid:' scheme", // message to expect
+        "Pay ID `$` must start with the 'payid:' scheme", // message to expect
       },
       //2
       {
         "payid:$", // input (missing host)
         IllegalArgumentException.class, // exception to expect
-        "PayId `$` must specify a valid account and host", // message to expect
+        "Pay ID `$` must specify a valid account and host", // message to expect
       },
       //3
       {
         "alice$wallet.example", // input missing payid: prefix
         IllegalArgumentException.class, // exception to expect
-        "PayId `alice$wallet.example` must start with the 'payid:' scheme", // message to expect
+        "Pay ID `alice$wallet.example` must start with the 'payid:' scheme", // message to expect
       },
       //4
       {
         "payid:alice$wallet.example$bank.example", // input with two dollar-signs
         IllegalArgumentException.class, // exception to expect
-        "PayId `alice$wallet.example$bank.example` may only contain a single dollar-sign. "
+        "Pay ID `alice$wallet.example$bank.example` may only contain a single dollar-sign. "
           + "All other dollar-signs must be percent-encoded.", // message to expect
       },
       //5
       {
         "payid:alice$nic.書籍", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:alice$nic.書籍` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:alice$nic.書籍` has an invalid value.",// message to expect
       },
       //6
       {
         "payid:書籍$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:書籍$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:書籍$example.com` has an invalid value.",// message to expect
       },
       //7 (don't accept gen-delims: ":")
       {
         "payid::$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid::$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid::$example.com` has an invalid value.",// message to expect
       },
       //8 (don't accept gen-delims "/")
       {
         "payid:/$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:/$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:/$example.com` has an invalid value.",// message to expect
       },
       //9 (don't accept gen-delims "/")
       {
         "payid:alice$/example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:alice$/example.com` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:alice$/example.com` has an invalid value.",// message to expect
       },
       //10 (don't accept gen-delims "?")
       {
         "payid:?$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:?$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:?$example.com` has an invalid value.",// message to expect
       },
       //11 (don't accept gen-delims "?")
       {
         "payid:a$?example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:a$?example.com` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:a$?example.com` has an invalid value.",// message to expect
       },
       //12 (don't accept gen-delims "#")
       {
         "payid:#$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:#$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:#$example.com` has an invalid value.",// message to expect
       },
       //13 (don't accept gen-delims "#")
       {
         "payid:a$#example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:a$#example.com` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:a$#example.com` has an invalid value.",// message to expect
       },
       //14 (don't accept gen-delims "[" in account)
       {
         "payid:[$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:[$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:[$example.com` has an invalid value.",// message to expect
       },
       //15 (don't accept gen-delims "[" in host)
       {
         "payid:alice$[example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:alice$[example.com` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:alice$[example.com` has an invalid value.",// message to expect
       },
       //16 (don't accept gen-delims "]" in account)
       {
         "payid:]$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:]$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:]$example.com` has an invalid value.",// message to expect
       },
       //17 (don't accept gen-delims "]" in host)
       {
         "payid:alice$]example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:alice$]example.com` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:alice$]example.com` has an invalid value.",// message to expect
       },
       //18 (don't accept gen-delims "@")
       {
         "payid:@$example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:@$example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:@$example.com` has an invalid value.",// message to expect
       },
       //19 (don't accept gen-delims "@")
       {
         "payid:a$@example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'host' for `payid:a$@example.com` has an invalid value.",// message to expect
+        "PayID 'host' for `payid:a$@example.com` has an invalid value.",// message to expect
       },
       //20 (don't accept payid that start with a %-encoded value.)
       {
         "payid:%20abc$@example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId `%20abc$@example.com` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
-          + "A PayId may not start with a percent-encoded value.", // message to expect
+        "Pay ID `%20abc$@example.com` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
+          + "A Pay ID may not start with a percent-encoded value.", // message to expect
       },
-      //21 (don't accept PayId that start with a %-encoded value.)
+      //21 (don't accept PayID that start with a %-encoded value.)
       {
         "payid:%20abc$@example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId `%20abc$@example.com` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
-          + "A PayId may not start with a percent-encoded value.",// message to expect
+        "Pay ID `%20abc$@example.com` MUST start with either an 'unreserved' or 'sub-selims' character rules. "
+          + "A Pay ID may not start with a percent-encoded value.",// message to expect
       },
-      //22 (don't accept PayId with a '^'.)
+      //22 (don't accept PayID with a '^'.)
       {
         "payid:alice^$@example.com", // input
         IllegalArgumentException.class, // exception to expect
-        "PayId 'account' for `payid:alice^$@example.com` has an invalid value.",// message to expect
+        "PayID 'account' for `payid:alice^$@example.com` has an invalid value.",// message to expect
       },
       //23 (empty account)
       {
