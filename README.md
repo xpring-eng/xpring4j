@@ -334,17 +334,28 @@ System.out.println(decodedClassicAddress.tag()); // 12345
 
 Two classes are used to work with PayID: `PayIDClient` and `XRPPayIDClient`.
 
-`PayIDClient` can resolve addresses on arbitrary cryptocurrency networks.
+### PayIDClient
+`PayIdClient` can resolve addresses on arbitrary cryptocurrency networks.
 
 ```java
-// Resolve on Bitcoin Mainnet.
+// Resolve on Bitcoin Testnet.
+
+PayIdClient payIdClient = new PayIdClient();
+String payId = "georgewashington$xpring.money";
 String btcNetwork = "btc-testnet";
 
-PayIDClient btcPayIdClient = new PayIDClient(btcNetwork);
-String payID = "georgewashington$xpring.money";
-
-CryptoAddressDetails btcAddressComponents = btcPayIdClient.addressForPayID(payId);
+CryptoAddressDetails btcAddressComponents = payIdClient.cryptoAddressForPayId(payId, btcNetwork);
 System.out.println("Resolved to " + btcAddressComponents.getAddress());
+```
+
+### Resolving All Addresses
+
+`PayIdClient` can resolve all addresses associated with a PayID.
+```java
+PayIdClient payIdClient = new PayIdClient();
+String payId = "georgewashington$xpring.money";
+
+List<Address> allAddress = payIdClient.allAddressesForPayId(payId);
 ```
 
 ### XRPPayIDClient

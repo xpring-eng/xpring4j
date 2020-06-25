@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- A new method, `cryptoAddressForPayId`, replaces the `addressForPayId` method in `PayIdClient`.
+- A new method, `allAddressesForPayId`, is added to `PayIdClient`.
+
+### Changed
+
+#### Removed
+- The `network` parameter passed to the constructor of `PayIdClient` has been removed.  Clients should
+favor calling the new `cryptoAddressForPayId` method which allows them to specify the network at request time.
+- `addressForPayId` method has been removed from `PayIdClient` and replaced with `cryptoAddressForPayId`
 
 
 ## 5.2.3 - 2020-06-23

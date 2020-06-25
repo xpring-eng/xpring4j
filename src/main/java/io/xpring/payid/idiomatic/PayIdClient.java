@@ -2,11 +2,15 @@ package io.xpring.payid.idiomatic;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.reflect.TypeToken;
-import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.payid.PayIDComponents;
+import io.xpring.payid.PayIDException;
+import io.xpring.payid.PayIDExceptionType;
+import io.xpring.payid.PayIDUtils;
 import io.xpring.payid.generated.ApiClient;
 import io.xpring.payid.generated.ApiException;
 import io.xpring.payid.generated.ApiResponse;
 import io.xpring.payid.generated.Pair;
+import io.xpring.payid.generated.model.Address;
 import io.xpring.payid.generated.model.CryptoAddressDetails;
 import io.xpring.payid.generated.model.PaymentInformation;
 
@@ -25,11 +29,6 @@ public class PayIdClient {
    * The version of PayID.
    */
   private static final String PAY_ID_VERSION = "1.0";
-  
-  /**
-   * The network this PayID client resolves on.
-   */
-  private String network;
 
   /**
    * Whether to enable SSL Verification.
@@ -45,21 +44,9 @@ public class PayIdClient {
    *    - eth-rinkeby
    *    - ach
    *  TODO: Link a canonical list at payid.org when available.
-   *
-   * @param network The network that addresses will be resolved on.
    */
-  public PayIdClient(String network) {
-    this.network = network;
+  public PayIdClient() {
     this.enableSslVerification = true;
-  }
-
-  /**
-   * Retrieve the network that addresses will be resolved on.
-   *
-   * @return The {@link XrplNetwork} of this {@link PayIdClient}
-   */
-  public String getNetwork() {
-    return this.network;
   }
 
   /**
@@ -74,15 +61,46 @@ public class PayIdClient {
   }
 
   /**
-   * Resolve the given PayID to an address.
+   * Retrieve the crypto address associated with a PayID.
    *
-   * @param payId The PayID to resolve for an address.
-   * @return A CryptoAddressDetails that contains an address representing the given PayID.
+   * @param payId The PayID to resolve.
+   * @param network The network to resolve on.
    */
-  public CryptoAddressDetails addressForPayId(String payId) throws PayIdException {
-    PayIdComponents paymentPointer = PayIdUtils.parsePayID(payId);
+  public CryptoAddressDetails cryptoAddressForPayId(String payId, String network) throws PayIDException {
+    List<Address> addresses = this.addressesForPayIdAndNetwork(payId, network);
+
+    // With a specific network, exactly one address should be returned by a PayID lookup.
+    if (addresses.size() == 1) {
+      return addresses.get(0).getAddressDetails();
+    } else {
+      // With a specific network, exactly one address should be returned by a PayID lookup.
+      throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE,
+              "Expected one address for " + payId + " on network " + network
+                      + " but got " + addresses.size());
+    }
+  }
+
+  /**
+   * Retrieve all addresses associated with a PayID.
+   *
+   * @param payId The PayID to resolve.
+   * @return a list of all {@link Address}es associated with the given PayID.
+   */
+  public List<Address> allAddressesForPayId(String payId) throws PayIDException {
+    return this.addressesForPayIdAndNetwork(payId, "payid");
+  }
+
+  /**
+   * Return a list of {@link Address}es for the given payId on the given network.
+   *
+   * @param payId The PayID to resolve.
+   * @param network The network to resolve on.
+   * @return a list of {@link Address}es for the given payId on the given network.
+   */
+  private List<Address> addressesForPayIdAndNetwork(String payId, String network) throws PayIDException {
+    PayIDComponents paymentPointer = PayIDUtils.parsePayID(payId);
     if (paymentPointer == null) {
-      throw PayIdException.invalidPaymentPointerException;
+      throw PayIDException.invalidPaymentPointerException;
     }
 
     ApiClient apiClient = new ApiClient();
@@ -91,7 +109,7 @@ public class PayIdClient {
 
     String path = paymentPointer.path().substring(1);
     final String[] localVarAccepts = {
-        "application/" + this.network + "+json"
+        "application/" + network + "+json"
     };
 
     // NOTE: Swagger produces a higher level client that does not require this level of configuration,
@@ -116,37 +134,30 @@ public class PayIdClient {
 
     try {
       com.squareup.okhttp.Call call = apiClient.buildCall(
-          localVarPath,
-          "GET",
-          localVarQueryParams,
-          localVarCollectionQueryParams,
-          null,
-          localVarHeaderParams,
-          localVarFormParams,
-          localVarAuthNames,
-          null
+              localVarPath,
+              "GET",
+              localVarQueryParams,
+              localVarCollectionQueryParams,
+              null,
+              localVarHeaderParams,
+              localVarFormParams,
+              localVarAuthNames,
+              null
       );
       Type localVarReturnType = new TypeToken<PaymentInformation>() {
       }.getType();
       ApiResponse<PaymentInformation> response = apiClient.execute(call, localVarReturnType);
       PaymentInformation result = response.getData();
-      if (result.getAddresses().size() == 1 ) {
-        return result.getAddresses().get(0).getAddressDetails();
-      } else {
-        // With a specific network, exactly one address should be returned by a PayId lookup.
-        throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE,
-                "Expected one address for " + payId + " on network " + this.network
-                + " but got " + result.getAddresses().size());
-      }
+      return result.getAddresses();
     } catch (ApiException exception) {
       int code = exception.getCode();
       if (code == 404) {
-        throw new PayIdException(
-            PayIdExceptionType.MAPPING_NOT_FOUND,
-            "Could not resolve " + payId + " on network " + this.network
+        throw new PayIDException(
+                PayIDExceptionType.MAPPING_NOT_FOUND,
+                "Could not resolve " + payId + " on network " + network
         );
       } else {
-        throw new PayIdException(PayIdExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
+        throw new PayIDException(PayIDExceptionType.UNEXPECTED_RESPONSE, code + ": " + exception.getMessage());
       }
     }
   }

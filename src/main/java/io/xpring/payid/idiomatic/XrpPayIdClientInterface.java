@@ -1,6 +1,7 @@
 package io.xpring.payid.idiomatic;
 
 import io.xpring.common.idiomatic.XrplNetwork;
+import io.xpring.payid.PayIDException;
 
 /**
  * An interface for a PayID client.
@@ -20,5 +21,5 @@ public interface XrpPayIdClientInterface {
    * @return An XRP address representing the given PayID.
    * @throws PayIdException if the inputs were invalid.
    */
-  String xrpAddressForPayId(String payId) throws PayIdException;
+  String xrpAddressForPayId(String payId) throws PayIdException, PayIDException;
 }

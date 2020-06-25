@@ -34,8 +34,7 @@ public class XRPPayIDClient extends PayIDClient implements XRPPayIDClientInterfa
    * @param xrplNetwork The XRP Ledger network that this client attaches to.
    */
   public XRPPayIDClient(XRPLNetwork xrplNetwork) {
-    super("xrpl-" + xrplNetwork.getNetworkName());
-
+    super();
     this.xrplNetwork = xrplNetwork;
   }
 
@@ -52,7 +51,10 @@ public class XRPPayIDClient extends PayIDClient implements XRPPayIDClientInterfa
    * @throws PayIDException if the inputs were invalid.
    */
   public String xrpAddressForPayID(String payID) throws PayIDException {
-    CryptoAddressDetails addressDetails = super.addressForPayID(payID);
+    CryptoAddressDetails addressDetails = super.cryptoAddressForPayId(
+            payID,
+            "xrpl-" + this.xrplNetwork.getNetworkName()
+    );
 
     // Return address immediately if it is an X-Address.
     String address = addressDetails.getAddress();
