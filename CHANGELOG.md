@@ -44,7 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 favor calling the new `cryptoAddressForPayId` method which allows them to specify the network at request time.
 - `addressForPayId` method has been removed from `PayIdClient` and replaced with `cryptoAddressForPayId`
 
-
 ## 5.2.3 - 2020-06-23
 
 ### Fixed
