@@ -6,7 +6,7 @@
 
     <groupId>io.xpring</groupId>
     <artifactId>xpring4j</artifactId>
-    <version>5.2.2</version>
+    <version>5.2.3</version>
     <name>xpring4j</name>
     <url>https://github.com/xpring-eng/xpring4j</url>
     <description>
@@ -355,7 +355,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M4</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <skipITs>${skipITs}</skipITs>
                     <argLine>${failsafe.argLine}</argLine>
@@ -552,7 +552,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>3.0.0-M4</version>
+                        <version>3.0.0-M5</version>
                         <configuration>
                             <skipITs>false</skipITs>
                             <argLine>${failsafe.argLine}</argLine>

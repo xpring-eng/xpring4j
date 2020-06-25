@@ -5,8 +5,11 @@ import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 
 /**
  * Provides utilities for PayID.
+ *
+ * @deprecated Use the idiomatically named `PayIdUtils` class instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+@Deprecated
 public class PayIDUtils {
 
   private static final JavaScriptPayIDUtils javaScriptPayIDUtils;

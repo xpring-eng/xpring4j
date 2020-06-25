@@ -4,8 +4,11 @@ import io.xpring.common.XRPLNetwork;
 
 /**
  * An interface for a PayID client.
+ *
+ * @deprecated Use the idiomatically named `XrpPayIdClientInterface` interface instead.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+@Deprecated
 public interface XRPPayIDClientInterface {
   /**
    * The {@link XRPLNetwork} that addresses will be resolved on.

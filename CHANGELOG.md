@@ -10,19 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A new method, `cryptoAddressForPayId`, replaces the `addressForPayId` method in `PayIdClient`.
 - A new method, `allAddressesForPayId`, is added to `PayIdClient`.
 
-### Changed
-
 #### Removed
 - The `network` parameter passed to the constructor of `PayIDClient` has been removed.  Clients should
 favor calling the new `cryptoAddressForPayId` method which allows them to specify the network at request time.
 - `addressForPayId` method has been removed from `PayIDClient` and replaced with `cryptoAddressForPayId`
+- The `network` parameter passed to the constructor of `PayIdClient` has been removed.  Clients should
+favor calling the new `cryptoAddressForPayId` method which allows them to specify the network at request time.
+- `addressForPayId` method has been removed from `PayIdClient` and replaced with `cryptoAddressForPayId`
 
-## Fixed
+
+## 5.2.3 - 2020-06-23
+
+### Fixed
+
 - The fix for destination tags in 5.2.2 was incorrectly applied only to the deprecated class `XRPClient`. This release applies it to `XrpClient` as well.
 
 ## 5.2.2 - 2020-06-18
 
-## Fixed
+### Fixed
 - Destination tags were being dropped from payments. This release fixes the issue.
 
 ## 5.2.1 - 2020-06-16
@@ -36,6 +41,20 @@ favor calling the new `cryptoAddressForPayId` method which allows them to specif
    Please use the X-address encoded field `sourceXAddress` instead.
 - `XrpPayment.destination` and `XrpPayment.destinationTag` are deprecated.  
    Please use the X-address encoded field `destinationXAddress` instead.
+
+### Added
+- `PayIdClient` provides the functionality of `PayIDClient` under an idiomatically cased name.
+- `PayIdUtils` provides the functionality of `PayIDUtils` under an idiomatically cased name.
+- `XrpPayIdClient` provides the functionality of `XRPPayIDClient` under an idiomatically cased name.
+- `XrpPayIdClientInterface` provides the functionality of `XRPPayIDClientInterface` under an idiomatically cased name.
+- `JavaScriptPayIdUtils` provides the functionality of `JavaScriptPayIDUtils` under an idiomatically cased name.
+
+### Deprecated
+- `PayIDClient` is deprecated, use the idiomatically named `PayIdClient` instead.
+- `PayIDUtils` is deprecated, use the idiomatically named `PayIdUtils` instead.
+- `XRPPayIDClient` is deprecated, use the idiomatically named `XrpPayIdClient` instead.
+- `XRPPayIDClientInterface` is deprecated, use the idiomatically named `XrpPayIdClientInterface` instead.
+- `JavaScriptPayIDUtils` is deprecated, use the idiomatically named `JavaScriptPayIdUtils` instead.
 
 ## 5.2.0 - 2020-06-01
 
