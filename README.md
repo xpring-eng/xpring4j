@@ -332,9 +332,12 @@ System.out.println(decodedClassicAddress.tag()); // 12345
 
 ## Usage: PayID
 
-Two classes are used to work with PayID: `PayIDClient` and `XRPPayIDClient`.
+Two classes are used to work with PayID: `PayIdClient` and `XrpPayIdClient`.
 
-### PayIDClient
+### PayIdClient
+
+#### Single Address Resolution
+
 `PayIdClient` can resolve addresses on arbitrary cryptocurrency networks.
 
 ```java
@@ -347,7 +350,7 @@ CryptoAddressDetails btcAddressComponents = payIdClient.cryptoAddressForPayId(pa
 System.out.println("Resolved to " + btcAddressComponents.getAddress());
 ```
 
-### Resolving All Addresses
+#### Resolving All Addresses
 
 `PayIdClient` can resolve all addresses associated with a PayID.
 ```java
@@ -357,14 +360,14 @@ String payId = "georgewashington$xpring.money";
 List<Address> allAddress = payIdClient.allAddressesForPayId(payId);
 ```
 
-### XRPPayIDClient
+### XrpPayIdClient
 
-`XRPPayIDClient` can resolve addresses on the XRP Ledger network. The class always coerces returned addresses into an X-Address. (See https://xrpaddress.info/)
+`XrpPayIdClient` can resolve addresses on the XRP Ledger network. The class always coerces returned addresses into an X-Address. (See https://xrpaddress.info/).
 
 ```java
-XRPLNetwork xrpNetwork = XRPLNetwork.MAIN;
+XrplNetwork xrpNetwork = XrplNetwork.MAIN;
 
-XRPPayIDClient xrpPayIdClient = new XRPPayIDClient(xrpNetwork);
+XrpPayIdClient xrpPayIdClient = new XrpPayIDClient(xrpNetwork);
 String xrpAddress = xrpPayIdClient.xrpAddressForPayID(payId);
 ```
 
