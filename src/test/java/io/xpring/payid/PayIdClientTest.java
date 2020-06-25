@@ -17,9 +17,7 @@ import org.junit.rules.ExpectedException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class PayIDClientTest {
+public class PayIdClientTest {
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort());
 
