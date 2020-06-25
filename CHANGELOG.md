@@ -10,13 +10,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A new method, `cryptoAddressForPayId`, replaces the `addressForPayId` method in `PayIdClient`.
 - A new method, `allAddressesForPayId`, is added to `PayIdClient`.
 
-### Changed
-
 #### Removed
+- `PayIDClient` was deprecated for two releases and has been removed. Use `PayIdClient` instead.
+- `PayIDUtils` was deprecated for two releases and has been removed. Use `PayIdUtils` instead.
+- `XRPPayIDClient` was deprecated for two releases and has been removed. Use `XrpPayIdClient` instead.
+- `XRPPayIDClientInterface` was deprecated for two releases and has been removed. Use `XrpPayIdClientInterface` instead.
+- `JavaScriptPayIDUtils` was deprecated for two releases and has been removed. Use `JavaScriptPayIdUtils` instead.
+- `AbstractPayID` was deprecated for two releases and has been removed. Use `AbstractPayId` instead.
+- `PayId` is deprecated. Please use the idiomatically cased `PayID` interface instead.
+- `PayIdComponents` was deprecated for two releases and has been removed. Use `PayIDComponents` interface instead.
+- `PayIDException` was deprecated for two releases and has been removed. Use `PayIdException` class instead.
+- `PayIDExceptionType` was deprecated for two releases and has been removed. Use `PayIdExceptionType` enum instead.
+
+- `XRPLNetwork` was deprecated for two releases and has been removed. Use `XRPLNetwork` instead.
+- `DefaultXRPClient` was deprecated for two releases and has been removed. Use `DefaultXrpClient` instead.
+- `XRPClient` was deprecated for two releases and has been removed. Use `XrpClient` instead.
+- `XRPClientDecorator` was deprecated for two releases and has been removed. Use `XrpClientDecorator` instead.
+- `XRPClientInterface` was deprecated for two releases and has been removed. Use `XrpClientInterface` instead.
+- `XRPException` was deprecated for two releases and has been removed. Use `XrpException` instead.
+- `XRPExceptionType` was deprecated for two releases and has been removed. Use `XrpExceptionType` instead.
+- `XRPClient` was deprecated for two releases and has been removed. Use `XrpClient` instead.
+- `XRPCurrencyAmount` was deprecated for two releases and has been removed. Use `XrpCurrencyAmount` instead.
+- `XRPIssuedCurrency` was deprecated for two releases and has been removed. Use `XrpIssuedCurrency` instead.
+- `XRPMemo` was deprecated for two releases and has been removed. Use `XrpMemo` instead.
+- `XRPPath` was deprecated for two releases and has been removed. Use `XrpPath` instead.
+- `XRPPathElement` was deprecated for two releases and has been removed. Use `XrpPathElement` instead.
+- `XRPPayment` was deprecated for two releases and has been removed. Use `XrpPayment` instead.
+- `XRPSigner` was deprecated for two releases and has been removed. Use `XrpSigner` instead.
+- `XRPTransaction` was deprecated for two releases and has been removed. Use `XrpTransaction` instead.
+- `XRPCurrency` was deprecated for two releases and has been removed. Use `XrpCurrency` instead.
+
 - The `network` parameter passed to the constructor of `PayIdClient` has been removed.  Clients should
 favor calling the new `cryptoAddressForPayId` method which allows them to specify the network at request time.
 - `addressForPayId` method has been removed from `PayIdClient` and replaced with `cryptoAddressForPayId`
-
 
 ## 5.2.3 - 2020-06-23
 

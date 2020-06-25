@@ -127,9 +127,9 @@ public class Utils {
    *
    * @param drops An amount of XRP expressed in units of drops.
    * @return A String representing the drops amount in units of XRP.
-   * @throws XRPException if drops is in an invalid format.
+   * @throws XrpException if drops is in an invalid format.
    */
-  public static String dropsToXrp(String drops) throws XRPException {
+  public static String dropsToXrp(String drops) throws XrpException {
     Preconditions.checkNotNull(drops);
 
     String dropsRegex = "^-?[0-9]*['.']?[0-9]*$";
@@ -137,10 +137,10 @@ public class Utils {
     Matcher dropsMatcher = dropsPattern.matcher(drops);
 
     if (!dropsMatcher.matches()) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "dropsToXrp: invalid value %s, should be a string-encoded number matching %s.", drops, dropsRegex));
     } else if (drops.equals(".")) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "dropsToXrp: invalid value %s, should be a string-encoded number.", drops));
     }
 
@@ -150,7 +150,7 @@ public class Utils {
     try {
       drops = new BigDecimal(drops).toBigIntegerExact().toString(10);
     } catch (ArithmeticException exception) {     // drops are only whole units
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS,
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS,
               String.format("dropsToXrp: value %s must be a whole number.", drops)
       );
     }
@@ -158,7 +158,7 @@ public class Utils {
     // This should never happen; the value has already been validated above.
     // This just ensures BigDecimal did not do something unexpected.
     if (!dropsMatcher.matches()) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "dropsToXrp: failed sanity check - value %s does not match %s.", drops, dropsRegex));
     }
     Integer dropsPerXrp = 1000000;
@@ -170,9 +170,9 @@ public class Utils {
    *
    * @param xrp An amount of XRP expressed in units of XRP.
    * @return A String representing an amount of XRP expressed in units of drops.
-   * @throws XRPException if xrp is in invalid format.
+   * @throws XrpException if xrp is in invalid format.
    */
-  public static String xrpToDrops(String xrp) throws XRPException {
+  public static String xrpToDrops(String xrp) throws XrpException {
     Preconditions.checkNotNull(xrp);
 
     String xrpRegex = "^-?[0-9]*['.']?[0-9]*$";
@@ -180,10 +180,10 @@ public class Utils {
     Matcher xrpMatcher = xrpPattern.matcher(xrp);
 
     if (!xrpMatcher.matches()) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "xrpToDrops: invalid value, %s should be a number matching %s.", xrp, xrpRegex));
     } else if (xrp.equals(".")) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "xrpToDrops: invalid value, %s should be a string-encoded number.", xrp));
     }
 
@@ -194,13 +194,13 @@ public class Utils {
     // This should never happen; the value has already been validated above.
     // This just ensures BigDecimal did not do something unexpected.
     if (!xrpMatcher.matches()) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "xrpToDrops: failed sanity check - value %s does not match %s.", xrp, xrpRegex));
     }
 
     String[] components = xrp.split("[.]");
     if (components.length > 2) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, String.format(
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, String.format(
               "xrpToDrops: failed sanity check - value %s has too many decimal points.", xrp));
     }
     String fraction = "0";
@@ -208,7 +208,7 @@ public class Utils {
       fraction = components[1];
     }
     if (fraction.length() > 6) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS,
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS,
               String.format("xrpToDrops: value %s has too many decimal places.", xrp)
       );
     }

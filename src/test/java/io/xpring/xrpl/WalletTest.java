@@ -14,25 +14,25 @@ public class WalletTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void testGenerateMainNetWalletFromSeed() throws XRPException {
+  public void testGenerateMainNetWalletFromSeed() throws XrpException {
     Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
     assertEquals(wallet.getAddress(), "XVnJMYQFqA8EAijpKh5EdjEY5JqyxykMKKSbrUX8uchF6U8");
   }
 
   @Test
-  public void testGenerateTestNetWalletFromSeed() throws XRPException {
+  public void testGenerateTestNetWalletFromSeed() throws XrpException {
     Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB", true);
     assertEquals(wallet.getAddress(), "T7zFmeZo6uLHP4Vd21TpXjrTBk487ZQPGVQsJ1mKWGCD5rq");
   }
 
   @Test
-  public void testGenerateWalletFromInvalidSeed() throws XRPException {
-    expectedException.expect(XRPException.class);
+  public void testGenerateWalletFromInvalidSeed() throws XrpException {
+    expectedException.expect(XrpException.class);
     new Wallet("xrp");
   }
 
   @Test
-  public void testGenerateRandomWallet() throws XRPException {
+  public void testGenerateRandomWallet() throws XrpException {
     WalletGenerationResult generationResult = Wallet.generateRandomWallet();
 
     assertNotNull(generationResult.getWallet());
@@ -47,7 +47,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testGenerateWalletFromMnemonicNoDerivationPath() throws XRPException {
+  public void testGenerateWalletFromMnemonicNoDerivationPath() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     Wallet wallet = new Wallet(mnemonic, null);
 
@@ -57,7 +57,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testGenerateMainNetWalletFromMnemonicDerivationPath0() throws XRPException {
+  public void testGenerateMainNetWalletFromMnemonicDerivationPath0() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -68,7 +68,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testGenerateTestNetWalletFromMnemonicDerivationPath0() throws XRPException {
+  public void testGenerateTestNetWalletFromMnemonicDerivationPath0() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath, true);
@@ -79,7 +79,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testGenerateWalletFromMnemonicDerivationPath1() throws XRPException {
+  public void testGenerateWalletFromMnemonicDerivationPath1() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/1";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -90,23 +90,23 @@ public class WalletTest {
   }
 
   @Test
-  public void testGenerateWalletFromMnemonicInvalidDerivationPath() throws XRPException {
-    expectedException.expect(XRPException.class);
+  public void testGenerateWalletFromMnemonicInvalidDerivationPath() throws XrpException {
+    expectedException.expect(XrpException.class);
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "invalid_path";
     new Wallet(mnemonic, derivationPath);
   }
 
   @Test
-  public void testGenerateWalletFromMnemonicInvalidMnemonic() throws XRPException {
-    expectedException.expect(XRPException.class);
+  public void testGenerateWalletFromMnemonicInvalidMnemonic() throws XrpException {
+    expectedException.expect(XrpException.class);
     String mnemonic = "xrp xrp xrp xrp xrp xrp xrp xrp xrp xrp xrp xrp";
     String derivationPath = "m/44'/144'/0'/0/1";
     new Wallet(mnemonic, derivationPath);
   }
 
   @Test
-  public void testGenerateWalletFromKeys() throws XRPException {
+  public void testGenerateWalletFromKeys() throws XrpException {
     // GIVEN a set of well formed keys.
     String publicKey = "031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE";
     String privateKey = "0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4";
@@ -117,7 +117,7 @@ public class WalletTest {
 
   @Test
   @SuppressWarnings("checkstyle:LineLength")
-  public void testSign() throws XRPException {
+  public void testSign() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -127,8 +127,8 @@ public class WalletTest {
   }
 
   @Test
-  public void testSignInvalidHex() throws XRPException {
-    expectedException.expect(XRPException.class);
+  public void testSignInvalidHex() throws XrpException {
+    expectedException.expect(XrpException.class);
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -138,7 +138,7 @@ public class WalletTest {
 
   @Test
   @SuppressWarnings("checkstyle:LineLength")
-  public void testVerify() throws XRPException {
+  public void testVerify() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -150,7 +150,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testVerifyInvalidSignature() throws XRPException {
+  public void testVerifyInvalidSignature() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -163,7 +163,7 @@ public class WalletTest {
 
   @Test
   @SuppressWarnings("checkstyle:LineLength")
-  public void testVerifyBadMessage() throws XRPException {
+  public void testVerifyBadMessage() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -175,7 +175,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testSignAndVerifyEmptyString() throws XRPException {
+  public void testSignAndVerifyEmptyString() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);
@@ -187,7 +187,7 @@ public class WalletTest {
   }
 
   @Test
-  public void testVerifyEmptyStringBadSignature() throws XRPException {
+  public void testVerifyEmptyStringBadSignature() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/0";
     Wallet wallet = new Wallet(mnemonic, derivationPath);

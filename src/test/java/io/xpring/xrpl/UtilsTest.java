@@ -227,7 +227,7 @@ public class UtilsTest {
 
   // xrpToDrops and dropsToXrp tests =====================================================
   @Test
-  public void dropsToXrpWorksWithTypicalAmount() throws XRPException {
+  public void dropsToXrpWorksWithTypicalAmount() throws XrpException {
     // GIVEN a typical, valid drops value, WHEN converted to xrp
     String xrp = dropsToXrp("2000000");
 
@@ -236,7 +236,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void dropsToXrpWorksWithFractions() throws XRPException {
+  public void dropsToXrpWorksWithFractions() throws XrpException {
     // GIVEN drops amounts that convert to fractional xrp amounts
     // WHEN converted to xrp THEN the conversion is as expected
     String xrp = dropsToXrp("3456789");
@@ -256,7 +256,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void dropsToXrpWorksWithZero() throws XRPException {
+  public void dropsToXrpWorksWithZero() throws XrpException {
     // GIVEN several equivalent representations of zero
     // WHEN converted to xrp, THEN the result is zero
     String xrp = dropsToXrp("0");
@@ -274,7 +274,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void dropsToXrpWorksWithNegativeValues() throws XRPException {
+  public void dropsToXrpWorksWithNegativeValues() throws XrpException {
     // GIVEN a negative drops amount
     // WHEN converted to xrp
     String xrp = dropsToXrp("-2000000");
@@ -284,7 +284,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void dropsToXrpWorksWithValueEndingWithDecimalPoint() throws XRPException {
+  public void dropsToXrpWorksWithValueEndingWithDecimalPoint() throws XrpException {
     // GIVEN a positive or negative drops amount that ends with a decimal point
     // WHEN converted to xrp THEN the conversion is successful and correct
     String xrp = dropsToXrp("2000000.");
@@ -296,25 +296,25 @@ public class UtilsTest {
 
   @Test
   public void dropsToXrpThrowsWithAnAmountWithTooManyDecimalPlaces() {
-    assertThrows("has too many decimal places", XRPException.class, () -> dropsToXrp("1.2"));
-    assertThrows("has too many decimal places", XRPException.class, () -> dropsToXrp("0.10"));
+    assertThrows("has too many decimal places", XrpException.class, () -> dropsToXrp("1.2"));
+    assertThrows("has too many decimal places", XrpException.class, () -> dropsToXrp("0.10"));
   }
 
   @Test
   public void dropsToXrpThrowsWithAnInvalidValue() {
     // GIVEN invalid drops values, WHEN converted to xrp, THEN an exception is thrown
-    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("FOO"));
-    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("1e-7"));
-    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("2,0"));
-    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("."));
+    assertThrows("invalid value", XrpException.class, () -> dropsToXrp("FOO"));
+    assertThrows("invalid value", XrpException.class, () -> dropsToXrp("1e-7"));
+    assertThrows("invalid value", XrpException.class, () -> dropsToXrp("2,0"));
+    assertThrows("invalid value", XrpException.class, () -> dropsToXrp("."));
   }
 
   @Test
   public void dropsToXrpThrowsWithAnAmountMoreThanOneDecimalPoint() {
     // GIVEN invalid drops values that contain more than one decimal point
     // WHEN converted to xrp THEN an exception is thrown
-    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("1.0.0"));
-    assertThrows("invalid value", XRPException.class, () -> dropsToXrp("..."));
+    assertThrows("invalid value", XrpException.class, () -> dropsToXrp("1.0.0"));
+    assertThrows("invalid value", XrpException.class, () -> dropsToXrp("..."));
   }
 
   @Test
@@ -325,7 +325,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void xrpToDropsWorksWithATypicalAmount() throws XRPException {
+  public void xrpToDropsWorksWithATypicalAmount() throws XrpException {
     // GIVEN an xrp amount that is typical and valid
     // WHEN converted to drops
     String drops = xrpToDrops("2");
@@ -335,7 +335,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void xrpToDropsWorksWithFractions() throws XRPException {
+  public void xrpToDropsWorksWithFractions() throws XrpException {
     // GIVEN xrp amounts that are fractional
     // WHEN converted to drops THEN the conversions are successful and correct
     String drops = xrpToDrops("3.456789");
@@ -349,7 +349,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void xrpToDropsWorksWithZero() throws XRPException {
+  public void xrpToDropsWorksWithZero() throws XrpException {
     // GIVEN xrp amounts that are various equivalent representations of zero
     // WHEN converted to drops THEN the conversions are equal to zero
     String drops = xrpToDrops("0");
@@ -363,7 +363,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void xrpToDropsWorksWithNegativeValues() throws XRPException {
+  public void xrpToDropsWorksWithNegativeValues() throws XrpException {
     // GIVEN a negative xrp amount
     // WHEN converted to drops THEN the conversion is also negative
     String drops = xrpToDrops("-2");
@@ -371,7 +371,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void xrpToDropsWorksWithAValueEndingWithADecimalPoint() throws XRPException {
+  public void xrpToDropsWorksWithAValueEndingWithADecimalPoint() throws XrpException {
     // GIVEN an xrp amount that ends with a decimal point
     // WHEN converted to drops THEN the conversion is correct and successful
     String drops = xrpToDrops("2.");
@@ -384,26 +384,26 @@ public class UtilsTest {
   public void xrpToDropsThrowsWithAnAmountWithTooManyDecimalPlaces() {
     // GIVEN an xrp amount with too many decimal places
     // WHEN converted to a drops amount THEN an exception is thrown
-    assertThrows("has too many decimal places", XRPException.class, () -> xrpToDrops("1.1234567"));
-    assertThrows("has too many decimal places", XRPException.class, () -> xrpToDrops("0.0000001"));
+    assertThrows("has too many decimal places", XrpException.class, () -> xrpToDrops("1.1234567"));
+    assertThrows("has too many decimal places", XrpException.class, () -> xrpToDrops("0.0000001"));
   }
 
   @Test
   public void xrpToDropsThrowsWithAnInvalidValue() {
     // GIVEN xrp amounts represented as various invalid values
     // WHEN converted to drops THEN an exception is thrown
-    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("FOO"));
-    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("1e-7"));
-    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("2,0"));
-    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("."));
+    assertThrows("invalid value", XrpException.class, () -> xrpToDrops("FOO"));
+    assertThrows("invalid value", XrpException.class, () -> xrpToDrops("1e-7"));
+    assertThrows("invalid value", XrpException.class, () -> xrpToDrops("2,0"));
+    assertThrows("invalid value", XrpException.class, () -> xrpToDrops("."));
   }
 
   @Test
   public void xrpToDropsThrowsWithAnAmountMoreThanOneDecimalPoint() {
     // GIVEN an xrp amount with more than one decimal point, or all decimal points
     // WHEN converted to drops THEN an exception is thrown
-    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("1.0.0"));
-    assertThrows("invalid value", XRPException.class, () -> xrpToDrops("..."));
+    assertThrows("invalid value", XrpException.class, () -> xrpToDrops("1.0.0"));
+    assertThrows("invalid value", XrpException.class, () -> xrpToDrops("..."));
   }
 
   @Test

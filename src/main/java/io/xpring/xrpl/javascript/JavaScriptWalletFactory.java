@@ -1,8 +1,8 @@
 package io.xpring.xrpl.javascript;
 
 import io.xpring.xrpl.Utils;
-import io.xpring.xrpl.XRPException;
-import io.xpring.xrpl.XRPExceptionType;
+import io.xpring.xrpl.XrpException;
+import io.xpring.xrpl.XrpExceptionType;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
@@ -63,12 +63,12 @@ public class JavaScriptWalletFactory {
    * @param privateKey A hex encoded string representing the private key.
    * @param isTest     Whether the address is for use on a test network.
    * @return A new {@link JavaScriptWallet}.
-   * @throws XRPException If either input key is malformed.
+   * @throws XrpException If either input key is malformed.
    */
-  public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XRPException {
+  public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XrpException {
     Value wallet = this.wallet.newInstance(publicKey, privateKey, isTest);
     if (wallet.isNull()) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, "Invalid inputs");
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, "Invalid inputs");
     }
     return new JavaScriptWallet(wallet);
   }
@@ -79,12 +79,12 @@ public class JavaScriptWalletFactory {
    * @param seed   A base58check encoded seed for the wallet.
    * @param isTest Whether the address is for use on a test network.
    * @return A new {@link JavaScriptWallet}.
-   * @throws XRPException If the seed is malformed.
+   * @throws XrpException If the seed is malformed.
    */
-  public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XRPException {
+  public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XrpException {
     Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed, isTest);
     if (wallet.isNull()) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, "Invalid Seed");
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, "Invalid Seed");
     }
     return new JavaScriptWallet(wallet);
   }
@@ -96,26 +96,26 @@ public class JavaScriptWalletFactory {
    * @param derivationPath A derivation. If null, the default derivation path will be used.
    * @param isTest         Whether the address is for use on a test network.
    * @return A new {@link JavaScriptWallet}.
-   * @throws XRPException If the mnemonic or derivation path are malformed.
+   * @throws XrpException If the mnemonic or derivation path are malformed.
    */
   public JavaScriptWallet walletFromMnemonicAndDerivationPath(
       String mnemonic,
       String derivationPath,
       boolean isTest
-  ) throws XRPException {
+  ) throws XrpException {
     try {
       String normalizedDerivationPath = derivationPath != null ? derivationPath : this.getDefaultDerivationPath();
       Value wallet = this.wallet.invokeMember("generateWalletFromMnemonic", mnemonic, normalizedDerivationPath, isTest);
 
       if (wallet.isNull()) {
-        throw new XRPException(XRPExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
+        throw new XrpException(XrpExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
       }
 
       return new JavaScriptWallet(wallet);
     } catch (PolyglotException exception) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
     } catch (JavaScriptLoaderException exception) {
-      throw new XRPException(XRPExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
+      throw new XrpException(XrpExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
     }
   }
 

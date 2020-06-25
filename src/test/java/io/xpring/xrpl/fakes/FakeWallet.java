@@ -1,7 +1,7 @@
 package io.xpring.xrpl.fakes;
 
 import io.xpring.xrpl.Wallet;
-import io.xpring.xrpl.XRPException;
+import io.xpring.xrpl.XrpException;
 import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
 
 /**
@@ -30,7 +30,7 @@ public class FakeWallet extends Wallet {
    * </p>
    * @param signature The signature this wallet will produce.
    */
-  public FakeWallet(String signature) throws XRPException {
+  public FakeWallet(String signature) throws XrpException {
     this(signature, DEFAULT_PUBLIC_KEY, DEFAULT_PRIVATE_KEY);
   }
 
@@ -41,7 +41,7 @@ public class FakeWallet extends Wallet {
    * @param publicKey  A hex encoded string representing a public key.
    * @param privateKey A hex encoded string representing a private key.
    */
-  public FakeWallet(String signature, String publicKey, String privateKey) throws XRPException {
+  public FakeWallet(String signature, String publicKey, String privateKey) throws XrpException {
     super(JavaScriptWalletFactory.get().walletFromKeys(publicKey, privateKey, true));
     this.signature = signature;
   }
