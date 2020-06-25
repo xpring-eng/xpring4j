@@ -49,7 +49,10 @@ public class XrpPayIdClient extends PayIdClient implements XrpPayIdClientInterfa
    * @throws PayIdException if the inputs were invalid.
    */
   public String xrpAddressForPayId(String payId) throws PayIDException, PayIdException {
-    CryptoAddressDetails addressDetails = super.cryptoAddressForPayId(payId, this.xrplNetwork.getNetworkName());
+    CryptoAddressDetails addressDetails = super.cryptoAddressForPayId(
+      payId, 
+      "xrpl-" + this.xrplNetwork.getNetworkName()
+    );
 
     // Return address immediately if it is an X-Address.
     String address = addressDetails.getAddress();
