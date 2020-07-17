@@ -3,11 +3,9 @@ package io.xpring.xrpl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import io.xpring.xrpl.model.PaymentFlag;
 import io.xpring.xrpl.model.AccountRootFlag;
+import io.xpring.xrpl.model.PaymentFlag;
 import org.junit.Test;
-import org.xrpl.rpc.v1.Account;
-import org.xrpl.rpc.v1.AccountRoot;
 
 public class FlagsTest {
   @Test
