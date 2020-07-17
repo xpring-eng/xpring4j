@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -118,5 +119,5 @@ interface XrpClientDecorator {
    *          final status of the transaction.
    * @throws XrpException If there was a problem communicating with the XRP Ledger.
    */
-  TransactionStatus enableDepositAuth(Wallet wallet) throws XrpException;
+  TransactionResult enableDepositAuth(Wallet wallet) throws XrpException;
 }

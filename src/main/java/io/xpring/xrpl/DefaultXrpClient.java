@@ -6,6 +6,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.AccountSetFlag;
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -292,10 +293,14 @@ public class DefaultXrpClient implements XrpClientDecorator {
    *          final status of the transaction.
    * @throws XrpException If there was a problem communicating with the XRP Ledger.
    */
-  public TransactionStatus enableDepositAuth(Wallet wallet) throws XrpException {
+  public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
     Common.SetFlag setFlag = Common.SetFlag.newBuilder().setValue(AccountSetFlag.ASF_DEPOSIT_AUTH.value).build();
     AccountSet accountSet = AccountSet.newBuilder().setSetFlag(setFlag).build();
-    Transaction transaction =
+    Transaction.Builder transactionBuilder = this.prepareBaseTransaction(wallet);
+    Transaction transaction = transactionBuilder.setAccountSet(accountSet).build();
+    String transactionHash = this.signAndSubmitTransaction(transaction, wallet);
+    TransactionStatus status = this.getPaymentStatus(transactionHash);
+    return new TransactionResult(transactionHash, status);
   }
 
 
