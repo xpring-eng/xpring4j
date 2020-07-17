@@ -296,11 +296,15 @@ public class DefaultXrpClient implements XrpClientDecorator {
   public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
     Common.SetFlag setFlag = Common.SetFlag.newBuilder().setValue(AccountSetFlag.ASF_DEPOSIT_AUTH.value).build();
     AccountSet accountSet = AccountSet.newBuilder().setSetFlag(setFlag).build();
+
     Transaction.Builder transactionBuilder = this.prepareBaseTransaction(wallet);
     Transaction transaction = transactionBuilder.setAccountSet(accountSet).build();
+
     String transactionHash = this.signAndSubmitTransaction(transaction, wallet);
     TransactionStatus status = this.getPaymentStatus(transactionHash);
-    return new TransactionResult(transactionHash, status);
+    RawTransactionStatus rawStatus = this.getRawTransactionStatus(transactionHash);
+
+    return new TransactionResult(transactionHash, status, rawStatus.getValidated());
   }
 
 
