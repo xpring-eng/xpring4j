@@ -370,7 +370,7 @@ String grpcUrl = "prod.grpcng.wallet.xpring.io"; // Testnet ILP Wallet URL
 IlpClient ilpClient = new IlpClient(grpcUrl);
 ```
 
-#### Retreiving a Balance
+#### Retrieving a Balance
 An `IlpClient` can check the balance of an account on a connector.
 
 ```java
