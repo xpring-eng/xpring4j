@@ -29,6 +29,7 @@ import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
+import org.xrpl.rpc.v1.TransactionOrBuilder;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
@@ -160,18 +161,8 @@ public class DefaultXrpClient implements XrpClientDecorator {
       throw XrpException.xAddressRequiredException;
     }
 
-    ClassicAddress destinationClassicAddress = Utils.decodeXAddress(destinationAddress);
-    ClassicAddress sourceClassicAddress = Utils.decodeXAddress(sourceWallet.getAddress());
-
-    AccountRoot accountData = this.getAccountData(sourceClassicAddress.address());
-    XRPDropsAmount fee = this.getMinimumFee();
-    int openLedgerSequence = this.getOpenLedgerSequence();
-
     AccountAddress destinationAccountAddress = AccountAddress.newBuilder()
         .setAddress(destinationAddress)
-        .build();
-    AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
-        .setAddress(sourceClassicAddress.address())
         .build();
 
     XRPDropsAmount dropsAmount = XRPDropsAmount.newBuilder().setDrops(drops.longValue()).build();
@@ -185,34 +176,10 @@ public class DefaultXrpClient implements XrpClientDecorator {
 
     Payment payment = paymentBuilder.build();
 
-    byte[] signingPublicKeyBytes = Utils.hexStringToByteArray(sourceWallet.getPublicKey());
-    int lastLedgerSequenceInt = openLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
+    Transaction.Builder transactionBuilder = this.prepareBaseTransaction(sourceWallet);
+    Transaction transaction = transactionBuilder.setPayment(payment).build();
 
-    Account sourceAccount = Account.newBuilder().setValue(sourceAccountAddress).build();
-    LastLedgerSequence lastLedgerSequence = LastLedgerSequence.newBuilder().setValue(lastLedgerSequenceInt).build();
-    SigningPublicKey signingPublicKey = SigningPublicKey.newBuilder()
-        .setValue(ByteString.copyFrom(signingPublicKeyBytes))
-        .build();
-
-    Transaction transaction = Transaction.newBuilder()
-        .setAccount(sourceAccount)
-        .setFee(fee)
-        .setSequence(accountData.getSequence())
-        .setPayment(payment)
-        .setLastLedgerSequence(lastLedgerSequence)
-        .setSigningPublicKey(signingPublicKey)
-        .build();
-
-    byte[] signedTransaction = Signer.signTransaction(transaction, sourceWallet);
-
-    SubmitTransactionRequest request = SubmitTransactionRequest.newBuilder()
-        .setSignedTransaction(ByteString.copyFrom(signedTransaction))
-        .build();
-
-    SubmitTransactionResponse response = this.stub.submitTransaction(request);
-
-    byte[] hashBytes = response.getHash().toByteArray();
-    return Utils.byteArrayToHex(hashBytes);
+    return this.signAndSubmitTransaction(transaction, sourceWallet);
   }
 
   /**
@@ -384,5 +351,67 @@ public class DefaultXrpClient implements XrpClientDecorator {
     GetAccountInfoResponse response = this.stub.getAccountInfo(request);
 
     return response.getAccountData();
+  }
+
+  /**
+   * Populates the required fields common to all transaction types.(See https://xrpl.org/transaction-common-fields.html)
+   * <p>
+   * Note: The returned Transaction object must still be assigned transaction-specific details.
+   * Some transaction types require a different fee (or no fee), in which case the fee should be overwritten appropriately
+   * when constructing the transaction-specific details. (See https://xrpl.org/transaction-cost.html)
+   * </p>
+   * @param wallet The wallet that will sign and submit this transaction.
+   * @returns A Transaction.Builder with the required common fields populated.
+   * @throws XrpException if the sending address is invalid.
+   */
+  private Transaction.Builder prepareBaseTransaction(Wallet wallet) throws XrpException {
+    ClassicAddress classicAddress = Utils.decodeXAddress(wallet.getAddress());
+
+    XRPDropsAmount fee = this.getMinimumFee();
+    AccountRoot accountData = this.getAccountData(classicAddress.address());
+    int openLedgerSequence = this.getOpenLedgerSequence();
+
+    AccountAddress sourceAccountAddress = AccountAddress.newBuilder()
+                                          .setAddress(classicAddress.address())
+                                          .build();
+    Account sourceAccount = Account.newBuilder().setValue(sourceAccountAddress).build();
+
+    byte[] signingPublicKeyBytes = Utils.hexStringToByteArray(wallet.getPublicKey());
+    SigningPublicKey signingPublicKey = SigningPublicKey.newBuilder()
+            .setValue(ByteString.copyFrom(signingPublicKeyBytes))
+            .build();
+
+    int lastLedgerSequenceInt = openLedgerSequence + MAX_LEDGER_VERSION_OFFSET;
+    LastLedgerSequence lastLedgerSequence = LastLedgerSequence.newBuilder().setValue(lastLedgerSequenceInt).build();
+
+    Transaction.Builder transactionBuilder = Transaction.newBuilder()
+            .setAccount(sourceAccount)
+            .setFee(fee)
+            .setSequence(accountData.getSequence())
+            .setLastLedgerSequence(lastLedgerSequence)
+            .setSigningPublicKey(signingPublicKey);
+
+    return transactionBuilder;
+  }
+
+  /**
+   * Signs the provided transaction using the wallet and submits to the XRPL network.
+   *
+   * @param transaction The transaction to be signed and submitted.
+   * @param wallet The wallet that will sign and submit this transaction.
+   * @returns A String representing the hash of the submitted transaction.
+   * @throws XrpException if there was a problem communicating with the XRP Ledger.
+   */
+  private String signAndSubmitTransaction(Transaction transaction, Wallet wallet) throws XrpException {
+    byte[] signedTransaction = Signer.signTransaction(transaction, wallet);
+
+    SubmitTransactionRequest request = SubmitTransactionRequest.newBuilder()
+            .setSignedTransaction(ByteString.copyFrom(signedTransaction))
+            .build();
+
+    SubmitTransactionResponse response = this.stub.submitTransaction(request);
+
+    byte[] hashBytes = response.getHash().toByteArray();
+    return Utils.byteArrayToHex(hashBytes);
   }
 }
