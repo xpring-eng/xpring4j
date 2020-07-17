@@ -6,9 +6,9 @@ import io.xpring.xrpl.TransactionStatus;
  * Represents the outcome of submitting an XRPL transaction.
  */
 public class TransactionResult {
-  String hash;
-  TransactionStatus status;
-  Boolean validated;
+  public String hash;
+  public TransactionStatus status;
+  public Boolean validated;
 
   /**
    *

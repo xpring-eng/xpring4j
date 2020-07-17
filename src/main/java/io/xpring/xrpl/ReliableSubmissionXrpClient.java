@@ -57,7 +57,8 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
 
   @Override
   public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
-
+    TransactionResult initialResult = this.decoratedClient.enableDepositAuth(wallet);
+    return this.awaitFinalTransactionResult(initialResult.hash, wallet);
   }
 
   private RawTransactionStatus awaitFinalTransactionResult(String transactionHash, Wallet sender) throws XrpException {
