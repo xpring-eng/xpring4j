@@ -3,16 +3,17 @@ package io.xpring.xrpl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import io.xpring.xrpl.model.PaymentFlag;
 import org.junit.Test;
 
-public class RippledFlagsTest {
+public class PaymentFlagTest {
   @Test
   public void testCheckContainsValue() {
     // GIVEN a set of flags that contains the tfPartialPayment flag.
-    int flags = RippledFlags.TF_PARTIAL_PAYMENT.value | 1 | 4; // 1 and 4 are arbitrarily chosen numbers.
+    int flags = PaymentFlag.TF_PARTIAL_PAYMENT.value | 1 | 4; // 1 and 4 are arbitrarily chosen numbers.
 
     // WHEN the presence of tfPartialPayment is checked THEN the flag is reported as present.
-    assertTrue(RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags));
+    assertTrue(PaymentFlag.check(PaymentFlag.TF_PARTIAL_PAYMENT, flags));
   }
 
   @Test
@@ -21,6 +22,6 @@ public class RippledFlagsTest {
     int flags = 1 | 4; // 1 and 4 are arbitrarily chosen numbers.
 
     // WHEN the presence of tfPartialPayment is checked THEN the flag is reported as not present.
-    assertFalse(RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags));
+    assertFalse(PaymentFlag.check(PaymentFlag.TF_PARTIAL_PAYMENT, flags));
   }
 }
