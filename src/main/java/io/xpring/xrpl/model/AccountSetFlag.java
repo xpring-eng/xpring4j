@@ -14,7 +14,7 @@ public enum AccountSetFlag {
   ASF_NO_FREEZE(6),
   ASF_GLOBAL_FREEZE(7),
   ASF_DEFAULT_RIPPLE(8),
-  ASF_DEPOSIT_AUTH (9);
+  ASF_DEPOSIT_AUTH(9);
 
   /**
    * The value of the flag.
