@@ -5,11 +5,14 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.AccountSetFlag;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.AccountAddress;
 import org.xrpl.rpc.v1.AccountRoot;
+import org.xrpl.rpc.v1.AccountSet;
+import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.Amount;
 import org.xrpl.rpc.v1.Common.Destination;
@@ -310,6 +313,24 @@ public class DefaultXrpClient implements XrpClientDecorator {
     GetTransactionResponse response = this.stub.getTransaction(request);
     return XrpTransaction.from(response, this.xrplNetwork);
   }
+
+  /**
+   * Enable Deposit Authorization for this XRPL account.
+   *
+   * <p>@see <a href="https://xrpl.org/depositauth.html">Deposit Authorization</a>
+   * </p>
+   * @param wallet The wallet associated with the XRPL account enabling Deposit Authorization and that will sign the
+   *               request.
+   * @returns A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
+   *          final status of the transaction.
+   * @throws XrpException If there was a problem communicating with the XRP Ledger.
+   */
+  public TransactionStatus enableDepositAuth(Wallet wallet) throws XrpException {
+    Common.SetFlag setFlag = Common.SetFlag.newBuilder().setValue(AccountSetFlag.ASF_DEPOSIT_AUTH.value).build();
+    AccountSet accountSet = AccountSet.newBuilder().setSetFlag(setFlag).build();
+    Transaction transaction =
+  }
+
 
   public int getOpenLedgerSequence() throws XrpException {
     return this.getFeeResponse().getLedgerCurrentIndex();
