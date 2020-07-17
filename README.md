@@ -179,7 +179,7 @@ System.out.println(balance); // Logs a balance in drops of XRP
 
 ### Checking Transaction Status
 
-A `XrpClient` can check the status of an payment on the XRP Ledger.
+A `XrpClient` can check the status of a payment on the XRP Ledger.
 
 This method can only determine the status of [payment transactions](https://xrpl.org/payment.html) which do not have the partial payment flag ([tfPartialPayment](https://xrpl.org/payment.html#payment-flags)) set.
 
