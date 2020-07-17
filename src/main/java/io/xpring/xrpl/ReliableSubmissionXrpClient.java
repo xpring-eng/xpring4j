@@ -24,9 +24,9 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
 
   @Override
   public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XrpException {
-     String transactionHash = decoratedClient.send(amount, destinationAddress, sourceWallet);
-     this.awaitFinalTransactionResult(transactionHash, sourceWallet);
-     return transactionHash;
+    String transactionHash = decoratedClient.send(amount, destinationAddress, sourceWallet);
+    this.awaitFinalTransactionResult(transactionHash, sourceWallet);
+    return transactionHash;
   }
 
   @Override

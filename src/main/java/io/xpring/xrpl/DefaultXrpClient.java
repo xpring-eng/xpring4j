@@ -356,8 +356,8 @@ public class DefaultXrpClient implements XrpClientDecorator {
   /**
    * Populates the required fields common to all transaction types.(See https://xrpl.org/transaction-common-fields.html)
    * <p>
-   * Note: The returned Transaction object must still be assigned transaction-specific details.
-   * Some transaction types require a different fee (or no fee), in which case the fee should be overwritten appropriately
+   * Note: The returned Transaction object must still be assigned transaction-specific details. Some transaction types
+   * require a different fee (or no fee), in which case the fee should be overwritten appropriately
    * when constructing the transaction-specific details. (See https://xrpl.org/transaction-cost.html)
    * </p>
    * @param wallet The wallet that will sign and submit this transaction.
