@@ -11,6 +11,7 @@ public class TransactionResult {
   public Boolean validated;
 
   /**
+   * Create a new TransactionResult object.
    *
    * @param hash The identifying hash of the transaction.
    * @param status The {@link TransactionStatus} indicating the outcome of this transaction.
