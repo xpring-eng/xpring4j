@@ -24,7 +24,7 @@ public class JavaScriptUtils {
    */
   public JavaScriptUtils() throws JavaScriptLoaderException {
     Context context = JavaScriptLoader.getContext();
-    Value javaScriptUtils = JavaScriptLoader.loadResource("Utils", context);
+    Value javaScriptUtils = JavaScriptLoader.loadResource("XrpUtils", context);
 
     this.javaScriptUtils = javaScriptUtils;
   }
