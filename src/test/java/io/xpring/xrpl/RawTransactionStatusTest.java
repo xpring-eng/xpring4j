@@ -3,6 +3,7 @@ package io.xpring.xrpl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import io.xpring.xrpl.model.PaymentFlag;
 import org.junit.Test;
 import org.xrpl.rpc.v1.Common.Flags;
 import org.xrpl.rpc.v1.GetTransactionResponse;
@@ -28,7 +29,7 @@ public class RawTransactionStatusTest {
   public void testIsFullPaymentPartialPayment() {
     // GIVEN a getTxResponse which is a payment with the partial payment flags set.
     Payment payment = Payment.newBuilder().build();
-    Flags flags = Flags.newBuilder().setValue(RippledFlags.TF_PARTIAL_PAYMENT.value).build();
+    Flags flags = Flags.newBuilder().setValue(PaymentFlag.TF_PARTIAL_PAYMENT.value).build();
     Transaction transaction = Transaction.newBuilder()
         .setPayment(payment)
         .setFlags(flags)
