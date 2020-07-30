@@ -280,7 +280,7 @@
             <dependency>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.20</version>
+                <version>3.0.21</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -499,7 +499,7 @@
             <plugin>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.20</version>
+                <version>3.0.21</version>
                 <executions>
                     <execution>
                         <goals>
