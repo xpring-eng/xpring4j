@@ -1,13 +1,13 @@
-package io.xpring.xrpl;
+package io.xpring.xrpl.model;
 
 /**
- * Flags used in ripppled transactions.
+ * Flags used in payment transactions.
  * <p>
- * Note: These are only flags which are utilized in Xpring SDK. For a complete list of flags, see:
- * https://xrpl.org/transaction-common-fields.html#flags-field.
+ * Note: These are only flags which are utilized in Xpring SDK.
+ * For the full list of payment flags, @see https://xrpl.org/payment.html#payment-flags
  * </p>
  */
-public enum RippledFlags {
+public enum PaymentFlag {
   TF_PARTIAL_PAYMENT(131072);
 
   /**
@@ -15,7 +15,7 @@ public enum RippledFlags {
    */
   public final int value;
 
-  RippledFlags(int value) {
+  PaymentFlag(int value) {
     this.value = value;
   }
 
@@ -26,7 +26,7 @@ public enum RippledFlags {
    * @param flags The flags to check
    * @return A boolean indicating if the flag was present.
    */
-  public static boolean check(RippledFlags flag, int flags) {
+  public static boolean check(PaymentFlag flag, int flags) {
     return (flag.value & flags) == flag.value;
   }
 }
