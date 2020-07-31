@@ -16,7 +16,7 @@ Xpring4j provides the following features:
     - Account balance retrieval
     - Sending XRP payments
     - Retrieval of payment transactions and account payment history
-    - Enabling of Deposit Authorization for an XRPL accoun
+    - Enabling of Deposit Authorization for an XRPL account
 - Interledger (ILP):
     - Account balance retrieval
     - Send ILP Payments
