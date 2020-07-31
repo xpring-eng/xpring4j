@@ -17,6 +17,7 @@ import io.xpring.xrpl.XrpClientInterface;
 import io.xpring.xrpl.XrpException;
 import io.xpring.xrpl.XrpExceptionType;
 import io.xpring.xrpl.fakes.FakeWallet;
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,6 +47,8 @@ public class XpringClientTest {
           FakeXrpProtobufs.getTransactionResponsePaymentAllFields,
           XrplNetwork.TEST
   );
+  public static final TransactionResult FAKE_ENABLE_DEPOSIT_AUTH_VALUE =
+          new TransactionResult("faketransactionhash", TransactionStatus.SUCCEEDED, true);
 
   /**
    * An amount to send.
@@ -86,7 +89,8 @@ public class XpringClientTest {
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
-        Result.ok(FAKE_GET_TRANSACTION_VALUE)
+        Result.ok(FAKE_GET_TRANSACTION_VALUE),
+        Result.ok(FAKE_ENABLE_DEPOSIT_AUTH_VALUE)
     );
 
     String fakeResolvedPayID = "r123";
@@ -115,7 +119,8 @@ public class XpringClientTest {
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
-        Result.ok(FAKE_GET_TRANSACTION_VALUE)
+        Result.ok(FAKE_GET_TRANSACTION_VALUE),
+        Result.ok(FAKE_ENABLE_DEPOSIT_AUTH_VALUE)
     );
 
     XrpPayIdClientInterface payIDClient = new FakeXrpPayIdClient(XrplNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
@@ -140,7 +145,8 @@ public class XpringClientTest {
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
-        Result.ok(FAKE_GET_TRANSACTION_VALUE)
+        Result.ok(FAKE_GET_TRANSACTION_VALUE),
+        Result.ok(FAKE_ENABLE_DEPOSIT_AUTH_VALUE)
     );
 
     String fakeResolvedPayID = "r123";
@@ -166,7 +172,8 @@ public class XpringClientTest {
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(FAKE_PAYMENT_HISTORY_VALUE),
         Result.ok(FAKE_ACCOUNT_EXISTS_VALUE),
-        Result.ok(FAKE_GET_TRANSACTION_VALUE)
+        Result.ok(FAKE_GET_TRANSACTION_VALUE),
+        Result.ok(FAKE_ENABLE_DEPOSIT_AUTH_VALUE)
     );
 
     XrpPayIdClientInterface payIDClient = new FakeXrpPayIdClient(XrplNetwork.TEST, Result.error(PAY_ID_EXCEPTION));
