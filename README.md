@@ -15,6 +15,8 @@ Xpring4j provides the following features:
     - Address validation
     - Account balance retrieval
     - Sending XRP payments
+    - Retrieval of payment transactions and account payment history
+    - Enabling of Deposit Authorization for an XRPL accoun
 - Interledger (ILP):
     - Account balance retrieval
     - Send ILP Payments
@@ -258,6 +260,22 @@ String transactionHash = xrpClient.send(amount, destinationAddress, wallet);
 ```
 
 **Note:** The above example will yield an "Account not found." error because the randomly generated wallet contains no XRP.
+
+### Enabling Deposit Authorization
+
+```java
+
+String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
+XrpClient xrpClient = new XrpClient(grpcURL, XrplNetwork.TEST);
+
+// Wallet for which to enable Deposit Authorization
+Wallet seedWallet = new Wallet("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M");
+
+TransactionResult transactionResult = xrpClient.enableDepositAuth(seedWallet);
+String transactionHash = transactionResult.hash;
+TransactionStatus transactionStatus = transactionResult.status;
+Boolean validated = transactionResult.validated;
+```
 
 ### Utilities
 
