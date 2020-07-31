@@ -16,7 +16,6 @@ import io.xpring.common.Result;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
 import io.xpring.xrpl.model.XrpTransaction;
-import io.xpring.xrpl.model.TransactionResult;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -546,12 +545,32 @@ public class DefaultXrpClientTest {
     Wallet wallet = Wallet.generateRandomWallet().getWallet();
 
     // WHEN enableDepositAuth is called
-    TransactionResult transactionResult = client.enableDepositAuth(wallet);
+    io.xpring.xrpl.model.TransactionResult transactionResult = client.enableDepositAuth(wallet);
 
     // THEN a transaction hash exists and is the expected hash
-    TransactionResult expectedTransactionResult =
+    assertThat(transactionResult.hash).isEqualTo(TRANSACTION_HASH);
 
   }
+
+  @Test
+  public void enableDepositAuthSubmissionFailure() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient which will fail to submit a transaction.
+    Result<SubmitTransactionResponse, Throwable> submitResult = Result.error(GENERIC_ERROR);
+    DefaultXrpClient client = getClient(
+            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+            Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+            submitResult,
+            Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+
+    // WHEN enableDepositAuth is attempted THEN an error is propagated.
+    expectedException.expect(Exception.class);
+    client.enableDepositAuth(wallet);
+  }
+
   /**
    * Convenience method to get an XRPClient which has successful network calls.
    */
