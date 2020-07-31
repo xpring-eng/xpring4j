@@ -16,6 +16,7 @@ import io.xpring.common.Result;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
 import io.xpring.xrpl.model.XrpTransaction;
+import io.xpring.xrpl.model.TransactionResult;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -34,6 +35,7 @@ import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Meta;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
+import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.TransactionResult;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
@@ -536,6 +538,20 @@ public class DefaultXrpClientTest {
     assertThat(transaction).isNull();
   }
 
+  @Test
+  public void enableDepositAuthSuccessfulResponse() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will return a successful hash for submitTransaction
+    DefaultXrpClient client = getClient();
+
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+
+    // WHEN enableDepositAuth is called
+    TransactionResult transactionResult = client.enableDepositAuth(wallet);
+
+    // THEN a transaction hash exists and is the expected hash
+    TransactionResult expectedTransactionResult =
+
+  }
   /**
    * Convenience method to get an XRPClient which has successful network calls.
    */
