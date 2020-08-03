@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.PaymentFlag;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
 
@@ -28,7 +29,7 @@ public class RawTransactionStatus {
     boolean isPayment = transaction.hasPayment();
     int flags = transaction.getFlags().getValue();
 
-    boolean isPartialPayment = RippledFlags.check(RippledFlags.TF_PARTIAL_PAYMENT, flags);
+    boolean isPartialPayment = PaymentFlag.check(PaymentFlag.TF_PARTIAL_PAYMENT, flags);
 
     this.isFullPayment = isPayment && !isPartialPayment;
   }
