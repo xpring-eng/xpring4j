@@ -19,7 +19,10 @@ public interface SendXrpDetails {
   }
 
   BigInteger amount();
+
   String destination();
+
   Wallet sender();
+
   Optional<List<XrpMemo>> memos();
 }
