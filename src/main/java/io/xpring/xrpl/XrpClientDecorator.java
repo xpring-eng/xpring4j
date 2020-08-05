@@ -39,7 +39,7 @@ interface XrpClientDecorator {
    * @param amount             The number of drops of XRP to send.
    * @param destinationAddress The X-Address to send the XRP to.
    * @param sourceWallet       The {@link Wallet} which holds the XRP.
-   * @return A transaction hash for the payment.
+   * @return A string representing the hash of the submitted transaction.
    * @throws XrpException If the given inputs were invalid.
    */
   String send(
