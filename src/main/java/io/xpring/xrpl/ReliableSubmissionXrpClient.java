@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -27,6 +28,11 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
     String transactionHash = decoratedClient.send(amount, destinationAddress, sourceWallet);
     this.awaitFinalTransactionResult(transactionHash, sourceWallet);
     return transactionHash;
+  }
+
+  @Override
+  public String sendWithDetails(SendXrpDetails sendXrpDetails) throws XrpException {
+    return this.decoratedClient.sendWithDetails(sendXrpDetails);
   }
 
   @Override
