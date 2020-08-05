@@ -24,5 +24,5 @@ public interface SendXrpDetails {
 
   Wallet sender();
 
-  Optional<List<XrpMemo>> memos();
+  Optional<List<XrpMemo>> memosList();
 }

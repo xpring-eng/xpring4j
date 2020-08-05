@@ -1,5 +1,6 @@
 package io.xpring.common;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class CommonUtilsTest {
     // GIVEN an empty string
     // WHEN that line is converted to a byte[]
     // THEN the value is undefined
-    assertEquals(CommonUtils.stringToByteArray("", false), new byte[0]);
+    assertArrayEquals(CommonUtils.stringToByteArray("", false), new byte[0]);
   }
 
   @Test
@@ -39,7 +40,7 @@ public class CommonUtilsTest {
     // WHEN that line is converted to a byte[]
     // THEN the value is correct
     byte[] expectedBytes = {111, 104, 44, 32, 104, 105, 32, 109, 97, 114, 107};
-    assertEquals(
+    assertArrayEquals(
             CommonUtils.stringToByteArray("oh, hi mark", false),
             expectedBytes
     );
@@ -51,7 +52,7 @@ public class CommonUtilsTest {
     // WHEN that line is converted to a byte[]
     // THEN the value is correct
     byte[] expectedBytes = {111, 104, 44, 32, 104, 105, 32, 109, 97, 114, 107};
-    assertEquals(
+    assertArrayEquals(
             CommonUtils.stringToByteArray("6f682c206869206d61726b", true),
             expectedBytes
     );

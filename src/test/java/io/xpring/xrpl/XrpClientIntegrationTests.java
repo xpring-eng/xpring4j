@@ -128,7 +128,7 @@ public class XrpClientIntegrationTests {
     assertThat(transaction).isNotNull();
   }
 
-  @Test(timeout = 10000)
+  @Test(timeout = 20000)
   public void sendWithDetailsIncludingMemoTest() throws XrpException {
     Wallet wallet = new Wallet(WALLET_SEED);
     List<XrpMemo> memos = Arrays.asList(
