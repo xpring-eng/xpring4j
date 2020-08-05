@@ -71,7 +71,7 @@ public class XpringClientIntegrationTest {
                                                   .amount(amount)
                                                   .destination(payID)
                                                   .sender(wallet)
-                                                  .memos(memos)
+                                                  .memosList(memos)
                                                   .build();
     String transactionHash = XPRING_CLIENT.sendWithDetails(sendXrpDetails);
 

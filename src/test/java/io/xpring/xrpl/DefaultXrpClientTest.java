@@ -554,7 +554,7 @@ public class DefaultXrpClientTest {
                                                   .amount(amount)
                                                   .destination(destinationAddress)
                                                   .sender(wallet)
-                                                  .memos(memos)
+                                                  .memosList(memos)
                                                   .build();
     // THEN the transaction is submitted without error and a hash is returned.
     String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);

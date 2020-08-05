@@ -142,7 +142,7 @@ public class XrpClientIntegrationTests {
             .amount(AMOUNT)
             .destination(XRPL_ADDRESS)
             .sender(wallet)
-            .memos(memos)
+            .memosList(memos)
             .build();
     String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
     assertNotNull(transactionHash);
