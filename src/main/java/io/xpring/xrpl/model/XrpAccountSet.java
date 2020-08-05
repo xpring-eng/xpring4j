@@ -3,23 +3,79 @@ package io.xpring.xrpl.model;
 import io.xpring.xrpl.model.ImmutableXrpAccountSet;
 import org.immutables.value.Value;
 
+import java.util.Optional;
+
+/**
+ * Represents an AccountSet transaction on the XRP Ledger.
+ * An AccountSet transaction modifies the properties of an account in the XRP Ledger.
+ */
 @Value.Immutable
 public interface XrpAccountSet {
-    static ImmutableXrpAccountSet.Builder build() { return ImmutableXrpAccountSet.builder(); }
+  static ImmutableXrpAccountSet.Builder builder() {
+    return ImmutableXrpAccountSet.builder();
+  }
 
-    int clearFlag();
+  /**
+   * (Optional) Unique identifier of a flag to disable for this account.
+   *
+   * @return An {@link Integer} identifier of a flag to disable for this account.
+   */
+  Optional<Integer> clearFlag();
 
-    java.lang.String domain();
+  /**
+   * (Optional) The domain that owns this account, as a string of hex representing
+   * the ASCII for the domain in lowercase.
+   *
+   * @return A {@link String} representing the domain that owns this account.
+   */
+  Optional<String> domain();
 
-    // Convert this in ::from from the pb itself
-    byte[] emailHash();
+  // TODO Convert this in ::from from the pb itself
+  /**
+   * (Optional) Hash of an email address to be used for generating an avatar image.
+   *
+   * @return A byte array containing the hash value of an email address to be used for generating an avatar image.
+   */
+  @Value.Default
+  default byte[] emailHash() {
+    return new byte[0];
+  }
 
-    // Convert this in ::from from the pb itself
-    byte[] messageKey();
+  // TODO Convert this in ::from from the pb itself
+  /**
+   * (Optional) Public key for sending encrypted messages to this account.
+   *
+   * @return A byte array containing the public key for sending encrypted messages to this account.
+   */
+  @Value.Default
+  default byte[] messageKey() {
+    return new byte[0];
+  }
 
-    Integer setFlag();
+  /**
+   * (Optional) Integer flag to enable for this account.
+   *
+   * @return An {@link Integer} flag to enable for this account.
+   */
+  Optional<Integer> setFlag();
 
-    Integer transferRate();
+  /**
+   * (Optional) The fee to charge when users transfer this account's issued currencies,
+   * represented as billionths of a unit.
+   * Cannot be more than 2000000000 or less than 1000000000, except for the special case
+   * 0 meaning no fee.
+   *
+   * @return An {@link Integer} representing the fee
+   *         to charge when users transfer this account's issued currencies, represented as billionths of a unit.
+   */
+  Optional<Integer> transferRate();
 
-    Integer tickSize();
+  /**
+   * (Optional) Tick size to use for offers involving a currency issued by this address.
+   * The exchange rates of those offers is rounded to this many significant digits.
+   * Valid values are 3 to 15 inclusive, or 0 to disable. (Requires the TickSize amendment.)
+   *
+   * @return An integer representing the tick size to use for offers involving a currency issued by this address.
+   */
+  Optional<Integer> tickSize();
 }
