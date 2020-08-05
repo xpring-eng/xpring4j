@@ -92,15 +92,12 @@ public interface XrpMemo {
           Optional<MemoField> type
   ) {
     return XrpMemo.builder()
-                .data(data.isPresent()
-                        ? CommonUtils.stringToByteArray(data.get().value(), data.get().isHex())
-                        : new byte[0])
-                .format(format.isPresent()
-                        ? CommonUtils.stringToByteArray(format.get().value(), format.get().isHex())
-                        : new byte[0])
-                .type(type.isPresent()
-                        ? CommonUtils.stringToByteArray(type.get().value(), type.get().isHex())
-                        : new byte[0])
+                .data(data.map(memoField -> CommonUtils.stringToByteArray(memoField.value(), memoField.isHex()))
+                        .orElseGet(() -> new byte[0]))
+                .format(format.map(field -> CommonUtils.stringToByteArray(field.value(), field.isHex()))
+                        .orElseGet(() -> new byte[0]))
+                .type(type.map(value -> CommonUtils.stringToByteArray(value.value(), value.isHex()))
+                        .orElseGet(() -> new byte[0]))
                 .build();
   }
 }
