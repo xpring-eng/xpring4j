@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -33,7 +34,7 @@ interface XrpClientDecorator {
   public TransactionStatus getPaymentStatus(String transactionHash) throws XrpException;
 
   /**
-   * Transact XRP between two accounts on the ledger.
+   * Send the given amount of XRP from the source wallet to the destination address.
    *
    * @param amount             The number of drops of XRP to send.
    * @param destinationAddress The X-Address to send the XRP to.
@@ -46,6 +47,16 @@ interface XrpClientDecorator {
       final String destinationAddress,
       final Wallet sourceWallet
   ) throws XrpException;
+
+  /**
+   * Send the given amount of XRP from the source wallet to the destination address, allowing
+   * for additional details to be specified for use with supplementary features of the XRP ledger.
+   *
+   * @param sendXrpDetails a {@link SendXrpDetails} wrapper object containing details for constructing a transaction.
+   * @return A string representing the hash of the submitted transaction.
+   * @throws XrpException If the given inputs were invalid.
+   */
+  String sendWithDetails(final SendXrpDetails sendXrpDetails) throws XrpException;
 
   /**
    * Retrieve the latest validated ledger sequence on the XRP Ledger.
