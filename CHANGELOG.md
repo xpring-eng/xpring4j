@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- A new method, `sendWithDetails`, is exposed on the `XrpClient` and `XpringClient`,
+allowing memo data to be attached to the transaction when sending XRP.
+
 ## 6.0.2 - 2020-08-01
 
 This release contains updated dependencies for stability and security.
