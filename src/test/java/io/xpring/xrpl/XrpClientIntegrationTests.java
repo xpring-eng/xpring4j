@@ -1,13 +1,19 @@
 package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.helpers.XrpTestUtils;
+import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -120,5 +126,34 @@ public class XrpClientIntegrationTests {
 
     // THEN it is found and returned.
     assertThat(transaction).isNotNull();
+  }
+
+  @Test(timeout = 10000)
+  public void sendWithDetailsIncludingMemoTest() throws XrpException {
+    Wallet wallet = new Wallet(WALLET_SEED);
+    List<XrpMemo> memos = Arrays.asList(
+            XrpTestUtils.iForgotToPickUpCarlMemo,
+            XrpTestUtils.noDataMemo,
+            XrpTestUtils.noFormatMemo,
+            XrpTestUtils.noTypeMemo);
+
+    // WHEN XRP is sent to the Pay ID, including a memo.
+    SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
+            .amount(AMOUNT)
+            .destination(XRPL_ADDRESS)
+            .sender(wallet)
+            .memos(memos)
+            .build();
+    String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
+    assertNotNull(transactionHash);
+
+    XrpTransaction transaction = xrpClient.getPayment(transactionHash);
+    assertEquals(transaction.memos(), Arrays.asList(
+            XrpTestUtils.iForgotToPickUpCarlMemo,
+            XrpTestUtils.expectedNoDataMemo,
+            XrpTestUtils.expectedNoFormatMemo,
+            XrpTestUtils.expectedNoTypeMemo
+            )
+    );
   }
 }
