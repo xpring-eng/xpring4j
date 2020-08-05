@@ -179,7 +179,7 @@ public class DefaultXrpClient implements XrpClientDecorator {
     final BigInteger drops = sendXrpDetails.amount();
     final Wallet sourceWallet = sendXrpDetails.sender();
     final String destinationAddress = sendXrpDetails.destination();
-    final Optional<List<XrpMemo>> xrpMemoList = sendXrpDetails.memos();
+    final Optional<List<XrpMemo>> xrpMemoList = sendXrpDetails.memosList();
 
     Objects.requireNonNull(drops);
     Objects.requireNonNull(destinationAddress);

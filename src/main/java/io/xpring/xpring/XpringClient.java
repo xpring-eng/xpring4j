@@ -75,7 +75,7 @@ public class XpringClient {
     SendXrpDetails xaddressXrpDetails = SendXrpDetails.builder().amount(sendXrpDetails.amount())
                                                                 .destination(destinationAddress)
                                                                 .sender(sendXrpDetails.sender())
-                                                                .memos(sendXrpDetails.memos())
+                                                                .memosList(sendXrpDetails.memosList())
                                                                 .build();
     // Transact XRP to the resolved address.
     return this.xrpClient.sendWithDetails(xaddressXrpDetails);
