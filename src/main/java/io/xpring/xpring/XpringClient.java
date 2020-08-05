@@ -5,6 +5,7 @@ import io.xpring.payid.XrpPayIdClientInterface;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XrpClientInterface;
 import io.xpring.xrpl.XrpException;
+import io.xpring.xrpl.model.SendXrpDetails;
 
 import java.math.BigInteger;
 
@@ -56,5 +57,27 @@ public class XpringClient {
 
     // Transact XRP to the resolved address.
     return this.xrpClient.send(amount, destinationAddress, sourceWallet);
+  }
+
+  /**
+   * Send the given amount of XRP from the source wallet to the destination PayID, allowing
+   * for additional details to be specified for use with supplementary features of the XRP ledger.
+   *
+   * @param sendXrpDetails a {@link SendXrpDetails} wrapper object containing details for constructing a transaction.
+   * @return A string representing the hash of the submitted transaction.
+   * @throws XrpException If the given inputs were invalid.
+   */
+  public String sendWithDetails(final SendXrpDetails sendXrpDetails) throws XrpException, PayIdException {
+    // Resolve the destination address to an XRP address.
+    String destinationAddress = this.payIDClient.xrpAddressForPayId(sendXrpDetails.destination());
+
+    // Construct a new SendXrpDetails that contains an XAddress destination instead of a PayID.
+    SendXrpDetails xAddressXrpDetails = SendXrpDetails.builder().amount(sendXrpDetails.amount())
+                                                                .destination(destinationAddress)
+                                                                .sender(sendXrpDetails.sender())
+                                                                .memos(sendXrpDetails.memos())
+                                                                .build();
+    // Transact XRP to the resolved address.
+    return this.xrpClient.sendWithDetails(sendXrpDetails);
   }
 }
