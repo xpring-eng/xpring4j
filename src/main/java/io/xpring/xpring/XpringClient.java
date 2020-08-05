@@ -37,7 +37,7 @@ public class XpringClient {
   }
 
   /**
-   * Transact XRP between two accounts on the ledger.
+   * Send the given amount of XRP from the source wallet to the destination PayID.
    *
    * @param amount           The number of drops of XRP to send.
    * @param destinationPayID A destination Pay ID to send the drops to.
