@@ -72,12 +72,12 @@ public class XpringClient {
     String destinationAddress = this.payIDClient.xrpAddressForPayId(sendXrpDetails.destination());
 
     // Construct a new SendXrpDetails that contains an XAddress destination instead of a PayID.
-    SendXrpDetails xAddressXrpDetails = SendXrpDetails.builder().amount(sendXrpDetails.amount())
+    SendXrpDetails xaddressXrpDetails = SendXrpDetails.builder().amount(sendXrpDetails.amount())
                                                                 .destination(destinationAddress)
                                                                 .sender(sendXrpDetails.sender())
                                                                 .memos(sendXrpDetails.memos())
                                                                 .build();
     // Transact XRP to the resolved address.
-    return this.xrpClient.sendWithDetails(sendXrpDetails);
+    return this.xrpClient.sendWithDetails(xaddressXrpDetails);
   }
 }

@@ -38,11 +38,11 @@ public class CommonUtilsTest {
     // GIVEN the best line delivered on film
     // WHEN that line is converted to a byte[]
     // THEN the value is correct
-    byte expectedBytes[] = {111, 104, 44, 32, 104, 105, 32, 109, 97, 114, 107};
+    byte[] expectedBytes = {111, 104, 44, 32, 104, 105, 32, 109, 97, 114, 107};
     assertEquals(
             CommonUtils.stringToByteArray("oh, hi mark", false),
             expectedBytes
-            );
+    );
   }
 
   @Test
@@ -50,10 +50,10 @@ public class CommonUtilsTest {
     // GIVEN the hex version of the best line delivered on film
     // WHEN that line is converted to a byte[]
     // THEN the value is correct
-    byte expectedBytes[] = {111, 104, 44, 32, 104, 105, 32, 109, 97, 114, 107};
+    byte[] expectedBytes = {111, 104, 44, 32, 104, 105, 32, 109, 97, 114, 107};
     assertEquals(
             CommonUtils.stringToByteArray("6f682c206869206d61726b", true),
             expectedBytes
-            );
+    );
   }
 }
