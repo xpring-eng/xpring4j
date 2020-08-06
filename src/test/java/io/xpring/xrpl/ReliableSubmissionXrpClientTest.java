@@ -66,6 +66,12 @@ public class ReliableSubmissionXrpClientTest {
           FakeXrpProtobufs.getTransactionResponsePaymentAllFields,
           XrplNetwork.TEST
   );
+  private static final io.xpring.xrpl.model.TransactionResult DEFAULT_ENABLE_DEPOSIT_AUTH_VALUE =
+          io.xpring.xrpl.model.TransactionResult.builder()
+                                                .hash(TRANSACTION_HASH)
+                                                .status(DEFAULT_TRANSACTION_STATUS_VALUE)
+                                                .validated(true)
+                                                .build();
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   FakeXrpClient fakeXRPClient;
@@ -87,7 +93,8 @@ public class ReliableSubmissionXrpClientTest {
         Result.ok(DEFAULT_RAW_TRANSACTION_STATUS_VALUE),
         Result.ok(DEFAULT_PAYMENT_HISTORY_VALUE),
         Result.ok(DEFAULT_ACCOUNT_EXISTS_VALUE),
-        Result.ok(DEFAULT_GET_TRANSACTION_VALUE)
+        Result.ok(DEFAULT_GET_TRANSACTION_VALUE),
+        Result.ok(DEFAULT_ENABLE_DEPOSIT_AUTH_VALUE)
     );
 
     this.reliableSubmissionXRPClient = new ReliableSubmissionXrpClient(fakeXRPClient);
@@ -248,8 +255,117 @@ public class ReliableSubmissionXrpClientTest {
     assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryResult.getValue());
   }
 
+  @Test(timeout = 10000)
+  public void testEnableDepositAuthWithExpiredLastLedgerSequenceAndUnvalidatedTransaction() throws XrpException {
+    // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
+    this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
+            GetTransactionResponse.newBuilder()
+                    .setValidated(false)
+                    .setTransaction(
+                            Transaction.newBuilder()
+                                    .setLastLedgerSequence(
+                                            LastLedgerSequence.newBuilder()
+                                                    .setValue(LAST_LEDGER_SEQUENCE)
+                                                    .build()
+                                    )
+                                    .build()
+                    )
+                    .setMeta(
+                            Meta.newBuilder().setTransactionResult(
+                                    TransactionResult.newBuilder()
+                                            .setResult(TRANSACTION_STATUS_CODE)
+                                            .build()
+                            )
+                    ).build()
+    ));
+
+    runAfterOneSecond(() -> {
+      this.fakeXRPClient.latestValidatedLedgerResult = Result.ok(LAST_LEDGER_SEQUENCE + 1);
+    });
+
+    // WHEN enableDepositAuth is called THEN the reliable submission reaches a consistent state and returns.
+    this.reliableSubmissionXRPClient.enableDepositAuth(new Wallet(WALLET_SEED));
+  }
+
+  @Test(timeout = 10000)
+  public void testEnableDepositAuthWithUnexpiredLedgerSequenceAndValidatedTransaction() throws XrpException {
+    // GIVEN A transaction that will validate in one second
+    final String transactionStatusCode = "tesSuccess";
+    this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
+            GetTransactionResponse.newBuilder()
+                    .setValidated(false)
+                    .setTransaction(
+                            Transaction.newBuilder()
+                                    .setLastLedgerSequence(
+                                            LastLedgerSequence.newBuilder()
+                                                    .setValue(LAST_LEDGER_SEQUENCE)
+                                                    .build()
+                                    )
+                                    .build()
+                    )
+                    .setMeta(
+                            Meta.newBuilder().setTransactionResult(
+                                    TransactionResult.newBuilder()
+                                            .setResult(transactionStatusCode)
+                                            .build()
+                            )
+                    ).build()
+    ));
+
+    runAfterOneSecond(() -> {
+      this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
+              GetTransactionResponse.newBuilder()
+                      .setValidated(true)
+                      .setTransaction(
+                              Transaction.newBuilder()
+                                      .setLastLedgerSequence(
+                                              LastLedgerSequence.newBuilder()
+                                                      .setValue(LAST_LEDGER_SEQUENCE)
+                                                      .build()
+                                      )
+                                      .build()
+                      )
+                      .setMeta(
+                              Meta.newBuilder().setTransactionResult(
+                                      TransactionResult.newBuilder()
+                                              .setResult(TRANSACTION_STATUS_CODE)
+                                              .build()
+                              )
+                      ).build()
+      ));
+    });
+
+    // WHEN enableDepositAuth is called THEN the reliable submission reaches a consistent state and returns.
+    this.reliableSubmissionXRPClient.enableDepositAuth(new Wallet(WALLET_SEED));
+  }
+
+  @Test
+  public void testEnableDepositAuthWithNoLastLedgerSequence() throws XrpException {
+    // GIVEN a `ReliableSubmissionXrpClient` decorating a `FakeXrpClient` which will return a transaction that did not
+    // have a last ledger sequence attached.
+    this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
+            GetTransactionResponse.newBuilder()
+                    .setValidated(false)
+                    .setTransaction(
+                            Transaction.newBuilder()
+                                    .build()
+                    )
+                    .setMeta(
+                            Meta.newBuilder().setTransactionResult(
+                                    TransactionResult.newBuilder()
+                                            .setResult(TRANSACTION_STATUS_CODE)
+                                            .build()
+                            )
+                    ).build()
+    ));
+
+    // WHEN enableDepositAuth is caled THEN an error is thrown.
+    expectedException.expect(Exception.class);
+    this.reliableSubmissionXRPClient.enableDepositAuth(new Wallet(WALLET_SEED));
+  }
+
   /**
-   * Run the given work on an separate thread in after one second.
+   * Run the given work on a separate thread in after one second.
    *
    * @param work The work to run.
    */
