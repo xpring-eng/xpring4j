@@ -1,5 +1,6 @@
 package io.xpring.xrpl;
 
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -52,6 +53,18 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
   @Override
   public XrpTransaction getPayment(String transactionHash) throws XrpException {
     return this.decoratedClient.getPayment(transactionHash);
+  }
+
+  @Override
+  public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
+    TransactionResult initialResult = this.decoratedClient.enableDepositAuth(wallet);
+    String transactionHash = initialResult.hash();
+    RawTransactionStatus finalStatus = this.awaitFinalTransactionResult(transactionHash, wallet);
+    return TransactionResult.builder()
+                            .hash(initialResult.hash())
+                            .status(this.getPaymentStatus(transactionHash))
+                            .validated(finalStatus.getValidated())
+                            .build();
   }
 
   private RawTransactionStatus awaitFinalTransactionResult(String transactionHash, Wallet sender) throws XrpException {
