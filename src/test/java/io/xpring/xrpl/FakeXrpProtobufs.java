@@ -425,17 +425,10 @@ public class FakeXrpProtobufs {
           .build();
 
   // AccountSet protos
-  // Common.ClearFlag proto
-  public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
-    .setValue(5)
-    .build();
+  // AccountSet fake primitive test values
+  public static Integer testClearFlag = 5;
+  public static String testDomain = "testdomain";
 
-  // Common.Domain proto
-  public static Common.Domain domainProto = Common.Domain.newBuilder()
-    .setValue("testdomain")
-    .build();
-
-  // Common.EmailHash proto
   public static ByteString testEmailHash;
   static {
     try {
@@ -444,11 +437,7 @@ public class FakeXrpProtobufs {
       exception.printStackTrace();
     }
   }
-  public static Common.EmailHash emailHashProto = Common.EmailHash.newBuilder()
-    .setValue(testEmailHash)
-    .build();
 
-  // Common.MessageKey proto
   public static ByteString testMessageKey;
   static {
     try {
@@ -457,23 +446,44 @@ public class FakeXrpProtobufs {
       exception.printStackTrace();
     }
   }
+
+  public static Integer testSetFlag = 4;
+  public static Integer testTransferRate = 1234567890;
+  public static Integer testTickSize = 7;
+
+  // Common.ClearFlag proto
+  public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
+    .setValue(testClearFlag)
+    .build();
+
+  // Common.Domain proto
+  public static Common.Domain domainProto = Common.Domain.newBuilder()
+    .setValue(testDomain)
+    .build();
+
+  // Common.EmailHash proto
+  public static Common.EmailHash emailHashProto = Common.EmailHash.newBuilder()
+    .setValue(testEmailHash)
+    .build();
+
+  // Common.MessageKey proto
   public static Common.MessageKey messageKeyProto = Common.MessageKey.newBuilder()
     .setValue(testMessageKey)
     .build();
 
   // Common.SetFlag proto
   public static Common.SetFlag setFlagProto = Common.SetFlag.newBuilder()
-    .setValue(4)
+    .setValue(testSetFlag)
     .build();
 
   // Common.TransferRate proto
   public static Common.TransferRate transferRateProto = Common.TransferRate.newBuilder()
-    .setValue(1234567890)
+    .setValue(testTransferRate)
     .build();
 
   // Common.TickSize proto
   public static Common.TickSize tickSizeProto = Common.TickSize.newBuilder()
-    .setValue(7)
+    .setValue(testTickSize)
     .build();
 
   public static AccountSet allFieldsAccountSet = AccountSet.newBuilder()
