@@ -2,7 +2,6 @@ package io.xpring.xrpl.model;
 
 import io.xpring.xrpl.model.ImmutableXrpAccountSet;
 import org.immutables.value.Value;
-
 import org.xrpl.rpc.v1.AccountSet;
 
 import java.util.Optional;
@@ -81,6 +80,15 @@ public interface XrpAccountSet {
    */
   Optional<Integer> transferRate();
 
+  /**
+   * Constructs an {@link XrpAccountSet} from a {@link AccountSet}.
+   *
+   * @param accountSet A {@link AccountSet} (protobuf object) whose field values will be used to
+   *                   construct an {@link XrpAccountSet}
+   * @return An {@link XrpAccountSet} with its fields set via the analogous protobuf fields.
+   * @see <a href="https://github.com/ripple/rippled/blob/develop/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L100">
+   * AccountSet protocol buffer</a>
+   */
   static XrpAccountSet from(AccountSet accountSet) {
 
     Optional<Integer> clearFlag = Optional.empty();
