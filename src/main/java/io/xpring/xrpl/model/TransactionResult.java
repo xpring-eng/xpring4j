@@ -1,26 +1,34 @@
 package io.xpring.xrpl.model;
 
 import io.xpring.xrpl.TransactionStatus;
+import org.immutables.value.Value;
 
 /**
  * Represents the outcome of submitting an XRPL transaction.
  */
-public class TransactionResult {
-  public String hash;
-  public TransactionStatus status;
-  public Boolean validated;
+@Value.Immutable
+public interface TransactionResult {
+  static ImmutableTransactionResult.Builder builder() { return ImmutableTransactionResult.builder(); }
 
   /**
-   * Create a new TransactionResult object.
+   * The identifying hash of the transaction
    *
-   * @param hash The identifying hash of the transaction.
-   * @param status The {@link TransactionStatus} indicating the outcome of this transaction.
-   * @param validated Whether this transaction is included in a validated ledger.
-   *                  The transactions status is only final if this field is true.
+   * @return A {@link String}, the identifying hash of the transaction.
    */
-  public TransactionResult(String hash, TransactionStatus status, Boolean validated) {
-    this.hash = hash;
-    this.status = status;
-    this.validated = validated;
-  }
+  String hash();
+
+  /**
+   * The {@link TransactionStatus} representing the outcome of this transaction.
+   *
+   * @return A {@link TransactionStatus} representing the outcome of this transaction.
+   */
+  TransactionStatus status();
+
+  /**
+   * Whether this transaction is included in a validated ledger.
+   * The transactions status is only final if this field is true.
+   *
+   * @return A {@link Boolean} indicating whether this transaction is included in a validated ledger.
+   */
+  Boolean validated();
 }
