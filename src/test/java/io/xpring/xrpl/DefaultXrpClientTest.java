@@ -549,7 +549,6 @@ public class DefaultXrpClientTest {
 
     // THEN a transaction hash exists and is the expected hash
     assertThat(transactionResult.hash).isEqualTo(TRANSACTION_HASH);
-
   }
 
   @Test
