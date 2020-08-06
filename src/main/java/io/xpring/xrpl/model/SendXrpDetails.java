@@ -18,11 +18,32 @@ public interface SendXrpDetails {
     return ImmutableSendXrpDetails.builder();
   }
 
+  /**
+   * The amount of XRP, in drops, to send.
+   *
+   * @return A {@link BigInteger} representing the drops of XRP to send.
+   */
   BigInteger amount();
 
+  /**
+   * The receiving address.
+   *
+   * @return A {@link String} representing the address receiving the payment.
+   */
   String destination();
 
+  /**
+   * The sending wallet.
+   *
+   * @return A {@link Wallet} that will sign and submit the transaction.
+   */
   Wallet sender();
 
+  /**
+   * A list of memos to attach to the payment transaction constructed from these details.
+   *
+   * @return An Optional {@link List<XrpMemo>} representing the memos to attached to the payment
+   *         transaction constructed from these details.
+   */
   Optional<List<XrpMemo>> memosList();
 }

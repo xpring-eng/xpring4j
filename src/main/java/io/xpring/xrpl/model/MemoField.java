@@ -12,7 +12,17 @@ public interface MemoField {
     return ImmutableMemoField.builder();
   }
 
+  /**
+   * The string to be passed to the Memo
+   *
+   * @return A {@link String} to be passed to a memo.
+   */
   String value();
 
+  /**
+   * Whether or not the String in value is already hex-encoded.
+   *
+   * @return A {@link Boolean} indicating whether or not the value is already hex-encoded.
+   */
   Boolean isHex();
 }
