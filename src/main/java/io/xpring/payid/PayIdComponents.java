@@ -9,12 +9,16 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PayIdComponents {
   /**
-   * The host component of the Pay ID.
+   * The host component of the PayID.
+   *
+   * @return A {@link String}, the host component of the PayID.
    */
   String host();
 
   /**
-   * The path component of the Pay ID. Starts with a leading '/'.
+   * The path component of the PayID. Starts with a leading '/'.
+   *
+   * @return A {@link String}, the path component of the PayID.
    */
   String path();
 }

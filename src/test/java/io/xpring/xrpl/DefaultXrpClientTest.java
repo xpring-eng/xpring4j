@@ -34,6 +34,7 @@ import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Meta;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
+import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.TransactionResult;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
@@ -534,6 +535,39 @@ public class DefaultXrpClientTest {
 
     // THEN the result is null.
     assertThat(transaction).isNull();
+  }
+
+  @Test
+  public void enableDepositAuthSuccessfulResponse() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will return a successful hash for submitTransaction
+    DefaultXrpClient client = getClient();
+
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+
+    // WHEN enableDepositAuth is called
+    io.xpring.xrpl.model.TransactionResult transactionResult = client.enableDepositAuth(wallet);
+
+    // THEN a transaction hash exists and is the expected hash
+    assertThat(transactionResult.hash()).isEqualTo(TRANSACTION_HASH.toLowerCase());
+  }
+
+  @Test
+  public void enableDepositAuthSubmissionFailure() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient which will fail to submit a transaction.
+    Result<SubmitTransactionResponse, Throwable> submitResult = Result.error(GENERIC_ERROR);
+    DefaultXrpClient client = getClient(
+            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+            Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+            submitResult,
+            Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+
+    // WHEN enableDepositAuth is attempted THEN an error is propagated.
+    expectedException.expect(Exception.class);
+    client.enableDepositAuth(wallet);
   }
 
   /**

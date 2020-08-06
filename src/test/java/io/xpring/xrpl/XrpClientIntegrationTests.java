@@ -2,10 +2,21 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.AccountRootFlag;
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Before;
 import org.junit.Test;
+import org.xrpl.rpc.v1.AccountAddress;
+import org.xrpl.rpc.v1.AccountRoot;
+import org.xrpl.rpc.v1.GetAccountInfoRequest;
+import org.xrpl.rpc.v1.GetAccountInfoResponse;
+import org.xrpl.rpc.v1.LedgerSpecifier;
+import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
+import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -120,5 +131,41 @@ public class XrpClientIntegrationTests {
 
     // THEN it is found and returned.
     assertThat(transaction).isNotNull();
+  }
+
+  @Test
+  public void enableDepositAuthTest() throws XrpException {
+    // GIVEN an existing testnet account
+    Wallet wallet = new Wallet(WALLET_SEED);
+
+    // WHEN enableDepositAuth is called
+    TransactionResult result = xrpClient.enableDepositAuth(wallet);
+
+    // THEN the transaction was successfully submitted and the correct flag was set on the account.
+    String transactionHash = result.hash();
+    TransactionStatus transactionStatus = result.status();
+
+    // get the account data and check the flag bitmap to see if it was correctly set
+    ManagedChannel channel = ManagedChannelBuilder.forTarget(GRPC_URL).usePlaintext().build();
+    XRPLedgerAPIServiceBlockingStub networkClient = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
+
+    String address = Utils.decodeXAddress(wallet.getAddress()).address();
+    AccountAddress account = AccountAddress.newBuilder().setAddress(address).build();
+
+    LedgerSpecifier ledger = LedgerSpecifier.newBuilder()
+            .setShortcut(LedgerSpecifier.Shortcut.SHORTCUT_VALIDATED)
+            .build();
+
+    GetAccountInfoRequest request = GetAccountInfoRequest.newBuilder().setAccount(account).setLedger(ledger).build();
+
+    GetAccountInfoResponse accountInfo = networkClient.getAccountInfo(request);
+
+    AccountRoot accountData = accountInfo.getAccountData();
+
+    Integer flags = accountData.getFlags().getValue();
+
+    assertThat(transactionHash).isNotNull();
+    assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
+    assertThat(AccountRootFlag.check(AccountRootFlag.LSF_DEPOSIT_AUTH, flags)).isTrue();
   }
 }
