@@ -90,7 +90,6 @@ public interface XrpAccountSet {
    * AccountSet protocol buffer</a>
    */
   static XrpAccountSet from(AccountSet accountSet) {
-
     Optional<Integer> clearFlag = Optional.empty();
     if (accountSet.hasClearFlag()) {
       clearFlag = Optional.of(accountSet.getClearFlag().getValue());
