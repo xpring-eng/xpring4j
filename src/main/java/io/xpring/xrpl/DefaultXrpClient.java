@@ -289,7 +289,7 @@ public class DefaultXrpClient implements XrpClientDecorator {
    * </p>
    * @param wallet The wallet associated with the XRPL account enabling Deposit Authorization and that will sign the
    *               request.
-   * @returns A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
+   * @return A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
    *          final status of the transaction.
    * @throws XrpException If there was a problem communicating with the XRP Ledger.
    */
@@ -304,9 +304,12 @@ public class DefaultXrpClient implements XrpClientDecorator {
     TransactionStatus status = this.getPaymentStatus(transactionHash);
     RawTransactionStatus rawStatus = this.getRawTransactionStatus(transactionHash);
 
-    return new TransactionResult(transactionHash, status, rawStatus.getValidated());
+    return TransactionResult.builder()
+                            .hash(transactionHash)
+                            .status(status)
+                            .validated(rawStatus.getValidated())
+                            .build();
   }
-
 
   public int getOpenLedgerSequence() throws XrpException {
     return this.getFeeResponse().getLedgerCurrentIndex();

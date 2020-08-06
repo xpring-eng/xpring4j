@@ -70,6 +70,7 @@ public interface XrpClientInterface {
    * @param transactionHash The hash of the transaction to retrieve.
    * @return An XrpTransaction object representing an XRP Ledger transaction.
    * @throws io.grpc.StatusRuntimeException If the transaction hash was invalid.
+   * @throws XrpException if there was a problem communicating with the XRP Ledger.
    */
   public XrpTransaction getPayment(String transactionHash) throws XrpException;
 
@@ -81,7 +82,7 @@ public interface XrpClientInterface {
    * </p>
    * @param wallet The wallet associated with the XRPL account enabling Deposit Authorization and that will sign the
    *               request.
-   * @returns A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
+   * @return A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
    *          final status of the transaction.
    * @throws XrpException If there was a problem communicating with the XRP Ledger.
    */

@@ -48,7 +48,11 @@ public class XpringClientTest {
           XrplNetwork.TEST
   );
   public static final TransactionResult FAKE_ENABLE_DEPOSIT_AUTH_VALUE =
-          new TransactionResult("faketransactionhash", TransactionStatus.SUCCEEDED, true);
+          TransactionResult.builder()
+                            .hash("faketransactionhash")
+                            .status(TransactionStatus.SUCCEEDED)
+                            .validated(true)
+                            .build();
 
   /**
    * An amount to send.

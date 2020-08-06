@@ -8,10 +8,12 @@ import org.immutables.value.Value;
  */
 @Value.Immutable
 public interface TransactionResult {
-  static ImmutableTransactionResult.Builder builder() { return ImmutableTransactionResult.builder(); }
+  static ImmutableTransactionResult.Builder builder() {
+    return ImmutableTransactionResult.builder();
+  }
 
   /**
-   * The identifying hash of the transaction
+   * The identifying hash of the transaction.
    *
    * @return A {@link String}, the identifying hash of the transaction.
    */

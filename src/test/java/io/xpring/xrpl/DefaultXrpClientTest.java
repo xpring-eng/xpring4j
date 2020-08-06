@@ -548,7 +548,7 @@ public class DefaultXrpClientTest {
     io.xpring.xrpl.model.TransactionResult transactionResult = client.enableDepositAuth(wallet);
 
     // THEN a transaction hash exists and is the expected hash
-    assertThat(transactionResult.hash).isEqualTo(TRANSACTION_HASH.toLowerCase());
+    assertThat(transactionResult.hash()).isEqualTo(TRANSACTION_HASH.toLowerCase());
   }
 
   @Test

@@ -67,7 +67,11 @@ public class ReliableSubmissionXrpClientTest {
           XrplNetwork.TEST
   );
   private static final io.xpring.xrpl.model.TransactionResult DEFAULT_ENABLE_DEPOSIT_AUTH_VALUE =
-          new io.xpring.xrpl.model.TransactionResult(TRANSACTION_HASH, DEFAULT_TRANSACTION_STATUS_VALUE, true);
+          io.xpring.xrpl.model.TransactionResult.builder()
+                                                .hash(TRANSACTION_HASH)
+                                                .status(DEFAULT_TRANSACTION_STATUS_VALUE)
+                                                .validated(true)
+                                                .build();
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   FakeXrpClient fakeXRPClient;

@@ -142,8 +142,8 @@ public class XrpClientIntegrationTests {
     TransactionResult result = xrpClient.enableDepositAuth(wallet);
 
     // THEN the transaction was successfully submitted and the correct flag was set on the account.
-    String transactionHash = result.hash;
-    TransactionStatus transactionStatus = result.status;
+    String transactionHash = result.hash();
+    TransactionStatus transactionStatus = result.status();
 
     // get the account data and check the flag bitmap to see if it was correctly set
     ManagedChannel channel = ManagedChannelBuilder.forTarget(GRPC_URL).usePlaintext().build();
