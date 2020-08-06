@@ -26,6 +26,19 @@ public class XrpAccountSetProtoConversionTest {
 
   @Test
   public void oneFieldSetTest() {
-    final XrpAccountSet accountSet = XrpAccountSet.from(FakeXrpProtobufs.oneFieldAccountSet);
+    // GIVEN an AccountSet protocol buffer with only one field set.
+    final AccountSet accountSetProto = FakeXrpProtobufs.oneFieldAccountSet;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpAccountSet accountSet = XrpAccountSet.from(accountSetProto);
+
+    // THEN the AccountSet converted as expected.
+    assertThat(accountSet.clearFlag().get()).isEqualTo(accountSetProto.getClearFlag().getValue());
+    assertThat(accountSet.domain()).isEmpty();
+    assertThat(accountSet.emailHash()).isEmpty();
+    assertThat(accountSet.messageKey()).isEmpty();
+    assertThat(accountSet.setFlag()).isEmpty();
+    assertThat(accountSet.tickSize()).isEmpty();
+    assertThat(accountSet.transferRate()).isEmpty();
   }
 }
