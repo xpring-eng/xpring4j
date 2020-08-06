@@ -424,7 +424,6 @@ public class FakeXrpProtobufs {
           .addTransactions(getTransactionResponseCheckCash)
           .build();
 
-  // AccountSet protos
   // AccountSet fake primitive test values
   public static Integer testClearFlag = 5;
   public static String testDomain = "testdomain";
@@ -451,6 +450,7 @@ public class FakeXrpProtobufs {
   public static Integer testTransferRate = 1234567890;
   public static Integer testTickSize = 7;
 
+  // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
     .setValue(testClearFlag)
