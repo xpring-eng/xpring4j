@@ -476,14 +476,14 @@ public class FakeXrpProtobufs {
     .setValue(testSetFlag)
     .build();
 
-  // Common.TransferRate proto
-  public static Common.TransferRate transferRateProto = Common.TransferRate.newBuilder()
-    .setValue(testTransferRate)
-    .build();
-
   // Common.TickSize proto
   public static Common.TickSize tickSizeProto = Common.TickSize.newBuilder()
     .setValue(testTickSize)
+    .build();
+
+  // Common.TransferRate proto
+  public static Common.TransferRate transferRateProto = Common.TransferRate.newBuilder()
+    .setValue(testTransferRate)
     .build();
 
   public static AccountSet allFieldsAccountSet = AccountSet.newBuilder()
@@ -492,8 +492,8 @@ public class FakeXrpProtobufs {
     .setEmailHash(emailHashProto)
     .setMessageKey(messageKeyProto)
     .setSetFlag(setFlagProto)
-    .setTransferRate(transferRateProto)
     .setTickSize(tickSizeProto)
+    .setTransferRate(transferRateProto)
     .build();
 
   public static AccountSet oneFieldAccountSet = AccountSet.newBuilder()
