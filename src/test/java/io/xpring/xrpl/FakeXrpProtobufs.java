@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.AccountAddress;
+import org.xrpl.rpc.v1.AccountSet;
 import org.xrpl.rpc.v1.CheckCash;
 import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.Common.Account;
@@ -422,6 +423,72 @@ public class FakeXrpProtobufs {
           .addTransactions(getTransactionResponsePaymentMandatoryFields)
           .addTransactions(getTransactionResponseCheckCash)
           .build();
+
+  // AccountSet protos
+  // Common.ClearFlag proto
+  public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
+    .setValue(5)
+    .build();
+
+  // Common.Domain proto
+  public static Common.Domain domainProto = Common.Domain.newBuilder()
+    .setValue("testdomain")
+    .build();
+
+  // Common.EmailHash proto
+  public static ByteString testEmailHash;
+  static {
+    try {
+      testEmailHash = ByteString.copyFrom("emailhash", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+  public static Common.EmailHash emailHashProto = Common.EmailHash.newBuilder()
+    .setValue(testEmailHash)
+    .build();
+
+  // Common.MessageKey proto
+  public static ByteString testMessageKey;
+  static {
+    try {
+      testMessageKey = ByteString.copyFrom("messagekey", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+  public static Common.MessageKey messageKeyProto = Common.MessageKey.newBuilder()
+    .setValue(testMessageKey)
+    .build();
+
+  // Common.SetFlag proto
+  public static Common.SetFlag setFlagProto = Common.SetFlag.newBuilder()
+    .setValue(4)
+    .build();
+
+  // Common.TransferRate proto
+  public static Common.TransferRate transferRateProto = Common.TransferRate.newBuilder()
+    .setValue(1234567890)
+    .build();
+
+  // Common.TickSize proto
+  public static Common.TickSize tickSizeProto = Common.TickSize.newBuilder()
+    .setValue(7)
+    .build();
+
+  public static AccountSet allFieldsAccountSet = AccountSet.newBuilder()
+    .setClearFlag(clearFlagProto)
+    .setDomain(domainProto)
+    .setEmailHash(emailHashProto)
+    .setMessageKey(messageKeyProto)
+    .setSetFlag(setFlagProto)
+    .setTransferRate(transferRateProto)
+    .setTickSize(tickSizeProto)
+    .build();
+
+  public static AccountSet oneFieldAccountSet = AccountSet.newBuilder()
+    .setClearFlag(clearFlagProto)
+    .build();
 
   // INVALID OBJECTS ===============================================================
 
