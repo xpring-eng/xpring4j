@@ -272,9 +272,9 @@ XrpClient xrpClient = new XrpClient(grpcURL, XrplNetwork.TEST);
 Wallet seedWallet = new Wallet("snRiAJGeKCkPVddbjB3zRwwoiYDBm1M");
 
 TransactionResult transactionResult = xrpClient.enableDepositAuth(seedWallet);
-String transactionHash = transactionResult.hash;
-TransactionStatus transactionStatus = transactionResult.status;
-Boolean validated = transactionResult.validated;
+String transactionHash = transactionResult.hash();
+TransactionStatus transactionStatus = transactionResult.status();
+Boolean validated = transactionResult.validated();
 ```
 
 ### Utilities
