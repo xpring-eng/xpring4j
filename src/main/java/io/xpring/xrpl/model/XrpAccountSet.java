@@ -8,7 +8,11 @@ import java.util.Optional;
 
 /**
  * Represents an AccountSet transaction on the XRP Ledger.
+ * <p>
  * An AccountSet transaction modifies the properties of an account in the XRP Ledger.
+ * </p>
+ *
+ * @see "https://xrpl.org/accountset.htm"
  */
 @Value.Immutable
 public interface XrpAccountSet {
@@ -60,8 +64,10 @@ public interface XrpAccountSet {
 
   /**
    * (Optional) Tick size to use for offers involving a currency issued by this address.
+   * <p>
    * The exchange rates of those offers is rounded to this many significant digits.
    * Valid values are 3 to 15 inclusive, or 0 to disable. (Requires the TickSize amendment.)
+   * </p>
    *
    * @return An integer representing the tick size to use for offers involving a currency issued by this address.
    */
@@ -70,8 +76,10 @@ public interface XrpAccountSet {
   /**
    * (Optional) The fee to charge when users transfer this account's issued currencies,
    * represented as billionths of a unit.
+   * <p>
    * Cannot be more than 2000000000 or less than 1000000000, except for the special case
    * 0 meaning no fee.
+   * </p>
    *
    * @return An {@link Integer} representing the fee
    *         to charge when users transfer this account's issued currencies, represented as billionths of a unit.
@@ -88,10 +96,9 @@ public interface XrpAccountSet {
    * AccountSet protocol buffer</a>
    */
   static XrpAccountSet from(AccountSet accountSet) {
-    Optional<Integer> clearFlag = Optional.empty();
-    if (accountSet.hasClearFlag()) {
-      clearFlag = Optional.of(accountSet.getClearFlag().getValue());
-    }
+    final Optional<Integer> clearFlag = accountSet.hasClearFlag()
+        ? Optional.empty()
+        : Optional.of(accountSet.getClearFlag().getValue());
 
     Optional<String> domain = Optional.empty();
     if (accountSet.hasDomain()) {
