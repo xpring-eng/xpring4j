@@ -10,7 +10,7 @@ public class XrpAccountSetProtoConversionTest {
   @Test
   public void allFieldsSetTest() {
     // GIVEN an AccountSet protocol buffer with all fields set.
-    final AccountSet accountSetProto = FakeXrpProtobufs.allFieldsAccountSet;
+    final AccountSet accountSetProto = FakeXrpTransactionProtobufs.allFieldsAccountSet;
     // WHEN the protocol buffer is converted to a native Java object.
     final XrpAccountSet accountSet = XrpAccountSet.from(accountSetProto);
 
@@ -27,7 +27,7 @@ public class XrpAccountSetProtoConversionTest {
   @Test
   public void oneFieldSetTest() {
     // GIVEN an AccountSet protocol buffer with only one field set.
-    final AccountSet accountSetProto = FakeXrpProtobufs.oneFieldAccountSet;
+    final AccountSet accountSetProto = FakeXrpTransactionProtobufs.oneFieldAccountSet;
 
     // WHEN the protocol buffer is converted to a native Java object.
     final XrpAccountSet accountSet = XrpAccountSet.from(accountSetProto);

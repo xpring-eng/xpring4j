@@ -31,7 +31,6 @@ public interface XrpAccountSet {
    */
   Optional<String> domain();
 
-  // TODO Convert this in ::from from the pb itself
   /**
    * (Optional) Hash of an email address to be used for generating an avatar image.
    *
@@ -42,7 +41,6 @@ public interface XrpAccountSet {
     return new byte[0];
   }
 
-  // TODO Convert this in ::from from the pb itself
   /**
    * (Optional) Public key for sending encrypted messages to this account.
    *
