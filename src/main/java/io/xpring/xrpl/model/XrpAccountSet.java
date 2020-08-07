@@ -97,32 +97,32 @@ public interface XrpAccountSet {
    */
   static XrpAccountSet from(AccountSet accountSet) {
     final Optional<Integer> clearFlag = accountSet.hasClearFlag()
-        ? Optional.empty()
-        : Optional.of(accountSet.getClearFlag().getValue());
+        ? Optional.of(accountSet.getClearFlag().getValue())
+        : Optional.empty();
 
-    Optional<String> domain = Optional.empty();
-    if (accountSet.hasDomain()) {
-      domain = Optional.of(accountSet.getDomain().getValue());
-    }
+    final Optional<String> domain = accountSet.hasDomain()
+        ? Optional.of(accountSet.getDomain().getValue())
+        : Optional.empty();
 
-    final byte[] emailHash = accountSet.getEmailHash().getValue().toByteArray();
+    final byte[] emailHash = accountSet.hasEmailHash()
+      ? accountSet.getEmailHash().getValue().toByteArray()
+      : new byte[0];
 
-    final byte[] messageKey = accountSet.getMessageKey().getValue().toByteArray();
+    final byte[] messageKey = accountSet.hasMessageKey()
+      ? accountSet.getMessageKey().getValue().toByteArray()
+      : new byte[0];
 
-    Optional<Integer> setFlag = Optional.empty();
-    if (accountSet.hasSetFlag()) {
-      setFlag = Optional.of(accountSet.getSetFlag().getValue());
-    }
+    final Optional<Integer> setFlag = accountSet.hasSetFlag()
+        ? Optional.of(accountSet.getSetFlag().getValue())
+        : Optional.empty();
 
-    Optional<Integer> tickSize = Optional.empty();
-    if (accountSet.hasTickSize()) {
-      tickSize = Optional.of(accountSet.getTickSize().getValue());
-    }
+    final Optional<Integer> tickSize = accountSet.hasTickSize()
+        ? Optional.of(accountSet.getTickSize().getValue())
+        : Optional.empty();
 
-    Optional<Integer> transferRate = Optional.empty();
-    if (accountSet.hasTransferRate()) {
-      transferRate = Optional.of(accountSet.getTransferRate().getValue());
-    }
+    final Optional<Integer> transferRate = accountSet.hasTransferRate()
+        ? Optional.of(accountSet.getTransferRate().getValue())
+        : Optional.empty();
 
     return XrpAccountSet.builder()
       .clearFlag(clearFlag)
