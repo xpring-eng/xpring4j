@@ -1,6 +1,7 @@
 package io.xpring.xrpl;
 
 import com.google.common.base.Preconditions;
+import io.xpring.common.CommonUtils;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 
@@ -40,33 +41,29 @@ public class Utils {
   }
 
   /**
+   * @deprecated Please use CommonUtils.byteArrayToHex
+   *
    * Convert bytes to a hex string.
    *
    * @param bytes The bytes to convert.
    * @return Hex from bytes.
    */
+  @Deprecated
   public static String byteArrayToHex(byte[] bytes) {
-    StringBuilder sb = new StringBuilder(bytes.length * 2);
-    for (byte b : bytes) {
-      sb.append(String.format("%02x", b));
-    }
-    return sb.toString();
+    return CommonUtils.byteArrayToHex(bytes);
   }
 
   /**
+   * @deprecated Please use CommonUtils.stringToByteArray
+   *
    * Convert a hex string to bytes.
    *
    * @param hex The hex to convert to bytes.
    * @return Bytes from hex.
    */
+  @Deprecated
   public static byte[] hexStringToByteArray(String hex) {
-    int len = hex.length();
-    byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2) {
-      data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
-          + Character.digit(hex.charAt(i + 1), 16));
-    }
-    return data;
+    return CommonUtils.stringToByteArray(hex, true);
   }
 
   /**

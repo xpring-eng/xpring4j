@@ -54,7 +54,7 @@ public class XpringClientIntegrationTest {
     assertNotNull(transactionHash);
   }
 
-  @Test(timeout = 20000)
+  @Test(timeout = 30000)
   public void testSendWithDetailsWithMemos() throws XrpException, PayIdException {
     // GIVEN a Pay ID that will resolve and some memos.
     String payID = "alice$dev.payid.xpring.money";

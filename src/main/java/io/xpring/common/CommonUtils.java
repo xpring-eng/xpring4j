@@ -32,4 +32,18 @@ public class CommonUtils {
     return !isHex ? Utils.hexStringToByteArray(stringToHex(value))
             : Utils.hexStringToByteArray(value);
   }
+
+  /**
+   * Convert bytes to a hex string.
+   *
+   * @param bytes The bytes to convert.
+   * @return Hex from bytes.
+   */
+  public static String byteArrayToHex(byte[] bytes) {
+    StringBuilder sb = new StringBuilder(bytes.length * 2);
+    for (byte b : bytes) {
+      sb.append(String.format("%02x", b));
+    }
+    return sb.toString();
+  }
 }
