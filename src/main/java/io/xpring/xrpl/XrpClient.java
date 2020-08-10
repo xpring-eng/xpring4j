@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -138,5 +139,20 @@ public class XrpClient implements XrpClientInterface {
    */
   public XrpTransaction getPayment(String transactionHash) throws XrpException {
     return decoratedClient.getPayment(transactionHash);
+  }
+
+  /**
+   * Enable Deposit Authorization for this XRPL account.
+   *
+   * <p>@see <a href="https://xrpl.org/depositauth.html">Deposit Authorization</a>
+   * </p>
+   * @param wallet The wallet associated with the XRPL account enabling Deposit Authorization and that will sign the
+   *               request.
+   * @return A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
+   *          final status of the transaction.
+   * @throws XrpException If there was a problem communicating with the XRP Ledger.
+   */
+  public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
+    return decoratedClient.enableDepositAuth(wallet);
   }
 }

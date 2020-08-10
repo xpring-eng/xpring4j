@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - A new method, `sendWithDetails`, is exposed on the `XrpClient` and `XpringClient`,
 allowing memo data to be attached to the transaction when sending XRP.
+- A new method `enableDepositAuth` is added to `XrpClient` which enables Deposit Authorization for the specified XRPL account.
+(See https://xrpl.org/depositauth.html)
 
 #### Removed
 - `Utils.byteArrayToHex` is deprecated.  Please use `CommonUtils.byteArrayToHex`.

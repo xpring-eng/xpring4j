@@ -3,6 +3,7 @@ package io.xpring.xrpl;
 import io.xpring.common.Result;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -27,6 +28,7 @@ public class FakeXrpClient implements XrpClientDecorator, XrpClientInterface {
   public Result<List<XrpTransaction>, XrpException> paymentHistoryResult;
   public Result<Boolean, XrpException> accountExistsResult;
   public Result<XrpTransaction, XrpException> getPaymentResult;
+  public Result<TransactionResult, XrpException> enableDepositAuthResult;
 
   /**
    * Create a new FakeXrpClient.
@@ -40,6 +42,7 @@ public class FakeXrpClient implements XrpClientDecorator, XrpClientInterface {
    * @param paymentHistoryResult The result of requesting payment history.
    * @param accountExistsResult The result of checking existence of an account.
    * @param getPaymentResult The result of a call to get a transaction by hash.
+   * @param enableDepositAuthResult The result of submitting a transaction to enable deposit authorization.
    */
   public FakeXrpClient(
       XrplNetwork network,
@@ -50,7 +53,8 @@ public class FakeXrpClient implements XrpClientDecorator, XrpClientInterface {
       Result<RawTransactionStatus, XrpException> rawTransactionStatusResult,
       Result<List<XrpTransaction>, XrpException> paymentHistoryResult,
       Result<Boolean, XrpException> accountExistsResult,
-      Result<XrpTransaction, XrpException> getPaymentResult
+      Result<XrpTransaction, XrpException> getPaymentResult,
+      Result<TransactionResult, XrpException> enableDepositAuthResult
   ) {
     this.network = network;
     this.getBalanceResult = getBalanceResult;
@@ -61,6 +65,7 @@ public class FakeXrpClient implements XrpClientDecorator, XrpClientInterface {
     this.paymentHistoryResult = paymentHistoryResult;
     this.accountExistsResult = accountExistsResult;
     this.getPaymentResult = getPaymentResult;
+    this.enableDepositAuthResult = enableDepositAuthResult;
   }
 
   @Override
@@ -146,6 +151,15 @@ public class FakeXrpClient implements XrpClientDecorator, XrpClientInterface {
       throw this.getPaymentResult.getError();
     } else {
       return getPaymentResult.getValue();
+    }
+  }
+
+  @Override
+  public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
+    if (this.enableDepositAuthResult.isError()) {
+      throw this.enableDepositAuthResult.getError();
+    } else {
+      return enableDepositAuthResult.getValue();
     }
   }
 }

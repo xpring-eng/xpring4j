@@ -36,6 +36,8 @@ public class XpringException extends Exception {
 
   /**
    * The exception type.
+   *
+   * @return The {@link XpringExceptionType} of this {@link XpringException}
    */
   public XpringExceptionType getType() {
     return this.type;
