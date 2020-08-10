@@ -99,20 +99,22 @@ public class FakeXrpTransactionProtobufs {
       .setAddress(testDestination)
       .build();
 
+  // Common.Destination proto
   public static Common.Destination destinationProto = Common.Destination.newBuilder()
       .setValue(accountAddressProto)
       .build();
 
+  // Common.DestinationTag proto
   public static Common.DestinationTag destinationTagProto = Common.DestinationTag.newBuilder()
       .setValue(testDestinationTag)
       .build();
 
-  public static AccountDelete accountDeleteProto = AccountDelete.newBuilder()
+  public static AccountDelete allFieldsAccountDelete = AccountDelete.newBuilder()
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
       .build();
 
-  public static AccountDelete accountDeleteNoTagProto = AccountDelete.newBuilder()
+  public static AccountDelete noDestinationTagAccountDelete = AccountDelete.newBuilder()
       .setDestination(destinationProto)
       .build();
 }
