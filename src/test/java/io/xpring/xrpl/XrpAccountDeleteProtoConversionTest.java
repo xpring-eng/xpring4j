@@ -4,10 +4,8 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.XrpAccountDelete;
-import io.xpring.xrpl.model.XrpAccountSet;
 import org.junit.Test;
 import org.xrpl.rpc.v1.AccountDelete;
-import org.xrpl.rpc.v1.AccountSet;
 
 public class XrpAccountDeleteProtoConversionTest {
   @Test
