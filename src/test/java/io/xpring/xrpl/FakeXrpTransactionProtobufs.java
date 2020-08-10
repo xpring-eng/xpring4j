@@ -2,11 +2,8 @@ package io.xpring.xrpl;
 
 import com.google.protobuf.ByteString;
 import org.xrpl.rpc.v1.AccountAddress;
-import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.AccountSet;
-import org.xrpl.rpc.v1.CheckCancel;
-import org.xrpl.rpc.v1.CheckCash;
-import org.xrpl.rpc.v1.CheckCreate;
+import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.DepositPreauth;
@@ -49,20 +46,6 @@ public class FakeXrpTransactionProtobufs {
   // AccountDelete fake primitive test values
   public static String testDestination = "rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY";
   public static Integer testDestinationTag = 13;
-
-  // CheckCancel fake primitive test values
-  public static ByteString testCheckId = ByteString.copyFromUtf8(
-      "49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0"
-  );
-
-  // CheckCreate fake primitive test values
-  public static Integer testExpiration = 570113521;
-  public static ByteString testInvoiceId = ByteString.copyFromUtf8(
-      "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B"
-  );
-
-  // EscrowCancel fake primitive test values
-  public static Integer testOfferSequence = 23;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -119,133 +102,20 @@ public class FakeXrpTransactionProtobufs {
       .setAddress(testDestination)
       .build();
 
-  // Common.Destination proto
   public static Common.Destination destinationProto = Common.Destination.newBuilder()
       .setValue(accountAddressProto)
       .build();
 
-  // Common.DestinationTag proto
   public static Common.DestinationTag destinationTagProto = Common.DestinationTag.newBuilder()
       .setValue(testDestinationTag)
       .build();
 
-  public static AccountDelete allFieldsAccountDelete = AccountDelete.newBuilder()
+  public static AccountDelete accountDeleteProto = AccountDelete.newBuilder()
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
       .build();
 
-  public static AccountDelete noDestinationTagAccountDelete = AccountDelete.newBuilder()
+  public static AccountDelete accountDeleteNoTagProto = AccountDelete.newBuilder()
       .setDestination(destinationProto)
-      .build();
-
-  // CheckCancel protos
-  public static Common.CheckID checkIdProto = Common.CheckID.newBuilder()
-      .setValue(testCheckId)
-      .build();
-
-  public static CheckCancel checkCancelProto = CheckCancel.newBuilder()
-      .setCheckId(checkIdProto)
-      .build();
-
-  public static CheckCancel invalidCheckCancelProto = CheckCancel.newBuilder().build();
-
-  // CheckCash protos
-  public static CheckCash checkCashProtoWithAmount = CheckCash.newBuilder()
-      .setAmount(FakeXrpProtobufs.amount)
-      .setCheckId(checkIdProto)
-      .build();
-
-  public static CheckCash checkCashProtoWithDeliverMin = CheckCash.newBuilder()
-      .setCheckId(checkIdProto)
-      .setDeliverMin(FakeXrpProtobufs.deliverMin)
-      .build();
-
-  // Invalid CheckCash proto (missing checkId)
-  public static CheckCash invalidCheckCashMissingCheckIdProto = CheckCash.newBuilder()
-      .setAmount(FakeXrpProtobufs.amount)
-      .build();
-
-  public static CurrencyAmount invalidCurrencyAmountWithNoFields = CurrencyAmount.newBuilder()
-      .build();
-
-  public static Common.Amount invalidEmptyAmountWithNoFields = Common.Amount.newBuilder()
-      .setValue(invalidCurrencyAmountWithNoFields)
-      .build();
-
-  // Invalid CheckCash proto (invalid amount)
-  public static CheckCash invalidCheckCashInvalidAmountProto = CheckCash.newBuilder()
-      .setAmount(invalidEmptyAmountWithNoFields)
-      .setCheckId(checkIdProto)
-      .build();
-
-  public static Common.DeliverMin invalidEmptyDeliverMinWithNoFields = Common.DeliverMin.newBuilder()
-      .setValue(invalidCurrencyAmountWithNoFields)
-      .build();
-
-  // Invalid CheckCash proto (invalid deliverMin)
-  public static CheckCash invalidCheckCashInvalidDeliverMinProto = CheckCash.newBuilder()
-      .setCheckId(checkIdProto)
-      .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
-      .build();
-
-  // CheckCreate protos
-  public static Common.Expiration expirationProto = Common.Expiration.newBuilder()
-      .setValue(testExpiration)
-      .build();
-
-  public static CheckCreate allFieldsCheckCreateProto = CheckCreate.newBuilder()
-      .setDestination(destinationProto)
-      .setDestinationTag(destinationTagProto)
-      .setExpiration(expirationProto)
-      .setInvoiceId(FakeXrpProtobufs.invoiceID)
-      .setSendMax(FakeXrpProtobufs.sendMax)
-      .build();
-
-  public static CheckCreate checkCreateProtoWithMandatoryFields = CheckCreate.newBuilder()
-      .setDestination(destinationProto)
-      .setSendMax(FakeXrpProtobufs.sendMax)
-      .build();
-
-  public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
-      .setSendMax(FakeXrpProtobufs.sendMax)
-      .build();
-
-  // DepositPreauth protos
-  public static Common.Authorize authorizeProto = Common.Authorize.newBuilder()
-      .setValue(FakeXrpProtobufs.accountAddress)
-      .build();
-
-  public static Common.Unauthorize unauthorizeProto = Common.Unauthorize.newBuilder()
-      .setValue(FakeXrpProtobufs.accountAddress)
-      .build();
-
-  public static DepositPreauth depositPreauthWithAuthorize = DepositPreauth.newBuilder()
-      .setAuthorize(authorizeProto)
-      .build();
-
-  public static DepositPreauth depositPreauthWithUnauthorize = DepositPreauth.newBuilder()
-      .setUnauthorize(unauthorizeProto)
-      .build();
-
-  // EscrowCancel protos
-  public static Common.Owner ownerProto = Common.Owner.newBuilder()
-      .setValue(FakeXrpProtobufs.accountAddress)
-      .build();
-
-  public static Common.OfferSequence offerSequenceProto =  Common.OfferSequence.newBuilder()
-      .setValue(testOfferSequence)
-      .build();
-
-  public static EscrowCancel escrowCancelProto = EscrowCancel.newBuilder()
-      .setOfferSequence(offerSequenceProto)
-      .setOwner(ownerProto)
-      .build();
-
-  public static EscrowCancel invalidEscrowCancelProtoMissingOwner = EscrowCancel.newBuilder()
-      .setOfferSequence(offerSequenceProto)
-      .build();
-
-  public static EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
-      .setOwner(ownerProto)
       .build();
 }
