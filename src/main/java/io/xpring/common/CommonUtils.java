@@ -22,7 +22,7 @@ public class CommonUtils {
    *
    * @param value - the string to convert to a byte[].
    * @param isHex - flag to indicate if it's a hex string or not.
-   * @return the byte[] value.
+   * @return The byte[] value.
    */
   public static byte[] stringToByteArray(String value, Boolean isHex) {
     if (value.length() == 0) {

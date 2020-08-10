@@ -78,8 +78,7 @@ public interface XrpMemo {
 
 
   /**
-   * Converts strings that may or may not be hex (as indicated by the MemoField argument) into the
-   * byte[] fields needed for an XrpMemo instance.
+   * Constructs an XrpMemo directly from MemoField objects.
    *
    * @param data - an Optional {@link MemoField} with a string which may or may not be converted to a hex string.
    * @param format - an Optional {@link MemoField} with a string which may or may not be converted to a hex string.
