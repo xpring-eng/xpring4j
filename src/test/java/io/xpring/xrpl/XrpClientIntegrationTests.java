@@ -137,7 +137,7 @@ public class XrpClientIntegrationTests {
             XrpTestUtils.noFormatMemo,
             XrpTestUtils.noTypeMemo);
 
-    // WHEN XRP is sent to the Pay ID, including a memo.
+    // WHEN XRP is sent to the XRPL address, including a memo.
     SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
             .amount(AMOUNT)
             .destination(XRPL_ADDRESS)
