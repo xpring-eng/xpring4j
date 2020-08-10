@@ -1,7 +1,14 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.AccountDelete;
+
+import java.util.Optional;
 
 
 /**
@@ -32,4 +39,28 @@ public interface XrpAccountDelete {
    * @see "https://xrpaddress.info"
    */
   String destinationXAddress();
+
+  static XrpAccountDelete from(AccountDelete accountDelete, XrplNetwork xrplNetwork) {
+    // Destination is required
+    if (!accountDelete.hasDestination() || accountDelete.getDestination().getValue().getAddress().isEmpty()) {
+      return null;
+    }
+    final String destination = accountDelete.getDestination().getValue().getAddress();
+
+    Optional<Integer> destinationTag = accountDelete.hasDestinationTag()
+        ? Optional.of(accountDelete.getDestinationTag().getValue())
+        : Optional.empty();
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+        .address(destination)
+        .tag(destinationTag)
+        .isTest(xrplNetwork == XrplNetwork.TEST)
+        .build();
+
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
+
+    return builder()
+      .destinationXAddress(destinationXAddress)
+      .build();
+  }
 }
