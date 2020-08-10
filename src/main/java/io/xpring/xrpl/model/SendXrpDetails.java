@@ -42,7 +42,7 @@ public interface SendXrpDetails {
   /**
    * A list of memos to attach to the payment transaction constructed from these details.
    *
-   * @return An Optional {@link List<XrpMemo>} representing the memos to attached to the payment
+   * @return An Optional List<XrpMemo> representing the memos to attached to the payment
    *         transaction constructed from these details.
    */
   Optional<List<XrpMemo>> memosList();

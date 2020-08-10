@@ -66,6 +66,7 @@ public class XpringClient {
    * @param sendXrpDetails a {@link SendXrpDetails} wrapper object containing details for constructing a transaction.
    * @return A string representing the hash of the submitted transaction.
    * @throws XrpException If the given inputs were invalid.
+   * @throws PayIdException If there is a problem resolving the given PayID.
    */
   public String sendWithDetails(final SendXrpDetails sendXrpDetails) throws XrpException, PayIdException {
     // Resolve the destination address to an XRP address.

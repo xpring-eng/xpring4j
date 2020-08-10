@@ -170,6 +170,7 @@ public class XrpClientIntegrationTests {
             XrpTestUtils.expectedNoTypeMemo
             )
     );
+  }
 
   @Test
   public void enableDepositAuthTest() throws XrpException {

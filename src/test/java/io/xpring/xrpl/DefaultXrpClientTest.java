@@ -552,13 +552,15 @@ public class DefaultXrpClientTest {
 
     // WHEN the account makes a transaction with a memo.
     SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
-                                                  .amount(amount)
-                                                  .destination(destinationAddress)
-                                                  .sender(wallet)
-                                                  .memosList(memos)
-                                                  .build();
+            .amount(amount)
+            .destination(destinationAddress)
+            .sender(wallet)
+            .memosList(memos)
+            .build();
+
     // THEN the transaction is submitted without error and a hash is returned.
     String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
+  }
 
   @Test
   public void enableDepositAuthSuccessfulResponse() throws XrpException, IOException {
