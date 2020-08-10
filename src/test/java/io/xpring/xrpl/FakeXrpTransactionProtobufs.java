@@ -41,50 +41,50 @@ public class FakeXrpTransactionProtobufs {
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
-    .setValue(testClearFlag)
-    .build();
+      .setValue(testClearFlag)
+      .build();
 
   // Common.Domain proto
   public static Common.Domain domainProto = Common.Domain.newBuilder()
-    .setValue(testDomain)
-    .build();
+      .setValue(testDomain)
+      .build();
 
   // Common.EmailHash proto
   public static Common.EmailHash emailHashProto = Common.EmailHash.newBuilder()
-    .setValue(testEmailHash)
-    .build();
+      .setValue(testEmailHash)
+      .build();
 
   // Common.MessageKey proto
   public static Common.MessageKey messageKeyProto = Common.MessageKey.newBuilder()
-    .setValue(testMessageKey)
-    .build();
+      .setValue(testMessageKey)
+      .build();
 
   // Common.SetFlag proto
   public static Common.SetFlag setFlagProto = Common.SetFlag.newBuilder()
-    .setValue(testSetFlag)
-    .build();
+      .setValue(testSetFlag)
+      .build();
 
   // Common.TickSize proto
   public static Common.TickSize tickSizeProto = Common.TickSize.newBuilder()
-    .setValue(testTickSize)
-    .build();
+      .setValue(testTickSize)
+      .build();
 
   // Common.TransferRate proto
   public static Common.TransferRate transferRateProto = Common.TransferRate.newBuilder()
-    .setValue(testTransferRate)
-    .build();
+      .setValue(testTransferRate)
+      .build();
 
   public static AccountSet allFieldsAccountSet = AccountSet.newBuilder()
-    .setClearFlag(clearFlagProto)
-    .setDomain(domainProto)
-    .setEmailHash(emailHashProto)
-    .setMessageKey(messageKeyProto)
-    .setSetFlag(setFlagProto)
-    .setTickSize(tickSizeProto)
-    .setTransferRate(transferRateProto)
-    .build();
+      .setClearFlag(clearFlagProto)
+      .setDomain(domainProto)
+      .setEmailHash(emailHashProto)
+      .setMessageKey(messageKeyProto)
+      .setSetFlag(setFlagProto)
+      .setTickSize(tickSizeProto)
+      .setTransferRate(transferRateProto)
+      .build();
 
   public static AccountSet oneFieldAccountSet = AccountSet.newBuilder()
-    .setClearFlag(clearFlagProto)
-    .build();
+      .setClearFlag(clearFlagProto)
+      .build();
 }
