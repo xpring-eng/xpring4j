@@ -1,7 +1,9 @@
 package io.xpring.xrpl;
 
 import com.google.protobuf.ByteString;
+import org.xrpl.rpc.v1.AccountAddress;
 import org.xrpl.rpc.v1.AccountSet;
+import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.Common;
 
 import java.io.UnsupportedEncodingException;
@@ -37,6 +39,10 @@ public class FakeXrpTransactionProtobufs {
   public static Integer testSetFlag = 4;
   public static Integer testTransferRate = 1234567890;
   public static Integer testTickSize = 7;
+
+  // AccountDelete fake primitive test values
+  public static String testDestination = "rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY";
+  public static Integer testDestinationTag = 13;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -86,5 +92,27 @@ public class FakeXrpTransactionProtobufs {
 
   public static AccountSet oneFieldAccountSet = AccountSet.newBuilder()
       .setClearFlag(clearFlagProto)
+      .build();
+
+  // AccountDelete protos
+  public static AccountAddress accountAddressProto = AccountAddress.newBuilder()
+      .setAddress(testDestination)
+      .build();
+
+  public static Common.Destination destinationProto = Common.Destination.newBuilder()
+      .setValue(accountAddressProto)
+      .build();
+
+  public static Common.DestinationTag destinationTagProto = Common.DestinationTag.newBuilder()
+      .setValue(testDestinationTag)
+      .build();
+
+  public static AccountDelete accountDeleteProto = AccountDelete.newBuilder()
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .build();
+
+  public static AccountDelete accountDeleteNoTagProto = AccountDelete.newBuilder()
+      .setDestination(destinationProto)
       .build();
 }
