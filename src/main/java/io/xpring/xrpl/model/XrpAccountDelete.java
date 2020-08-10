@@ -1,13 +1,8 @@
 package io.xpring.xrpl.model;
 
-import io.xpring.common.XrplNetwork;
-import io.xpring.xrpl.ClassicAddress;
-import io.xpring.xrpl.ImmutableClassicAddress;
-import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.AccountDelete;
 
-import java.util.Optional;
 
 /**
  * Represents an AccountDelete transaction on the XRP Ledger.
@@ -37,40 +32,4 @@ public interface XrpAccountDelete {
    * @see "https://xrpaddress.info"
    */
   String destinationXAddress();
-
-  /**
-   * Constructs an XrpAccountDelete from an AccountDelete protocol buffer.
-   *
-   * @param accountDelete An {@link AccountDelete} (protobuf object) whose field values will be used
-   *                      to construct an XrpAccountDelete
-   * @param xrplNetwork The network that this account is on.
-   *
-   * @return An {@link XrpAccountDelete} with its fields set via the analogous protobuf fields.
-   *
-   * @see <a href="https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L118">
-   * AccountDelete protocol buffer</a>
-   */
-  static XrpAccountDelete from(AccountDelete accountDelete, XrplNetwork xrplNetwork) {
-    // Destination is required
-    if (!accountDelete.hasDestination() || accountDelete.getDestination().getValue().getAddress().isEmpty()) {
-      return null;
-    }
-    final String destination = accountDelete.getDestination().getValue().getAddress();
-
-    Optional<Integer> destinationTag = accountDelete.hasDestinationTag()
-        ? Optional.of(accountDelete.getDestinationTag().getValue())
-        : Optional.empty();
-
-    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-        .address(destination)
-        .tag(destinationTag)
-        .isTest(Utils.isTestNetwork(xrplNetwork))
-        .build();
-
-    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
-
-    return builder()
-      .destinationXAddress(destinationXAddress)
-      .build();
-  }
 }
