@@ -13,7 +13,7 @@ public interface MemoField {
   }
 
   /**
-   * The string to be passed to the Memo
+   * The string to be passed to the Memo.
    *
    * @return A {@link String} to be passed to a memo.
    */

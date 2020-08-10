@@ -41,9 +41,9 @@ public class Utils {
   }
 
   /**
-   * @deprecated Please use CommonUtils.byteArrayToHex
-   *
    * Convert bytes to a hex string.
+   *
+   * @deprecated Please use CommonUtils.byteArrayToHex
    *
    * @param bytes The bytes to convert.
    * @return Hex from bytes.
@@ -54,9 +54,9 @@ public class Utils {
   }
 
   /**
-   * @deprecated Please use CommonUtils.stringToByteArray
-   *
    * Convert a hex string to bytes.
+   *
+   * @deprecated Please use CommonUtils.stringToByteArray
    *
    * @param hex The hex to convert to bytes.
    * @return Bytes from hex.
