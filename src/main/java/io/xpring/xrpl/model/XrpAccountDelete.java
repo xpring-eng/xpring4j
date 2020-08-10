@@ -3,7 +3,6 @@ package io.xpring.xrpl.model;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
-
 import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.AccountDelete;
@@ -40,6 +39,15 @@ public interface XrpAccountDelete {
    */
   String destinationXAddress();
 
+  /**
+   * Constructs an XrpAccountDelete from an AccountDelete protocol buffer.
+   *
+   * @param accountDelete An {@link AccountDelete} (protobuf object) whose field values will be used
+   *                      to construct an XrpAccountDelete
+   * @return An {@link XrpAccountDelete} with its fields set via the analogous protobuf fields.
+   * @see <a href="https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L118">
+   * AccountDelete protocol buffer</a>
+   */
   static XrpAccountDelete from(AccountDelete accountDelete, XrplNetwork xrplNetwork) {
     // Destination is required
     if (!accountDelete.hasDestination() || accountDelete.getDestination().getValue().getAddress().isEmpty()) {
