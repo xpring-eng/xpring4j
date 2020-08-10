@@ -4,8 +4,10 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.XrpAccountDelete;
+import io.xpring.xrpl.model.XrpAccountSet;
 import org.junit.Test;
 import org.xrpl.rpc.v1.AccountDelete;
+import org.xrpl.rpc.v1.AccountSet;
 
 public class XrpAccountDeleteProtoConversionTest {
   @Test
@@ -17,10 +19,10 @@ public class XrpAccountDeleteProtoConversionTest {
     final XrpAccountDelete accountDelete = XrpAccountDelete.from(accountDeleteProto, XrplNetwork.TEST);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-        .address(accountDeleteProto.getDestination().getValue().getAddress())
-        .tag(accountDeleteProto.getDestinationTag().getValue())
-        .isTest(true)
-        .build();
+      .address(accountDeleteProto.getDestination().getValue().getAddress())
+      .tag(accountDeleteProto.getDestinationTag().getValue())
+      .isTest(true)
+      .build();
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // THEN the AccountDelete converted as expected.
@@ -36,9 +38,9 @@ public class XrpAccountDeleteProtoConversionTest {
     final XrpAccountDelete accountDelete = XrpAccountDelete.from(accountDeleteProto, XrplNetwork.TEST);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-        .address(accountDeleteProto.getDestination().getValue().getAddress())
-        .isTest(true)
-        .build();
+      .address(accountDeleteProto.getDestination().getValue().getAddress())
+      .isTest(true)
+      .build();
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // THEN the AccountDelete converted as expected.
