@@ -9,7 +9,6 @@ import org.xrpl.rpc.v1.AccountDelete;
 
 import java.util.Optional;
 
-
 /**
  * Represents an AccountDelete transaction on the XRP Ledger.
  * <p>
