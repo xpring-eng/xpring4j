@@ -24,9 +24,23 @@ public class XrpCheckCashProtoConversionTest {
   }
 
   @Test
-  public void checkCashDeliverMinFieldSetTest() {}
+  public void checkCashDeliverMinFieldSetTest() {
+    // GIVEN a valid CheckCash protocol buffer with deliverMin field set.
+    final CheckCash checkCashProto = FakeXrpTransactionProtobufs.checkCashProtoWithDeliverMin;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpCheckCash checkCash = XrpCheckCash.from(checkCashProto);
+
+    // THEN the CheckCash converted as expected.
+    assertThat(checkCash.amount()).isEmpty();
+    assertThat(checkCash.checkId()).isEqualTo(checkCashProto.getCheckId().getValue().toString());
+    assertThat(checkCash.deliverMin().get())
+      .isEqualTo(XrpCurrencyAmount.from(checkCashProto.getDeliverMin().getValue()));
+  }
 
   @Test
-  public void invalidCheckCashMissingCheckIdTest() {}
+  public void invalidCheckCashMissingCheckIdTest() {
+    
+  }
 
 }
