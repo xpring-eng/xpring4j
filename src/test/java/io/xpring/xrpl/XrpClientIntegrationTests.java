@@ -69,10 +69,9 @@ public class XrpClientIntegrationTests {
   }
 
   @Test
-  public void getPaymentStatusTest() throws XrpException, IOException, InterruptedException {
+  public void getPaymentStatusTest() throws XrpException {
     // GIVEN a hash of a payment transaction.
-    Wallet wallet = XrpTestUtils.randomWalletFromFaucet();
-    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, WALLET);
 
     // WHEN the transaction status is retrieved.
     TransactionStatus transactionStatus = xrpClient.getPaymentStatus(transactionHash);
