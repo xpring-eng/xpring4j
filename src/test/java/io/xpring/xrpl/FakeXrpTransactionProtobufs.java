@@ -1,11 +1,8 @@
 package io.xpring.xrpl;
 
 import com.google.protobuf.ByteString;
-import org.xrpl.rpc.v1.AccountAddress;
-import org.xrpl.rpc.v1.AccountDelete;
-import org.xrpl.rpc.v1.AccountSet;
-import org.xrpl.rpc.v1.CheckCancel;
-import org.xrpl.rpc.v1.Common;
+import io.xpring.xrpl.model.XrpCheckCash;
+import org.xrpl.rpc.v1.*;
 
 import java.io.UnsupportedEncodingException;
 
@@ -134,4 +131,20 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static CheckCancel invalidCheckCancelProto = CheckCancel.newBuilder().build();
+
+  // CheckCash protos
+  public static CheckCash checkCashProtoWithAmount = CheckCash.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setCheckId(checkIdProto)
+      .build();
+
+  public static CheckCash checkCashProtoWithDeliverMin = CheckCash.newBuilder()
+      .setCheckId(checkIdProto)
+      .setDeliverMin(FakeXrpProtobufs.deliverMin)
+      .build();
+
+  // Invalid CheckCash proto (missing checkId)
+  public static CheckCash invalidCheckCashProto = CheckCash.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .build();
 }
