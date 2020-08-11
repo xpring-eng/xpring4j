@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.helpers.XrpTestUtils;
 import io.xpring.xrpl.model.AccountRootFlag;
 import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
@@ -18,6 +19,7 @@ import org.xrpl.rpc.v1.LedgerSpecifier;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -41,14 +43,19 @@ public class XrpClientIntegrationTests {
   private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
 
   /**
-   * The seed for a wallet with funds on the XRP Ledger test net.
-   */
-  private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
-
-  /**
    * Drops of XRP to send.
    */
   private static final BigInteger AMOUNT = new BigInteger("1");
+
+  /**
+   * A Wallet with funds on Testnet.
+   */
+  private static Wallet WALLET = null;
+  static {
+    try {
+      WALLET = XrpTestUtils.randomWalletFromFaucet();
+    } catch (Exception e) {}
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -62,9 +69,9 @@ public class XrpClientIntegrationTests {
   }
 
   @Test
-  public void getPaymentStatusTest() throws XrpException {
+  public void getPaymentStatusTest() throws XrpException, IOException, InterruptedException {
     // GIVEN a hash of a payment transaction.
-    Wallet wallet = new Wallet(WALLET_SEED);
+    Wallet wallet = XrpTestUtils.randomWalletFromFaucet();
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
 
     // WHEN the transaction status is retrieved.
@@ -77,9 +84,7 @@ public class XrpClientIntegrationTests {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
   public void sendXRPTest() throws XrpException {
-    Wallet wallet = new Wallet(WALLET_SEED);
-
-    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, WALLET);
     assertThat(transactionHash).isNotNull();
   }
 
@@ -87,7 +92,6 @@ public class XrpClientIntegrationTests {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void sendXRPWithADestinationTag() throws XrpException {
     // GIVEN a transaction hash representing a payment with a destination tag.
-    Wallet wallet = new Wallet(WALLET_SEED);
     int tag = 123;
     String address = "rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY";
     ClassicAddress classicAddressWithTag = ImmutableClassicAddress.builder()
@@ -96,7 +100,7 @@ public class XrpClientIntegrationTests {
         .isTest(true)
         .build();
     String taggedAddress = Utils.encodeXAddress(classicAddressWithTag);
-    String transactionHash = xrpClient.send(AMOUNT, taggedAddress, wallet);
+    String transactionHash = xrpClient.send(AMOUNT, taggedAddress, WALLET);
 
     // WHEN the payment is retrieved
     XrpTransaction transaction = xrpClient.getPayment(transactionHash);
@@ -123,8 +127,7 @@ public class XrpClientIntegrationTests {
   @Test
   public void getPaymentTest() throws XrpException {
     // GIVEN a hash of a payment transaction.
-    Wallet wallet = new Wallet(WALLET_SEED);
-    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
+    String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, WALLET);
 
     // WHEN the transaction is requested.
     XrpTransaction transaction = xrpClient.getPayment(transactionHash);
@@ -136,10 +139,8 @@ public class XrpClientIntegrationTests {
   @Test
   public void enableDepositAuthTest() throws XrpException {
     // GIVEN an existing testnet account
-    Wallet wallet = new Wallet(WALLET_SEED);
-
     // WHEN enableDepositAuth is called
-    TransactionResult result = xrpClient.enableDepositAuth(wallet);
+    TransactionResult result = xrpClient.enableDepositAuth(WALLET);
 
     // THEN the transaction was successfully submitted and the correct flag was set on the account.
     String transactionHash = result.hash();
@@ -149,7 +150,7 @@ public class XrpClientIntegrationTests {
     ManagedChannel channel = ManagedChannelBuilder.forTarget(GRPC_URL).usePlaintext().build();
     XRPLedgerAPIServiceBlockingStub networkClient = XRPLedgerAPIServiceGrpc.newBlockingStub(channel);
 
-    String address = Utils.decodeXAddress(wallet.getAddress()).address();
+    String address = Utils.decodeXAddress(WALLET.getAddress()).address();
     AccountAddress account = AccountAddress.newBuilder().setAddress(address).build();
 
     LedgerSpecifier ledger = LedgerSpecifier.newBuilder()

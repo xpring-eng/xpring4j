@@ -8,8 +8,10 @@ import io.xpring.payid.XrpPayIdClient;
 import io.xpring.xrpl.Wallet;
 import io.xpring.xrpl.XrpClient;
 import io.xpring.xrpl.XrpException;
+import io.xpring.xrpl.helpers.XrpTestUtils;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 public class XpringClientIntegrationTest {
@@ -35,10 +37,10 @@ public class XpringClientIntegrationTest {
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
-  public void testSendXRP() throws XrpException, PayIdException {
+  public void testSendXRP() throws XrpException, PayIdException, IOException, InterruptedException {
     // GIVEN a Pay ID that will resolve and a wallet with a balance on TestNet.
     String payID = "alice$dev.payid.xpring.money";
-    Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
+    Wallet wallet = XrpTestUtils.randomWalletFromFaucet();
 
     // WHEN XRP is sent to the Pay ID.
     String transactionHash = XPRING_CLIENT.send(new BigInteger("10"), payID, wallet);

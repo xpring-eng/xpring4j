@@ -86,8 +86,6 @@ public class XrpTestUtils {
     con.setDoOutput(true);
     String jsonInputString = String.format("{\"destination\": \"%s\"}", classicAddress);
 
-    System.out.println("Using classic address: " + classicAddress);
-
     try(OutputStream os = con.getOutputStream()) {
       byte[] input = jsonInputString.getBytes("utf-8");
       os.write(input, 0, input.length);
@@ -99,7 +97,6 @@ public class XrpTestUtils {
       while ((responseLine = br.readLine()) != null) {
         response.append(responseLine.trim());
       }
-      System.out.println(response.toString());
     }
 
     // Wait for the faucet to fund our account or until timeout
