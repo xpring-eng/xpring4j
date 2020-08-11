@@ -21,13 +21,6 @@ public class XrpCheckCancelProtoConversionTest {
 
   @Test
   public void invalidCheckCancelTest() {
-    // GIVEN a CheckCancel protocol buffer without a checkId.
-    final CheckCancel checkCancelProto = FakeXrpTransactionProtobufs.invalidCheckCancelProto;
 
-    // WHEN the protocol buffer is converted to a native Java object.
-    final XrpCheckCancel checkCancel = XrpCheckCancel.from(checkCancelProto);
-
-    // THEN the result is undefined.
-    assertThat(checkCancel).isNull();
   }
 }
