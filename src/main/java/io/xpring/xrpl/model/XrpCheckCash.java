@@ -62,7 +62,7 @@ public interface XrpCheckCash {
   static XrpCheckCash from(CheckCash checkCash) {
     // If the amount field is set, it must be able to be transformed into an XrpCurrencyAmount.
     Optional<XrpCurrencyAmount> amount = Optional.empty();
-    if (checkCash.hasDeliverMin()) {
+    if (checkCash.hasAmount()) {
       amount = Optional.ofNullable(XrpCurrencyAmount.from(checkCash.getAmount().getValue()));
       if (!amount.isPresent()) {
         return null;
