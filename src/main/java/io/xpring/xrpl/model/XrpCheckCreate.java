@@ -1,6 +1,11 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.CheckCreate;
 
 import java.util.Optional;
 
@@ -57,4 +62,45 @@ public interface XrpCheckCreate {
    *         to debit the sender, including transfer fees on non-XRP currencies.
    */
   Optional<XrpCurrencyAmount> sendMax();
+
+  /**
+   * Constructs an {@link XrpCheckCreate} from a CheckCreate protocol buffer.
+   *
+   * @param checkCreate A {@link CheckCreate} (protobuf object) whose field values will be used to construct an XrpCheckCreate
+   * @return An {@link XrpCheckCreate} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L145"
+   */
+  static XrpCheckCreate from(CheckCreate checkCreate, XrplNetwork xrplNetwork) {
+    // Destination is required
+    if (!checkCreate.hasDestination() || checkCreate.getDestination().getValue().getAddress().isEmpty()) {
+      return null;
+    }
+    final String destination = checkCreate.getDestination().getValue().getAddress();
+
+    Optional<Integer> destinationTag = checkCreate.hasDestinationTag()
+        ? Optional.of(checkCreate.getDestinationTag().getValue())
+        : Optional.empty();
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+        .address(destination)
+        .tag(destinationTag)
+        .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
+        .build();
+
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
+
+    // If the sendMax field is set, it must be able to be transformed into an XrpCurrencyAmount.
+    Optional<XrpCurrencyAmount> sendMax = Optional.empty();
+    if (checkCreate.hasSendMax()) {
+      sendMax = Optional.ofNullable(XrpCurrencyAmount.from(checkCreate.getSendMax().getValue()));
+      if (!sendMax.isPresent()) {
+        return null;
+      }
+    }
+
+    return builder()
+        .destinationXAddress(destinationXAddress)
+        .sendMax(sendMax)
+        .build();
+  }
 }
