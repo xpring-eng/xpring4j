@@ -17,10 +17,10 @@ public class XrpAccountDeleteProtoConversionTest {
     final XrpAccountDelete accountDelete = XrpAccountDelete.from(accountDeleteProto, XrplNetwork.TEST);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-      .address(accountDeleteProto.getDestination().getValue().getAddress())
-      .tag(accountDeleteProto.getDestinationTag().getValue())
-      .isTest(true)
-      .build();
+        .address(accountDeleteProto.getDestination().getValue().getAddress())
+        .tag(accountDeleteProto.getDestinationTag().getValue())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // THEN the AccountDelete converted as expected.
@@ -36,9 +36,9 @@ public class XrpAccountDeleteProtoConversionTest {
     final XrpAccountDelete accountDelete = XrpAccountDelete.from(accountDeleteProto, XrplNetwork.TEST);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-      .address(accountDeleteProto.getDestination().getValue().getAddress())
-      .isTest(true)
-      .build();
+        .address(accountDeleteProto.getDestination().getValue().getAddress())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // THEN the AccountDelete converted as expected.
