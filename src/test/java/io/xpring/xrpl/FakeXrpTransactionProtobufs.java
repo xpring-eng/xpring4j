@@ -46,7 +46,9 @@ public class FakeXrpTransactionProtobufs {
   public static Integer testDestinationTag = 13;
 
   // CheckCancel fake primitive test values
-  public static ByteString testCheckId = ByteString.copyFromUtf8("49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0");
+  public static ByteString testCheckId = ByteString.copyFromUtf8(
+      "49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0"
+  );
 
   // AccountSet protos
   // Common.ClearFlag proto
