@@ -35,12 +35,17 @@ public class XrpCheckCashProtoConversionTest {
     assertThat(checkCash.amount()).isEmpty();
     assertThat(checkCash.checkId()).isEqualTo(checkCashProto.getCheckId().getValue().toString());
     assertThat(checkCash.deliverMin().get())
-      .isEqualTo(XrpCurrencyAmount.from(checkCashProto.getDeliverMin().getValue()));
+        .isEqualTo(XrpCurrencyAmount.from(checkCashProto.getDeliverMin().getValue()));
   }
 
   @Test
   public void invalidCheckCashMissingCheckIdTest() {
-    
-  }
+    // GIVEN an invalid CheckCash protocol buffer missing the checkId field.
+    final CheckCash checkCashProto = FakeXrpTransactionProtobufs.invalidCheckCashProto;
 
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpCheckCash checkCash = XrpCheckCash.from(checkCashProto);
+
+    assertThat(checkCash).isNull();
+  }
 }
