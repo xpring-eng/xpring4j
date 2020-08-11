@@ -1,8 +1,12 @@
 package io.xpring.xrpl;
 
 import com.google.protobuf.ByteString;
-import io.xpring.xrpl.model.XrpCheckCash;
-import org.xrpl.rpc.v1.*;
+import org.xrpl.rpc.v1.AccountAddress;
+import org.xrpl.rpc.v1.AccountDelete;
+import org.xrpl.rpc.v1.AccountSet;
+import org.xrpl.rpc.v1.CheckCancel;
+import org.xrpl.rpc.v1.CheckCash;
+import org.xrpl.rpc.v1.Common;
 
 import java.io.UnsupportedEncodingException;
 
