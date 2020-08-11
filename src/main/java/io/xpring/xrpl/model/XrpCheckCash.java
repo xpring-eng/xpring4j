@@ -56,7 +56,7 @@ public interface XrpCheckCash {
    *
    * @param checkCash A {@link CheckCash} (protobuf object) whose field values will be used to construct an XrpCheckCash
    * @return an XrpCheckCash with its fields set via the analogous protobuf fields.
-   * @see <a href="https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L132>
+   * @see <a href="https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L132">
    * CheckCash protocol buffer</a>
    */
   static XrpCheckCash from(CheckCash checkCash) {
