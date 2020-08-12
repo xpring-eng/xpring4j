@@ -7,14 +7,36 @@ import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.EscrowCancel;
 
+/**
+ * Represents an EscrowCancel transaction on the XRP Ledger.
+ * <p>
+ * An EscrowCancel transaction returns escrowed XRP to the sender.
+ * </p>
+ *
+ * @see "https://xrpl.org/escrowcancel.html"
+ */
 @Value.Immutable
 public interface XrpEscrowCancel {
   static ImmutableXrpEscrowCancel.Builder builder() {
     return ImmutableXrpEscrowCancel.builder();
   }
 
-  String ownerXAddress();
+  /**
+   * Transaction sequence of EscrowCreate transaction that created the escrow to cancel.
+   *
+   * @return A {@link String} containing the transaction sequence of EscrowCreate transaction that created the escrow
+   *         to cancel.
+   */
   Integer offerSequence();
+
+  /**
+   * Address of the source account that funded the escrow payment, encoded as an X-address
+   * (see https://xrpaddress.info/).
+   *
+   * @return A {@link String} containing the address of the source account that funded the escrow payment, encoded as
+   *         an X-address
+   */
+  String ownerXAddress();
 
   static XrpEscrowCancel from(EscrowCancel escrowCancel, XrplNetwork xrplNetwork) {
     if (!escrowCancel.hasOwner() || !escrowCancel.hasOfferSequence()) {
@@ -22,9 +44,9 @@ public interface XrpEscrowCancel {
     }
 
     ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
-      .address(escrowCancel.getOwner().getValue().getAddress())
-      .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
-      .build();
+        .address(escrowCancel.getOwner().getValue().getAddress())
+        .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
+        .build();
 
     final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
 
