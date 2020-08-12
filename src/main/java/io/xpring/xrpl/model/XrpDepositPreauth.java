@@ -11,8 +11,11 @@ import java.util.Optional;
 
 /**
  * Represents a DepositPreauth transaction on the XRP Ledger.
- * A DepositPreauth transaction gives another account pre-approval to deliver payments to the sender of this transaction.
+ * <p>
+ * A DepositPreauth transaction gives another account pre-approval to deliver payments to the sender of this
+ * transaction.
  * This is only useful if the sender of this transaction is using (or plans to use) Deposit Authorization.
+ * </p>
  *
  * @see "https://xrpl.org/depositpreauth.html"
  */
@@ -34,7 +37,7 @@ public interface XrpDepositPreauth {
    * (Optional) The XRP Ledger address of a sender whose preauthorization should be revoked, encoded as an X-address.
    *
    * @return A {@link String} representing the XRP Ledger address of a sender whose preauthorization should be revoked,
-   * encoded as an X-address.
+   *         encoded as an X-address.
    */
   Optional<String> unauthorizeXAddress();
 
