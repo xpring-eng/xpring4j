@@ -7,8 +7,8 @@ import org.xrpl.rpc.v1.AccountSet;
 import org.xrpl.rpc.v1.CheckCancel;
 import org.xrpl.rpc.v1.CheckCash;
 import org.xrpl.rpc.v1.CheckCreate;
-import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.Common;
+import org.xrpl.rpc.v1.CurrencyAmount;
 
 import java.io.UnsupportedEncodingException;
 
