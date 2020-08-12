@@ -200,4 +200,8 @@ public class FakeXrpTransactionProtobufs {
       .setDestination(destinationProto)
       .setSendMax(FakeXrpProtobufs.sendMax)
       .build();
+
+  public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
+    .setSendMax(FakeXrpProtobufs.sendMax)
+    .build();
 }
