@@ -15,6 +15,9 @@ import java.util.Optional;
  * A DepositPreauth transaction gives another account pre-approval to deliver payments to the sender of this
  * transaction.
  * This is only useful if the sender of this transaction is using (or plans to use) Deposit Authorization.
+ *
+ * Note: authorize and unauthorize are mutually exclusive fields: one but not both should be set.
+ * Addresses are encoded as X-addresses.  See https://xrpaddress.info/.
  * </p>
  *
  * @see "https://xrpl.org/depositpreauth.html"
