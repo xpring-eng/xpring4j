@@ -31,7 +31,7 @@ public interface XrpCheckCreate {
    * @return A {@link String} representing the unique address and (optional) destination tag of the account that
    *         can cash the Check, encoded as an X-address.
    *
-   * @see "https://xrpaddress.info/)"
+   * @see "https://xrpaddress.info/"
    */
   String destinationXAddress();
 
