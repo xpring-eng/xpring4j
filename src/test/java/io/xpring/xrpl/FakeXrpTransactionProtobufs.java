@@ -10,6 +10,7 @@ import org.xrpl.rpc.v1.CheckCreate;
 import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.DepositPreauth;
+import org.xrpl.rpc.v1.EscrowCancel;
 
 import java.io.UnsupportedEncodingException;
 
@@ -59,6 +60,9 @@ public class FakeXrpTransactionProtobufs {
   public static ByteString testInvoiceId = ByteString.copyFromUtf8(
       "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B"
   );
+
+  // EscrowCancel fake primitive test values
+  public static Integer testOfferSequence = 23;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -218,4 +222,30 @@ public class FakeXrpTransactionProtobufs {
   public static DepositPreauth depositPreauthWithAuthorize = DepositPreauth.newBuilder()
       .setAuthorize(authorizeProto)
       .build();
+
+  public static DepositPreauth depositPreauthWithUnauthorize = DepositPreauth.newBuilder()
+      .setUnauthorize(unauthorizeProto)
+      .build();
+
+  // EscrowCancel protos
+  public static Common.Owner ownerProto = Common.Owner.newBuilder()
+    .setValue(FakeXrpProtobufs.accountAddress)
+    .build();
+
+  public Common.OfferSequence offerSequenceProto =  Common.OfferSequence.newBuilder()
+    .setValue(testOfferSequence)
+    .build();
+
+  public EscrowCancel escrowCancelProto = EscrowCancel.newBuilder()
+    .setOfferSequence(offerSequenceProto)
+    .setOwner(ownerProto)
+    .build();
+
+  public EscrowCancel invalidEscrowCancelProtoMissingOwner = EscrowCancel.newBuilder()
+    .setOfferSequence(offerSequenceProto)
+    .build();
+
+  public EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
+    .setOwner(ownerProto)
+    .build();
 }
