@@ -46,7 +46,7 @@ public class XrpCheckCashProtoConversionTest {
     // WHEN the protocol buffer is converted to a native Java object.
     final XrpCheckCash checkCash = XrpCheckCash.from(checkCashProto);
 
-    // THEN the result is undefined.
+    // THEN the result is null.
     assertThat(checkCash).isNull();
   }
 }
