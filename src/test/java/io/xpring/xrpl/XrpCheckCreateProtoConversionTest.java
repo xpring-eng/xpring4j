@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.XrpCheckCreate;
+import io.xpring.xrpl.model.XrpCurrencyAmount;
 import org.junit.Test;
 import org.xrpl.rpc.v1.CheckCreate;
 
@@ -26,8 +27,8 @@ public class XrpCheckCreateProtoConversionTest {
     // THEN the CheckCreate converted as expected.
     assertThat(checkCreate.destinationXAddress()).isEqualTo(destinationXAddress);
     assertThat(checkCreate.expiration().get()).isEqualTo(checkCreateProto.getExpiration().getValue());
-    assertThat(checkCreate.invoiceID().get()).isEqualTo(checkCreateProto.getInvoiceId().getValue());
-    assertThat(checkCreate.sendMax().get()).isEqualTo(checkCreateProto.getSendMax().getValue());
+    assertThat(checkCreate.invoiceID().get()).isEqualTo(checkCreateProto.getInvoiceId().getValue().toString());
+    assertThat(checkCreate.sendMax().get()).isEqualTo(XrpCurrencyAmount.from(checkCreateProto.getSendMax().getValue()));
   }
 
   @Test
