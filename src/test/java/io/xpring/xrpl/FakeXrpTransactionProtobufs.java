@@ -218,8 +218,4 @@ public class FakeXrpTransactionProtobufs {
   public static DepositPreauth depositPreauthWithAuthorize = DepositPreauth.newBuilder()
       .setAuthorize(authorizeProto)
       .build();
-
-  public static DepositPreauth depositPreauthWithUnauthorize = DepositPreauth.newBuilder()
-      .setUnauthorize(unauthorizeProto)
-      .build();
 }
