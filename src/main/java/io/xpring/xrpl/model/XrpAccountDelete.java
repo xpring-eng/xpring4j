@@ -43,6 +43,7 @@ public interface XrpAccountDelete {
    *
    * @param accountDelete An {@link AccountDelete} (protobuf object) whose field values will be used
    *                      to construct an XrpAccountDelete
+   * @param xrplNetwork The network that this account is on.
    *
    * @return An {@link XrpAccountDelete} with its fields set via the analogous protobuf fields.
    *
