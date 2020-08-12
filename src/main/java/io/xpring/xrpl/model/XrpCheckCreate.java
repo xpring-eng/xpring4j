@@ -89,6 +89,14 @@ public interface XrpCheckCreate {
 
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
+    Optional<Integer> expiration = checkCreate.hasExpiration()
+        ? Optional.of(checkCreate.getExpiration().getValue())
+        : Optional.empty();
+
+    Optional<String> invoiceID = checkCreate.hasInvoiceId()
+        ? Optional.of(checkCreate.getInvoiceId().getValue().toString())
+        : Optional.empty();
+
     // If the sendMax field is set, it must be able to be transformed into an XrpCurrencyAmount.
     Optional<XrpCurrencyAmount> sendMax = Optional.empty();
     if (checkCreate.hasSendMax()) {
@@ -100,6 +108,8 @@ public interface XrpCheckCreate {
 
     return builder()
         .destinationXAddress(destinationXAddress)
+        .expiration(expiration)
+        .invoiceID(invoiceID)
         .sendMax(sendMax)
         .build();
   }
