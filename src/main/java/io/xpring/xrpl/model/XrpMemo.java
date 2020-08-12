@@ -1,8 +1,11 @@
 package io.xpring.xrpl.model;
 
 import com.google.protobuf.ByteString;
+import io.xpring.common.CommonUtils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.Memo;
+
+import java.util.Optional;
 
 /**
  * Represents a memo on the XRPLedger.
@@ -71,5 +74,29 @@ public interface XrpMemo {
         .format(format)
         .type(type)
         .build();
+  }
+
+
+  /**
+   * Constructs an XrpMemo directly from MemoField objects.
+   *
+   * @param data - an Optional {@link MemoField} with a string which may or may not be converted to a hex string.
+   * @param format - an Optional {@link MemoField} with a string which may or may not be converted to a hex string.
+   * @param type - an Optional {@link MemoField} with a string which may or may not be converted to a hex string.
+   * @return an {@link XrpMemo} with each potentially hex-encoded field set to the byte[] version of said field.
+   */
+  static XrpMemo fromMemoFields(
+          Optional<MemoField> data,
+          Optional<MemoField> format,
+          Optional<MemoField> type
+  ) {
+    return XrpMemo.builder()
+                .data(data.map(memoField -> CommonUtils.stringToByteArray(memoField.value(), memoField.isHex()))
+                        .orElseGet(() -> new byte[0]))
+                .format(format.map(field -> CommonUtils.stringToByteArray(field.value(), field.isHex()))
+                        .orElseGet(() -> new byte[0]))
+                .type(type.map(value -> CommonUtils.stringToByteArray(value.value(), value.isHex()))
+                        .orElseGet(() -> new byte[0]))
+                .build();
   }
 }

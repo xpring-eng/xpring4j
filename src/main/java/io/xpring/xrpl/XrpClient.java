@@ -1,6 +1,7 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
@@ -67,12 +68,12 @@ public class XrpClient implements XrpClientInterface {
   }
 
   /**
-   * Transact XRP between two accounts on the ledger.
+   * Send the given amount of XRP from the source wallet to the destination address.
    *
    * @param amount             The number of drops of XRP to send.
    * @param destinationAddress The X-Address to send the XRP to.
    * @param sourceWallet       The {@link Wallet} which holds the XRP.
-   * @return A transaction hash for the payment.
+   * @return A string representing the hash of the submitted transaction.
    * @throws XrpException If the given inputs were invalid.
    */
   public String send(
@@ -80,7 +81,24 @@ public class XrpClient implements XrpClientInterface {
       final String destinationAddress,
       final Wallet sourceWallet
   ) throws XrpException {
-    return decoratedClient.send(amount, destinationAddress, sourceWallet);
+    SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
+            .amount(amount)
+            .destination(destinationAddress)
+            .sender(sourceWallet)
+            .build();
+    return decoratedClient.sendWithDetails(sendXrpDetails);
+  }
+
+  /**
+   * Send the given amount of XRP from the source wallet to the destination address, allowing
+   * for additional details to be specified for use with supplementary features of the XRP ledger.
+   *
+   * @param sendXrpDetails a {@link SendXrpDetails} wrapper object containing details for constructing a transaction.
+   * @return A string representing the hash of the submitted transaction.
+   * @throws XrpException If the given inputs were invalid.
+   */
+  public String sendWithDetails(final SendXrpDetails sendXrpDetails) throws XrpException {
+    return decoratedClient.sendWithDetails(sendXrpDetails);
   }
 
   /**
