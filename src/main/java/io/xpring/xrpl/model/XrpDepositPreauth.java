@@ -51,21 +51,19 @@ public interface XrpDepositPreauth {
    * @see "<https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L159"
    */
   static XrpDepositPreauth from(DepositPreauth depositPreauth, XrplNetwork xrplNetwork) {
-    final String authorize = depositPreauth.getAuthorize().getValue().getAddress();
-    final String unauthorize = depositPreauth.getUnauthorize().getValue().getAddress();
     final boolean isTestNetwork = xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV;
 
     Optional<String> authorizeXAddress = Optional.empty();
     Optional<String> unauthorizeXAddress = Optional.empty();
-    if (authorize != null) {
+    if (depositPreauth.hasAuthorize()) {
       ClassicAddress authorizeClassicAddress = ImmutableClassicAddress.builder()
-          .address(authorize)
+          .address(depositPreauth.getAuthorize().getValue().getAddress())
           .isTest(isTestNetwork)
           .build();
       authorizeXAddress = Optional.of(Utils.encodeXAddress(authorizeClassicAddress));
-    } else if (unauthorize != null) {
+    } else if (depositPreauth.hasUnauthorize()) {
       ClassicAddress unauthorizeClassicAddress = ImmutableClassicAddress.builder()
-          .address(unauthorize)
+          .address(depositPreauth.getUnauthorize().getValue().getAddress())
           .isTest(isTestNetwork)
           .build();
       unauthorizeXAddress = Optional.of(Utils.encodeXAddress(unauthorizeClassicAddress));
