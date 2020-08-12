@@ -66,7 +66,8 @@ public interface XrpCheckCreate {
   /**
    * Constructs an {@link XrpCheckCreate} from a CheckCreate protocol buffer.
    *
-   * @param checkCreate A {@link CheckCreate} (protobuf object) whose field values will be used to construct an XrpCheckCreate
+   * @param checkCreate A {@link CheckCreate} (protobuf object) whose field values will be used to construct an
+   *                    XrpCheckCreate
    * @return An {@link XrpCheckCreate} with its fields set via the analogous protobuf fields.
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L145"
    */
