@@ -15,6 +15,8 @@ import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
+import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,6 +43,8 @@ import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -535,6 +539,27 @@ public class DefaultXrpClientTest {
 
     // THEN the result is null.
     assertThat(transaction).isNull();
+  }
+
+  @Test
+  public void sendWithDetailsIncludingMemoTest() throws XrpException, IOException {
+    // GIVEN an XrpClient, a wallet, a BigInteger denominated amount and a memo.
+    DefaultXrpClient xrpClient = getClient();
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+    String destinationAddress = "X76YZJgkFzdSLZQTa7UzVSs34tFgyV2P16S3bvC8AWpmwdH";
+    BigInteger amount = new BigInteger("10");
+    List<XrpMemo> memos = Arrays.asList(XrpTestUtils.iForgotToPickUpCarlMemo);
+
+    // WHEN the account makes a transaction with a memo.
+    SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
+            .amount(amount)
+            .destination(destinationAddress)
+            .sender(wallet)
+            .memosList(memos)
+            .build();
+
+    // THEN the transaction is submitted without error and a hash is returned.
+    String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
   }
 
   @Test
