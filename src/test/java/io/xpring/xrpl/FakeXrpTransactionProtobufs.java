@@ -185,8 +185,8 @@ public class FakeXrpTransactionProtobufs {
 
   // CheckCreate protos
   public static Common.Expiration expirationProto = Common.Expiration.newBuilder()
-    .setValue(testExpiration)
-    .build();
+      .setValue(testExpiration)
+      .build();
 
   public static CheckCreate allFieldsCheckCreateProto = CheckCreate.newBuilder()
       .setDestination(destinationProto)
@@ -202,6 +202,6 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
-    .setSendMax(FakeXrpProtobufs.sendMax)
-    .build();
+      .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
 }
