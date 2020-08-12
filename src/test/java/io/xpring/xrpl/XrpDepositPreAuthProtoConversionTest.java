@@ -18,9 +18,9 @@ public class XrpDepositPreAuthProtoConversionTest {
 
     // THEN the DepositPreauth converted as expected.
     ClassicAddress authorizeClassicAddress = ImmutableClassicAddress.builder()
-        .address(depositPreauthProto.getAuthorize().getValue().getAddress())
-        .isTest(true)
-        .build();
+      .address(depositPreauthProto.getAuthorize().getValue().getAddress())
+      .isTest(true)
+      .build();
     final String authorizeXAddress = Utils.encodeXAddress(authorizeClassicAddress);
 
     assertThat(depositPreauth.authorizeXAddress().get()).isEqualTo(authorizeXAddress);
@@ -36,9 +36,9 @@ public class XrpDepositPreAuthProtoConversionTest {
 
     // THEN the DepositPreauth converted as expected.
     ClassicAddress unauthorizeClassicAddress = ImmutableClassicAddress.builder()
-        .address(depositPreauthProto.getUnauthorize().getValue().getAddress())
-        .isTest(true)
-        .build();
+      .address(depositPreauthProto.getUnauthorize().getValue().getAddress())
+      .isTest(true)
+      .build();
     final String unauthorizeXAddress = Utils.encodeXAddress(unauthorizeClassicAddress);
 
     assertThat(depositPreauth.unauthorizeXAddress().get()).isEqualTo(unauthorizeXAddress);
