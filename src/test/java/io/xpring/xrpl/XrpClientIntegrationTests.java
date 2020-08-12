@@ -1,13 +1,17 @@
 package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
 import io.xpring.xrpl.model.AccountRootFlag;
+import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.TransactionResult;
+import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +25,7 @@ import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -136,6 +141,39 @@ public class XrpClientIntegrationTests {
 
     // THEN it is found and returned.
     assertThat(transaction).isNotNull();
+  }
+
+  @Test(timeout = 20000)
+  public void sendWithDetailsIncludingMemoTest() throws XrpException {
+    // GIVEN an XrpClient, and some SendXrpDetails that include memos
+    Wallet wallet = new Wallet(WALLET_SEED);
+    List<XrpMemo> memos = Arrays.asList(
+            XrpTestUtils.iForgotToPickUpCarlMemo,
+            XrpTestUtils.noDataMemo,
+            XrpTestUtils.noFormatMemo,
+            XrpTestUtils.noTypeMemo);
+
+    // WHEN XRP is sent to the XRPL address, including a memo.
+    SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
+            .amount(AMOUNT)
+            .destination(XRPL_ADDRESS)
+            .sender(wallet)
+            .memosList(memos)
+            .build();
+    String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
+
+    // THEN a transaction hash is returned
+    assertNotNull(transactionHash);
+
+    // AND the memos are present on the on-ledger transaction
+    XrpTransaction transaction = xrpClient.getPayment(transactionHash);
+    assertEquals(transaction.memos(), Arrays.asList(
+            XrpTestUtils.iForgotToPickUpCarlMemo,
+            XrpTestUtils.expectedNoDataMemo,
+            XrpTestUtils.expectedNoFormatMemo,
+            XrpTestUtils.expectedNoTypeMemo
+            )
+    );
   }
 
   @Test
