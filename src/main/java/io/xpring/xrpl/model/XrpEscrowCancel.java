@@ -38,6 +38,15 @@ public interface XrpEscrowCancel {
    */
   String ownerXAddress();
 
+  /**
+   * Constructs an XrpEscrowCancel from an EscrowCancel protocol buffer.
+   *
+   * @param escrowCancel An {@link EscrowCancel} (protobuf object) whose field values will be used to construct an
+   *                     XrpEscrowCancel
+   * @param xrplNetwork The network that this {@link EscrowCancel} should occur on.
+   * @return An {@link XrpEscrowCancel} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L170"
+   */
   static XrpEscrowCancel from(EscrowCancel escrowCancel, XrplNetwork xrplNetwork) {
     if (!escrowCancel.hasOwner() || !escrowCancel.hasOfferSequence()) {
       return null;
