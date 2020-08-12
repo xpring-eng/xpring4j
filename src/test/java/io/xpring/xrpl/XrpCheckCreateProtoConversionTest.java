@@ -32,5 +32,23 @@ public class XrpCheckCreateProtoConversionTest {
   }
 
   @Test
-  public void checkCreateMandatoryFieldsSetTest() {}
+  public void checkCreateMandatoryFieldsSetTest() {
+    // GIVEN a CheckCreate protocol buffer with only mandatory fields set.
+    final CheckCreate checkCreateProto = FakeXrpTransactionProtobufs.checkCreateProtoWithMandatoryFields;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpCheckCreate checkCreate = XrpCheckCreate.from(checkCreateProto, XrplNetwork.TEST);
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+      .address(checkCreateProto.getDestination().getValue().getAddress())
+      .isTest(true)
+      .build();
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
+
+    // THEN the CheckCreate converted as expected.
+    assertThat(checkCreate.destinationXAddress()).isEqualTo(destinationXAddress);
+    assertThat(checkCreate.expiration()).isEmpty();
+    assertThat(checkCreate.invoiceID()).isEmpty();
+    assertThat(checkCreate.sendMax().get()).isEqualTo(XrpCurrencyAmount.from(checkCreateProto.getSendMax().getValue()));
+  }
 }
