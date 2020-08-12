@@ -30,7 +30,7 @@ public interface XrpCheckCash {
    * @return A {@link XrpCurrencyAmount} representing the amount to redeem the Check for, if possible.
    */
   Optional<XrpCurrencyAmount> amount();
-  
+
   /**
    * The ID of the Check ledger object to cash, as a 64-character hexadecimal string.
    *
@@ -38,7 +38,6 @@ public interface XrpCheckCash {
    *         string.
    */
   String checkId();
-
 
   /**
    * (Optional) Redeem the Check for at least this amount and for as much as possible.
