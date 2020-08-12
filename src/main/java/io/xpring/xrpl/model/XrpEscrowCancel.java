@@ -14,7 +14,7 @@ public interface XrpEscrowCancel {
   }
 
   String ownerXAddress();
-  Integer sequenceNumber();
+  Integer offerSequence();
 
   static XrpEscrowCancel from(EscrowCancel escrowCancel, XrplNetwork xrplNetwork) {
     if (!escrowCancel.hasOwner() || !escrowCancel.hasOfferSequence()) {
@@ -26,16 +26,10 @@ public interface XrpEscrowCancel {
       .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
       .build();
 
-    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
-    final String ownerXAddress = Utils.encodeXAddress(
-
-    )
-      owner,
-      undefined,
-      xrplNetwork == XRPLNetwork.Test || xrplNetwork == XRPLNetwork.Dev,
-      )
+    final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
 
     return XrpEscrowCancel.builder()
+      .ownerXAddress(ownerXAddress)
       .build();
   }
 }
