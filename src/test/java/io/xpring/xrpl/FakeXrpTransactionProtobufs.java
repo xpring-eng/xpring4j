@@ -9,6 +9,7 @@ import org.xrpl.rpc.v1.CheckCash;
 import org.xrpl.rpc.v1.CheckCreate;
 import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
+import org.xrpl.rpc.v1.DepositPreauth;
 
 import java.io.UnsupportedEncodingException;
 
@@ -203,5 +204,22 @@ public class FakeXrpTransactionProtobufs {
 
   public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
       .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
+
+  // DepositPreauth protos
+  public static Common.Authorize authorizeProto = Common.Authorize.newBuilder()
+      .setValue(FakeXrpProtobufs.accountAddress)
+      .build();
+
+  public static Common.Unauthorize unauthorizeProto = Common.Unauthorize.newBuilder()
+      .setValue(FakeXrpProtobufs.accountAddress)
+      .build();
+
+  public static DepositPreauth depositPreauthWithAuthorize = DepositPreauth.newBuilder()
+      .setAuthorize(authorizeProto)
+      .build();
+  
+  public static DepositPreauth depositPreauthWithUnauthorize = DepositPreauth.newBuilder()
+      .setUnauthorize(unauthorizeProto)
       .build();
 }
