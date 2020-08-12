@@ -146,7 +146,6 @@ public class XrpClientIntegrationTests {
   @Test(timeout = 20000)
   public void sendWithDetailsIncludingMemoTest() throws XrpException {
     // GIVEN an XrpClient, and some SendXrpDetails that include memos
-    Wallet wallet = new Wallet(WALLET_SEED);
     List<XrpMemo> memos = Arrays.asList(
             XrpTestUtils.iForgotToPickUpCarlMemo,
             XrpTestUtils.noDataMemo,
@@ -157,7 +156,7 @@ public class XrpClientIntegrationTests {
     SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
             .amount(AMOUNT)
             .destination(XRPL_ADDRESS)
-            .sender(wallet)
+            .sender(WALLET)
             .memosList(memos)
             .build();
     String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
