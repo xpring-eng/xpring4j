@@ -41,7 +41,7 @@ public class XrpCheckCashProtoConversionTest {
   @Test
   public void invalidCheckCashMissingCheckIdTest() {
     // GIVEN an invalid CheckCash protocol buffer missing the checkId field.
-    final CheckCash checkCashProto = FakeXrpTransactionProtobufs.invalidCheckCashProto;
+    final CheckCash checkCashProto = FakeXrpTransactionProtobufs.invalidCheckCashMissingCheckIdProto;
 
     // WHEN the protocol buffer is converted to a native Java object.
     final XrpCheckCash checkCash = XrpCheckCash.from(checkCashProto);
@@ -49,4 +49,29 @@ public class XrpCheckCashProtoConversionTest {
     // THEN the result is null.
     assertThat(checkCash).isNull();
   }
+
+  @Test
+  public void invalidCheckCashInvalidAmountTest() {
+    // GIVEN an invalid CheckCash protocol buffer with an invalid amount field.
+    final CheckCash checkCashProto = FakeXrpTransactionProtobufs.invalidCheckCashInvalidAmountProto;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpCheckCash checkCash = XrpCheckCash.from(checkCashProto);
+
+    // THEN the result is null.
+    assertThat(checkCash).isNull();
+  }
+
+  @Test
+  public void invalidCheckCashInvalidDeliverMinTest() {
+    // GIVEN an invalid CheckCash protocol buffer with an invalid amount field.
+    final CheckCash checkCashProto = FakeXrpTransactionProtobufs.invalidCheckCashInvalidDeliverMinProto;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpCheckCash checkCash = XrpCheckCash.from(checkCashProto);
+
+    // THEN the result is null.
+    assertThat(checkCash).isNull();
+  }
+
 }
