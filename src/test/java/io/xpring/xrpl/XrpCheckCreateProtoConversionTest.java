@@ -20,10 +20,10 @@ public class XrpCheckCreateProtoConversionTest {
     final XrpCheckCreate checkCreate = XrpCheckCreate.from(checkCreateProto, XrplNetwork.TEST);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-      .address(checkCreateProto.getDestination().getValue().getAddress())
-      .tag(checkCreateProto.getDestinationTag().getValue())
-      .isTest(true)
-      .build();
+        .address(checkCreateProto.getDestination().getValue().getAddress())
+        .tag(checkCreateProto.getDestinationTag().getValue())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // THEN the CheckCreate converted as expected.
@@ -42,9 +42,9 @@ public class XrpCheckCreateProtoConversionTest {
     final XrpCheckCreate checkCreate = XrpCheckCreate.from(checkCreateProto, XrplNetwork.TEST);
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-      .address(checkCreateProto.getDestination().getValue().getAddress())
-      .isTest(true)
-      .build();
+        .address(checkCreateProto.getDestination().getValue().getAddress())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     // THEN the CheckCreate converted as expected.
