@@ -51,10 +51,13 @@ public class XrpClientIntegrationTests {
    * A Wallet with funds on Testnet.
    */
   private static Wallet WALLET = null;
+
   static {
     try {
       WALLET = XrpTestUtils.randomWalletFromFaucet();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      System.out.println(e.getStackTrace());
+    }
   }
 
   @Before

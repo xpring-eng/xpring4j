@@ -60,11 +60,11 @@ public class XrpTestUtils {
    * Generates a random wallet and funds using the XRPL Testnet faucet.
    */
   public static Wallet randomWalletFromFaucet() throws XrpException, IOException, InterruptedException {
-    Integer timeoutInSeconds = 20;
+    final Integer timeoutInSeconds = 20;
 
     Wallet wallet = Wallet.generateRandomWallet(true).getWallet();
-    String xAddress = wallet.getAddress();
-    String classicAddress = Utils.decodeXAddress(xAddress).address();
+    String address = wallet.getAddress();
+    final String classicAddress = Utils.decodeXAddress(address).address();
 
     String rippledUrl = "test.xrp.xpring.io:50051";
     XrpClient xrpClient = new XrpClient(rippledUrl, XrplNetwork.TEST);
@@ -72,13 +72,13 @@ public class XrpTestUtils {
     // Balance prior to asking for more funds
     BigInteger startingBalance;
     try {
-      startingBalance = xrpClient.getBalance(xAddress);
+      startingBalance = xrpClient.getBalance(address);
     } catch (Exception exception) {
       startingBalance = new BigInteger("0");
     }
     // Ask the faucet to send funds to the given address
-    String faucetURL = "https://faucet.altnet.rippletest.net/accounts";
-    URL url = new URL(faucetURL);
+    String faucetUrl = "https://faucet.altnet.rippletest.net/accounts";
+    URL url = new URL(faucetUrl);
     HttpURLConnection con = (HttpURLConnection)url.openConnection();
     con.setRequestMethod("POST");
     con.setRequestProperty("Content-Type", "application/json");
@@ -86,11 +86,11 @@ public class XrpTestUtils {
     con.setDoOutput(true);
     String jsonInputString = String.format("{\"destination\": \"%s\"}", classicAddress);
 
-    try(OutputStream os = con.getOutputStream()) {
+    try (OutputStream os = con.getOutputStream()) {
       byte[] input = jsonInputString.getBytes("utf-8");
       os.write(input, 0, input.length);
     }
-    try(BufferedReader br = new BufferedReader(
+    try (BufferedReader br = new BufferedReader(
             new InputStreamReader(con.getInputStream(), "utf-8"))) {
       StringBuilder response = new StringBuilder();
       String responseLine;
@@ -109,7 +109,7 @@ public class XrpTestUtils {
       // Request our current balance
       BigInteger currentBalance;
       try {
-        currentBalance = xrpClient.getBalance(xAddress);
+        currentBalance = xrpClient.getBalance(address);
       } catch (Exception exception) {
         currentBalance = new BigInteger("0");
       }
