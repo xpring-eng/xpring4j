@@ -60,5 +60,14 @@ public interface XrpEscrowCreate {
    */
   String destinationXAddress();
 
+  /**
+   * (Optional) The time, in seconds since the Ripple Epoch, when the escrowed XRP can be released to the recipient.
+   * <p>
+   * This value is immutable; the funds cannot move until this time is reached.
+   * </p>
+   *
+   * @return An {@link Integer} containing the time, in seconds since the Ripple Epoch, when the escrowed XRP can be
+   *         released to the recipient.
+   */
   Optional<Integer> finishAfter();
 }
