@@ -6,8 +6,9 @@ import java.util.Optional;
 
 /**
  * Represents an EscrowCreate transaction on the XRP Ledger.
- *
+ * <p>
  * An EscrowCreate transaction sequesters XRP until the escrow process either finishes or is canceled.
+ * </p>
  *
  * @see "https://xrpl.org/escrowcreate.html"
  */
@@ -23,9 +24,8 @@ public interface XrpEscrowCreate {
    * Once escrowed, the XRP can either go to the Destination address (after the FinishAfter time)
    * or returned to the sender (after the CancelAfter time).
    * </p>
-   * @return An {@link XrpCurrencyAmount} containing the amount of XRP, in drops, to deduct from the sender's balance and escrow.
-   *         Once escrowed, the XRP can either go to the Destination address (after the FinishAfter time)
-   *         or returned to the sender (after the CancelAfter time).
+   * @return An {@link XrpCurrencyAmount} containing the amount of XRP, in drops, to deduct from the sender's balance
+   *         and escrow.
    */
   XrpCurrencyAmount amount();
 
