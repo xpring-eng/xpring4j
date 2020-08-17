@@ -232,20 +232,20 @@ public class FakeXrpTransactionProtobufs {
     .setValue(FakeXrpProtobufs.accountAddress)
     .build();
 
-  public Common.OfferSequence offerSequenceProto =  Common.OfferSequence.newBuilder()
+  public static Common.OfferSequence offerSequenceProto =  Common.OfferSequence.newBuilder()
     .setValue(testOfferSequence)
     .build();
 
-  public EscrowCancel escrowCancelProto = EscrowCancel.newBuilder()
+  public static EscrowCancel escrowCancelProto = EscrowCancel.newBuilder()
     .setOfferSequence(offerSequenceProto)
     .setOwner(ownerProto)
     .build();
 
-  public EscrowCancel invalidEscrowCancelProtoMissingOwner = EscrowCancel.newBuilder()
+  public static EscrowCancel invalidEscrowCancelProtoMissingOwner = EscrowCancel.newBuilder()
     .setOfferSequence(offerSequenceProto)
     .build();
 
-  public EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
+  public static EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
     .setOwner(ownerProto)
     .build();
 }
