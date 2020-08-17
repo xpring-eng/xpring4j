@@ -22,13 +22,34 @@ public class XrpEscrowCancelProtoConversionTest {
     assertThat(escrowCancel.offerSequence()).isEqualTo(escrowCancelProto.getOfferSequence().getValue());
 
     ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
-      .address(escrowCancelProto.getOwner().getValue().getAddress())
-      .isTest(true)
-      .build();
+        .address(escrowCancelProto.getOwner().getValue().getAddress())
+        .isTest(true)
+        .build();
     final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
     assertThat(escrowCancel.ownerXAddress()).isEqualTo(ownerXAddress);
   }
 
   @Test
-  public void invalidEscrowCancelMissingOwnerTest() {}
+  public void invalidEscrowCancelMissingOfferSequenceTest() {
+    // GIVEN an EscrowCancel protocol buffer without an offer sequence set.
+    final EscrowCancel escrowCancelProto = FakeXrpTransactionProtobufs.invalidEscrowCancelProtoMissingOfferSequence;
+
+    // WHEN the protocol buffer is converted to a native Typescript type.
+    final XrpEscrowCancel escrowCancel = XrpEscrowCancel.from(escrowCancelProto, XrplNetwork.TEST);
+
+    // THEN the result is null.
+    assertThat(escrowCancel).isNull();
+  }
+
+  @Test
+  public void invalidEscrowCancelMissingOwnerTest() {
+    // GIVEN an EscrowCancel protocol buffer without an owner set.
+    final EscrowCancel escrowCancelProto = FakeXrpTransactionProtobufs.invalidEscrowCancelProtoMissingOwner;
+
+    // WHEN the protocol buffer is converted to a native Typescript type.
+    final XrpEscrowCancel escrowCancel = XrpEscrowCancel.from(escrowCancelProto, XrplNetwork.TEST);
+
+    // THEN the result is null.
+    assertThat(escrowCancel).isNull();
+  }
 }
