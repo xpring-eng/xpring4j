@@ -48,7 +48,7 @@ public interface XrpEscrowCancel {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L170"
    */
   static XrpEscrowCancel from(EscrowCancel escrowCancel, XrplNetwork xrplNetwork) {
-    if (!escrowCancel.hasOwner() || !escrowCancel.hasOfferSequence()) {
+    if (!escrowCancel.hasOfferSequence() || !escrowCancel.hasOwner()) {
       return null;
     }
 
