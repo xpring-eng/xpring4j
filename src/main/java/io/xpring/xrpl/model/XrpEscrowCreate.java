@@ -1,6 +1,8 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XrplNetwork;
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.EscrowCreate;
 
 import java.util.Optional;
 
@@ -70,4 +72,27 @@ public interface XrpEscrowCreate {
    *         released to the recipient.
    */
   Optional<Integer> finishAfter();
+
+  static XrpEscrowCreate from(EscrowCreate escrowCreate, XrplNetwork xrplNetwork) {
+    if (!escrowCreate.hasAmount()) {
+      return null;
+    }
+
+    if (!escrowCreate.hasDestination()) {
+      return null;
+    }
+
+    final Optional<Integer> cancelAfter =  escrowCreate.hasCancelAfter()
+        ? Optional.of(escrowCreate.getCancelAfter().getValue())
+        : Optional.empty();
+
+    final Optional<String> condition = escrowCreate.hasCondition()
+        ? Optional.of(escrowCreate.getCondition().getValue().toString())
+        : Optional.empty();
+
+    return XrpEscrowCreate.builder()
+      .cancelAfter(cancelAfter)
+      .condition(condition)
+      .build();
+  }
 }
