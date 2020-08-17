@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import io.xpring.common.Result;
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
@@ -92,6 +93,15 @@ public class FakeXrpClient implements XrpClientDecorator, XrpClientInterface {
 
   @Override
   public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XrpException {
+    if (this.sendResult.isError()) {
+      throw this.sendResult.getError();
+    } else {
+      return sendResult.getValue();
+    }
+  }
+
+  @Override
+  public String sendWithDetails(SendXrpDetails sendXrpDetails) throws XrpException {
     if (this.sendResult.isError()) {
       throw this.sendResult.getError();
     } else {

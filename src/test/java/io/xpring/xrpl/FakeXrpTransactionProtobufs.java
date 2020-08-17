@@ -1,7 +1,10 @@
 package io.xpring.xrpl;
 
 import com.google.protobuf.ByteString;
+import org.xrpl.rpc.v1.AccountAddress;
+import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.AccountSet;
+import org.xrpl.rpc.v1.CheckCancel;
 import org.xrpl.rpc.v1.Common;
 
 import java.io.UnsupportedEncodingException;
@@ -37,6 +40,15 @@ public class FakeXrpTransactionProtobufs {
   public static Integer testSetFlag = 4;
   public static Integer testTransferRate = 1234567890;
   public static Integer testTickSize = 7;
+
+  // AccountDelete fake primitive test values
+  public static String testDestination = "rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY";
+  public static Integer testDestinationTag = 13;
+
+  // CheckCancel fake primitive test values
+  public static ByteString testCheckId = ByteString.copyFromUtf8(
+      "49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0"
+  );
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -87,4 +99,39 @@ public class FakeXrpTransactionProtobufs {
   public static AccountSet oneFieldAccountSet = AccountSet.newBuilder()
       .setClearFlag(clearFlagProto)
       .build();
+
+  // AccountDelete protos
+  public static AccountAddress accountAddressProto = AccountAddress.newBuilder()
+      .setAddress(testDestination)
+      .build();
+
+  // Common.Destination proto
+  public static Common.Destination destinationProto = Common.Destination.newBuilder()
+      .setValue(accountAddressProto)
+      .build();
+
+  // Common.DestinationTag proto
+  public static Common.DestinationTag destinationTagProto = Common.DestinationTag.newBuilder()
+      .setValue(testDestinationTag)
+      .build();
+
+  public static AccountDelete allFieldsAccountDelete = AccountDelete.newBuilder()
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .build();
+
+  public static AccountDelete noDestinationTagAccountDelete = AccountDelete.newBuilder()
+      .setDestination(destinationProto)
+      .build();
+
+  // CheckCancel protos
+  public static Common.CheckID checkIdProto = Common.CheckID.newBuilder()
+      .setValue(testCheckId)
+      .build();
+
+  public static CheckCancel checkCancelProto = CheckCancel.newBuilder()
+      .setCheckId(checkIdProto)
+      .build();
+
+  public static CheckCancel invalidCheckCancelProto = CheckCancel.newBuilder().build();
 }
