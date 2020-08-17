@@ -203,7 +203,5 @@ public class FakeXrpTransactionProtobufs {
 
   public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
       .setSendMax(FakeXrpProtobufs.sendMax)
-      .setCheckId(checkIdProto)
-      .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
       .build();
 }
