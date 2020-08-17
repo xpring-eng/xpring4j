@@ -15,7 +15,7 @@ public class XrpEscrowCancelProtoConversionTest {
     // GIVEN an EscrowCancel protocol buffer with all fields set.
     final EscrowCancel escrowCancelProto = FakeXrpTransactionProtobufs.escrowCancelProto;
 
-    // WHEN the protocol buffer is converted to a native Typescript type.
+    // WHEN the protocol buffer is converted to a native Java object.
     final XrpEscrowCancel escrowCancel = XrpEscrowCancel.from(escrowCancelProto, XrplNetwork.TEST);
 
     // THEN the EscrowCancel converted as expected.
@@ -34,7 +34,7 @@ public class XrpEscrowCancelProtoConversionTest {
     // GIVEN an EscrowCancel protocol buffer without an offer sequence set.
     final EscrowCancel escrowCancelProto = FakeXrpTransactionProtobufs.invalidEscrowCancelProtoMissingOfferSequence;
 
-    // WHEN the protocol buffer is converted to a native Typescript type.
+    // WHEN the protocol buffer is converted to a native Java object.
     final XrpEscrowCancel escrowCancel = XrpEscrowCancel.from(escrowCancelProto, XrplNetwork.TEST);
 
     // THEN the result is null.
@@ -46,7 +46,7 @@ public class XrpEscrowCancelProtoConversionTest {
     // GIVEN an EscrowCancel protocol buffer without an owner set.
     final EscrowCancel escrowCancelProto = FakeXrpTransactionProtobufs.invalidEscrowCancelProtoMissingOwner;
 
-    // WHEN the protocol buffer is converted to a native Typescript type.
+    // WHEN the protocol buffer is converted to a native Java object.
     final XrpEscrowCancel escrowCancel = XrpEscrowCancel.from(escrowCancelProto, XrplNetwork.TEST);
 
     // THEN the result is null.
