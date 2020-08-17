@@ -49,6 +49,15 @@ public interface XrpEscrowCreate {
    */
   Optional<String> condition();
 
+  /**
+   * Address and (optional) destination tag to receive escrowed XRP, encoded as an X-address.
+   * <p>
+   * (See https://xrpaddress.info/)
+   * </p>
+   *
+   * @return A {@link String} containing the address and (optional) destination tag to receive escrowed XRP,
+   *         encoded as an X-address.
+   */
   String destinationXAddress();
 
   Optional<Integer> finishAfter();
