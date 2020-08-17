@@ -52,6 +52,8 @@ public interface XrpEscrowCancel {
       return null;
     }
 
+    final Integer offerSequence = escrowCancel.getOfferSequence().getValue();
+
     ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
         .address(escrowCancel.getOwner().getValue().getAddress())
         .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
@@ -60,6 +62,7 @@ public interface XrpEscrowCancel {
     final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
 
     return XrpEscrowCancel.builder()
+      .offerSequence(offerSequence)
       .ownerXAddress(ownerXAddress)
       .build();
   }
