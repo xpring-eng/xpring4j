@@ -39,6 +39,14 @@ public interface XrpEscrowCreate {
    */
   Optional<Integer> cancelAfter();
 
+  /**
+   * (Optional) Hex value representing a PREIMAGE-SHA-256 crypto-condition.
+   * <p>
+   * The funds can only be delivered to the recipient if this condition is fulfilled.
+   * </p>
+   *
+   * @return A {@link String} containing a hex value representing a PREIMAGE-SHA-256 crypto-condition.
+   */
   Optional<String> condition();
 
   String destinationXAddress();
