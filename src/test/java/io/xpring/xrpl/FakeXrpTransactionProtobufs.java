@@ -5,7 +5,9 @@ import org.xrpl.rpc.v1.AccountAddress;
 import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.AccountSet;
 import org.xrpl.rpc.v1.CheckCancel;
+import org.xrpl.rpc.v1.CheckCash;
 import org.xrpl.rpc.v1.Common;
+import org.xrpl.rpc.v1.CurrencyAmount;
 
 import java.io.UnsupportedEncodingException;
 
@@ -134,4 +136,43 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static CheckCancel invalidCheckCancelProto = CheckCancel.newBuilder().build();
+
+  // CheckCash protos
+  public static CheckCash checkCashProtoWithAmount = CheckCash.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setCheckId(checkIdProto)
+      .build();
+
+  public static CheckCash checkCashProtoWithDeliverMin = CheckCash.newBuilder()
+      .setCheckId(checkIdProto)
+      .setDeliverMin(FakeXrpProtobufs.deliverMin)
+      .build();
+
+  // Invalid CheckCash proto (missing checkId)
+  public static CheckCash invalidCheckCashMissingCheckIdProto = CheckCash.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .build();
+
+  public static CurrencyAmount invalidCurrencyAmountWithNoFields = CurrencyAmount.newBuilder()
+      .build();
+
+  public static Common.Amount invalidEmptyAmountWithNoFields = Common.Amount.newBuilder()
+      .setValue(invalidCurrencyAmountWithNoFields)
+      .build();
+
+  // Invalid CheckCash proto (invalid amount)
+  public static CheckCash invalidCheckCashInvalidAmountProto = CheckCash.newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setCheckId(checkIdProto)
+      .build();
+
+  public static Common.DeliverMin invalidEmptyDeliverMinWithNoFields = Common.DeliverMin.newBuilder()
+      .setValue(invalidCurrencyAmountWithNoFields)
+      .build();
+
+  // Invalid CheckCash proto (invalid deliverMin)
+  public static CheckCash invalidCheckCashInvalidDeliverMinProto = CheckCash.newBuilder()
+      .setCheckId(checkIdProto)
+      .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
+      .build();
 }
