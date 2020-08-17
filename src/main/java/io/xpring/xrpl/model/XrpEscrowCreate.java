@@ -29,6 +29,14 @@ public interface XrpEscrowCreate {
    */
   XrpCurrencyAmount amount();
 
+  /**
+   * (Optional) The time, in seconds since the Ripple Epoch, when this escrow expires.
+   * <p>
+   * This value is immutable; the funds can only be returned the sender after this time.
+   * </p>
+   *
+   * @return An {@link Integer} containing the time, in seconds since the Ripple Epoch, when this escrow expires.
+   */
   Optional<Integer> cancelAfter();
 
   Optional<String> condition();
