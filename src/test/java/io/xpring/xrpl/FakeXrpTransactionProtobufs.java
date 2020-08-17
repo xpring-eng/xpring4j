@@ -229,23 +229,23 @@ public class FakeXrpTransactionProtobufs {
 
   // EscrowCancel protos
   public static Common.Owner ownerProto = Common.Owner.newBuilder()
-    .setValue(FakeXrpProtobufs.accountAddress)
-    .build();
+      .setValue(FakeXrpProtobufs.accountAddress)
+      .build();
 
   public static Common.OfferSequence offerSequenceProto =  Common.OfferSequence.newBuilder()
-    .setValue(testOfferSequence)
-    .build();
+      .setValue(testOfferSequence)
+      .build();
 
   public static EscrowCancel escrowCancelProto = EscrowCancel.newBuilder()
-    .setOfferSequence(offerSequenceProto)
-    .setOwner(ownerProto)
-    .build();
+      .setOfferSequence(offerSequenceProto)
+      .setOwner(ownerProto)
+      .build();
 
   public static EscrowCancel invalidEscrowCancelProtoMissingOwner = EscrowCancel.newBuilder()
-    .setOfferSequence(offerSequenceProto)
-    .build();
+      .setOfferSequence(offerSequenceProto)
+      .build();
 
   public static EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
-    .setOwner(ownerProto)
-    .build();
+      .setOwner(ownerProto)
+      .build();
 }
