@@ -179,9 +179,9 @@ public class FakeXrpTransactionProtobufs {
 
   // Invalid CheckCash proto (invalid deliverMin)
   public static CheckCash invalidCheckCashInvalidDeliverMinProto = CheckCash.newBuilder()
-    .setCheckId(checkIdProto)
-    .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
-    .build();
+      .setCheckId(checkIdProto)
+      .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
+      .build();
 
   // CheckCreate protos
   public static Common.Expiration expirationProto = Common.Expiration.newBuilder()
