@@ -78,6 +78,11 @@ public interface XrpEscrowCreate {
       return null;
     }
 
+    XrpCurrencyAmount amount = XrpCurrencyAmount.from(escrowCreate.getAmount().getValue());
+    if (amount == null) {
+      return null;
+    }
+
     if (!escrowCreate.hasDestination()) {
       return null;
     }
@@ -91,6 +96,7 @@ public interface XrpEscrowCreate {
         : Optional.empty();
 
     return XrpEscrowCreate.builder()
+      .amount(amount)
       .cancelAfter(cancelAfter)
       .condition(condition)
       .build();
