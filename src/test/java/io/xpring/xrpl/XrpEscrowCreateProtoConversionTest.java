@@ -1,7 +1,9 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.XrpCurrencyAmount;
 import io.xpring.xrpl.model.XrpEscrowCreate;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Test;
 import org.xrpl.rpc.v1.EscrowCreate;
 
@@ -17,6 +19,9 @@ public class XrpEscrowCreateProtoConversionTest {
     final XrpEscrowCreate escrowCreate = XrpEscrowCreate.from(escrowCreateProto, XrplNetwork.TEST);
 
     // THEN the EscrowCreate converted as expected.
-    assertThat(escrowCreate.amount()).isEqualTo(escrowCreateProto.getAmount().getValue());
+    assertThat(escrowCreate.amount()).isEqualTo(XrpCurrencyAmount.from(escrowCreateProto.getAmount().getValue()));
+    assertThat(escrowCreate.cancelAfter().get()).isEqualTo(escrowCreateProto.getCancelAfter().getValue());
+    assertThat(escrowCreate.condition().get()).isEqualTo(escrowCreateProto.getCondition().getValue().toString());
+    assertThat(escrowCreate.finishAfter().get()).isEqualTo(escrowCreateProto.getFinishAfter().getValue());
   }
 }

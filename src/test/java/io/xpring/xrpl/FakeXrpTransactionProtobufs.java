@@ -65,6 +65,17 @@ public class FakeXrpTransactionProtobufs {
   // EscrowCancel fake primitive test values
   public static Integer testOfferSequence = 23;
 
+  // EscrowCreate fake primitive test values
+  public static ByteString testCondition;
+
+  static {
+    try {
+      testCondition = ByteString.copyFrom("condition", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
@@ -255,6 +266,10 @@ public class FakeXrpTransactionProtobufs {
       .setValue(testExpiration)
       .build();
 
+  public static Common.Condition conditionProto = Common.Condition.newBuilder()
+      .setValue(testCondition)
+      .build();
+
   public static Common.FinishAfter finishAfterProto = Common.FinishAfter.newBuilder()
       .setValue(testExpiration)
       .build();
@@ -262,6 +277,7 @@ public class FakeXrpTransactionProtobufs {
   public static EscrowCreate escrowCreateProto = EscrowCreate.newBuilder()
       .setAmount(FakeXrpProtobufs.amount)
       .setCancelAfter(cancelAfterProto)
+      .setCondition(conditionProto)
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
       .setFinishAfter(finishAfterProto)
