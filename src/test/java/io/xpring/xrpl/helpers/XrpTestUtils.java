@@ -80,22 +80,23 @@ public class XrpTestUtils {
     } catch (Exception exception) {
       startingBalance = new BigInteger("0");
     }
+
     // Ask the faucet to send funds to the given address
     String faucetUrl = "https://faucet.altnet.rippletest.net/accounts";
     URL url = new URL(faucetUrl);
-    HttpURLConnection con = (HttpURLConnection)url.openConnection();
-    con.setRequestMethod("POST");
-    con.setRequestProperty("Content-Type", "application/json");
-    con.setRequestProperty("Accept", "application/json");
-    con.setDoOutput(true);
+    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+    connection.setRequestMethod("POST");
+    connection.setRequestProperty("Content-Type", "application/json");
+    connection.setRequestProperty("Accept", "application/json");
+    connection.setDoOutput(true);
     String jsonInputString = String.format("{\"destination\": \"%s\"}", classicAddress);
 
-    try (OutputStream os = con.getOutputStream()) {
+    try (OutputStream outputStream = connection.getOutputStream()) {
       byte[] input = jsonInputString.getBytes("utf-8");
-      os.write(input, 0, input.length);
+      outputStream.write(input, 0, input.length);
     }
     try (BufferedReader br = new BufferedReader(
-            new InputStreamReader(con.getInputStream(), "utf-8"))) {
+            new InputStreamReader(connection.getInputStream(), "utf-8"))) {
       StringBuilder response = new StringBuilder();
       String responseLine;
       while ((responseLine = br.readLine()) != null) {
