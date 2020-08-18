@@ -29,7 +29,7 @@ public class XrpCheckCreateProtoConversionTest {
     // THEN the CheckCreate converted as expected.
     assertThat(checkCreate.destinationXAddress()).isEqualTo(destinationXAddress);
     assertThat(checkCreate.expiration().get()).isEqualTo(checkCreateProto.getExpiration().getValue());
-    assertThat(checkCreate.invoiceID().get()).isEqualTo(checkCreateProto.getInvoiceId().getValue().toString());
+    assertThat(checkCreate.invoiceId().get()).isEqualTo(checkCreateProto.getInvoiceId().getValue().toString());
     assertThat(checkCreate.sendMax().get()).isEqualTo(XrpCurrencyAmount.from(checkCreateProto.getSendMax().getValue()));
   }
 
@@ -50,7 +50,7 @@ public class XrpCheckCreateProtoConversionTest {
     // THEN the CheckCreate converted as expected.
     assertThat(checkCreate.destinationXAddress()).isEqualTo(destinationXAddress);
     assertThat(checkCreate.expiration()).isEmpty();
-    assertThat(checkCreate.invoiceID()).isEmpty();
+    assertThat(checkCreate.invoiceId()).isEmpty();
     assertThat(checkCreate.sendMax().get()).isEqualTo(XrpCurrencyAmount.from(checkCreateProto.getSendMax().getValue()));
   }
 
