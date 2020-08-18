@@ -111,6 +111,9 @@ public interface XrpEscrowCreate {
         .build();
 
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
+    if (destinationXAddress == null) {
+      return null;
+    }
 
     final Optional<Integer> cancelAfter =  escrowCreate.hasCancelAfter()
         ? Optional.of(escrowCreate.getCancelAfter().getValue())
@@ -120,11 +123,16 @@ public interface XrpEscrowCreate {
         ? Optional.of(escrowCreate.getCondition().getValue().toString())
         : Optional.empty();
 
+    final Optional<Integer> finishAfter =  escrowCreate.hasFinishAfter()
+        ? Optional.of(escrowCreate.getFinishAfter().getValue())
+        : Optional.empty();
+
     return XrpEscrowCreate.builder()
         .amount(amount)
         .cancelAfter(cancelAfter)
         .condition(condition)
         .destinationXAddress(destinationXAddress)
+        .finishAfter(finishAfter)
         .build();
   }
 }
