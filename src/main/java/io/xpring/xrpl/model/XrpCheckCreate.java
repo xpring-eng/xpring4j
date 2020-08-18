@@ -49,7 +49,7 @@ public interface XrpCheckCreate {
    * @return A {@link String} containing an arbitrary 256-bit hash representing a specific reason or identifier for
    *         this Check.
    */
-  Optional<String> invoiceID();
+  Optional<String> invoiceId();
 
   /**
    * Maximum amount of source currency the Check is allowed to debit the sender, including transfer fees on non-XRP
@@ -58,7 +58,7 @@ public interface XrpCheckCreate {
    * The Check can only credit the destination with the same currency (from the same issuer, for non-XRP currencies).
    * For non-XRP amounts, the nested field names MUST be lower-case.
    * </p>
-   * @return A {@link XrpCurrencyAmount} representing the maximum amount of source currency the Check is allowed
+   * @return An {@link XrpCurrencyAmount} representing the maximum amount of source currency the Check is allowed
    *         to debit the sender, including transfer fees on non-XRP currencies.
    */
   Optional<XrpCurrencyAmount> sendMax();
@@ -110,7 +110,7 @@ public interface XrpCheckCreate {
     return builder()
         .destinationXAddress(destinationXAddress)
         .expiration(expiration)
-        .invoiceID(invoiceID)
+        .invoiceId(invoiceID)
         .sendMax(sendMax)
         .build();
   }
