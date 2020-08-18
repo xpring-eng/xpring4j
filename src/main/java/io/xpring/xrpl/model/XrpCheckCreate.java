@@ -85,7 +85,7 @@ public interface XrpCheckCreate {
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
         .address(destination)
         .tag(destinationTag)
-        .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
+        .isTest(Utils.isTestNetwork(xrplNetwork))
         .build();
 
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
