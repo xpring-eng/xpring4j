@@ -23,5 +23,12 @@ public class XrpEscrowCreateProtoConversionTest {
     assertThat(escrowCreate.cancelAfter().get()).isEqualTo(escrowCreateProto.getCancelAfter().getValue());
     assertThat(escrowCreate.condition().get()).isEqualTo(escrowCreateProto.getCondition().getValue().toString());
     assertThat(escrowCreate.finishAfter().get()).isEqualTo(escrowCreateProto.getFinishAfter().getValue());
+
+    ClassicAddress destinationClassicAddress = ImmutableClassicAddress.builder()
+      .address(escrowCreateProto.getDestination().getValue().getAddress())
+      .isTest(true)
+      .build();
+    final String destinationXAddress = Utils.encodeXAddress(destinationClassicAddress);
+    AssertionsForClassTypes.assertThat(escrowCreate.destinationXAddress()).isEqualTo(destinationXAddress);
   }
 }
