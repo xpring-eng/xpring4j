@@ -214,6 +214,6 @@ public class WalletTest {
     // AND it has a non-zero balance
     XrpClient xrpClient = new XrpClient("test.xrp.xpring.io:50051", XrplNetwork.TEST);
     BigInteger balance = xrpClient.getBalance(wallet.getAddress());
-    assertTrue(balance.compareTo(new BigInteger("0")) == 1);
+    assertTrue(balance.signum() == 1);
   }
 }
