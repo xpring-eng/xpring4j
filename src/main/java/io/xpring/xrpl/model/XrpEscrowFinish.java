@@ -19,12 +19,20 @@ public interface XrpEscrowFinish {
   }
 
   /**
-   * Address of the source account that funded the held payment, encoded as an X-address (see https://xrpaddress.info/).
+   * (Optional) Hex value matching the previously-supplied PREIMAGE-SHA-256 crypto-condition  of the held payment.
    *
-   * @return A {@link String} containing the address of the source account that funded the held payment, encoded as
-   *         an X-address.
+   * @return A {@link String} containing the hex value matching the previously-supplied PREIMAGE-SHA-256
+   *          crypto-condition  of the held payment.
    */
-  String ownerXAddress();
+  Optional<String> condition();
+
+  /**
+   * (Optional) Hex value of the PREIMAGE-SHA-256 crypto-condition fulfillment  matching the held payment's Condition.
+   *
+   * @return A {@link String} containing the hex value of the PREIMAGE-SHA-256 crypto-condition fulfillment
+   *         matching the held payment's Condition.
+   */
+  Optional<String> fulfillment();
 
   /**
    * Transaction sequence of EscrowCreate transaction that created the held payment to finish.
@@ -34,7 +42,11 @@ public interface XrpEscrowFinish {
    */
   Integer offerSequence();
 
-  Optional<String> condition();
-
-  Optional<String> fulfillment();
+  /**
+   * Address of the source account that funded the held payment, encoded as an X-address (see https://xrpaddress.info/).
+   *
+   * @return A {@link String} containing the address of the source account that funded the held payment, encoded as
+   *         an X-address.
+   */
+  String ownerXAddress();
 }
