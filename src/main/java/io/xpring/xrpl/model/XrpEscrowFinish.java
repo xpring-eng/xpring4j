@@ -1,6 +1,8 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XrplNetwork;
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.EscrowFinish;
 
 import java.util.Optional;
 
@@ -49,4 +51,9 @@ public interface XrpEscrowFinish {
    *         an X-address.
    */
   String ownerXAddress();
+
+  static XrpEscrowFinish from(EscrowFinish escrowFinish, XrplNetwork xrplNetwork) {
+    return XrpEscrowFinish.builder()
+      .build();
+  }
 }
