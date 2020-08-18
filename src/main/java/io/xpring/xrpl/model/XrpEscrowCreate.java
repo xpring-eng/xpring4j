@@ -1,6 +1,9 @@
 package io.xpring.xrpl.model;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.EscrowCreate;
 
@@ -83,9 +86,22 @@ public interface XrpEscrowCreate {
       return null;
     }
 
-    if (!escrowCreate.hasDestination()) {
+    if (!escrowCreate.hasDestination() || escrowCreate.getDestination().getValue().getAddress().isEmpty()) {
       return null;
     }
+
+    final String destination = escrowCreate.getDestination().getValue().getAddress();
+    Optional<Integer> destinationTag = escrowCreate.hasDestinationTag()
+        ? Optional.of(escrowCreate.getDestinationTag().getValue())
+        : Optional.empty();
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+      .address(destination)
+      .tag(destinationTag)
+      .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
+      .build();
+
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
     final Optional<Integer> cancelAfter =  escrowCreate.hasCancelAfter()
         ? Optional.of(escrowCreate.getCancelAfter().getValue())
@@ -99,6 +115,7 @@ public interface XrpEscrowCreate {
       .amount(amount)
       .cancelAfter(cancelAfter)
       .condition(condition)
+      .destinationXAddress(destinationXAddress)
       .build();
   }
 }
