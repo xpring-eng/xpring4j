@@ -6,7 +6,7 @@
 
     <groupId>io.xpring</groupId>
     <artifactId>xpring4j</artifactId>
-    <version>6.0.2</version>
+    <version>6.1.0</version>
     <name>xpring4j</name>
     <url>https://github.com/xpring-eng/xpring4j</url>
     <description>
@@ -258,7 +258,7 @@
             <dependency>
                 <groupId>org.interledger</groupId>
                 <artifactId>spsp-core</artifactId>
-                <version>1.3.0</version>
+                <version>1.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
