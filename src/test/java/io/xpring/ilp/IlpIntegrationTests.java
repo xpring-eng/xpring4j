@@ -17,7 +17,7 @@ public class IlpIntegrationTests {
 
   @Before
   public void setUp() {
-    String grpcUrl = "hermes-envoy-test.xpring.io";
+    String grpcUrl = "stg.grpcng.wallet.xpring.io";
     client = new IlpClient(grpcUrl);
   }
 
