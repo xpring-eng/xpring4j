@@ -1,6 +1,9 @@
 package io.xpring.xrpl.model;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.EscrowFinish;
 
@@ -61,14 +64,39 @@ public interface XrpEscrowFinish {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L194"
    */
   static XrpEscrowFinish from(EscrowFinish escrowFinish, XrplNetwork xrplNetwork) {
-    if (!escrowFinish.hasOfferSequence() || !escrowFinish.hasOwner()) {
+    if (!escrowFinish.hasOfferSequence()) {
+      return null;
+    }
+    final Integer offerSequence = escrowFinish.getOfferSequence().getValue();
+
+    if (!escrowFinish.hasOwner() || escrowFinish.getOwner().getValue().getAddress().isEmpty()) {
       return null;
     }
 
-    final Integer offerSequence = escrowFinish.getOfferSequence().getValue();
+    final String owner = escrowFinish.getOwner().getValue().getAddress();
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+        .address(owner)
+        .isTest(Utils.isTestNetwork(xrplNetwork))
+        .build();
+
+    final String ownerXAddress = Utils.encodeXAddress(classicAddress);
+    if (ownerXAddress == null) {
+      return null;
+    }
+
+    final Optional<String> condition = escrowFinish.hasCondition()
+        ? Optional.of(escrowFinish.getCondition().getValue().toString())
+        : Optional.empty();
+
+    final Optional<String> fulfillment = escrowFinish.hasFulfillment()
+        ? Optional.of(escrowFinish.getFulfillment().getValue().toString())
+        : Optional.empty();
 
     return XrpEscrowFinish.builder()
+      .condition(condition)
+      .fulfillment(fulfillment)
       .offerSequence(offerSequence)
+      .ownerXAddress(ownerXAddress)
       .build();
   }
 }
