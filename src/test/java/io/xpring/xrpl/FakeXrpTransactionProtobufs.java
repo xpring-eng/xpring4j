@@ -11,6 +11,7 @@ import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.DepositPreauth;
 import org.xrpl.rpc.v1.EscrowCancel;
+import org.xrpl.rpc.v1.EscrowCreate;
 
 import java.io.UnsupportedEncodingException;
 
@@ -247,5 +248,12 @@ public class FakeXrpTransactionProtobufs {
 
   public static EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
       .setOwner(ownerProto)
+      .build();
+
+  // EscrowCreate protos
+  public static EscrowCreate escrowCreateProtoWithRequiredFields = EscrowCreate.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
       .build();
 }
