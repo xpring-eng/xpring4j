@@ -61,7 +61,14 @@ public interface XrpEscrowFinish {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L194"
    */
   static XrpEscrowFinish from(EscrowFinish escrowFinish, XrplNetwork xrplNetwork) {
+    if (!escrowFinish.hasOfferSequence() || !escrowFinish.hasOwner()) {
+      return null;
+    }
+
+    final Integer offerSequence = escrowFinish.getOfferSequence().getValue();
+
     return XrpEscrowFinish.builder()
+      .offerSequence(offerSequence)
       .build();
   }
 }
