@@ -6,6 +6,7 @@ import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.AccountSet;
 import org.xrpl.rpc.v1.CheckCancel;
 import org.xrpl.rpc.v1.CheckCash;
+import org.xrpl.rpc.v1.CheckCreate;
 import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
 
@@ -50,6 +51,12 @@ public class FakeXrpTransactionProtobufs {
   // CheckCancel fake primitive test values
   public static ByteString testCheckId = ByteString.copyFromUtf8(
       "49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0"
+  );
+
+  // CheckCreate fake primitive test values
+  public static Integer testExpiration = 570113521;
+  public static ByteString testInvoiceId = ByteString.copyFromUtf8(
+      "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B"
   );
 
   // AccountSet protos
@@ -174,5 +181,27 @@ public class FakeXrpTransactionProtobufs {
   public static CheckCash invalidCheckCashInvalidDeliverMinProto = CheckCash.newBuilder()
       .setCheckId(checkIdProto)
       .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
+      .build();
+
+  // CheckCreate protos
+  public static Common.Expiration expirationProto = Common.Expiration.newBuilder()
+      .setValue(testExpiration)
+      .build();
+
+  public static CheckCreate allFieldsCheckCreateProto = CheckCreate.newBuilder()
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setExpiration(expirationProto)
+      .setInvoiceId(FakeXrpProtobufs.invoiceID)
+      .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
+
+  public static CheckCreate checkCreateProtoWithMandatoryFields = CheckCreate.newBuilder()
+      .setDestination(destinationProto)
+      .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
+
+  public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
+      .setSendMax(FakeXrpProtobufs.sendMax)
       .build();
 }
