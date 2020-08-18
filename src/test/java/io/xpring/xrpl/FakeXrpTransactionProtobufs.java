@@ -251,9 +251,19 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   // EscrowCreate protos
-  public static EscrowCreate escrowCreateProtoWithRequiredFields = EscrowCreate.newBuilder()
+  public static Common.CancelAfter cancelAfterProto = Common.CancelAfter.newBuilder()
+      .setValue(testExpiration)
+      .build();
+
+  public static Common.FinishAfter finishAfterProto = Common.FinishAfter.newBuilder()
+      .setValue(testExpiration)
+      .build();
+
+  public static EscrowCreate escrowCreateProto = EscrowCreate.newBuilder()
       .setAmount(FakeXrpProtobufs.amount)
+      .setCancelAfter(cancelAfterProto)
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
+      .setFinishAfter(finishAfterProto)
       .build();
 }
