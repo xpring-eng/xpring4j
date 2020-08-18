@@ -223,6 +223,6 @@ public class Utils {
    * @return A boolean representing whether or not the {@link XrplNetwork} is a test network.
    */
   public static boolean isTestNetwork(XrplNetwork xrplNetwork) {
-    return xrplNetwork != XrplNetwork.MAIN;
+    return xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV;
   }
 }
