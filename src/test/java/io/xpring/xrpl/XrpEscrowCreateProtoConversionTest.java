@@ -1,13 +1,13 @@
 package io.xpring.xrpl;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.model.XrpCurrencyAmount;
 import io.xpring.xrpl.model.XrpEscrowCreate;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Test;
 import org.xrpl.rpc.v1.EscrowCreate;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class XrpEscrowCreateProtoConversionTest {
   @Test
@@ -25,9 +25,10 @@ public class XrpEscrowCreateProtoConversionTest {
     assertThat(escrowCreate.finishAfter().get()).isEqualTo(escrowCreateProto.getFinishAfter().getValue());
 
     ClassicAddress destinationClassicAddress = ImmutableClassicAddress.builder()
-      .address(escrowCreateProto.getDestination().getValue().getAddress())
-      .isTest(true)
-      .build();
+        .address(escrowCreateProto.getDestination().getValue().getAddress())
+        .tag(escrowCreateProto.getDestinationTag().getValue())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(destinationClassicAddress);
     AssertionsForClassTypes.assertThat(escrowCreate.destinationXAddress()).isEqualTo(destinationXAddress);
   }
