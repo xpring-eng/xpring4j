@@ -57,6 +57,9 @@ public class XrpClientIntegrationTests {
   private static final BigInteger AMOUNT = new BigInteger("1");
 
   @Before
+  /**
+   * Set up an XrpClient and Wallet for integration tests.
+   */
   public void setUp() throws Exception {
     this.xrpClient = new XrpClient(GRPC_URL, XrplNetwork.TEST);
 
