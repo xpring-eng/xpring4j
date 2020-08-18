@@ -34,7 +34,7 @@ public interface XrpEscrowCancel {
    * (see https://xrpaddress.info/).
    *
    * @return A {@link String} containing the address of the source account that funded the escrow payment, encoded as
-   *         an X-address
+   *         an X-address.
    */
   String ownerXAddress();
 
@@ -42,7 +42,7 @@ public interface XrpEscrowCancel {
    * Constructs an XrpEscrowCancel from an EscrowCancel protocol buffer.
    *
    * @param escrowCancel An {@link EscrowCancel} (protobuf object) whose field values will be used to construct an
-   *                     XrpEscrowCancel
+   *                     XrpEscrowCancel.
    * @param xrplNetwork The network that this {@link EscrowCancel} should occur on.
    * @return An {@link XrpEscrowCancel} with its fields set via the analogous protobuf fields.
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L170"
