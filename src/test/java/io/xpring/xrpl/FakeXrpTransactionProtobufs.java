@@ -274,12 +274,31 @@ public class FakeXrpTransactionProtobufs {
       .setValue(testExpiration)
       .build();
 
-  public static EscrowCreate escrowCreateProto = EscrowCreate.newBuilder()
+  public static EscrowCreate escrowCreateProtoWithRequiredFields = EscrowCreate.newBuilder()
       .setAmount(FakeXrpProtobufs.amount)
-      .setCancelAfter(cancelAfterProto)
-      .setCondition(conditionProto)
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
+      .build();
+
+  public static EscrowCreate escrowCreateProtoWithAllFields = EscrowCreate
+      .newBuilder(escrowCreateProtoWithRequiredFields)
+      .setCancelAfter(cancelAfterProto)
+      .setCondition(conditionProto)
       .setFinishAfter(finishAfterProto)
+      .build();
+
+  public static EscrowCreate invalidEscrowCreateMissingAmount = EscrowCreate.newBuilder()
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .build();
+
+  public static EscrowCreate invalidEscrowCreateMissingDestination = EscrowCreate.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .build();
+
+  public static EscrowCreate invalidEscrowCreateInvalidAmount = EscrowCreate.newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
       .build();
 }
