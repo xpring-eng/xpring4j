@@ -76,6 +76,15 @@ public interface XrpEscrowCreate {
    */
   Optional<Integer> finishAfter();
 
+  /**
+   * Constructs an XrpEscrowCreate from an EscrowCreate protocol buffer.
+   *
+   * @param escrowCreate An {@link EscrowCreate} (protobuf object) whose field values will be used to construct an
+   *                     XrpEscrowCreate.
+   * @param xrplNetwork The {@link XrplNetwork} that this transaction should occur on.
+   * @return an XrpEscrowCreate with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L178"
+   */
   static XrpEscrowCreate from(EscrowCreate escrowCreate, XrplNetwork xrplNetwork) {
     if (!escrowCreate.hasAmount()) {
       return null;
@@ -96,10 +105,10 @@ public interface XrpEscrowCreate {
         : Optional.empty();
 
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
-      .address(destination)
-      .tag(destinationTag)
-      .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
-      .build();
+        .address(destination)
+        .tag(destinationTag)
+        .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
+        .build();
 
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
 
@@ -112,10 +121,10 @@ public interface XrpEscrowCreate {
         : Optional.empty();
 
     return XrpEscrowCreate.builder()
-      .amount(amount)
-      .cancelAfter(cancelAfter)
-      .condition(condition)
-      .destinationXAddress(destinationXAddress)
-      .build();
+        .amount(amount)
+        .cancelAfter(cancelAfter)
+        .condition(condition)
+        .destinationXAddress(destinationXAddress)
+        .build();
   }
 }
