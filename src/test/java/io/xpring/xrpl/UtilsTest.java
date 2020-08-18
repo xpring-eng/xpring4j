@@ -1,8 +1,6 @@
 package io.xpring.xrpl;
 
-import static io.xpring.xrpl.Utils.dropsToXrp;
-import static io.xpring.xrpl.Utils.isTestNetwork;
-import static io.xpring.xrpl.Utils.xrpToDrops;
+import static io.xpring.xrpl.Utils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
