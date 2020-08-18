@@ -52,6 +52,14 @@ public interface XrpEscrowFinish {
    */
   String ownerXAddress();
 
+  /**
+   * Constructs an {@link XrpEscrowFinish} from an {@link EscrowFinish} protocol buffer.
+   *
+   * @param escrowFinish An {@link EscrowFinish} (protobuf object) whose field values will be used to construct an
+   *                     {@link XrpEscrowFinish}.
+   * @return An {@link XrpEscrowFinish} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L194"
+   */
   static XrpEscrowFinish from(EscrowFinish escrowFinish, XrplNetwork xrplNetwork) {
     return XrpEscrowFinish.builder()
       .build();
