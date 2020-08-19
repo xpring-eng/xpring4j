@@ -25,7 +25,6 @@ public interface XrpPaymentChannelClaim {
    * <p>
    * This must match the amount in the signed message.
    * </p>
-   *
    */
   Optional<XrpCurrencyAmount> amount();
 
