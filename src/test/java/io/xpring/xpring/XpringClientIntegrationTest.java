@@ -15,6 +15,7 @@ import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +43,10 @@ public class XpringClientIntegrationTest {
 
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
-  public void testSendXRP() throws XrpException, PayIdException {
+  public void testSendXRP() throws XrpException, PayIdException, IOException, InterruptedException {
     // GIVEN a Pay ID that will resolve and a wallet with a balance on TestNet.
     String payID = "alice$dev.payid.xpring.money";
-    Wallet wallet = new Wallet("snYP7oArxKepd3GPDcrjMsJYiJeJB");
+    Wallet wallet = XrpTestUtils.randomWalletFromFaucet();
 
     // WHEN XRP is sent to the Pay ID.
     String transactionHash = XPRING_CLIENT.send(new BigInteger("10"), payID, wallet);
