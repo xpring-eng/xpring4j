@@ -18,11 +18,52 @@ public class XrpOfferCreateProtoConversionTest {
 
     // THEN the OfferCreate converted as expected.
     assertThat(offerCreate.takerGets())
-      .isEqualTo(XrpCurrencyAmount.from(offerCreateProto.getTakerGets().getValue()));
+        .isEqualTo(XrpCurrencyAmount.from(offerCreateProto.getTakerGets().getValue()));
     assertThat(offerCreate.takerPays())
-      .isEqualTo(XrpCurrencyAmount.from(offerCreateProto.getTakerPays().getValue()));
+        .isEqualTo(XrpCurrencyAmount.from(offerCreateProto.getTakerPays().getValue()));
 
     assertThat(offerCreate.expiration()).isEmpty();
     assertThat(offerCreate.offerSequence()).isEmpty();
+  }
+
+  @Test
+  public void offerCreateAllFieldsTest() {
+    // GIVEN a valid CheckCash protocol buffer with all fields set.
+    final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.offerCreateWithAllFields;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpOfferCreate offerCreate = XrpOfferCreate.from(offerCreateProto);
+
+    // THEN the OfferCreate converted as expected.
+    assertThat(offerCreate.expiration().get()).isEqualTo(offerCreateProto.getExpiration().getValue());
+    assertThat(offerCreate.offerSequence().get()).isEqualTo(offerCreateProto.getOfferSequence().getValue());
+    assertThat(offerCreate.takerGets())
+        .isEqualTo(XrpCurrencyAmount.from(offerCreateProto.getTakerGets().getValue()));
+    assertThat(offerCreate.takerPays())
+        .isEqualTo(XrpCurrencyAmount.from(offerCreateProto.getTakerPays().getValue()));
+  }
+
+  @Test
+  public void offerCreateMissingTakerGetsTest() {
+    // GIVEN a valid CheckCash protocol buffer missing the takerGets field.
+    final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.invalidOfferCreateMissingTakerGets;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpOfferCreate offerCreate = XrpOfferCreate.from(offerCreateProto);
+
+    // THEN the result is null.
+    assertThat(offerCreate).isNull();
+  }
+
+  @Test
+  public void offerCreateMissingTakerPays() {
+    // GIVEN a valid CheckCash protocol buffer missing the takerPays field.
+    final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.invalidOfferCreateMissingTakerPays;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpOfferCreate offerCreate = XrpOfferCreate.from(offerCreateProto);
+
+    // THEN the result is null.
+    assertThat(offerCreate).isNull();
   }
 }

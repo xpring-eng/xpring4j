@@ -361,4 +361,36 @@ public class FakeXrpTransactionProtobufs {
       .setTakerGets(takerGetsProto)
       .setTakerPays(takerPaysProto)
       .build();
+
+  public static OfferCreate offerCreateWithAllFields = OfferCreate
+      .newBuilder(offerCreateWithRequiredFields)
+      .setExpiration(expirationProto)
+      .setOfferSequence(offerSequenceProto)
+      .build();
+
+  public static Common.TakerGets invalidTakerGetsProto = Common.TakerGets.newBuilder()
+      .setValue(FakeXrpProtobufs.invalidCurrencyAmount)
+      .build();
+
+  public static OfferCreate invalidOfferCreateInvalidTakerGets = OfferCreate.newBuilder()
+      .setTakerGets(invalidTakerGetsProto)
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static Common.TakerPays invalidTakerPaysProto = Common.TakerPays.newBuilder()
+      .setValue(FakeXrpProtobufs.invalidCurrencyAmount)
+      .build();
+
+  public static OfferCreate invalidOfferCreateInvalidTakerPays = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .setTakerPays(invalidTakerPaysProto)
+      .build();
+
+  public static OfferCreate invalidOfferCreateMissingTakerGets = OfferCreate.newBuilder()
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static OfferCreate invalidOfferCreateMissingTakerPays = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .build();
 }
