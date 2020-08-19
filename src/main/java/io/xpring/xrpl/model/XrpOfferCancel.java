@@ -24,7 +24,7 @@ public interface XrpOfferCancel {
    * It is not considered an error if the offer specified does not exist.
    * </p>
    *
-   * @return A {@link Integer} containing the sequence number of a previous OfferCreate transaction.
+   * @return An {@link Integer} containing the sequence number of a previous OfferCreate transaction.
    */
   Integer offerSequence();
 
