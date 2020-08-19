@@ -6,8 +6,11 @@ import org.xrpl.rpc.v1.AccountDelete;
 import org.xrpl.rpc.v1.AccountSet;
 import org.xrpl.rpc.v1.CheckCancel;
 import org.xrpl.rpc.v1.CheckCash;
+import org.xrpl.rpc.v1.CheckCreate;
 import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
+import org.xrpl.rpc.v1.DepositPreauth;
+import org.xrpl.rpc.v1.EscrowCancel;
 
 import java.io.UnsupportedEncodingException;
 
@@ -51,6 +54,15 @@ public class FakeXrpTransactionProtobufs {
   public static ByteString testCheckId = ByteString.copyFromUtf8(
       "49647F0D748DC3FE26BDACBC57F251AADEFFF391403EC9BF87C97F67E9977FB0"
   );
+
+  // CheckCreate fake primitive test values
+  public static Integer testExpiration = 570113521;
+  public static ByteString testInvoiceId = ByteString.copyFromUtf8(
+      "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B"
+  );
+
+  // EscrowCancel fake primitive test values
+  public static Integer testOfferSequence = 23;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -174,5 +186,66 @@ public class FakeXrpTransactionProtobufs {
   public static CheckCash invalidCheckCashInvalidDeliverMinProto = CheckCash.newBuilder()
       .setCheckId(checkIdProto)
       .setDeliverMin(invalidEmptyDeliverMinWithNoFields)
+      .build();
+
+  // CheckCreate protos
+  public static Common.Expiration expirationProto = Common.Expiration.newBuilder()
+      .setValue(testExpiration)
+      .build();
+
+  public static CheckCreate allFieldsCheckCreateProto = CheckCreate.newBuilder()
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setExpiration(expirationProto)
+      .setInvoiceId(FakeXrpProtobufs.invoiceID)
+      .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
+
+  public static CheckCreate checkCreateProtoWithMandatoryFields = CheckCreate.newBuilder()
+      .setDestination(destinationProto)
+      .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
+
+  public static CheckCreate invalidCheckCreateProto = CheckCreate.newBuilder()
+      .setSendMax(FakeXrpProtobufs.sendMax)
+      .build();
+
+  // DepositPreauth protos
+  public static Common.Authorize authorizeProto = Common.Authorize.newBuilder()
+      .setValue(FakeXrpProtobufs.accountAddress)
+      .build();
+
+  public static Common.Unauthorize unauthorizeProto = Common.Unauthorize.newBuilder()
+      .setValue(FakeXrpProtobufs.accountAddress)
+      .build();
+
+  public static DepositPreauth depositPreauthWithAuthorize = DepositPreauth.newBuilder()
+      .setAuthorize(authorizeProto)
+      .build();
+
+  public static DepositPreauth depositPreauthWithUnauthorize = DepositPreauth.newBuilder()
+      .setUnauthorize(unauthorizeProto)
+      .build();
+
+  // EscrowCancel protos
+  public static Common.Owner ownerProto = Common.Owner.newBuilder()
+      .setValue(FakeXrpProtobufs.accountAddress)
+      .build();
+
+  public static Common.OfferSequence offerSequenceProto =  Common.OfferSequence.newBuilder()
+      .setValue(testOfferSequence)
+      .build();
+
+  public static EscrowCancel escrowCancelProto = EscrowCancel.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .setOwner(ownerProto)
+      .build();
+
+  public static EscrowCancel invalidEscrowCancelProtoMissingOwner = EscrowCancel.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .build();
+
+  public static EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
+      .setOwner(ownerProto)
       .build();
 }
