@@ -15,6 +15,7 @@ import org.xrpl.rpc.v1.EscrowCreate;
 import org.xrpl.rpc.v1.EscrowFinish;
 import org.xrpl.rpc.v1.OfferCancel;
 import org.xrpl.rpc.v1.OfferCreate;
+import org.xrpl.rpc.v1.PaymentChannelClaim;
 
 import java.io.UnsupportedEncodingException;
 
@@ -392,5 +393,12 @@ public class FakeXrpTransactionProtobufs {
 
   public static OfferCreate invalidOfferCreateMissingTakerPays = OfferCreate.newBuilder()
       .setTakerGets(takerGetsProto)
+      .build();
+
+  // PaymentChannelClaim protos
+  public static Common.Channel channelProto = Common.Channel.newBuilder()
+      .build();
+
+  public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()
       .build();
 }
