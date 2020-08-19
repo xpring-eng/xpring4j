@@ -21,8 +21,19 @@ public interface XrpOfferCreate {
     return ImmutableXrpOfferCreate.builder();
   }
 
+  /**
+   * (Optional) Time after which the offer is no longer active, in seconds since the Ripple Epoch.
+   *
+   * @return An {@link Integer} containing the time after which the offer is no longer active,
+   *         in seconds since the Ripple Epoch.
+   */
   Optional<Integer> expiration();
 
+  /**
+   * (Optional) An offer to delete first, specified in the same way as OfferCancel.
+   *
+   * @return An {@link Integer} containing an offer to delete first, specified in the same way as OfferCancel.
+   */
   Optional<Integer> offerSequence();
 
   /**
