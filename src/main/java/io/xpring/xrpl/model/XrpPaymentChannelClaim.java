@@ -71,7 +71,19 @@ public interface XrpPaymentChannelClaim {
    */
   Optional<String> signature();
 
+  /**
+   * Constructs an {@link XrpPaymentChannelClaim} from a {@link PaymentChannelClaim} protocol buffer.
+   *
+   * @param paymentChannelClaim A {@link PaymentChannelClaim} (protobuf object) whose field values will be used to
+   *                             construct an {@link XrpPaymentChannelClaim}.
+   * @return An {@link XrpPaymentChannelClaim} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L258"
+   */
   static XrpPaymentChannelClaim from(PaymentChannelClaim paymentChannelClaim) {
+    if (!paymentChannelClaim.hasChannel()) {
+      return null;
+    }
+
     return XrpPaymentChannelClaim.builder()
         .build();
   }
