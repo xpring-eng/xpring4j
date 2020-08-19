@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.OfferCancel;
 
 /**
  * Represents an OfferCancel transaction on the XRP Ledger.
@@ -25,5 +26,19 @@ public interface XrpOfferCancel {
    *
    * @return A {@link Integer} containing the sequence number of a previous OfferCreate transaction.
    */
-  public Integer offerSequence();
+  Integer offerSequence();
+
+  /**
+   * Constructs an XrpOfferCancel from an OfferCancel protocol buffer.
+   *
+   * @param offerCancel An {@link OfferCancel} (protobuf object) whose field values will be used to construct
+   *                    an XrpOfferCancel
+   * @return An {@link XrpOfferCancel} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L206"
+   */
+  static XrpOfferCancel from(OfferCancel offerCancel) {
+
+    return XrpOfferCancel.builder()
+        .build();
+  }
 }
