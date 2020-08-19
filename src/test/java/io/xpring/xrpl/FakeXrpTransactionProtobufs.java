@@ -324,7 +324,8 @@ public class FakeXrpTransactionProtobufs {
       .setValue(testFulfillment)
       .build();
 
-  public static EscrowFinish escrowFinishProtoWithAllFields = EscrowFinish.newBuilder(escrowFinishProtoWithRequiredFields)
+  public static EscrowFinish escrowFinishProtoWithAllFields = EscrowFinish
+      .newBuilder(escrowFinishProtoWithRequiredFields)
       .setCondition(conditionProto)
       .setFulfillment(fulfillmentProto)
       .build();
