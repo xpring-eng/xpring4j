@@ -62,7 +62,18 @@ public interface XrpOfferCreate {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L212"
    */
   static XrpOfferCreate from(OfferCreate offerCreate) {
+
+    final Optional<Integer> expiration = offerCreate.hasExpiration()
+        ? Optional.of(offerCreate.getExpiration().getValue())
+        : Optional.empty();
+
+    final Optional<Integer> offerSequence = offerCreate.hasOfferSequence()
+        ? Optional.of(offerCreate.getOfferSequence().getValue())
+        : Optional.empty();
+
     return XrpOfferCreate.builder()
+        .expiration(expiration)
+        .offerSequence(offerSequence)
         .build();
   }
 }
