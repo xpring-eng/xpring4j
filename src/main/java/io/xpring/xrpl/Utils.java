@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import com.google.common.base.Preconditions;
 import io.xpring.common.CommonUtils;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 
@@ -213,5 +214,15 @@ public class Utils {
             .multiply(new BigDecimal(dropsPerXrp))
             .toBigInteger()
             .toString(10);
+  }
+
+  /**
+   * Check if the XrplNetwork is a test network.
+   *
+   * @param xrplNetwork - The {@link XrplNetwork} to check.
+   * @return A boolean representing whether or not the {@link XrplNetwork} is a test network.
+   */
+  public static boolean isTestNetwork(XrplNetwork xrplNetwork) {
+    return xrplNetwork != XrplNetwork.MAIN;
   }
 }
