@@ -54,7 +54,7 @@ public interface XrpDepositPreauth {
    * @see "<https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L159"
    */
   static XrpDepositPreauth from(DepositPreauth depositPreauth, XrplNetwork xrplNetwork) {
-    final boolean isTestNetwork = xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV;
+    final boolean isTestNetwork = Utils.isTestNetwork(xrplNetwork);
 
     Optional<String> authorizeXAddress = Optional.empty();
     Optional<String> unauthorizeXAddress = Optional.empty();
