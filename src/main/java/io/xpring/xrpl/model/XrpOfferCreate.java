@@ -62,6 +62,23 @@ public interface XrpOfferCreate {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L212"
    */
   static XrpOfferCreate from(OfferCreate offerCreate) {
+    if (!offerCreate.hasTakerGets()) {
+      return null;
+    }
+
+    final XrpCurrencyAmount takerGets = XrpCurrencyAmount.from(offerCreate.getTakerGets().getValue());
+    if (takerGets == null) {
+      return null;
+    }
+
+    if (!offerCreate.hasTakerPays()) {
+      return null;
+    }
+
+    final XrpCurrencyAmount takerPays = XrpCurrencyAmount.from(offerCreate.getTakerPays().getValue());
+    if (takerPays == null) {
+      return null;
+    }
 
     final Optional<Integer> expiration = offerCreate.hasExpiration()
         ? Optional.of(offerCreate.getExpiration().getValue())
@@ -74,6 +91,8 @@ public interface XrpOfferCreate {
     return XrpOfferCreate.builder()
         .expiration(expiration)
         .offerSequence(offerSequence)
+        .takerGets(takerGets)
+        .takerPays(takerPays)
         .build();
   }
 }
