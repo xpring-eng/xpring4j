@@ -37,8 +37,14 @@ public interface XrpOfferCancel {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L206"
    */
   static XrpOfferCancel from(OfferCancel offerCancel) {
+    if (!offerCancel.hasOfferSequence()) {
+      return null;
+    }
+
+    final Integer offerSequence = offerCancel.getOfferSequence().getValue();
 
     return XrpOfferCancel.builder()
-        .build();
+      .offerSequence(offerSequence)
+      .build();
   }
 }
