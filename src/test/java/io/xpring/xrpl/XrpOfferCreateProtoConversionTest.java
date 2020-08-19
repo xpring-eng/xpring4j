@@ -10,7 +10,7 @@ import org.xrpl.rpc.v1.OfferCreate;
 public class XrpOfferCreateProtoConversionTest {
   @Test
   public void offerCreateRequiredFieldsTest() {
-    // GIVEN a valid CheckCash protocol buffer with required fields set.
+    // GIVEN a valid OfferCreate protocol buffer with required fields set.
     final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.offerCreateWithRequiredFields;
 
     // WHEN the protocol buffer is converted to a native Java object.
@@ -28,7 +28,7 @@ public class XrpOfferCreateProtoConversionTest {
 
   @Test
   public void offerCreateAllFieldsTest() {
-    // GIVEN a valid CheckCash protocol buffer with all fields set.
+    // GIVEN a valid OfferCreate protocol buffer with all fields set.
     final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.offerCreateWithAllFields;
 
     // WHEN the protocol buffer is converted to a native Java object.
@@ -44,8 +44,32 @@ public class XrpOfferCreateProtoConversionTest {
   }
 
   @Test
+  public void offerCreateInvalidTakerGetsTest() {
+    // GIVEN a OfferCreate protocol buffer with an invalid takerGets field.
+    final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.invalidOfferCreateInvalidTakerGets;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpOfferCreate offerCreate = XrpOfferCreate.from(offerCreateProto);
+
+    // THEN the result is null.
+    assertThat(offerCreate).isNull();
+  }
+
+  @Test
+  public void offerCreateInvalidTakerPaysTest() {
+    // GIVEN a OfferCreate protocol buffer with an invalid takerPays field.
+    final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.invalidOfferCreateInvalidTakerPays;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpOfferCreate offerCreate = XrpOfferCreate.from(offerCreateProto);
+
+    // THEN the result is null.
+    assertThat(offerCreate).isNull();
+  }
+
+  @Test
   public void offerCreateMissingTakerGetsTest() {
-    // GIVEN a valid CheckCash protocol buffer missing the takerGets field.
+    // GIVEN a OfferCreate protocol buffer missing the takerGets field.
     final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.invalidOfferCreateMissingTakerGets;
 
     // WHEN the protocol buffer is converted to a native Java object.
@@ -57,7 +81,7 @@ public class XrpOfferCreateProtoConversionTest {
 
   @Test
   public void offerCreateMissingTakerPays() {
-    // GIVEN a valid CheckCash protocol buffer missing the takerPays field.
+    // GIVEN a OfferCreate protocol buffer missing the takerPays field.
     final OfferCreate offerCreateProto = FakeXrpTransactionProtobufs.invalidOfferCreateMissingTakerPays;
 
     // WHEN the protocol buffer is converted to a native Java object.

@@ -369,7 +369,7 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static Common.TakerGets invalidTakerGetsProto = Common.TakerGets.newBuilder()
-      .setValue(FakeXrpProtobufs.invalidCurrencyAmount)
+      .setValue(invalidCurrencyAmountWithNoFields)
       .build();
 
   public static OfferCreate invalidOfferCreateInvalidTakerGets = OfferCreate.newBuilder()
@@ -378,7 +378,7 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static Common.TakerPays invalidTakerPaysProto = Common.TakerPays.newBuilder()
-      .setValue(FakeXrpProtobufs.invalidCurrencyAmount)
+      .setValue(invalidCurrencyAmountWithNoFields)
       .build();
 
   public static OfferCreate invalidOfferCreateInvalidTakerPays = OfferCreate.newBuilder()
