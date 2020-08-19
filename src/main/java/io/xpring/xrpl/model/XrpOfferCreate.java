@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.OfferCreate;
 
 import java.util.Optional;
 
@@ -51,4 +52,17 @@ public interface XrpOfferCreate {
    *         creator.
    */
   XrpCurrencyAmount takerPays();
+
+  /**
+   * Constructs an {@link XrpOfferCreate} from an {@link OfferCreate} protocol buffer.
+   *
+   * @param offerCreate An {@link OfferCreate} (protobuf object) whose field values will be used to construct
+   *                    an {@link XrpOfferCreate}.
+   * @return An {@link XrpOfferCreate} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L212"
+   */
+  static XrpOfferCreate from(OfferCreate offerCreate) {
+    return XrpOfferCreate.builder()
+        .build();
+  }
 }
