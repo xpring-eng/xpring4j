@@ -84,7 +84,17 @@ public interface XrpPaymentChannelClaim {
       return null;
     }
 
+    final Optional<String> publicKey = paymentChannelClaim.hasPublicKey()
+        ? Optional.of(paymentChannelClaim.getPublicKey().toString())
+        : Optional.empty();
+
+    final Optional<String> signature = paymentChannelClaim.hasPaymentChannelSignature()
+        ? Optional.of(paymentChannelClaim.getPaymentChannelSignature().toString())
+        : Optional.empty();
+
     return XrpPaymentChannelClaim.builder()
+        .publicKey(publicKey)
+        .signature(signature)
         .build();
   }
 }
