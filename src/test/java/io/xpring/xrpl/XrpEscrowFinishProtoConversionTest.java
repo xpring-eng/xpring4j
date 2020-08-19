@@ -49,4 +49,28 @@ public class XrpEscrowFinishProtoConversionTest {
     final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
     assertThat(escrowFinish.ownerXAddress()).isEqualTo(ownerXAddress);
   }
+
+  @Test
+  public void escrowFinishMissingOfferSequenceTest() {
+    // GIVEN an EscrowCreate protocol buffer that's missing an offer sequence.
+    final EscrowFinish escrowFinishProto = FakeXrpTransactionProtobufs.invalidEscrowFinishMissingOfferSequence;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpEscrowFinish escrowFinish = XrpEscrowFinish.from(escrowFinishProto, XrplNetwork.TEST);
+
+    // THEN the conversion returns null;
+    assertThat(escrowFinish).isNull();
+  }
+
+  @Test
+  public void escrowFinishMissingOwnerSequenceTest() {
+    // GIVEN an EscrowCreate protocol buffer that's missing an owner.
+    final EscrowFinish escrowFinishProto = FakeXrpTransactionProtobufs.invalidEscrowFinishMissingOwner;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpEscrowFinish escrowFinish = XrpEscrowFinish.from(escrowFinishProto, XrplNetwork.TEST);
+
+    // THEN the conversion returns null;
+    assertThat(escrowFinish).isNull();
+  }
 }

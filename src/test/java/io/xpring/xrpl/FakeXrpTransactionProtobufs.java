@@ -329,4 +329,12 @@ public class FakeXrpTransactionProtobufs {
       .setCondition(conditionProto)
       .setFulfillment(fulfillmentProto)
       .build();
+
+  public static EscrowFinish invalidEscrowFinishMissingOfferSequence = EscrowFinish.newBuilder()
+      .setOwner(ownerProto)
+      .build();
+
+  public static EscrowFinish invalidEscrowFinishMissingOwner = EscrowFinish.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .build();
 }
