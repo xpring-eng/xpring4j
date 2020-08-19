@@ -37,6 +37,11 @@ public class XrpClientIntegrationTests {
   private XrpClient xrpClient;
 
   /**
+   * A Wallet with funds on Testnet.
+   */
+  private Wallet wallet;
+
+  /**
    * The gRPC URL.
    */
   private static final String GRPC_URL = "test.xrp.xpring.io:50051";
@@ -47,18 +52,22 @@ public class XrpClientIntegrationTests {
   private static final String XRPL_ADDRESS = "XVwDxLQ4SN9pEBQagTNHwqpFkPgGppXqrMoTmUcSKdCtcK5";
 
   /**
-   * The seed for a wallet with funds on the XRP Ledger test net.
-   */
-  private static final String WALLET_SEED = "snYP7oArxKepd3GPDcrjMsJYiJeJB";
-
-  /**
    * Drops of XRP to send.
    */
   private static final BigInteger AMOUNT = new BigInteger("1");
 
+  /**
+   * Set up an XrpClient and Wallet for integration tests.
+   */
   @Before
   public void setUp() throws Exception {
     this.xrpClient = new XrpClient(GRPC_URL, XrplNetwork.TEST);
+
+    try {
+      this.wallet = XrpTestUtils.randomWalletFromFaucet();
+    } catch (Exception e) {
+      System.out.println(e.getStackTrace());
+    }
   }
 
   @Test
@@ -70,7 +79,6 @@ public class XrpClientIntegrationTests {
   @Test
   public void getPaymentStatusTest() throws XrpException {
     // GIVEN a hash of a payment transaction.
-    Wallet wallet = new Wallet(WALLET_SEED);
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
 
     // WHEN the transaction status is retrieved.
@@ -83,8 +91,6 @@ public class XrpClientIntegrationTests {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   @Test
   public void sendXRPTest() throws XrpException {
-    Wallet wallet = new Wallet(WALLET_SEED);
-
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
     assertThat(transactionHash).isNotNull();
   }
@@ -93,7 +99,6 @@ public class XrpClientIntegrationTests {
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void sendXRPWithADestinationTag() throws XrpException {
     // GIVEN a transaction hash representing a payment with a destination tag.
-    Wallet wallet = new Wallet(WALLET_SEED);
     int tag = 123;
     String address = "rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY";
     ClassicAddress classicAddressWithTag = ImmutableClassicAddress.builder()
@@ -129,7 +134,6 @@ public class XrpClientIntegrationTests {
   @Test
   public void getPaymentTest() throws XrpException {
     // GIVEN a hash of a payment transaction.
-    Wallet wallet = new Wallet(WALLET_SEED);
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
 
     // WHEN the transaction is requested.
@@ -142,7 +146,6 @@ public class XrpClientIntegrationTests {
   @Test(timeout = 20000)
   public void sendWithDetailsIncludingMemoTest() throws XrpException {
     // GIVEN an XrpClient, and some SendXrpDetails that include memos
-    Wallet wallet = new Wallet(WALLET_SEED);
     List<XrpMemo> memos = Arrays.asList(
             XrpTestUtils.iForgotToPickUpCarlMemo,
             XrpTestUtils.noDataMemo,
@@ -175,8 +178,6 @@ public class XrpClientIntegrationTests {
   @Test
   public void enableDepositAuthTest() throws XrpException {
     // GIVEN an existing testnet account
-    Wallet wallet = new Wallet(WALLET_SEED);
-
     // WHEN enableDepositAuth is called
     TransactionResult result = xrpClient.enableDepositAuth(wallet);
 
