@@ -23,6 +23,11 @@ public interface XrpPaymentChannelClaim {
 
   Optional<XrpCurrencyAmount> balance();
 
+  /**
+   * The unique ID of the channel, as a 64-character hexadecimal string.
+   *
+   * @return A {@link String} containing the unique ID of the channel, as a 64-character hexadecimal string.
+   */
   String channel();
 
   Optional<String> publicKey();
