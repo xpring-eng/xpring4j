@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.PaymentChannelClaim;
 
 import java.util.Optional;
 
@@ -70,4 +71,9 @@ public interface XrpPaymentChannelClaim {
    * @return A {@link String} containing the signature of this claim, as hexadecimal.
    */
   Optional<String> signature();
+
+  static XrpPaymentChannelClaim from(PaymentChannelClaim paymentChannelClaim) {
+    return XrpPaymentChannelClaim.builder()
+        .build();
+  }
 }
