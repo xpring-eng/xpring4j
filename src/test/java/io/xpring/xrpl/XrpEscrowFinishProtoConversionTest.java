@@ -18,9 +18,16 @@ public class XrpEscrowFinishProtoConversionTest {
     final XrpEscrowFinish escrowFinish = XrpEscrowFinish.from(escrowFinishProto, XrplNetwork.TEST);
 
     // THEN the EscrowCreate converted as expected.
+    assertThat(escrowFinish.offerSequence()).isEqualTo(escrowFinishProto.getOfferSequence().getValue());
+    ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
+        .address(escrowFinishProto.getOwner().getValue().getAddress())
+        .isTest(true)
+        .build();
+    final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
+    assertThat(escrowFinish.ownerXAddress()).isEqualTo(ownerXAddress);
+
     assertThat(escrowFinish.condition()).isEmpty();
     assertThat(escrowFinish.fulfillment()).isEmpty();
-    assertThat(escrowFinish.offerSequence()).isEqualTo(escrowFinishProto.getOfferSequence().getValue());
   }
 
   @Test
@@ -32,6 +39,14 @@ public class XrpEscrowFinishProtoConversionTest {
     final XrpEscrowFinish escrowFinish = XrpEscrowFinish.from(escrowFinishProto, XrplNetwork.TEST);
 
     // THEN the EscrowCreate converted as expected.
+    assertThat(escrowFinish.condition().get()).isEqualTo(escrowFinishProto.getCondition().getValue().toString());
+    assertThat(escrowFinish.fulfillment().get()).isEqualTo(escrowFinishProto.getFulfillment().getValue().toString());
+    assertThat(escrowFinish.offerSequence()).isEqualTo(escrowFinishProto.getOfferSequence().getValue());
+    ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
+      .address(escrowFinishProto.getOwner().getValue().getAddress())
+      .isTest(true)
+      .build();
+    final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
+    assertThat(escrowFinish.ownerXAddress()).isEqualTo(ownerXAddress);
   }
-
 }
