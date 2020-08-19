@@ -43,9 +43,9 @@ public class XrpEscrowFinishProtoConversionTest {
     assertThat(escrowFinish.fulfillment().get()).isEqualTo(escrowFinishProto.getFulfillment().getValue().toString());
     assertThat(escrowFinish.offerSequence()).isEqualTo(escrowFinishProto.getOfferSequence().getValue());
     ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
-      .address(escrowFinishProto.getOwner().getValue().getAddress())
-      .isTest(true)
-      .build();
+        .address(escrowFinishProto.getOwner().getValue().getAddress())
+        .isTest(true)
+        .build();
     final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
     assertThat(escrowFinish.ownerXAddress()).isEqualTo(ownerXAddress);
   }
