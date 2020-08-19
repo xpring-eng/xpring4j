@@ -102,6 +102,26 @@ public class FakeXrpTransactionProtobufs {
     }
   }
 
+  public static ByteString testPaymentChannelPublicKey;
+
+  static {
+    try {
+      testPaymentChannelPublicKey = ByteString.copyFrom("32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  public static ByteString testPaymentChannelSignature;
+
+  static {
+    try {
+      testPaymentChannelSignature = ByteString.copyFrom("30440220718D264EF05CAED7C781FF6DE298DCAC68D002562C9BF3A07C1E721B420C0DAB02203A5A4779EF4D2CCC7BC3EF886676D803A9981B928D3B8ACA483B80ECA3CD7B9B", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
@@ -411,8 +431,30 @@ public class FakeXrpTransactionProtobufs {
       .setValue(testChannel)
       .build();
 
+  public static Common.Balance balanceProto = Common.Balance.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.PublicKey paymentPublicKeyProto = Common.PublicKey
+      .newBuilder()
+      .setValue(testPaymentChannelPublicKey)
+      .build();
+
+  public static Common.PaymentChannelSignature paymentChannelSignatureProto = Common.PaymentChannelSignature
+      .newBuilder()
+      .setValue(testPaymentChannelSignature)
+      .build();
+
   public static PaymentChannelClaim paymentChannelClaimWithRequiredFields = PaymentChannelClaim.newBuilder()
       .setChannel(channelProto)
+      .build();
+
+  public static PaymentChannelClaim paymentChannelClaimWithAllFields = PaymentChannelClaim
+      .newBuilder(paymentChannelClaimWithRequiredFields)
+      .setAmount(FakeXrpProtobufs.amount)
+      .setBalance(balanceProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setPaymentChannelSignature(paymentChannelSignatureProto)
       .build();
 
   public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()
