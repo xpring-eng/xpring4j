@@ -56,7 +56,7 @@ public interface XrpEscrowCancel {
 
     ClassicAddress ownerClassicAddress = ImmutableClassicAddress.builder()
         .address(escrowCancel.getOwner().getValue().getAddress())
-        .isTest(xrplNetwork == XrplNetwork.TEST || xrplNetwork == XrplNetwork.DEV)
+        .isTest(Utils.isTestNetwork(xrplNetwork))
         .build();
 
     final String ownerXAddress = Utils.encodeXAddress(ownerClassicAddress);
