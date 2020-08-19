@@ -91,6 +91,17 @@ public class FakeXrpTransactionProtobufs {
     }
   }
 
+  // PaymentChannelClaim fake primitive test values
+  public static ByteString testChannel;
+
+  static {
+    try {
+      testChannel = ByteString.copyFrom("C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
@@ -397,6 +408,11 @@ public class FakeXrpTransactionProtobufs {
 
   // PaymentChannelClaim protos
   public static Common.Channel channelProto = Common.Channel.newBuilder()
+      .setValue(testChannel)
+      .build();
+
+  public static PaymentChannelClaim paymentChannelClaimWithRequiredFields = PaymentChannelClaim.newBuilder()
+      .setChannel(channelProto)
       .build();
 
   public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()

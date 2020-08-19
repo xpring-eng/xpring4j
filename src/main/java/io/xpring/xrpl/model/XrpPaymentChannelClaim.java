@@ -84,6 +84,26 @@ public interface XrpPaymentChannelClaim {
       return null;
     }
 
+    final String channel = paymentChannelClaim.getChannel().toString();
+
+    // If the amount field is set, it must be able to be transformed into an XrpCurrencyAmount.
+    Optional<XrpCurrencyAmount> amount = Optional.empty();
+    if (paymentChannelClaim.hasAmount()) {
+      amount = Optional.ofNullable(XrpCurrencyAmount.from(paymentChannelClaim.getAmount().getValue()));
+      if (!amount.isPresent()) {
+        return null;
+      }
+    }
+
+    // If the balance field is set, it must be able to be transformed into an XrpCurrencyAmount.
+    Optional<XrpCurrencyAmount> balance = Optional.empty();
+    if (paymentChannelClaim.hasBalance()) {
+      balance = Optional.ofNullable(XrpCurrencyAmount.from(paymentChannelClaim.getBalance().getValue()));
+      if (!balance.isPresent()) {
+        return null;
+      }
+    }
+
     final Optional<String> publicKey = paymentChannelClaim.hasPublicKey()
         ? Optional.of(paymentChannelClaim.getPublicKey().toString())
         : Optional.empty();
@@ -93,6 +113,9 @@ public interface XrpPaymentChannelClaim {
         : Optional.empty();
 
     return XrpPaymentChannelClaim.builder()
+        .amount(amount)
+        .balance(balance)
+        .channel(channel)
         .publicKey(publicKey)
         .signature(signature)
         .build();
