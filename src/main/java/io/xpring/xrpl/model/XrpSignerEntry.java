@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.Common;
 
 /**
  * Represents a SignerEntry object on the XRP Ledger.
@@ -9,6 +10,10 @@ import org.immutables.value.Value;
  */
 @Value.Immutable
 public interface XrpSignerEntry {
+  static ImmutableXrpSignerEntry.Builder builder() {
+    return ImmutableXrpSignerEntry.builder();
+  }
+
   /**
    * An XRP Ledger address whose signature contributes to the multi-signature.
    * <p>
@@ -28,4 +33,13 @@ public interface XrpSignerEntry {
    * @return
    */
   Integer signerWeight();
+
+  static XrpSignerEntry from(Common.SignerEntry signerEntry) {
+    if (!signerEntry.hasAccount() || !signerEntry.hasSignerWeight()) {
+      return null;
+    }
+
+    return XrpSignerEntry.builder()
+        .build();
+  }
 }
