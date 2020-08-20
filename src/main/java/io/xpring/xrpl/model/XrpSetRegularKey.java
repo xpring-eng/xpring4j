@@ -21,5 +21,15 @@ public interface XrpSetRegularKey {
     return ImmutableXrpSetRegularKey.builder();
   }
 
+  /**
+   * (Optional) A base-58-encoded Address that indicates the regular key pair to be assigned to the account.
+   * <p>
+   * If omitted, removes any existing regular key pair from the account.
+   * Must not match the master key pair for the address.
+   * </p>
+   *
+   * @return A {@link String} containing a base-58-encoded Address that indicates the regular key pair to be
+   *         assigned to the account.
+   */
   Optional<String> regularKey();
 }
