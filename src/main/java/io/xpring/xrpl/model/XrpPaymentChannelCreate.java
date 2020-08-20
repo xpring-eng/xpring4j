@@ -1,6 +1,9 @@
 package io.xpring.xrpl.model;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.ClassicAddress;
+import io.xpring.xrpl.ImmutableClassicAddress;
+import io.xpring.xrpl.Utils;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.PaymentChannelCreate;
 
@@ -99,6 +102,22 @@ public interface XrpPaymentChannelCreate {
       return null;
     }
 
+    final String destination = paymentChannelCreate.getDestination().getValue().getAddress();
+    Optional<Integer> destinationTag = paymentChannelCreate.hasDestinationTag()
+        ? Optional.of(paymentChannelCreate.getDestinationTag().getValue())
+        : Optional.empty();
+
+    ClassicAddress classicAddress = ImmutableClassicAddress.builder()
+        .address(destination)
+        .tag(destinationTag)
+        .isTest(Utils.isTestNetwork(xrplNetwork))
+        .build();
+
+    final String destinationXAddress = Utils.encodeXAddress(classicAddress);
+    if (destinationXAddress == null) {
+      return null;
+    }
+
     Optional<Integer> cancelAfter = paymentChannelCreate.hasCancelAfter()
         ? Optional.of(paymentChannelCreate.getCancelAfter().getValue())
         : Optional.empty();
@@ -110,6 +129,7 @@ public interface XrpPaymentChannelCreate {
     return XrpPaymentChannelCreate.builder()
       .amount(amount)
       .cancelAfter(cancelAfter)
+      .destinationXAddress(destinationXAddress)
       .publicKey(publicKey)
       .settleDelay(settleDelay)
       .build();
