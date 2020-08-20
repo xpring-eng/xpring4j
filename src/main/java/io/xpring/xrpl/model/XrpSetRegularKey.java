@@ -1,5 +1,9 @@
 package io.xpring.xrpl.model;
 
+import org.immutables.value.Value;
+
+import java.util.Optional;
+
 /**
  * Represents a SetRegularKey transaction on the XRP Ledger.
  * <p>
@@ -11,5 +15,11 @@ package io.xpring.xrpl.model;
  *
  * @see "https://xrpl.org/setregularkey.html"
  */
+@Value.Immutable
 public interface XrpSetRegularKey {
+  static ImmutableXrpSetRegularKey.Builder builder() {
+    return ImmutableXrpSetRegularKey.builder();
+  }
+
+  Optional<String> regularKey();
 }
