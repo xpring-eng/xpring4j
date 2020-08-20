@@ -63,7 +63,25 @@ public interface XrpPaymentChannelFund {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L288"
    */
   static XrpPaymentChannelFund from(PaymentChannelFund paymentChannelFund) {
+    if (!paymentChannelFund.hasAmount() || !paymentChannelFund.hasChannel()) {
+      return null;
+    }
+
+    final XrpCurrencyAmount amount = XrpCurrencyAmount.from(paymentChannelFund.getAmount().getValue());
+    if (amount == null) {
+      return null;
+    }
+
+    final String channel = paymentChannelFund.getChannel().toString();
+
+    Optional<Integer> expiration = paymentChannelFund.hasExpiration()
+        ? Optional.of(paymentChannelFund.getExpiration().getValue())
+        : Optional.empty();
+
     return XrpPaymentChannelFund.builder()
+        .amount(amount)
+        .channel(channel)
+        .expiration(expiration)
         .build();
   }
 }
