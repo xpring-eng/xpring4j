@@ -10,7 +10,7 @@ import org.xrpl.rpc.v1.PaymentChannelCreate;
 
 public class XrpPaymentChannelCreateProtoConversionTest {
   @Test
-  public void paymentChannelCreateRequiredFields() {
+  public void paymentChannelCreateRequiredFieldsTest() {
     // GIVEN a PaymentChannelCreate protocol buffer with required fields set.
     final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
         .paymentChannelCreateWithRequiredFields;
@@ -39,7 +39,7 @@ public class XrpPaymentChannelCreateProtoConversionTest {
   }
 
   @Test
-  public void paymentChannelCreateAllFields() {
+  public void paymentChannelCreateAllFieldsTest() {
     // GIVEN a PaymentChannelCreate protocol buffer with all fields set.
     final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
       .paymentChannelCreateWithAllFields;
@@ -65,4 +65,19 @@ public class XrpPaymentChannelCreateProtoConversionTest {
       .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
     assertThat(paymentChannelCreate.settleDelay()).isEqualTo(paymentChannelCreateProto.getSettleDelay().getValue());
   }
+
+  @Test
+  public void paymentChannelCreateMissingFieldsTest() {
+    // GIVEN a PaymentChannelCreate protocol buffer with fields missing.
+    final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
+      .invalidPaymentChannelCreateMissingRequiredFields;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpPaymentChannelCreate paymentChannelCreate = XrpPaymentChannelCreate
+      .from(paymentChannelCreateProto, XrplNetwork.TEST);
+
+    // THEN the PaymentChannelCreate is null.
+    assertThat(paymentChannelCreate).isNull();
+  }
+
 }
