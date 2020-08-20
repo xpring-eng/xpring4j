@@ -55,7 +55,22 @@ public interface XrpPaymentChannelCreate {
    */
   String destinationXAddress();
 
+  /**
+   * The public key of the key pair the source will use to sign claims against this channel, in hexadecimal.
+   * <p>
+   * This can be any secp256k1 or Ed25519 public key.
+   * </p>
+   *
+   * @return A {@link String} containing the public key of the key pair the source will use to sign claims against
+   *         this channel, in hexadecimal.
+   */
   String publicKey();
 
+  /**
+   * Amount of time the source address must wait before closing the channel if it has unclaimed XRP.
+   *
+   * @return An {@link Integer} containing the amount of time the source address must wait before closing the channel
+   *         if it has unclaimed XRP.
+   */
   Integer settleDelay();
 }
