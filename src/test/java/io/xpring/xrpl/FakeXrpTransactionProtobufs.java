@@ -531,11 +531,11 @@ public class FakeXrpTransactionProtobufs {
       .setValue(testSignerWeight)
       .build();
 
-  public static Common.SignerEntry signerEntry = Common.SignerEntry.newBuilder()
+  public static Common.SignerEntry signerEntryAllFields = Common.SignerEntry.newBuilder()
       .setAccount(FakeXrpProtobufs.account)
       .setSignerWeight(signerWeightProto)
       .build();
 
-  public static Common.SignerEntry invalidSignerEntryMissingFields = Common.SignerEntry.newBuilder()
+  public static Common.SignerEntry invalidSignerEntryNoFields = Common.SignerEntry.newBuilder()
       .build();
 }
