@@ -19,6 +19,16 @@ public interface XrpPaymentChannelCreate {
     return ImmutableXrpPaymentChannelCreate.builder();
   }
 
+  /**
+   *  Amount of XRP, in drops, to deduct from the sender's balance and set aside in this channel.
+   *  <p>
+   *  While the channel is open, the XRP can only go to the Destination address.
+   *  When the channel closes, any unclaimed XRP is returned to the source address's balance.
+   * </p>
+   *
+   * @return An {@link XrpCurrencyAmount} containing the amount of XRP, in drops, to deduct from the sender's balance
+   *         and set aside in this channel.
+   */
   XrpCurrencyAmount amount();
 
   Optional<Integer> cancelAfter();
