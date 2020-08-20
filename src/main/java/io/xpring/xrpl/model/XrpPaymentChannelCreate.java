@@ -38,10 +38,21 @@ public interface XrpPaymentChannelCreate {
    * This value is immutable; the channel can be closed earlier than this time but cannot remain open after this time.)
    * </p>
    *
-   * @return An Integer containing the time, in seconds since the Ripple Epoch, when this channel expires.
+   * @return An {@link Integer} containing the time, in seconds since the Ripple Epoch, when this channel expires.
    */
   Optional<Integer> cancelAfter();
 
+  /**
+   * Address and (optional) destination tag to receive XRP claims against this channel,
+   * encoded as an X-address (see https://xrpaddress.info/).
+   * <p>
+   * This is also known as the "destination address" for the channel.
+   * Cannot be the same as the sender (Account)
+   * </p>
+   *
+   * @return A {@link String} containing the address and (optional) destination tag to receive XRP claims against
+   *         this channel, encoded as an X-address.
+   */
   String destinationXAddress();
 
   String publicKey();
