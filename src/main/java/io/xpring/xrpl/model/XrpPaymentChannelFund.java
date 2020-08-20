@@ -20,6 +20,14 @@ public interface XrpPaymentChannelFund {
     return ImmutableXrpPaymentChannelFund.builder();
   }
 
+  /**
+   * Amount of XRP, in drops, to add to the channel.
+   * <p>
+   * To set the expiration for a channel without adding more XRP, set this to "0".
+   * </p>
+   *
+   * @return An {@link XrpCurrencyAmount} containing the amount of XRP, in drops, to add to the channel.
+   */
   XrpCurrencyAmount amount();
 
   /**
