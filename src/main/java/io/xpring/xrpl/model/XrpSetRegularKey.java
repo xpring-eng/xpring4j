@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.SetRegularKey;
 
 import java.util.Optional;
 
@@ -32,4 +33,22 @@ public interface XrpSetRegularKey {
    *         assigned to the account.
    */
   Optional<String> regularKey();
+
+  /**
+   * Constructs an {@link XrpSetRegularKey} from a {@link SetRegularKey} protocol buffer.
+   *
+   * @param setRegularKey A {@link SetRegularKey} (protobuf object) whose field values will be used to construct
+   *                      an {@link XrpSetRegularKey}.
+   * @return An {@link XrpSetRegularKey} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L298"
+   */
+  static XrpSetRegularKey from(SetRegularKey setRegularKey) {
+    final Optional<String> regularKey = setRegularKey.hasRegularKey()
+        ? Optional.of(setRegularKey.getRegularKey().getValue().getAddress())
+        : Optional.empty();
+
+    return XrpSetRegularKey.builder()
+        .regularKey(regularKey)
+        .build();
+  }
 }
