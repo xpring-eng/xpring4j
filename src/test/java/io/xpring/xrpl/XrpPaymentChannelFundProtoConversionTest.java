@@ -2,6 +2,7 @@ package io.xpring.xrpl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
+import io.xpring.xrpl.model.XrpCurrencyAmount;
 import io.xpring.xrpl.model.XrpPaymentChannelFund;
 import org.junit.Test;
 import org.xrpl.rpc.v1.PaymentChannelFund;
@@ -16,6 +17,11 @@ public class XrpPaymentChannelFundProtoConversionTest {
     final XrpPaymentChannelFund paymentChannelFund = XrpPaymentChannelFund.from(paymentChannelFundProto);
 
     // THEN the PaymentChannelFund converted as expected.
+    assertThat(paymentChannelFund.amount())
+      .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
+    assertThat(paymentChannelFund.channel()).isEqualTo(paymentChannelFundProto.getChannel().toString());
+
+    assertThat(paymentChannelFund.expiration()).isEmpty();
   }
 
   @Test
@@ -27,6 +33,11 @@ public class XrpPaymentChannelFundProtoConversionTest {
     final XrpPaymentChannelFund paymentChannelFund = XrpPaymentChannelFund.from(paymentChannelFundProto);
 
     // THEN the PaymentChannelFund converted as expected.
+    // THEN the PaymentChannelFund converted as expected.
+    assertThat(paymentChannelFund.amount())
+      .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
+    assertThat(paymentChannelFund.channel()).isEqualTo(paymentChannelFundProto.getChannel().toString());
+    assertThat(paymentChannelFund.expiration().get()).isEqualTo(paymentChannelFundProto.getExpiration().getValue());
   }
 
   @Test
