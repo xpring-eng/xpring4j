@@ -137,6 +137,9 @@ public class FakeXrpTransactionProtobufs {
   // PaymentChannelCreate fake primitive test values
   public static Integer testSettleDelay = 86400;
 
+  // SignerEntry fake primitive test values
+  public static Integer testSignerWeight = 1;
+
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
@@ -521,5 +524,18 @@ public class FakeXrpTransactionProtobufs {
 
   public static SetRegularKey setRegularKeyWithKey = SetRegularKey.newBuilder()
       .setRegularKey(regularKeyProto)
+      .build();
+
+  // SignerEntry protos
+  public static Common.SignerWeight signerWeightProto = Common.SignerWeight.newBuilder()
+      .setValue(testSignerWeight)
+      .build();
+
+  public static Common.SignerEntry signerEntry = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static Common.SignerEntry invalidSignerEntryMissingFields = Common.SignerEntry.newBuilder()
       .build();
 }
