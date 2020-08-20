@@ -76,6 +76,14 @@ public interface XrpPaymentChannelCreate {
    */
   Integer settleDelay();
 
+  /**
+   * Constructs an XrpPaymentChannelCreate from a PaymentChannelCreate protocol buffer.
+   *
+   * @param paymentChannelCreate A {@link PaymentChannelCreate} (protobuf object) whose field values will be used
+   *                             to construct an XrpPaymentChannelCreate
+   * @return An {@link XrpPaymentChannelCreate} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L272"
+   */
   static XrpPaymentChannelCreate from(PaymentChannelCreate paymentChannelCreate, XrplNetwork xrplNetwork) {
 
     Optional<Integer> cancelAfter = paymentChannelCreate.hasCancelAfter()
