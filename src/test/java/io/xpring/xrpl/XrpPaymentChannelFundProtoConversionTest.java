@@ -18,7 +18,7 @@ public class XrpPaymentChannelFundProtoConversionTest {
 
     // THEN the PaymentChannelFund converted as expected.
     assertThat(paymentChannelFund.amount())
-      .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
+        .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
     assertThat(paymentChannelFund.channel()).isEqualTo(paymentChannelFundProto.getChannel().toString());
 
     assertThat(paymentChannelFund.expiration()).isEmpty();
@@ -34,7 +34,7 @@ public class XrpPaymentChannelFundProtoConversionTest {
 
     // THEN the PaymentChannelFund converted as expected.
     assertThat(paymentChannelFund.amount())
-      .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
+        .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
     assertThat(paymentChannelFund.channel()).isEqualTo(paymentChannelFundProto.getChannel().toString());
     assertThat(paymentChannelFund.expiration().get()).isEqualTo(paymentChannelFundProto.getExpiration().getValue());
   }
