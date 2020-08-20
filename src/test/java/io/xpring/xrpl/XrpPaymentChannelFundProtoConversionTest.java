@@ -33,7 +33,6 @@ public class XrpPaymentChannelFundProtoConversionTest {
     final XrpPaymentChannelFund paymentChannelFund = XrpPaymentChannelFund.from(paymentChannelFundProto);
 
     // THEN the PaymentChannelFund converted as expected.
-    // THEN the PaymentChannelFund converted as expected.
     assertThat(paymentChannelFund.amount())
       .isEqualTo(XrpCurrencyAmount.from(paymentChannelFundProto.getAmount().getValue()));
     assertThat(paymentChannelFund.channel()).isEqualTo(paymentChannelFundProto.getChannel().toString());
