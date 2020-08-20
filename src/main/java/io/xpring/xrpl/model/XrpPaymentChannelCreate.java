@@ -93,12 +93,18 @@ public interface XrpPaymentChannelCreate {
     ) {
       return null;
     }
-    
+
+    final XrpCurrencyAmount amount = XrpCurrencyAmount.from(paymentChannelCreate.getAmount().getValue());
+    if (amount == null) {
+      return null;
+    }
+
     Optional<Integer> cancelAfter = paymentChannelCreate.hasCancelAfter()
         ? Optional.of(paymentChannelCreate.getCancelAfter().getValue())
         : Optional.empty();
 
     return XrpPaymentChannelCreate.builder()
+      .amount(amount)
       .cancelAfter(cancelAfter)
       .build();
   }
