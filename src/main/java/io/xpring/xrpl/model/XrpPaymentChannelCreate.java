@@ -1,6 +1,8 @@
 package io.xpring.xrpl.model;
 
+import io.xpring.common.XrplNetwork;
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.PaymentChannelCreate;
 
 import java.util.Optional;
 
@@ -73,4 +75,9 @@ public interface XrpPaymentChannelCreate {
    *         if it has unclaimed XRP.
    */
   Integer settleDelay();
+
+  static XrpPaymentChannelCreate from(PaymentChannelCreate paymentChannelCreate, XrplNetwork xrplNetwork) {
+    return XrpPaymentChannelCreate.builder()
+      .build();
+  }
 }
