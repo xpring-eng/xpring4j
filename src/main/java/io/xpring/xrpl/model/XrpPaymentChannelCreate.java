@@ -1,5 +1,9 @@
 package io.xpring.xrpl.model;
 
+import org.immutables.value.Value;
+
+import java.util.Optional;
+
 /**
  * Represents a PaymentChannelCreate transaction on the XRP Ledger.
  * <p>
@@ -9,5 +13,19 @@ package io.xpring.xrpl.model;
  *
  * @see "https://xrpl.org/paymentchannelcreate.html"
  */
+@Value.Immutable
 public interface XrpPaymentChannelCreate {
+  static ImmutableXrpPaymentChannelCreate.Builder builder() {
+    return ImmutableXrpPaymentChannelCreate.builder();
+  }
+
+  XrpCurrencyAmount amount();
+
+  Optional<Integer> cancelAfter();
+
+  String destinationXAddress();
+
+  String publicKey();
+
+  Integer settleDelay();
 }
