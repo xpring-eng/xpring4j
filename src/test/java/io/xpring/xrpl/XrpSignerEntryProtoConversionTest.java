@@ -28,7 +28,7 @@ public class XrpSignerEntryProtoConversionTest {
     // WHEN the protocol buffer is converted to a native Java object.
     XrpSignerEntry signerEntry = XrpSignerEntry.from(signerEntryProto);
 
-    // THEN the SignerEntry is null;
+    // THEN the SignerEntry is null.
     assertThat(signerEntry).isNull();
   }
 }
