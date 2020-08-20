@@ -500,6 +500,13 @@ public class FakeXrpTransactionProtobufs {
   public static PaymentChannelFund paymentChannelFundWithRequiredFields = PaymentChannelFund.newBuilder()
       .setAmount(FakeXrpProtobufs.amount)
       .setChannel(channelProto)
+      .build();
+
+  public static PaymentChannelFund paymentChannelFundWithAllFields = PaymentChannelFund
+      .newBuilder(paymentChannelFundWithRequiredFields)
       .setExpiration(expirationProto)
+      .build();
+
+  public static PaymentChannelFund invalidChannelFundWithMissingFields = PaymentChannelFund.newBuilder()
       .build();
 }
