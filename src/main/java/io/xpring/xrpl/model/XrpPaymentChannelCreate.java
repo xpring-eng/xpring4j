@@ -103,9 +103,12 @@ public interface XrpPaymentChannelCreate {
         ? Optional.of(paymentChannelCreate.getCancelAfter().getValue())
         : Optional.empty();
 
+    final String publicKey = paymentChannelCreate.getPublicKey().toString();
+
     return XrpPaymentChannelCreate.builder()
       .amount(amount)
       .cancelAfter(cancelAfter)
+      .publicKey(publicKey)
       .build();
   }
 }
