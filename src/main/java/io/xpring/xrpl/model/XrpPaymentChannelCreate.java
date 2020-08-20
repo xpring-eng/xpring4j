@@ -105,10 +105,13 @@ public interface XrpPaymentChannelCreate {
 
     final String publicKey = paymentChannelCreate.getPublicKey().toString();
 
+    final Integer settleDelay = paymentChannelCreate.getSettleDelay().getValue();
+
     return XrpPaymentChannelCreate.builder()
       .amount(amount)
       .cancelAfter(cancelAfter)
       .publicKey(publicKey)
+      .settleDelay(settleDelay)
       .build();
   }
 }
