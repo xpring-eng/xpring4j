@@ -1,6 +1,7 @@
 package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
+import org.xrpl.rpc.v1.PaymentChannelFund;
 
 import java.util.Optional;
 
@@ -52,4 +53,9 @@ public interface XrpPaymentChannelFund {
    *         Ripple Epoch.
    */
   Optional<Integer> expiration();
+
+  static XrpPaymentChannelFund from(PaymentChannelFund paymentChannelFund) {
+    return XrpPaymentChannelFund.builder()
+        .build();
+  }
 }
