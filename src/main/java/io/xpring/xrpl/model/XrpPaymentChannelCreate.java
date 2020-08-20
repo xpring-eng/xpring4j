@@ -85,7 +85,15 @@ public interface XrpPaymentChannelCreate {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L272"
    */
   static XrpPaymentChannelCreate from(PaymentChannelCreate paymentChannelCreate, XrplNetwork xrplNetwork) {
-
+    if (
+        !paymentChannelCreate.hasAmount()
+        || !paymentChannelCreate.hasDestination()
+        || !paymentChannelCreate.hasPublicKey()
+        || !paymentChannelCreate.hasSettleDelay()
+    ) {
+      return null;
+    }
+    
     Optional<Integer> cancelAfter = paymentChannelCreate.hasCancelAfter()
         ? Optional.of(paymentChannelCreate.getCancelAfter().getValue())
         : Optional.empty();
