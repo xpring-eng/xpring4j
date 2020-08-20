@@ -11,7 +11,7 @@ import org.xrpl.rpc.v1.PaymentChannelCreate;
 public class XrpPaymentChannelCreateProtoConversionTest {
   @Test
   public void paymentChannelCreateRequiredFields() {
-    // GIVEN a PaymentChannelCreate protocol buffer with all fields set.
+    // GIVEN a PaymentChannelCreate protocol buffer with required fields set.
     final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
         .paymentChannelCreateWithRequiredFields;
 
@@ -30,7 +30,7 @@ public class XrpPaymentChannelCreateProtoConversionTest {
       .build();
     final String destinationXAddress = Utils.encodeXAddress(destinationClassicAddress);
     assertThat(paymentChannelCreate.destinationXAddress()).isEqualTo(destinationXAddress);
-    
+
     assertThat(paymentChannelCreate.publicKey())
       .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
     assertThat(paymentChannelCreate.settleDelay()).isEqualTo(paymentChannelCreateProto.getSettleDelay().getValue());
@@ -39,5 +39,30 @@ public class XrpPaymentChannelCreateProtoConversionTest {
   }
 
   @Test
-  public void paymentChannelCreateAllFields() {}
+  public void paymentChannelCreateAllFields() {
+    // GIVEN a PaymentChannelCreate protocol buffer with all fields set.
+    final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
+      .paymentChannelCreateWithAllFields;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpPaymentChannelCreate paymentChannelCreate = XrpPaymentChannelCreate
+      .from(paymentChannelCreateProto, XrplNetwork.TEST);
+
+    // THEN the PaymentChannelCreate converted as expected.
+    assertThat(paymentChannelCreate.amount())
+      .isEqualTo(XrpCurrencyAmount.from(paymentChannelCreateProto.getAmount().getValue()));
+    assertThat(paymentChannelCreate.cancelAfter().get()).isEqualTo(paymentChannelCreateProto.getCancelAfter().getValue());
+
+    ClassicAddress destinationClassicAddress = ImmutableClassicAddress.builder()
+      .address(paymentChannelCreateProto.getDestination().getValue().getAddress())
+      .tag(paymentChannelCreateProto.getDestinationTag().getValue())
+      .isTest(true)
+      .build();
+    final String destinationXAddress = Utils.encodeXAddress(destinationClassicAddress);
+    assertThat(paymentChannelCreate.destinationXAddress()).isEqualTo(destinationXAddress);
+
+    assertThat(paymentChannelCreate.publicKey())
+      .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
+    assertThat(paymentChannelCreate.settleDelay()).isEqualTo(paymentChannelCreateProto.getSettleDelay().getValue());
+  }
 }
