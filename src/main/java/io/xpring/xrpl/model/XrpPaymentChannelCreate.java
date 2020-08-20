@@ -77,7 +77,13 @@ public interface XrpPaymentChannelCreate {
   Integer settleDelay();
 
   static XrpPaymentChannelCreate from(PaymentChannelCreate paymentChannelCreate, XrplNetwork xrplNetwork) {
+
+    Optional<Integer> cancelAfter = paymentChannelCreate.hasCancelAfter()
+        ? Optional.of(paymentChannelCreate.getCancelAfter().getValue())
+        : Optional.empty();
+
     return XrpPaymentChannelCreate.builder()
+      .cancelAfter(cancelAfter)
       .build();
   }
 }
