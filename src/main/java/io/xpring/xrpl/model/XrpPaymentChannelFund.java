@@ -54,6 +54,14 @@ public interface XrpPaymentChannelFund {
    */
   Optional<Integer> expiration();
 
+  /**
+   * Constructs an {@link XrpPaymentChannelFund} from a {@link PaymentChannelFund} protocol buffer.
+   *
+   * @param paymentChannelFund A {@link PaymentChannelFund} (protobuf object) whose field values will be used
+   *                           to construct an {@link XrpPaymentChannelFund}.
+   * @return An {@link XrpPaymentChannelFund} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L288"
+   */
   static XrpPaymentChannelFund from(PaymentChannelFund paymentChannelFund) {
     return XrpPaymentChannelFund.builder()
         .build();
