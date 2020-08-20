@@ -21,18 +21,18 @@ public class XrpPaymentChannelCreateProtoConversionTest {
 
     // THEN the PaymentChannelCreate converted as expected.
     assertThat(paymentChannelCreate.amount())
-      .isEqualTo(XrpCurrencyAmount.from(paymentChannelCreateProto.getAmount().getValue()));
+        .isEqualTo(XrpCurrencyAmount.from(paymentChannelCreateProto.getAmount().getValue()));
 
     ClassicAddress destinationClassicAddress = ImmutableClassicAddress.builder()
-      .address(paymentChannelCreateProto.getDestination().getValue().getAddress())
-      .tag(paymentChannelCreateProto.getDestinationTag().getValue())
-      .isTest(true)
-      .build();
+        .address(paymentChannelCreateProto.getDestination().getValue().getAddress())
+        .tag(paymentChannelCreateProto.getDestinationTag().getValue())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(destinationClassicAddress);
     assertThat(paymentChannelCreate.destinationXAddress()).isEqualTo(destinationXAddress);
 
     assertThat(paymentChannelCreate.publicKey())
-      .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
+        .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
     assertThat(paymentChannelCreate.settleDelay()).isEqualTo(paymentChannelCreateProto.getSettleDelay().getValue());
 
     assertThat(paymentChannelCreate.cancelAfter()).isEmpty();
@@ -42,27 +42,28 @@ public class XrpPaymentChannelCreateProtoConversionTest {
   public void paymentChannelCreateAllFieldsTest() {
     // GIVEN a PaymentChannelCreate protocol buffer with all fields set.
     final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
-      .paymentChannelCreateWithAllFields;
+        .paymentChannelCreateWithAllFields;
 
     // WHEN the protocol buffer is converted to a native Java object.
     final XrpPaymentChannelCreate paymentChannelCreate = XrpPaymentChannelCreate
-      .from(paymentChannelCreateProto, XrplNetwork.TEST);
+        .from(paymentChannelCreateProto, XrplNetwork.TEST);
 
     // THEN the PaymentChannelCreate converted as expected.
     assertThat(paymentChannelCreate.amount())
-      .isEqualTo(XrpCurrencyAmount.from(paymentChannelCreateProto.getAmount().getValue()));
-    assertThat(paymentChannelCreate.cancelAfter().get()).isEqualTo(paymentChannelCreateProto.getCancelAfter().getValue());
+        .isEqualTo(XrpCurrencyAmount.from(paymentChannelCreateProto.getAmount().getValue()));
+    assertThat(paymentChannelCreate.cancelAfter().get())
+        .isEqualTo(paymentChannelCreateProto.getCancelAfter().getValue());
 
     ClassicAddress destinationClassicAddress = ImmutableClassicAddress.builder()
-      .address(paymentChannelCreateProto.getDestination().getValue().getAddress())
-      .tag(paymentChannelCreateProto.getDestinationTag().getValue())
-      .isTest(true)
-      .build();
+        .address(paymentChannelCreateProto.getDestination().getValue().getAddress())
+        .tag(paymentChannelCreateProto.getDestinationTag().getValue())
+        .isTest(true)
+        .build();
     final String destinationXAddress = Utils.encodeXAddress(destinationClassicAddress);
     assertThat(paymentChannelCreate.destinationXAddress()).isEqualTo(destinationXAddress);
 
     assertThat(paymentChannelCreate.publicKey())
-      .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
+        .isEqualTo(paymentChannelCreateProto.getPublicKey().toString());
     assertThat(paymentChannelCreate.settleDelay()).isEqualTo(paymentChannelCreateProto.getSettleDelay().getValue());
   }
 
@@ -70,11 +71,11 @@ public class XrpPaymentChannelCreateProtoConversionTest {
   public void paymentChannelCreateMissingFieldsTest() {
     // GIVEN a PaymentChannelCreate protocol buffer with fields missing.
     final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
-      .invalidPaymentChannelCreateMissingRequiredFields;
+        .invalidPaymentChannelCreateMissingRequiredFields;
 
     // WHEN the protocol buffer is converted to a native Java object.
     final XrpPaymentChannelCreate paymentChannelCreate = XrpPaymentChannelCreate
-      .from(paymentChannelCreateProto, XrplNetwork.TEST);
+        .from(paymentChannelCreateProto, XrplNetwork.TEST);
 
     // THEN the PaymentChannelCreate is null.
     assertThat(paymentChannelCreate).isNull();

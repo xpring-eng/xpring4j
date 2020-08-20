@@ -491,6 +491,7 @@ public class FakeXrpTransactionProtobufs {
       .setCancelAfter(cancelAfterProto)
       .build();
 
-  public static PaymentChannelCreate invalidPaymentChannelCreateMissingRequiredFields = PaymentChannelCreate.newBuilder()
+  public static PaymentChannelCreate invalidPaymentChannelCreateMissingRequiredFields = PaymentChannelCreate
+      .newBuilder()
       .build();
 }
