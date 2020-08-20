@@ -2,6 +2,8 @@ package io.xpring.xrpl.model;
 
 import org.immutables.value.Value;
 
+import java.util.Optional;
+
 /**
  * Represents a PaymentChannelFund transaction on the XRP Ledger.
  * <p>
@@ -13,5 +15,14 @@ import org.immutables.value.Value;
  * @see "https://xrpl.org/paymentchannelfund.html"
  */
 @Value.Immutable
-public class XrpPaymentChannelFund {
+public interface XrpPaymentChannelFund {
+  static ImmutableXrpPaymentChannelFund.Builder builder() {
+    return ImmutableXrpPaymentChannelFund.builder();
+  }
+
+  XrpCurrencyAmount amount();
+
+  String channel();
+
+  Optional<Integer> expiration();
 }
