@@ -131,6 +131,9 @@ public class FakeXrpTransactionProtobufs {
     }
   }
 
+  // PaymentChannelCreate fake primitive test values
+  public static Integer testSettleDelay = 86400;
+
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
@@ -467,5 +470,10 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()
+      .build();
+
+  // PaymentChannelCreate protos
+  public static Common.SettleDelay settleDelayProto = Common.SettleDelay.newBuilder()
+      .setValue(testSettleDelay)
       .build();
 }
