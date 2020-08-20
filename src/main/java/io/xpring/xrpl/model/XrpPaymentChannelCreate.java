@@ -31,6 +31,15 @@ public interface XrpPaymentChannelCreate {
    */
   XrpCurrencyAmount amount();
 
+  /**
+   * (Optional) The time, in seconds since the Ripple Epoch, when this channel expires.
+   * <p>
+   * Any transaction that would modify the channel after this time closes the channel without otherwise affecting it.
+   * This value is immutable; the channel can be closed earlier than this time but cannot remain open after this time.)
+   * </p>
+   *
+   * @return An Integer containing the time, in seconds since the Ripple Epoch, when this channel expires.
+   */
   Optional<Integer> cancelAfter();
 
   String destinationXAddress();
