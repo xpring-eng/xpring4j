@@ -68,7 +68,13 @@ public interface XrpTrustSet {
       return null;
     }
 
+    XrpCurrencyAmount limitAmount = XrpCurrencyAmount.from(trustSet.getLimitAmount().getValue());
+    if (limitAmount == null) {
+      return null;
+    }
+
     return XrpTrustSet.builder()
+        .limitAmount(limitAmount)
         .build();
   }
 }
