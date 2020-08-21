@@ -73,8 +73,18 @@ public interface XrpTrustSet {
       return null;
     }
 
+    final Optional<Integer> qualityIn = trustSet.hasQualityIn()
+        ? Optional.of(trustSet.getQualityIn().getValue())
+        : Optional.empty();
+
+    final Optional<Integer> qualityOut = trustSet.hasQualityOut()
+        ? Optional.of(trustSet.getQualityOut().getValue())
+        : Optional.empty();
+
     return XrpTrustSet.builder()
         .limitAmount(limitAmount)
+        .qualityIn(qualityIn)
+        .qualityOut(qualityOut)
         .build();
   }
 }
