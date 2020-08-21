@@ -29,4 +29,17 @@ public interface XrpSignerListSet {
    * @return An {@link Integer} containing a target number for the signer weights.
    */
   Integer signerQuorum();
+
+  /**
+   * Constructs an {@link XrpSignerListSet} from a {@link SignerListSet} protocol buffer.
+   *
+   * @param signerListSet A {@link SignerListSet} (protobuf object) whose field values will be used to construct
+   *                      an {@link XrpSignerListSet}.
+   * @return An {@link XrpSignerListSet} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L304"
+   */
+  static XrpSignerListSet from(SignerListSet signerListSet) {
+    return XrpSignerListSet.builder()
+        .build();
+  }
 }
