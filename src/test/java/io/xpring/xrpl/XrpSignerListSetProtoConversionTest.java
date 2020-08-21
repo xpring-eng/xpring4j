@@ -7,7 +7,6 @@ import io.xpring.xrpl.model.XrpSignerListSet;
 import org.junit.Test;
 import org.xrpl.rpc.v1.SignerListSet;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class XrpSignerListSetProtoConversionTest {
