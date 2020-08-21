@@ -582,4 +582,11 @@ public class FakeXrpTransactionProtobufs {
   public static TrustSet trustSetRequiredFields = TrustSet.newBuilder()
       .setLimitAmount(limitAmountProto)
       .build();
+
+  public static TrustSet trustSetAllFields = TrustSet.newBuilder(trustSetRequiredFields)
+      .setLimitAmount(limitAmountProto)
+      .build();
+
+  public static TrustSet invalidTrustSetMissingLimitAmount = TrustSet.newBuilder()
+      .build();
 }
