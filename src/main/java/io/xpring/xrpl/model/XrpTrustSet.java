@@ -54,4 +54,21 @@ public interface XrpTrustSet {
    *         number per 1,000,000,000 units.
    */
   Optional<Integer> qualityOut();
+
+  /**
+   * Constructs an {@link XrpTrustSet} from a TrustSet protocol buffer.
+   *
+   * @param trustSet A {@link TrustSet} (protobuf object) whose field values will be used to construct
+   *                 an {@link XrpTrustSet}.
+   * @return An {@link XrpTrustSet} with its fields set via the analogous protobuf fields.
+   * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L312"
+   */
+  static XrpTrustSet from(TrustSet trustSet) {
+    if (!trustSet.hasLimitAmount()) {
+      return null;
+    }
+
+    return XrpTrustSet.builder()
+        .build();
+  }
 }
