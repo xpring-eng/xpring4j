@@ -13,7 +13,12 @@ import java.util.Optional;
  *
  * @see "https://xrpl.org/trustset.html"
  */
+@Value.Immutable
 public interface XrpTrustSet {
+  static ImmutableXrpTrustSet.Builder builder() {
+    return ImmutableXrpTrustSet.builder();
+  }
+
   /**
    * Object defining the trust line to create or modify, in the format of an XrpCurrencyAmount.
    * <p>
