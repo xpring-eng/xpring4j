@@ -39,7 +39,14 @@ public interface XrpSignerListSet {
    * @see "https://github.com/ripple/rippled/blob/3d86b49dae8173344b39deb75e53170a9b6c5284/src/ripple/proto/org/xrpl/rpc/v1/transaction.proto#L304"
    */
   static XrpSignerListSet from(SignerListSet signerListSet) {
+    if (!signerListSet.hasSignerQuorum()) {
+      return null;
+    }
+    
+    final Integer signerQuorum = signerListSet.getSignerQuorum().getValue();
+
     return XrpSignerListSet.builder()
+        .signerQuorum(signerQuorum)
         .build();
   }
 }
