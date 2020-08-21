@@ -552,10 +552,9 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static SignerListSet signerListSetWithNoSignerEntries = SignerListSet.newBuilder()
+      .setSignerQuorum(signerQuorumProto)
       .build();
 
-  public static SignerListSet signerListSetWithSignerQuorum = SignerListSet
-      .newBuilder(signerListSetWithNoSignerEntries)
-      .build();
-
+  public static SignerListSet invalidSignerListSetMissingSignerQuorum = SignerListSet.newBuilder()
+    .build();
 }
