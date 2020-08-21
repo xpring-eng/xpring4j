@@ -14,4 +14,19 @@ import org.xrpl.rpc.v1.SignerListSet;
  */
 @Value.Immutable
 public interface XrpSignerListSet {
+  static ImmutableXrpSignerListSet.Builder builder() {
+    return ImmutableXrpSignerListSet.builder();
+  }
+
+  /**
+   * A target number for the signer weights.
+   * <p>
+   * A multi-signature from this list is valid only if the sum weights of the signatures provided is greater than
+   * or equal to this value.
+   * To delete a SignerList, use the value 0.
+   * </p>
+   *
+   * @return An {@link Integer} containing a target number for the signer weights.
+   */
+  Integer signerQuorum();
 }
