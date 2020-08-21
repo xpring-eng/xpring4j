@@ -20,6 +20,7 @@ import org.xrpl.rpc.v1.PaymentChannelCreate;
 import org.xrpl.rpc.v1.PaymentChannelFund;
 import org.xrpl.rpc.v1.SetRegularKey;
 import org.xrpl.rpc.v1.SignerListSet;
+import org.xrpl.rpc.v1.TrustSet;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
@@ -571,5 +572,14 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static SignerListSet invalidSignerListSetMissingSignerQuorum = SignerListSet.newBuilder()
+      .build();
+
+  // TrustSet protos
+  public static Common.LimitAmount limitAmountProto = Common.LimitAmount.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static TrustSet trustSetRequiredFields = TrustSet.newBuilder()
+      .setLimitAmount(limitAmountProto)
       .build();
 }
