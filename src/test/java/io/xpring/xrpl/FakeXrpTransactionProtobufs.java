@@ -23,8 +23,6 @@ import org.xrpl.rpc.v1.SignerListSet;
 import org.xrpl.rpc.v1.TrustSet;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 /**
  * Common set of fake objects - protobuf and native Java conversions - for testing.
