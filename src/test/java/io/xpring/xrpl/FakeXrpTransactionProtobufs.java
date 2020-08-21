@@ -22,6 +22,8 @@ import org.xrpl.rpc.v1.SetRegularKey;
 import org.xrpl.rpc.v1.SignerListSet;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * Common set of fake objects - protobuf and native Java conversions - for testing.
@@ -548,7 +550,20 @@ public class FakeXrpTransactionProtobufs {
       .setValue(testSignerQuorum)
       .build();
 
+  public static Common.SignerEntry signerEntry1 = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static Common.SignerEntry signerEntry2 = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
   public static SignerListSet signerListSetWithSignerEntries = SignerListSet.newBuilder()
+      .setSignerQuorum(signerQuorumProto)
+      .addSignerEntries(signerEntry1)
+      .addSignerEntries(signerEntry2)
       .build();
 
   public static SignerListSet signerListSetWithNoSignerEntries = SignerListSet.newBuilder()
@@ -556,5 +571,5 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static SignerListSet invalidSignerListSetMissingSignerQuorum = SignerListSet.newBuilder()
-    .build();
+      .build();
 }
