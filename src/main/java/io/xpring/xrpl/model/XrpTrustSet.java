@@ -39,5 +39,14 @@ public interface XrpTrustSet {
    */
   Optional<Integer> qualityIn();
 
+  /**
+   * (Optional) Value outgoing balances on this trust line at the ratio of this number per 1,000,000,000 units.
+   * <p>
+   * A value of 0 is shorthand for treating balances at face value.
+   * </p>
+   *
+   * @return An {@link Integer} containing the value of outgoing balances on this trust line at the ratio of this
+   *         number per 1,000,000,000 units.
+   */
   Optional<Integer> qualityOut();
 }
