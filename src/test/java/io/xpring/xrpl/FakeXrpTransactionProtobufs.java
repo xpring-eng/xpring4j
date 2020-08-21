@@ -145,6 +145,10 @@ public class FakeXrpTransactionProtobufs {
   // SignerListSet
   public static Integer testSignerQuorum = 1;
 
+  // TrustSet
+  public static Integer testQualityIn = 5;
+  public static Integer testQualityOut = 2;
+
   // AccountSet protos
   // Common.ClearFlag proto
   public static Common.ClearFlag clearFlagProto = Common.ClearFlag.newBuilder()
@@ -577,12 +581,22 @@ public class FakeXrpTransactionProtobufs {
       .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
       .build();
 
+  public static Common.QualityIn qualityInProto = Common.QualityIn.newBuilder()
+      .setValue(testQualityIn)
+      .build();
+
+  public static Common.QualityOut qualityOutProto = Common.QualityOut.newBuilder()
+      .setValue(testQualityOut)
+      .build();
+
   public static TrustSet trustSetRequiredFields = TrustSet.newBuilder()
       .setLimitAmount(limitAmountProto)
       .build();
 
   public static TrustSet trustSetAllFields = TrustSet.newBuilder(trustSetRequiredFields)
       .setLimitAmount(limitAmountProto)
+      .setQualityIn(qualityInProto)
+      .setQualityOut(qualityOutProto)
       .build();
 
   public static TrustSet invalidTrustSetMissingLimitAmount = TrustSet.newBuilder()
