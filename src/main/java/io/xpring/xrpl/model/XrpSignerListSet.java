@@ -3,6 +3,11 @@ package io.xpring.xrpl.model;
 import org.immutables.value.Value;
 import org.xrpl.rpc.v1.SignerListSet;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * Represents a {@link SignerListSet} transaction on the XRP Ledger.
  * <p>
@@ -17,6 +22,19 @@ public interface XrpSignerListSet {
   static ImmutableXrpSignerListSet.Builder builder() {
     return ImmutableXrpSignerListSet.builder();
   }
+
+  /**
+  * (Omitted when deleting) Array of XRPSignerEntry objects, indicating the addresses and weights of signers in
+   * this list.
+   * <p>
+   * A SignerList must have at least 1 member and no more than 8 members. No address may appear more than once in the
+   * list, nor may the Account submitting the transaction appear in the list.
+   * </p>
+   *
+   * @return A {@link List} containing {@link XrpSignerEntry} objects, indicating the addresses and weights of signers
+   *         in this list.
+   */
+  Optional<List<XrpSignerEntry>> signerEntries();
 
   /**
    * A target number for the signer weights.
@@ -42,8 +60,13 @@ public interface XrpSignerListSet {
     if (!signerListSet.hasSignerQuorum()) {
       return null;
     }
-    
+
     final Integer signerQuorum = signerListSet.getSignerQuorum().getValue();
+
+    final List<XrpSignerEntry> signerEntriesList = signerListSet.getSignerEntriesList().stream()
+        .map(XrpSignerEntry::from)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
 
     return XrpSignerListSet.builder()
         .signerQuorum(signerQuorum)
