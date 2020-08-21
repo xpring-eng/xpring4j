@@ -33,6 +33,10 @@ public class XrpTrustSetProtoConversionTest {
     final XrpTrustSet trustSet = XrpTrustSet.from(trustSetProto);
 
     // THEN the TrustSet converted as expected.
+    assertThat(trustSet.limitAmount())
+      .isEqualTo(XrpCurrencyAmount.from(trustSetProto.getLimitAmount().getValue()));
+    assertThat(trustSet.qualityIn().get()).isEqualTo(trustSetProto.getQualityIn().getValue());
+    assertThat(trustSet.qualityOut().get()).isEqualTo(trustSetProto.getQualityOut().getValue());
   }
 
   @Test
