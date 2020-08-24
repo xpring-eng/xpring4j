@@ -12,6 +12,7 @@ import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.DepositPreauth;
 import org.xrpl.rpc.v1.EscrowCancel;
 import org.xrpl.rpc.v1.EscrowCreate;
+import org.xrpl.rpc.v1.EscrowFinish;
 
 import java.io.UnsupportedEncodingException;
 
@@ -71,6 +72,17 @@ public class FakeXrpTransactionProtobufs {
   static {
     try {
       testCondition = ByteString.copyFrom("condition", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  // EscrowFinish fake primitive test values
+  public static ByteString testFulfillment;
+
+  static {
+    try {
+      testFulfillment = ByteString.copyFrom("fulfillment", "Utf8");
     } catch (UnsupportedEncodingException exception) {
       exception.printStackTrace();
     }
@@ -300,5 +312,29 @@ public class FakeXrpTransactionProtobufs {
       .setAmount(invalidEmptyAmountWithNoFields)
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
+      .build();
+
+  // EscrowFinish protos
+  public static EscrowFinish escrowFinishProtoWithRequiredFields = EscrowFinish.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .setOwner(ownerProto)
+      .build();
+
+  public static Common.Fulfillment fulfillmentProto = Common.Fulfillment.newBuilder()
+      .setValue(testFulfillment)
+      .build();
+
+  public static EscrowFinish escrowFinishProtoWithAllFields = EscrowFinish
+      .newBuilder(escrowFinishProtoWithRequiredFields)
+      .setCondition(conditionProto)
+      .setFulfillment(fulfillmentProto)
+      .build();
+
+  public static EscrowFinish invalidEscrowFinishMissingOfferSequence = EscrowFinish.newBuilder()
+      .setOwner(ownerProto)
+      .build();
+
+  public static EscrowFinish invalidEscrowFinishMissingOwner = EscrowFinish.newBuilder()
+      .setOfferSequence(offerSequenceProto)
       .build();
 }
