@@ -14,6 +14,7 @@ import org.xrpl.rpc.v1.EscrowCancel;
 import org.xrpl.rpc.v1.EscrowCreate;
 import org.xrpl.rpc.v1.EscrowFinish;
 import org.xrpl.rpc.v1.OfferCancel;
+import org.xrpl.rpc.v1.OfferCreate;
 
 import java.io.UnsupportedEncodingException;
 
@@ -345,5 +346,51 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static OfferCancel invalidOfferCancelMissingOfferSequence = OfferCancel.newBuilder()
+      .build();
+
+  // OfferCreate protos
+  public static Common.TakerGets takerGetsProto = Common.TakerGets.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.TakerPays takerPaysProto = Common.TakerPays.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static OfferCreate offerCreateWithRequiredFields = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static OfferCreate offerCreateWithAllFields = OfferCreate
+      .newBuilder(offerCreateWithRequiredFields)
+      .setExpiration(expirationProto)
+      .setOfferSequence(offerSequenceProto)
+      .build();
+
+  public static Common.TakerGets invalidTakerGetsProto = Common.TakerGets.newBuilder()
+      .setValue(invalidCurrencyAmountWithNoFields)
+      .build();
+
+  public static OfferCreate invalidOfferCreateInvalidTakerGets = OfferCreate.newBuilder()
+      .setTakerGets(invalidTakerGetsProto)
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static Common.TakerPays invalidTakerPaysProto = Common.TakerPays.newBuilder()
+      .setValue(invalidCurrencyAmountWithNoFields)
+      .build();
+
+  public static OfferCreate invalidOfferCreateInvalidTakerPays = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .setTakerPays(invalidTakerPaysProto)
+      .build();
+
+  public static OfferCreate invalidOfferCreateMissingTakerGets = OfferCreate.newBuilder()
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static OfferCreate invalidOfferCreateMissingTakerPays = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
       .build();
 }
