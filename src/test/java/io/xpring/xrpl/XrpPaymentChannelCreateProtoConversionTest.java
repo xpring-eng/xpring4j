@@ -80,4 +80,7 @@ public class XrpPaymentChannelCreateProtoConversionTest {
     // THEN the PaymentChannelCreate is null.
     assertThat(paymentChannelCreate).isNull();
   }
+
+  // TODO: Test invalid amount
+  // TODO: Test invalid address
 }

@@ -494,4 +494,12 @@ public class FakeXrpTransactionProtobufs {
   public static PaymentChannelCreate invalidPaymentChannelCreateMissingRequiredFields = PaymentChannelCreate
       .newBuilder()
       .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAmount = PaymentChannelCreate
+      .newBuilder()
+      .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAddress = PaymentChannelCreate
+      .newBuilder()
+      .build();
 }
