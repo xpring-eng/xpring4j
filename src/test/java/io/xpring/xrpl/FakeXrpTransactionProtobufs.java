@@ -496,6 +496,15 @@ public class FakeXrpTransactionProtobufs {
       .newBuilder()
       .build();
 
+  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAmount = PaymentChannelCreate
+      .newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
+      .build();
+
   // PaymentChannelFund protos
   public static PaymentChannelFund paymentChannelFundWithRequiredFields = PaymentChannelFund.newBuilder()
       .setAmount(FakeXrpProtobufs.amount)
