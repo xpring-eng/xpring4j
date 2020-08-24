@@ -11,6 +11,7 @@ import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.DepositPreauth;
 import org.xrpl.rpc.v1.EscrowCancel;
+import org.xrpl.rpc.v1.EscrowCreate;
 
 import java.io.UnsupportedEncodingException;
 
@@ -63,6 +64,17 @@ public class FakeXrpTransactionProtobufs {
 
   // EscrowCancel fake primitive test values
   public static Integer testOfferSequence = 23;
+
+  // EscrowCreate fake primitive test values
+  public static ByteString testCondition;
+
+  static {
+    try {
+      testCondition = ByteString.copyFrom("condition", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -247,5 +259,46 @@ public class FakeXrpTransactionProtobufs {
 
   public static EscrowCancel invalidEscrowCancelProtoMissingOfferSequence = EscrowCancel.newBuilder()
       .setOwner(ownerProto)
+      .build();
+
+  // EscrowCreate protos
+  public static Common.CancelAfter cancelAfterProto = Common.CancelAfter.newBuilder()
+      .setValue(testExpiration)
+      .build();
+
+  public static Common.Condition conditionProto = Common.Condition.newBuilder()
+      .setValue(testCondition)
+      .build();
+
+  public static Common.FinishAfter finishAfterProto = Common.FinishAfter.newBuilder()
+      .setValue(testExpiration)
+      .build();
+
+  public static EscrowCreate escrowCreateProtoWithRequiredFields = EscrowCreate.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .build();
+
+  public static EscrowCreate escrowCreateProtoWithAllFields = EscrowCreate
+      .newBuilder(escrowCreateProtoWithRequiredFields)
+      .setCancelAfter(cancelAfterProto)
+      .setCondition(conditionProto)
+      .setFinishAfter(finishAfterProto)
+      .build();
+
+  public static EscrowCreate invalidEscrowCreateMissingAmount = EscrowCreate.newBuilder()
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .build();
+
+  public static EscrowCreate invalidEscrowCreateMissingDestination = EscrowCreate.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .build();
+
+  public static EscrowCreate invalidEscrowCreateInvalidAmount = EscrowCreate.newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
       .build();
 }
