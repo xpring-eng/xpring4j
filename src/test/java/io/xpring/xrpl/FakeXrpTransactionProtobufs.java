@@ -15,6 +15,7 @@ import org.xrpl.rpc.v1.EscrowCreate;
 import org.xrpl.rpc.v1.EscrowFinish;
 import org.xrpl.rpc.v1.OfferCancel;
 import org.xrpl.rpc.v1.OfferCreate;
+import org.xrpl.rpc.v1.PaymentChannelClaim;
 
 import java.io.UnsupportedEncodingException;
 
@@ -85,6 +86,46 @@ public class FakeXrpTransactionProtobufs {
   static {
     try {
       testFulfillment = ByteString.copyFrom("fulfillment", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  // PaymentChannelClaim fake primitive test values
+  public static ByteString testChannel;
+
+  static {
+    try {
+      testChannel = ByteString.copyFrom(
+        "C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198",
+        "Utf8"
+      );
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  public static ByteString testPaymentChannelPublicKey;
+
+  static {
+    try {
+      testPaymentChannelPublicKey = ByteString.copyFrom(
+        "32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A",
+        "Utf8"
+      );
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  public static ByteString testPaymentChannelSignature;
+
+  static {
+    try {
+      testPaymentChannelSignature = ByteString.copyFrom(
+        "30440220718D264EF05CAED7C781FF6DE298DCAC68D002562C9BF3A07C1E721B420C0DAB02",
+        "Utf8"
+      );
     } catch (UnsupportedEncodingException exception) {
       exception.printStackTrace();
     }
@@ -392,5 +433,39 @@ public class FakeXrpTransactionProtobufs {
 
   public static OfferCreate invalidOfferCreateMissingTakerPays = OfferCreate.newBuilder()
       .setTakerGets(takerGetsProto)
+      .build();
+
+  // PaymentChannelClaim protos
+  public static Common.Channel channelProto = Common.Channel.newBuilder()
+      .setValue(testChannel)
+      .build();
+
+  public static Common.Balance balanceProto = Common.Balance.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.PublicKey paymentPublicKeyProto = Common.PublicKey
+      .newBuilder()
+      .setValue(testPaymentChannelPublicKey)
+      .build();
+
+  public static Common.PaymentChannelSignature paymentChannelSignatureProto = Common.PaymentChannelSignature
+      .newBuilder()
+      .setValue(testPaymentChannelSignature)
+      .build();
+
+  public static PaymentChannelClaim paymentChannelClaimWithRequiredFields = PaymentChannelClaim.newBuilder()
+      .setChannel(channelProto)
+      .build();
+
+  public static PaymentChannelClaim paymentChannelClaimWithAllFields = PaymentChannelClaim
+      .newBuilder(paymentChannelClaimWithRequiredFields)
+      .setAmount(FakeXrpProtobufs.amount)
+      .setBalance(balanceProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setPaymentChannelSignature(paymentChannelSignatureProto)
+      .build();
+
+  public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()
       .build();
 }
