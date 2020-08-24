@@ -16,6 +16,7 @@ import org.xrpl.rpc.v1.EscrowFinish;
 import org.xrpl.rpc.v1.OfferCancel;
 import org.xrpl.rpc.v1.OfferCreate;
 import org.xrpl.rpc.v1.PaymentChannelClaim;
+import org.xrpl.rpc.v1.PaymentChannelCreate;
 
 import java.io.UnsupportedEncodingException;
 
@@ -130,6 +131,9 @@ public class FakeXrpTransactionProtobufs {
       exception.printStackTrace();
     }
   }
+
+  // PaymentChannelCreate fake primitive test values
+  public static Integer testSettleDelay = 86400;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -467,5 +471,36 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()
+      .build();
+
+  // PaymentChannelCreate protos
+  public static Common.SettleDelay settleDelayProto = Common.SettleDelay.newBuilder()
+      .setValue(testSettleDelay)
+      .build();
+
+  public static PaymentChannelCreate paymentChannelCreateWithRequiredFields = PaymentChannelCreate.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
+      .build();
+
+  public static PaymentChannelCreate paymentChannelCreateWithAllFields = PaymentChannelCreate
+      .newBuilder(paymentChannelCreateWithRequiredFields)
+      .setCancelAfter(cancelAfterProto)
+      .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateMissingRequiredFields = PaymentChannelCreate
+      .newBuilder()
+      .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAmount = PaymentChannelCreate
+      .newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
       .build();
 }
