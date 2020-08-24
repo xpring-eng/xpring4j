@@ -12,6 +12,11 @@ import org.xrpl.rpc.v1.CurrencyAmount;
 import org.xrpl.rpc.v1.DepositPreauth;
 import org.xrpl.rpc.v1.EscrowCancel;
 import org.xrpl.rpc.v1.EscrowCreate;
+import org.xrpl.rpc.v1.EscrowFinish;
+import org.xrpl.rpc.v1.OfferCancel;
+import org.xrpl.rpc.v1.OfferCreate;
+import org.xrpl.rpc.v1.PaymentChannelClaim;
+import org.xrpl.rpc.v1.PaymentChannelCreate;
 
 import java.io.UnsupportedEncodingException;
 
@@ -75,6 +80,60 @@ public class FakeXrpTransactionProtobufs {
       exception.printStackTrace();
     }
   }
+
+  // EscrowFinish fake primitive test values
+  public static ByteString testFulfillment;
+
+  static {
+    try {
+      testFulfillment = ByteString.copyFrom("fulfillment", "Utf8");
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  // PaymentChannelClaim fake primitive test values
+  public static ByteString testChannel;
+
+  static {
+    try {
+      testChannel = ByteString.copyFrom(
+        "C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198",
+        "Utf8"
+      );
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  public static ByteString testPaymentChannelPublicKey;
+
+  static {
+    try {
+      testPaymentChannelPublicKey = ByteString.copyFrom(
+        "32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A",
+        "Utf8"
+      );
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  public static ByteString testPaymentChannelSignature;
+
+  static {
+    try {
+      testPaymentChannelSignature = ByteString.copyFrom(
+        "30440220718D264EF05CAED7C781FF6DE298DCAC68D002562C9BF3A07C1E721B420C0DAB02",
+        "Utf8"
+      );
+    } catch (UnsupportedEncodingException exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  // PaymentChannelCreate fake primitive test values
+  public static Integer testSettleDelay = 86400;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -300,5 +359,148 @@ public class FakeXrpTransactionProtobufs {
       .setAmount(invalidEmptyAmountWithNoFields)
       .setDestination(destinationProto)
       .setDestinationTag(destinationTagProto)
+      .build();
+
+  // EscrowFinish protos
+  public static EscrowFinish escrowFinishProtoWithRequiredFields = EscrowFinish.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .setOwner(ownerProto)
+      .build();
+
+  public static Common.Fulfillment fulfillmentProto = Common.Fulfillment.newBuilder()
+      .setValue(testFulfillment)
+      .build();
+
+  public static EscrowFinish escrowFinishProtoWithAllFields = EscrowFinish
+      .newBuilder(escrowFinishProtoWithRequiredFields)
+      .setCondition(conditionProto)
+      .setFulfillment(fulfillmentProto)
+      .build();
+
+  public static EscrowFinish invalidEscrowFinishMissingOfferSequence = EscrowFinish.newBuilder()
+      .setOwner(ownerProto)
+      .build();
+
+  public static EscrowFinish invalidEscrowFinishMissingOwner = EscrowFinish.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .build();
+
+  // OfferCancel protos
+  public static OfferCancel offerCancelProto = OfferCancel.newBuilder()
+      .setOfferSequence(offerSequenceProto)
+      .build();
+
+  public static OfferCancel invalidOfferCancelMissingOfferSequence = OfferCancel.newBuilder()
+      .build();
+
+  // OfferCreate protos
+  public static Common.TakerGets takerGetsProto = Common.TakerGets.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.TakerPays takerPaysProto = Common.TakerPays.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static OfferCreate offerCreateWithRequiredFields = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static OfferCreate offerCreateWithAllFields = OfferCreate
+      .newBuilder(offerCreateWithRequiredFields)
+      .setExpiration(expirationProto)
+      .setOfferSequence(offerSequenceProto)
+      .build();
+
+  public static Common.TakerGets invalidTakerGetsProto = Common.TakerGets.newBuilder()
+      .setValue(invalidCurrencyAmountWithNoFields)
+      .build();
+
+  public static OfferCreate invalidOfferCreateInvalidTakerGets = OfferCreate.newBuilder()
+      .setTakerGets(invalidTakerGetsProto)
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static Common.TakerPays invalidTakerPaysProto = Common.TakerPays.newBuilder()
+      .setValue(invalidCurrencyAmountWithNoFields)
+      .build();
+
+  public static OfferCreate invalidOfferCreateInvalidTakerPays = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .setTakerPays(invalidTakerPaysProto)
+      .build();
+
+  public static OfferCreate invalidOfferCreateMissingTakerGets = OfferCreate.newBuilder()
+      .setTakerPays(takerPaysProto)
+      .build();
+
+  public static OfferCreate invalidOfferCreateMissingTakerPays = OfferCreate.newBuilder()
+      .setTakerGets(takerGetsProto)
+      .build();
+
+  // PaymentChannelClaim protos
+  public static Common.Channel channelProto = Common.Channel.newBuilder()
+      .setValue(testChannel)
+      .build();
+
+  public static Common.Balance balanceProto = Common.Balance.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.PublicKey paymentPublicKeyProto = Common.PublicKey
+      .newBuilder()
+      .setValue(testPaymentChannelPublicKey)
+      .build();
+
+  public static Common.PaymentChannelSignature paymentChannelSignatureProto = Common.PaymentChannelSignature
+      .newBuilder()
+      .setValue(testPaymentChannelSignature)
+      .build();
+
+  public static PaymentChannelClaim paymentChannelClaimWithRequiredFields = PaymentChannelClaim.newBuilder()
+      .setChannel(channelProto)
+      .build();
+
+  public static PaymentChannelClaim paymentChannelClaimWithAllFields = PaymentChannelClaim
+      .newBuilder(paymentChannelClaimWithRequiredFields)
+      .setAmount(FakeXrpProtobufs.amount)
+      .setBalance(balanceProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setPaymentChannelSignature(paymentChannelSignatureProto)
+      .build();
+
+  public static PaymentChannelClaim invalidPaymentChannelClaimMissingChannel = PaymentChannelClaim.newBuilder()
+      .build();
+
+  // PaymentChannelCreate protos
+  public static Common.SettleDelay settleDelayProto = Common.SettleDelay.newBuilder()
+      .setValue(testSettleDelay)
+      .build();
+
+  public static PaymentChannelCreate paymentChannelCreateWithRequiredFields = PaymentChannelCreate.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
+      .build();
+
+  public static PaymentChannelCreate paymentChannelCreateWithAllFields = PaymentChannelCreate
+      .newBuilder(paymentChannelCreateWithRequiredFields)
+      .setCancelAfter(cancelAfterProto)
+      .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateMissingRequiredFields = PaymentChannelCreate
+      .newBuilder()
+      .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAmount = PaymentChannelCreate
+      .newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
       .build();
 }
