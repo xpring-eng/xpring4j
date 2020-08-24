@@ -81,6 +81,19 @@ public class XrpPaymentChannelCreateProtoConversionTest {
     assertThat(paymentChannelCreate).isNull();
   }
 
-  // TODO: Test invalid amount
+  @Test
+  public void paymentChannelCreateInvalidAmountTest() {
+    // GIVEN a PaymentChannelCreate protocol buffer with fields missing.
+    final PaymentChannelCreate paymentChannelCreateProto = FakeXrpTransactionProtobufs
+      .invalidPaymentChannelCreateInvalidAmount;
+
+    // WHEN the protocol buffer is converted to a native Java object.
+    final XrpPaymentChannelCreate paymentChannelCreate = XrpPaymentChannelCreate
+      .from(paymentChannelCreateProto, XrplNetwork.TEST);
+
+    // THEN the PaymentChannelCreate is null.
+    assertThat(paymentChannelCreate).isNull();
+  }
+
   // TODO: Test invalid address
 }

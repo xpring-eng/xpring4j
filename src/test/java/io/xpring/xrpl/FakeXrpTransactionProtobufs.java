@@ -495,11 +495,19 @@ public class FakeXrpTransactionProtobufs {
       .newBuilder()
       .build();
 
-  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAmount = PaymentChannelCreate
-      .newBuilder()
-      .build();
-
   public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAddress = PaymentChannelCreate
       .newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
+      .build();
+
+  public static PaymentChannelCreate invalidPaymentChannelCreateInvalidAmount = PaymentChannelCreate
+      .newBuilder()
+      .setAmount(invalidEmptyAmountWithNoFields)
+      .setDestination(destinationProto)
+      .setDestinationTag(destinationTagProto)
+      .setPublicKey(paymentPublicKeyProto)
+      .setSettleDelay(settleDelayProto)
       .build();
 }
