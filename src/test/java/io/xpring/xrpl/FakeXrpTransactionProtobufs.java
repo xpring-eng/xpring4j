@@ -347,7 +347,6 @@ public class FakeXrpTransactionProtobufs {
 
   public static OfferCancel invalidOfferCancelMissingOfferSequence = OfferCancel.newBuilder()
       .build();
-<<<<<<< HEAD
 
   // OfferCreate protos
   public static Common.TakerGets takerGetsProto = Common.TakerGets.newBuilder()
@@ -394,6 +393,4 @@ public class FakeXrpTransactionProtobufs {
   public static OfferCreate invalidOfferCreateMissingTakerPays = OfferCreate.newBuilder()
       .setTakerGets(takerGetsProto)
       .build();
-=======
->>>>>>> 42715a054d1935bee29a183bcd0652950eeccae5
 }
