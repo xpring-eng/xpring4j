@@ -11,12 +11,14 @@ import io.xpring.xrpl.model.MemoField;
 import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import okhttp3.HttpUrl;
+import org.awaitility.Awaitility;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +72,11 @@ public class XrpTestUtils {
     XrpClient xrpClient = new XrpClient(rippledUrl, XrplNetwork.TEST);
 
     FaucetAccountResponse response = faucetClient.generateFaucetAccount();
+    Awaitility.await()
+      .atMost(Duration.ofSeconds(20))
+      .pollInterval(Duration.ofSeconds(1))
+      .until(() -> xrpClient.accountExists(response.account().xAddress()));
+
 
     Wallet wallet = new Wallet(response.account().secret(), true);
 
