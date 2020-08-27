@@ -17,6 +17,7 @@ import org.xrpl.rpc.v1.OfferCancel;
 import org.xrpl.rpc.v1.OfferCreate;
 import org.xrpl.rpc.v1.PaymentChannelClaim;
 import org.xrpl.rpc.v1.PaymentChannelCreate;
+import org.xrpl.rpc.v1.PaymentChannelFund;
 
 import java.io.UnsupportedEncodingException;
 
@@ -502,5 +503,19 @@ public class FakeXrpTransactionProtobufs {
       .setDestinationTag(destinationTagProto)
       .setPublicKey(paymentPublicKeyProto)
       .setSettleDelay(settleDelayProto)
+      .build();
+
+  // PaymentChannelFund protos
+  public static PaymentChannelFund paymentChannelFundWithRequiredFields = PaymentChannelFund.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setChannel(channelProto)
+      .build();
+
+  public static PaymentChannelFund paymentChannelFundWithAllFields = PaymentChannelFund
+      .newBuilder(paymentChannelFundWithRequiredFields)
+      .setExpiration(expirationProto)
+      .build();
+
+  public static PaymentChannelFund invalidChannelFundWithMissingFields = PaymentChannelFund.newBuilder()
       .build();
 }
