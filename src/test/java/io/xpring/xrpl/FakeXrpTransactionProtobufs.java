@@ -18,6 +18,7 @@ import org.xrpl.rpc.v1.OfferCreate;
 import org.xrpl.rpc.v1.PaymentChannelClaim;
 import org.xrpl.rpc.v1.PaymentChannelCreate;
 import org.xrpl.rpc.v1.PaymentChannelFund;
+import org.xrpl.rpc.v1.SetRegularKey;
 
 import java.io.UnsupportedEncodingException;
 
@@ -517,5 +518,17 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static PaymentChannelFund invalidChannelFundWithMissingFields = PaymentChannelFund.newBuilder()
+      .build();
+
+  // SetRegularKey protos
+  public static Common.RegularKey regularKeyProto = Common.RegularKey.newBuilder()
+      .setValue(accountAddressProto)
+      .build();
+
+  public static SetRegularKey setRegularKeyWithNoKey = SetRegularKey.newBuilder()
+      .build();
+
+  public static SetRegularKey setRegularKeyWithKey = SetRegularKey.newBuilder()
+      .setRegularKey(regularKeyProto)
       .build();
 }
