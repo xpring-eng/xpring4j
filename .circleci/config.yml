@@ -73,5 +73,3 @@ workflows:
     jobs:
       - build
       - ilp_integration_tests:
-          requires:
-            - build
