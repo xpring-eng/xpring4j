@@ -29,7 +29,7 @@ import java.util.Optional;
 public class XrpTestUtils {
 
   public static final FaucetClient faucetClient =
-    FaucetClient.construct(HttpUrl.parse("https://faucet.altnet.rippletest.net"));
+      FaucetClient.construct(HttpUrl.parse("https://faucet.altnet.rippletest.net"));
 
   /**
    * Converts a GetAccountTransactionHistoryResponse protocol buffer object into a list of XrpTransaction objects,
@@ -73,10 +73,9 @@ public class XrpTestUtils {
 
     FaucetAccountResponse response = faucetClient.generateFaucetAccount();
     Awaitility.await()
-      .atMost(Duration.ofSeconds(20))
-      .pollInterval(Duration.ofSeconds(1))
-      .until(() -> xrpClient.accountExists(response.account().xAddress()));
-
+        .atMost(Duration.ofSeconds(20))
+        .pollInterval(Duration.ofSeconds(1))
+        .until(() -> xrpClient.accountExists(response.account().xAddress()));
 
     Wallet wallet = new Wallet(response.account().secret(), true);
 

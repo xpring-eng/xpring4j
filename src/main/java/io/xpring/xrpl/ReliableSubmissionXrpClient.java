@@ -122,16 +122,17 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
       String sourceClassicAddress = classicAddress.address();
 
       // Poll until the transaction is validated, or until the lastLedgerSequence has been passed.
-      final RawTransactionStatus finalTransactionStatus = newTransactionPoller().until(() -> {
-          // Retrieve the latest ledger index.
-          int latestLedgerSequence = this.getLatestValidatedLedgerSequence(sourceClassicAddress);
-          RawTransactionStatus status = this.getRawTransactionStatus(transactionHash);
-          if (latestLedgerSequence > lastLedgerSequence || status.getValidated()) {
-            return status;
-          }
-          return null;
-        },
-        Matchers.notNullValue());
+      final RawTransactionStatus finalTransactionStatus = newTransactionPoller().until(
+          () -> {
+            // Retrieve the latest ledger index.
+            int latestLedgerSequence = this.getLatestValidatedLedgerSequence(sourceClassicAddress);
+            RawTransactionStatus status = this.getRawTransactionStatus(transactionHash);
+            if (latestLedgerSequence > lastLedgerSequence || status.getValidated()) {
+              return status;
+            }
+            return null;
+          },
+          Matchers.notNullValue());
       return finalTransactionStatus;
     } catch (ConditionTimeoutException e) {
       throw new XrpException(
