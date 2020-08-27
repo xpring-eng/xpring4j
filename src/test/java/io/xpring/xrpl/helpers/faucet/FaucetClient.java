@@ -7,7 +7,7 @@ import feign.RequestLine;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import feign.optionals.OptionalDecoder;
-import io.xpring.xrpl.helpers.ImmutableFaucetAccountResponse;
+import io.xpring.xrpl.helpers.faucet.ImmutableFaucetAccountResponse;
 import okhttp3.HttpUrl;
 
 import java.util.Objects;

@@ -3,7 +3,7 @@ package io.xpring.xrpl.helpers.faucet;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.xpring.xrpl.helpers.ImmutableFaucetAccount;
+import io.xpring.xrpl.helpers.faucet.ImmutableFaucetAccount;
 import org.immutables.value.Value;
 
 /**

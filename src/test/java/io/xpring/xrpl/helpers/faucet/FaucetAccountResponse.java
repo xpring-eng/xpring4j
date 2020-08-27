@@ -2,7 +2,7 @@ package io.xpring.xrpl.helpers.faucet;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.xpring.xrpl.helpers.ImmutableFaucetAccountResponse;
+import io.xpring.xrpl.helpers.faucet.ImmutableFaucetAccountResponse;
 import org.immutables.value.Value.Immutable;
 
 /**
