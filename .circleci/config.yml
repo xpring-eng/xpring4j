@@ -72,4 +72,4 @@ workflows:
   commit:
     jobs:
       - build
-      - ilp_integration_tests:
+      - ilp_integration_tests
