@@ -10,7 +10,7 @@ import org.xrpl.rpc.v1.PaymentChannelFund;
 public class XrpPaymentChannelFundProtoConversionTest {
   @Test
   public void paymentChannelFundRequiredFieldsTest() {
-    // GIVEN a PaymentChannelFund protocol buffer with all fields set.
+    // GIVEN a PaymentChannelFund protocol buffer with required fields set.
     final PaymentChannelFund paymentChannelFundProto = FakeXrpTransactionProtobufs.paymentChannelFundWithRequiredFields;
 
     // WHEN the protocol buffer is converted to a native Java object.
