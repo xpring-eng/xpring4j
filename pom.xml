@@ -6,7 +6,7 @@
 
     <groupId>io.xpring</groupId>
     <artifactId>xpring4j</artifactId>
-    <version>6.1.0</version>
+    <version>HEAD-SNAPSHOT</version>
     <name>xpring4j</name>
     <url>https://github.com/xpring-eng/xpring4j</url>
     <description>
@@ -19,7 +19,8 @@
         <grpc.version>1.31.1</grpc.version>
         <protobuf.version>3.13.0</protobuf.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <graalvm.version>20.1.0</graalvm.version>
+        <graalvm.version>20.2.0</graalvm.version>
+        <compiler.dir>${project.build.directory}/compiler</compiler.dir>
         <!-- org.apache.maven.plugins:maven-checkstyle-plugin -->
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <checkstyle.violationSeverity>error</checkstyle.violationSeverity>
@@ -263,7 +264,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -520,6 +521,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -539,6 +551,9 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <keyname>xpring4j@ripple.com</keyname>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -571,6 +586,76 @@
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk11</id>
+            <activation>
+                <jdk>[11,</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.22.1</version>
+                        <configuration>
+                            <argLine>-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${compiler.dir}
+                                --upgrade-module-path=${compiler.dir}/compiler.jar:${compiler.dir}/compiler-management.jar
+                            </argLine>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <id>copy</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.graalvm.compiler</groupId>
+                                            <artifactId>compiler</artifactId>
+                                            <version>${graalvm.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <destFileName>compiler.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.graalvm.compiler</groupId>
+                                            <artifactId>compiler-management</artifactId>
+                                            <version>${graalvm.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <destFileName>compiler-management.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.graalvm.truffle</groupId>
+                                            <artifactId>truffle-api</artifactId>
+                                            <version>${graalvm.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <destFileName>truffle-api.jar</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.graalvm.sdk</groupId>
+                                            <artifactId>graal-sdk</artifactId>
+                                            <version>${graalvm.version}</version>
+                                            <type>jar</type>
+                                            <overWrite>true</overWrite>
+                                            <destFileName>graal-sdk.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${compiler.dir}</outputDirectory>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
