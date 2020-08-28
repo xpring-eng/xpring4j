@@ -17,6 +17,8 @@ import org.xrpl.rpc.v1.OfferCancel;
 import org.xrpl.rpc.v1.OfferCreate;
 import org.xrpl.rpc.v1.PaymentChannelClaim;
 import org.xrpl.rpc.v1.PaymentChannelCreate;
+import org.xrpl.rpc.v1.PaymentChannelFund;
+import org.xrpl.rpc.v1.SetRegularKey;
 
 import java.io.UnsupportedEncodingException;
 
@@ -134,6 +136,9 @@ public class FakeXrpTransactionProtobufs {
 
   // PaymentChannelCreate fake primitive test values
   public static Integer testSettleDelay = 86400;
+
+  // SignerEntry fake primitive test values
+  public static Integer testSignerWeight = 1;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -502,5 +507,44 @@ public class FakeXrpTransactionProtobufs {
       .setDestinationTag(destinationTagProto)
       .setPublicKey(paymentPublicKeyProto)
       .setSettleDelay(settleDelayProto)
+      .build();
+
+  // PaymentChannelFund protos
+  public static PaymentChannelFund paymentChannelFundWithRequiredFields = PaymentChannelFund.newBuilder()
+      .setAmount(FakeXrpProtobufs.amount)
+      .setChannel(channelProto)
+      .build();
+
+  public static PaymentChannelFund paymentChannelFundWithAllFields = PaymentChannelFund
+      .newBuilder(paymentChannelFundWithRequiredFields)
+      .setExpiration(expirationProto)
+      .build();
+
+  public static PaymentChannelFund invalidChannelFundWithMissingFields = PaymentChannelFund.newBuilder()
+      .build();
+
+  // SetRegularKey protos
+  public static Common.RegularKey regularKeyProto = Common.RegularKey.newBuilder()
+      .setValue(accountAddressProto)
+      .build();
+
+  public static SetRegularKey setRegularKeyWithNoKey = SetRegularKey.newBuilder()
+      .build();
+
+  public static SetRegularKey setRegularKeyWithKey = SetRegularKey.newBuilder()
+      .setRegularKey(regularKeyProto)
+      .build();
+
+  // SignerEntry protos
+  public static Common.SignerWeight signerWeightProto = Common.SignerWeight.newBuilder()
+      .setValue(testSignerWeight)
+      .build();
+
+  public static Common.SignerEntry signerEntryAllFields = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static Common.SignerEntry invalidSignerEntryNoFields = Common.SignerEntry.newBuilder()
       .build();
 }
