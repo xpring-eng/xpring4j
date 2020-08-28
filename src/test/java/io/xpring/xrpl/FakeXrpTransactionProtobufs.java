@@ -19,8 +19,11 @@ import org.xrpl.rpc.v1.PaymentChannelClaim;
 import org.xrpl.rpc.v1.PaymentChannelCreate;
 import org.xrpl.rpc.v1.PaymentChannelFund;
 import org.xrpl.rpc.v1.SetRegularKey;
+import org.xrpl.rpc.v1.SignerListSet;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  * Common set of fake objects - protobuf and native Java conversions - for testing.
@@ -139,6 +142,9 @@ public class FakeXrpTransactionProtobufs {
 
   // SignerEntry fake primitive test values
   public static Integer testSignerWeight = 1;
+
+  // SignerListSet
+  public static Integer testSignerQuorum = 1;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -546,5 +552,33 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static Common.SignerEntry invalidSignerEntryNoFields = Common.SignerEntry.newBuilder()
+      .build();
+
+  // SignerListSet protos
+  public static Common.SignerQuorum signerQuorumProto = Common.SignerQuorum.newBuilder()
+      .setValue(testSignerQuorum)
+      .build();
+
+  public static Common.SignerEntry signerEntry1 = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static Common.SignerEntry signerEntry2 = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static SignerListSet signerListSetWithSignerEntries = SignerListSet.newBuilder()
+      .setSignerQuorum(signerQuorumProto)
+      .addSignerEntries(signerEntry1)
+      .addSignerEntries(signerEntry2)
+      .build();
+
+  public static SignerListSet signerListSetWithNoSignerEntries = SignerListSet.newBuilder()
+      .setSignerQuorum(signerQuorumProto)
+      .build();
+
+  public static SignerListSet invalidSignerListSetMissingSignerQuorum = SignerListSet.newBuilder()
       .build();
 }
