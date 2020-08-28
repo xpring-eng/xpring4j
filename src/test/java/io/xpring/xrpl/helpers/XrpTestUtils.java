@@ -12,6 +12,8 @@ import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import okhttp3.HttpUrl;
 import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
+import org.hamcrest.Matchers;
 import org.xrpl.rpc.v1.GetAccountTransactionHistoryResponse;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
@@ -66,15 +68,16 @@ public class XrpTestUtils {
    * Generates a random wallet and funds using the XRPL Testnet faucet.
    */
   public static Wallet randomWalletFromFaucet() throws XrpException, IOException, InterruptedException {
-    final Integer timeoutInSeconds = 20;
+    final int timeoutInSeconds = 20;
+    final int pollingIntervalInSeconds = 1;
 
     String rippledUrl = "test.xrp.xpring.io:50051";
     XrpClient xrpClient = new XrpClient(rippledUrl, XrplNetwork.TEST);
 
     FaucetAccountResponse response = faucetClient.generateFaucetAccount();
     Awaitility.await()
-        .atMost(Duration.ofSeconds(20))
-        .pollInterval(Duration.ofSeconds(1))
+        .atMost(Duration.ofSeconds(timeoutInSeconds))
+        .pollInterval(Duration.ofSeconds(pollingIntervalInSeconds))
         .until(() -> xrpClient.accountExists(response.account().xAddress()));
 
     Wallet wallet = new Wallet(response.account().secret(), true);
@@ -82,31 +85,22 @@ public class XrpTestUtils {
     // Wait for the faucet to fund our account or until timeout
     // Waits one second checks if balance has changed
     // If balance doesn't change it will attempt again until timeoutInSeconds
-    for (Integer balanceCheckCounter = 0; balanceCheckCounter < timeoutInSeconds; balanceCheckCounter++) {
-      // Wait 1 second
-      Thread.sleep(1000);
 
-      // Request our current balance
-      BigInteger currentBalance;
-      try {
-        currentBalance = xrpClient.getBalance(wallet.getAddress());
-      } catch (Exception exception) {
-        currentBalance = new BigInteger("0");
-      }
-      // If our current balance has changed then return
-      if (!currentBalance.equals(BigInteger.ZERO)) {
-        return wallet;
-      }
-
+    try {
+      Awaitility.await()
+          .atMost(Duration.ofSeconds(timeoutInSeconds))
+          .pollInterval(Duration.ofSeconds(pollingIntervalInSeconds))
+          .until(() -> xrpClient.getBalance(wallet.getAddress()), Matchers.greaterThan(BigInteger.ZERO));
       // In the future if we had a tx hash from the faucet
       // We should check the status of the tx which would be more accurate
+      return wallet;
+    } catch (ConditionTimeoutException e) {
+      // Balance did not update
+      throw new XrpException(
+          XrpExceptionType.UNKNOWN,
+          String.format("Unable to fund address with faucet after waiting %d seconds", timeoutInSeconds)
+      );
     }
-
-    // Balance did not update
-    throw new XrpException(
-            XrpExceptionType.UNKNOWN,
-            String.format("Unable to fund address with faucet after waiting %d seconds", timeoutInSeconds)
-    );
   }
 
   private static Optional<MemoField> memoField1 = Optional.of(
