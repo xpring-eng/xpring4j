@@ -20,10 +20,9 @@ import org.xrpl.rpc.v1.PaymentChannelCreate;
 import org.xrpl.rpc.v1.PaymentChannelFund;
 import org.xrpl.rpc.v1.SetRegularKey;
 import org.xrpl.rpc.v1.SignerListSet;
+import org.xrpl.rpc.v1.TrustSet;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 /**
  * Common set of fake objects - protobuf and native Java conversions - for testing.
@@ -145,6 +144,10 @@ public class FakeXrpTransactionProtobufs {
 
   // SignerListSet
   public static Integer testSignerQuorum = 1;
+
+  // TrustSet
+  public static Integer testQualityIn = 5;
+  public static Integer testQualityOut = 2;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -580,5 +583,31 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static SignerListSet invalidSignerListSetMissingSignerQuorum = SignerListSet.newBuilder()
+      .build();
+
+  // TrustSet protos
+  public static Common.LimitAmount limitAmountProto = Common.LimitAmount.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.QualityIn qualityInProto = Common.QualityIn.newBuilder()
+      .setValue(testQualityIn)
+      .build();
+
+  public static Common.QualityOut qualityOutProto = Common.QualityOut.newBuilder()
+      .setValue(testQualityOut)
+      .build();
+
+  public static TrustSet trustSetRequiredFields = TrustSet.newBuilder()
+      .setLimitAmount(limitAmountProto)
+      .build();
+
+  public static TrustSet trustSetAllFields = TrustSet.newBuilder(trustSetRequiredFields)
+      .setLimitAmount(limitAmountProto)
+      .setQualityIn(qualityInProto)
+      .setQualityOut(qualityOutProto)
+      .build();
+
+  public static TrustSet invalidTrustSetMissingLimitAmount = TrustSet.newBuilder()
       .build();
 }
