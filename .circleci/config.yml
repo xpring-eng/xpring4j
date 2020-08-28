@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: cimg/openjdk:11.0.5
     resource_class: large
     working_directory: ~/repo
 
@@ -72,6 +72,4 @@ workflows:
   commit:
     jobs:
       - build
-      - ilp_integration_tests:
-          requires:
-            - build
+      - ilp_integration_tests

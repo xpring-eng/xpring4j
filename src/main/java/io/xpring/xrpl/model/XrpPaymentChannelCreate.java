@@ -114,9 +114,6 @@ public interface XrpPaymentChannelCreate {
         .build();
 
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
-    if (destinationXAddress == null) {
-      return null;
-    }
 
     Optional<Integer> cancelAfter = paymentChannelCreate.hasCancelAfter()
         ? Optional.of(paymentChannelCreate.getCancelAfter().getValue())
