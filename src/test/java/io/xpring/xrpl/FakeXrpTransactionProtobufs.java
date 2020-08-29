@@ -19,6 +19,8 @@ import org.xrpl.rpc.v1.PaymentChannelClaim;
 import org.xrpl.rpc.v1.PaymentChannelCreate;
 import org.xrpl.rpc.v1.PaymentChannelFund;
 import org.xrpl.rpc.v1.SetRegularKey;
+import org.xrpl.rpc.v1.SignerListSet;
+import org.xrpl.rpc.v1.TrustSet;
 
 import java.io.UnsupportedEncodingException;
 
@@ -139,6 +141,13 @@ public class FakeXrpTransactionProtobufs {
 
   // SignerEntry fake primitive test values
   public static Integer testSignerWeight = 1;
+
+  // SignerListSet
+  public static Integer testSignerQuorum = 1;
+
+  // TrustSet
+  public static Integer testQualityIn = 5;
+  public static Integer testQualityOut = 2;
 
   // AccountSet protos
   // Common.ClearFlag proto
@@ -546,5 +555,59 @@ public class FakeXrpTransactionProtobufs {
       .build();
 
   public static Common.SignerEntry invalidSignerEntryNoFields = Common.SignerEntry.newBuilder()
+      .build();
+
+  // SignerListSet protos
+  public static Common.SignerQuorum signerQuorumProto = Common.SignerQuorum.newBuilder()
+      .setValue(testSignerQuorum)
+      .build();
+
+  public static Common.SignerEntry signerEntry1 = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static Common.SignerEntry signerEntry2 = Common.SignerEntry.newBuilder()
+      .setAccount(FakeXrpProtobufs.account)
+      .setSignerWeight(signerWeightProto)
+      .build();
+
+  public static SignerListSet signerListSetWithSignerEntries = SignerListSet.newBuilder()
+      .setSignerQuorum(signerQuorumProto)
+      .addSignerEntries(signerEntry1)
+      .addSignerEntries(signerEntry2)
+      .build();
+
+  public static SignerListSet signerListSetWithNoSignerEntries = SignerListSet.newBuilder()
+      .setSignerQuorum(signerQuorumProto)
+      .build();
+
+  public static SignerListSet invalidSignerListSetMissingSignerQuorum = SignerListSet.newBuilder()
+      .build();
+
+  // TrustSet protos
+  public static Common.LimitAmount limitAmountProto = Common.LimitAmount.newBuilder()
+      .setValue(FakeXrpProtobufs.dropsCurrencyAmount)
+      .build();
+
+  public static Common.QualityIn qualityInProto = Common.QualityIn.newBuilder()
+      .setValue(testQualityIn)
+      .build();
+
+  public static Common.QualityOut qualityOutProto = Common.QualityOut.newBuilder()
+      .setValue(testQualityOut)
+      .build();
+
+  public static TrustSet trustSetRequiredFields = TrustSet.newBuilder()
+      .setLimitAmount(limitAmountProto)
+      .build();
+
+  public static TrustSet trustSetAllFields = TrustSet.newBuilder(trustSetRequiredFields)
+      .setLimitAmount(limitAmountProto)
+      .setQualityIn(qualityInProto)
+      .setQualityOut(qualityOutProto)
+      .build();
+
+  public static TrustSet invalidTrustSetMissingLimitAmount = TrustSet.newBuilder()
       .build();
 }
