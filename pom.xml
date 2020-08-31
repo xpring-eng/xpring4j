@@ -19,6 +19,7 @@
         <grpc.version>1.31.1</grpc.version>
         <protobuf.version>3.13.0</protobuf.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <feign.version>11.0</feign.version>
         <graalvm.version>20.2.0</graalvm.version>
         <compiler.dir>${project.build.directory}/compiler</compiler.dir>
         <!-- org.apache.maven.plugins:maven-checkstyle-plugin -->
@@ -132,6 +133,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
@@ -188,6 +193,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -211,6 +226,11 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-stub</artifactId>
                 <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>4.0.3</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
@@ -283,6 +303,16 @@
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
                 <version>3.0.21</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-jackson</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
@@ -312,10 +342,13 @@
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <linkXRef>false</linkXRef>
-                    <excludes>**/generated-sources/**/*</excludes>
+                    <excludes>**/generated-*sources/**/*</excludes>
                     <sourceDirectories>
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                     </sourceDirectories>
+                    <testSourceDirectories>
+                        <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+                    </testSourceDirectories>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
                 <dependencies>

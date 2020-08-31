@@ -1,13 +1,22 @@
 package io.xpring.xrpl;
 
+import static org.awaitility.Awaitility.await;
+
 import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
+import org.awaitility.core.ConditionFactory;
+import org.awaitility.core.ConditionTimeoutException;
+import org.hamcrest.Matchers;
 
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.List;
 
 public class ReliableSubmissionXrpClient implements XrpClientDecorator {
+  // ledgers close every 4 seconds on average but are bucketed into 10s intervals.
+  // wait up to 10s with a little wiggle room.
+  public static final int MAX_TRX_STATUS_WAIT_SECONDS = 11;
   XrpClientDecorator decoratedClient;
 
   public ReliableSubmissionXrpClient(XrpClientDecorator decoratedClient) {
@@ -80,12 +89,11 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
 
   private RawTransactionStatus awaitFinalTransactionResult(String transactionHash, Wallet sender) throws XrpException {
     try {
-      long ledgerCloseTime = 4 * 1000;
-      Thread.sleep(ledgerCloseTime);
-
       // Get transaction status.
-      RawTransactionStatus transactionStatus = this.getRawTransactionStatus(transactionHash);
-      int lastLedgerSequence = transactionStatus.getLastLedgerSequence();
+      final RawTransactionStatus initialTransactionStatus = newTransactionPoller().until(
+          () -> this.getRawTransactionStatus(transactionHash),
+          Matchers.notNullValue());
+      final int lastLedgerSequence = initialTransactionStatus.getLastLedgerSequence();
       if (lastLedgerSequence == 0) {
         throw new XrpException(
                 XrpExceptionType.UNKNOWN,
@@ -113,23 +121,28 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
       }
       String sourceClassicAddress = classicAddress.address();
 
-      // Retrieve the latest ledger index.
-      int latestLedgerSequence = this.getLatestValidatedLedgerSequence(sourceClassicAddress);
-
       // Poll until the transaction is validated, or until the lastLedgerSequence has been passed.
-      while (latestLedgerSequence <= lastLedgerSequence && !transactionStatus.getValidated()) {
-        Thread.sleep(ledgerCloseTime);
-
-        latestLedgerSequence = this.getLatestValidatedLedgerSequence(sourceClassicAddress);
-        transactionStatus = this.getRawTransactionStatus(transactionHash);
-      }
-
-      return transactionStatus;
-    } catch (InterruptedException e) {
+      final RawTransactionStatus finalTransactionStatus = newTransactionPoller().until(
+          () -> {
+            // Retrieve the latest ledger index.
+            int latestLedgerSequence = this.getLatestValidatedLedgerSequence(sourceClassicAddress);
+            RawTransactionStatus status = this.getRawTransactionStatus(transactionHash);
+            if (latestLedgerSequence > lastLedgerSequence || status.getValidated()) {
+              return status;
+            }
+            return null;
+          },
+          Matchers.notNullValue());
+      return finalTransactionStatus;
+    } catch (ConditionTimeoutException e) {
       throw new XrpException(
               XrpExceptionType.UNKNOWN,
               "Reliable transaction submission project was interrupted."
       );
     }
+  }
+
+  private ConditionFactory newTransactionPoller() {
+    return await().atMost(Duration.ofSeconds(MAX_TRX_STATUS_WAIT_SECONDS)).pollInterval(Duration.ofSeconds(1));
   }
 }
