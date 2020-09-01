@@ -137,7 +137,7 @@ public class ReliableSubmissionXrpClientTest {
     assertThat(transactionStatus).isEqualTo(DEFAULT_RAW_TRANSACTION_STATUS_VALUE);
   }
 
-  @Test(timeout = 10000)
+  @Test
   public void testSendWithExpiredLedgerSequenceAndUnvalidatedTransaction() throws XrpException {
     // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
     this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
@@ -169,7 +169,7 @@ public class ReliableSubmissionXrpClientTest {
     this.reliableSubmissionXRPClient.send(SEND_AMOUNT, XRPL_ADDRESS, new Wallet(WALLET_SEED));
   }
 
-  @Test(timeout = 10000)
+  @Test
   public void testSendWithUnexpiredLedgerSequenceAndValidatedTransaction() throws XrpException {
     // GIVEN A transaction that will validate in one second
     final String transactionStatusCode = "tesSuccess";
@@ -255,7 +255,7 @@ public class ReliableSubmissionXrpClientTest {
     assertThat(returnedValue).isEqualTo(this.fakeXRPClient.paymentHistoryResult.getValue());
   }
 
-  @Test(timeout = 10000)
+  @Test
   public void testEnableDepositAuthWithExpiredLastLedgerSequenceAndUnvalidatedTransaction() throws XrpException {
     // GIVEN A faked latestLedgerSequence number that will increment past the lastLedgerSequence for a transaction
     this.fakeXRPClient.rawTransactionStatusResult = Result.ok(new RawTransactionStatus(
@@ -287,7 +287,7 @@ public class ReliableSubmissionXrpClientTest {
     this.reliableSubmissionXRPClient.enableDepositAuth(new Wallet(WALLET_SEED));
   }
 
-  @Test(timeout = 10000)
+  @Test
   public void testEnableDepositAuthWithUnexpiredLedgerSequenceAndValidatedTransaction() throws XrpException {
     // GIVEN A transaction that will validate in one second
     final String transactionStatusCode = "tesSuccess";

@@ -1,9 +1,8 @@
 package io.xpring.xrpl.javascript;
 
+import com.eclipsesource.v8.V8Object;
 import io.xpring.xrpl.ClassicAddress;
 import io.xpring.xrpl.ImmutableClassicAddress;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -15,7 +14,7 @@ public class JavaScriptUtils {
   /**
    * An reference to the underlying JavaScript Utils object.
    */
-  private Value javaScriptUtils;
+  private V8Object javaScriptUtils;
 
   /**
    * Initialize a new JavaScriptUtils.
@@ -23,8 +22,8 @@ public class JavaScriptUtils {
    * @throws JavaScriptLoaderException If the underlying JavaScript was missing or malformed.
    */
   public JavaScriptUtils() throws JavaScriptLoaderException {
-    Context context = JavaScriptLoader.getContext();
-    Value javaScriptUtils = JavaScriptLoader.loadResource("XrpUtils", context);
+    V8Object context = JavaScriptLoader.getContext();
+    V8Object javaScriptUtils = JavaScriptLoader.loadResource("XrpUtils", context);
 
     this.javaScriptUtils = javaScriptUtils;
   }
@@ -38,8 +37,7 @@ public class JavaScriptUtils {
   public boolean isValidAddress(String address) {
     Objects.requireNonNull(address);
 
-    Value isValidAddressFunction = javaScriptUtils.getMember("isValidAddress");
-    return isValidAddressFunction.execute(address).asBoolean();
+    return Boolean.valueOf(javaScriptUtils.executeJSFunction("isValidAddress", address).toString());
   }
 
   /**
@@ -53,19 +51,17 @@ public class JavaScriptUtils {
   public String encodeXAddress(ClassicAddress classicAddress) {
     Objects.requireNonNull(classicAddress);
 
-    Value encodeXAddressFunction = javaScriptUtils.getMember("encodeXAddress");
-
     if (classicAddress.tag().isPresent()) {
-      Value xAddress = encodeXAddressFunction.execute(
+      Object xAddress = javaScriptUtils.executeJSFunction("encodeXAddress",
           classicAddress.address(),
           classicAddress.tag().get(),
           classicAddress.isTest()
       );
-      return xAddress.asString();
+      return xAddress.toString();
     } else {
-      Value undefined = JavaScriptLoader.getContext().eval("js", "undefined");
-      Value xAddress = encodeXAddressFunction.execute(classicAddress.address(), undefined, classicAddress.isTest());
-      return xAddress.asString();
+      Object result =
+          javaScriptUtils.executeJSFunction("encodeXAddress", classicAddress.address(), null, classicAddress.isTest());
+      return result instanceof String ? result.toString() : null;
     }
   }
 
@@ -80,16 +76,15 @@ public class JavaScriptUtils {
   public ClassicAddress decodeXAddress(String xAddress) {
     Objects.requireNonNull(xAddress);
 
-    Value decodeXAddressFunction = javaScriptUtils.getMember("decodeXAddress");
-    Value result = decodeXAddressFunction.execute(xAddress);
+    V8Object result = (V8Object) javaScriptUtils.executeJSFunction("decodeXAddress", xAddress);
 
-    if (result.isNull()) {
+    if (result.isUndefined()) {
       return null;
     }
 
-    String address = result.getMember("address").asString();
-    Integer tag = result.getMember("tag").isNull() ? null : result.getMember("tag").asInt();
-    boolean isTest = result.getMember("test").asBoolean();
+    String address = result.getString("address");
+    Integer tag = (result.get("tag") instanceof V8Object) ? null : result.getInteger("tag");
+    boolean isTest = result.getBoolean("test");
 
     return ImmutableClassicAddress.builder().address(address).tag(Optional.ofNullable(tag)).isTest(isTest).build();
   }
@@ -103,8 +98,7 @@ public class JavaScriptUtils {
   public boolean isValidXAddress(String address) {
     Objects.requireNonNull(address);
 
-    Value isValidXAddressFunction = javaScriptUtils.getMember("isValidXAddress");
-    return isValidXAddressFunction.execute(address).asBoolean();
+    return Boolean.valueOf(javaScriptUtils.executeJSFunction("isValidXAddress", address).toString());
   }
 
   /**
@@ -116,8 +110,7 @@ public class JavaScriptUtils {
   public boolean isValidClassicAddress(String address) {
     Objects.requireNonNull(address);
 
-    Value isValidClassicAddressFunction = javaScriptUtils.getMember("isValidClassicAddress");
-    return isValidClassicAddressFunction.execute(address).asBoolean();
+    return Boolean.valueOf(javaScriptUtils.executeJSFunction("isValidClassicAddress", address).toString());
   }
 
   /**
@@ -129,8 +122,7 @@ public class JavaScriptUtils {
   public String toTransactionHash(String transactionBlobHex) {
     Objects.requireNonNull(transactionBlobHex);
 
-    Value transactionBlobToTransactionHashFunction = javaScriptUtils.getMember("transactionBlobToTransactionHash");
-    Value hash = transactionBlobToTransactionHashFunction.execute(transactionBlobHex);
-    return hash.isNull() ? null : hash.toString();
+    Object hash = javaScriptUtils.executeJSFunction("transactionBlobToTransactionHash", transactionBlobHex);
+    return hash instanceof String ? hash.toString() : null;
   }
 }

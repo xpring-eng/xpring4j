@@ -1,11 +1,9 @@
 package io.xpring.xrpl.javascript;
 
+import com.eclipsesource.v8.V8Object;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.XrpException;
 import io.xpring.xrpl.XrpExceptionType;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.PolyglotException;
-import org.graalvm.polyglot.Value;
 
 import java.security.SecureRandom;
 
@@ -23,10 +21,10 @@ public class JavaScriptWalletFactory {
     }
   }
 
-  private Value wallet;
+  private V8Object wallet;
 
   private JavaScriptWalletFactory() throws JavaScriptLoaderException {
-    Context context = JavaScriptLoader.getContext();
+    V8Object context = JavaScriptLoader.getContext();
     this.wallet = JavaScriptLoader.loadResource("Wallet", context);
   }
 
@@ -34,8 +32,8 @@ public class JavaScriptWalletFactory {
     return sharedJavaScriptWalletFactory;
   }
 
-  public String getDefaultDerivationPath() throws JavaScriptLoaderException {
-    return this.wallet.getMember("defaultDerivationPath").asString();
+  public String getDefaultDerivationPath() {
+    return this.wallet.getString("defaultDerivationPath");
   }
 
   /**
@@ -48,11 +46,12 @@ public class JavaScriptWalletFactory {
     byte[] randomBytes = randomBytes(16);
     String hexRandomBytes = Utils.byteArrayToHex(randomBytes);
 
-    Value walletGenerationResult = this.wallet.invokeMember("generateRandomWallet", hexRandomBytes, isTest);
+    V8Object walletGenerationResult =
+        (V8Object) this.wallet.executeJSFunction("generateRandomWallet", hexRandomBytes, isTest);
     return new JavaScriptWalletGenerationResult(
-        walletGenerationResult.getMember("mnemonic").asString(),
-        walletGenerationResult.getMember("derivationPath").asString(),
-        new JavaScriptWallet(walletGenerationResult.getMember("wallet"))
+        walletGenerationResult.getString("mnemonic"),
+        walletGenerationResult.getString("derivationPath"),
+        new JavaScriptWallet(walletGenerationResult.getObject("wallet"))
     );
   }
 
@@ -66,8 +65,8 @@ public class JavaScriptWalletFactory {
    * @throws XrpException If either input key is malformed.
    */
   public JavaScriptWallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XrpException {
-    Value wallet = this.wallet.newInstance(publicKey, privateKey, isTest);
-    if (wallet.isNull()) {
+    V8Object wallet = JavaScriptLoader.newWallet(publicKey, privateKey, isTest);
+    if (wallet.isUndefined()) {
       throw new XrpException(XrpExceptionType.INVALID_INPUTS, "Invalid inputs");
     }
     return new JavaScriptWallet(wallet);
@@ -82,8 +81,8 @@ public class JavaScriptWalletFactory {
    * @throws XrpException If the seed is malformed.
    */
   public JavaScriptWallet walletFromSeed(String seed, boolean isTest) throws XrpException {
-    Value wallet = this.wallet.invokeMember("generateWalletFromSeed", seed, isTest);
-    if (wallet.isNull()) {
+    V8Object wallet = this.wallet.executeObjectFunction("generateWalletFromSeed", JavaScriptLoader.newV8Array(seed, isTest));
+    if (wallet.isUndefined()) {
       throw new XrpException(XrpExceptionType.INVALID_INPUTS, "Invalid Seed");
     }
     return new JavaScriptWallet(wallet);
@@ -105,16 +104,18 @@ public class JavaScriptWalletFactory {
   ) throws XrpException {
     try {
       String normalizedDerivationPath = derivationPath != null ? derivationPath : this.getDefaultDerivationPath();
-      Value wallet = this.wallet.invokeMember("generateWalletFromMnemonic", mnemonic, normalizedDerivationPath, isTest);
 
-      if (wallet.isNull()) {
+      Object result = this.wallet
+          .executeJSFunction("generateWalletFromMnemonicX",
+              JavaScriptLoader.newV8Array(mnemonic, normalizedDerivationPath, isTest));
+
+      V8Object wallet = (V8Object) result;
+      if (wallet.isUndefined()) {
         throw new XrpException(XrpExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
       }
 
       return new JavaScriptWallet(wallet);
-    } catch (PolyglotException exception) {
-      throw new XrpException(XrpExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
-    } catch (JavaScriptLoaderException exception) {
+    } catch (Exception exception) {
       throw new XrpException(XrpExceptionType.INVALID_INPUTS, invalidMnemonicOrDerivationPathMessage);
     }
   }

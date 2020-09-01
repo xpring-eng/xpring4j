@@ -143,6 +143,8 @@ public class ReliableSubmissionXrpClient implements XrpClientDecorator {
   }
 
   private ConditionFactory newTransactionPoller() {
-    return await().atMost(Duration.ofSeconds(MAX_TRX_STATUS_WAIT_SECONDS)).pollInterval(Duration.ofSeconds(1));
+    return await().atMost(Duration.ofSeconds(MAX_TRX_STATUS_WAIT_SECONDS))
+        .pollInSameThread()
+        .pollInterval(Duration.ofSeconds(1));
   }
 }

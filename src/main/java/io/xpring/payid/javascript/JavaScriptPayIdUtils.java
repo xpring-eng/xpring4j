@@ -1,11 +1,10 @@
 package io.xpring.payid.javascript;
 
+import com.eclipsesource.v8.V8Object;
 import io.xpring.payid.ImmutablePayIdComponents;
 import io.xpring.payid.PayIdComponents;
 import io.xpring.xrpl.javascript.JavaScriptLoader;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
 
 import java.util.Objects;
 
@@ -16,7 +15,7 @@ public class JavaScriptPayIdUtils {
   /**
    * An reference to the underlying JavaScriptPayIdUtils object.
    */
-  private Value javaScriptPayIdUtils;
+  V8Object javaScriptPayIdUtils;
 
   /**
    * Initialize a new JavaScriptPayIdUtils.
@@ -24,8 +23,8 @@ public class JavaScriptPayIdUtils {
    * @throws JavaScriptLoaderException If the underlying JavaScript was missing or malformed.
    */
   public JavaScriptPayIdUtils() throws JavaScriptLoaderException {
-    Context context = JavaScriptLoader.getContext();
-    Value javaScriptUtils = JavaScriptLoader.loadResource("PayIdUtils", context);
+    V8Object context = JavaScriptLoader.getContext();
+    V8Object javaScriptUtils = JavaScriptLoader.loadResource("PayIdUtils", context);
 
     this.javaScriptPayIdUtils = javaScriptUtils;
   }
@@ -39,14 +38,14 @@ public class JavaScriptPayIdUtils {
   public PayIdComponents parsePayId(String payId) {
     Objects.requireNonNull(payId);
 
-    Value parsePayIdFunction = javaScriptPayIdUtils.getMember("parsePayId");
-    Value javaScriptComponents = parsePayIdFunction.execute(payId);
-    if (javaScriptComponents.isNull()) {
+    V8Object javaScriptComponents =
+        ((V8Object) javaScriptPayIdUtils.executeJSFunction("parsePayId", payId));
+    if (javaScriptComponents.isUndefined()) {
       return null;
     }
 
-    String host = javaScriptComponents.getMember("host").asString();
-    String path = javaScriptComponents.getMember("path").asString();
+    String host = javaScriptComponents.getString("host");
+    String path = javaScriptComponents.getString("path");
 
     return ImmutablePayIdComponents.builder().host(host).path(path).build();
   }

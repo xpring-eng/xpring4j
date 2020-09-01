@@ -1,8 +1,8 @@
 package io.xpring.xrpl.javascript;
 
+import com.eclipsesource.v8.V8Object;
 import io.xpring.xrpl.Utils;
 import io.xpring.xrpl.Wallet;
-import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import org.xrpl.rpc.v1.Transaction;
 
@@ -10,10 +10,10 @@ import org.xrpl.rpc.v1.Transaction;
  * Provides JavaScript based Signing functionality.
  */
 public class JavaScriptSigner {
-  private Value signerClass;
-  private Value walletClass;
-  private Value transactionClass;
-  private Value utilsClass;
+  private V8Object signerClass;
+  private V8Object walletClass;
+  private V8Object transactionClass;
+  private V8Object utilsClass;
 
   /**
    * Create a new JavaScriptSigner.
@@ -21,7 +21,7 @@ public class JavaScriptSigner {
    * @throws JavaScriptLoaderException if the bundled JavaScript is malformed.
    */
   public JavaScriptSigner() throws JavaScriptLoaderException {
-    Context context = JavaScriptLoader.getContext();
+    V8Object context = JavaScriptLoader.getContext();
     this.transactionClass = JavaScriptLoader.loadResource("Transaction", context);
     this.signerClass = JavaScriptLoader.loadResource("Signer", context);
     this.walletClass = JavaScriptLoader.loadResource("Wallet", context);
@@ -38,12 +38,12 @@ public class JavaScriptSigner {
    */
   public byte[] signTransaction(Transaction transaction, Wallet wallet) throws JavaScriptLoaderException {
     // Convert Java objects into JavaScript objects.
-    Value javaScriptTransaction = transactionToJavaScriptValue(transaction);
-    Value javaScriptWallet = walletToJavaScriptValue(wallet);
+    Object javaScriptTransaction = transactionToJavaScriptValue(transaction);
+    Object javaScriptWallet = walletToJavaScriptValue(wallet);
 
     // Create a JavaScript SignedTransaction.
-    Value javascriptSignedTransaction =
-        signerClass.invokeMember("signTransaction", javaScriptTransaction, javaScriptWallet);
+    Object javascriptSignedTransaction =
+        signerClass.executeJSFunction("signTransaction", javaScriptTransaction, javaScriptWallet);
 
     // Convert JavaScript SignedTransaction into a Java SignedTransaction.
     return valueToByteArray(javascriptSignedTransaction);
@@ -55,8 +55,8 @@ public class JavaScriptSigner {
    * @param javascriptByteArray The serialized bytes to convert.
    * @return An array of bytes.
    */
-  private byte[] valueToByteArray(Value javascriptByteArray) {
-    String signTransactionHex = utilsClass.invokeMember("toHex", javascriptByteArray).asString();
+  private byte[] valueToByteArray(Object javascriptByteArray) {
+    String signTransactionHex = (String) utilsClass.executeJSFunction("toHex", javascriptByteArray);
     return Utils.hexStringToByteArray(signTransactionHex);
   }
 
@@ -66,10 +66,10 @@ public class JavaScriptSigner {
    * @param wallet The {@link Wallet} to convert.
    * @return A reference to the analagous wallet in JavaScript.
    */
-  private Value walletToJavaScriptValue(Wallet wallet) {
+  private Object walletToJavaScriptValue(Wallet wallet) {
     String publicKeyHex = wallet.getPublicKey();
     String privateKeyHex = wallet.getPrivateKey();
-    return walletClass.newInstance(publicKeyHex, privateKeyHex);
+    return JavaScriptLoader.newWallet(publicKeyHex, privateKeyHex);
   }
 
   /**
@@ -78,11 +78,11 @@ public class JavaScriptSigner {
    * @param transaction The {@link Transaction} to convert.
    * @return A reference to the analagous transaction in JavaScript.
    */
-  private Value transactionToJavaScriptValue(Transaction transaction) {
+  private Object transactionToJavaScriptValue(Transaction transaction) {
     byte[] transactionBytes = transaction.toByteArray();
     String transactionHex = Utils.byteArrayToHex(transactionBytes);
-    Value javaScriptBytes = utilsClass.invokeMember("toBytes", transactionHex);
+    Object javaScriptBytes = utilsClass.executeJSFunction("toBytes", transactionHex);
 
-    return transactionClass.invokeMember("deserializeBinary", javaScriptBytes);
+    return transactionClass.executeJSFunction("deserializeBinary", javaScriptBytes);
   }
 }

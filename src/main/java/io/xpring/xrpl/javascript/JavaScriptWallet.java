@@ -1,8 +1,7 @@
 package io.xpring.xrpl.javascript;
 
+import com.eclipsesource.v8.V8Object;
 import io.xpring.xrpl.XrpException;
-import io.xpring.xrpl.XrpExceptionType;
-import org.graalvm.polyglot.Value;
 
 /**
  * Provides Wallet functionality backed by JavaScript.
@@ -12,14 +11,14 @@ public class JavaScriptWallet {
   /**
    * An underlying reference to a JavaScript wallet.
    */
-  private Value javaScriptWallet;
+  private V8Object javaScriptWallet;
 
   /**
    * Initialize a new JavaScriptWallet.
    *
    * @param javaScriptWallet A reference to a JavaScript based wallet.
    */
-  public JavaScriptWallet(Value javaScriptWallet) {
+  public JavaScriptWallet(V8Object javaScriptWallet) {
     this.javaScriptWallet = javaScriptWallet;
   }
 
@@ -29,7 +28,7 @@ public class JavaScriptWallet {
    * @return The address of the wallet.
    */
   public String getAddress() {
-    return javaScriptWallet.invokeMember("getAddress").asString();
+    return (String) javaScriptWallet.executeJSFunction("getAddress");
   }
 
   /**
@@ -38,7 +37,7 @@ public class JavaScriptWallet {
    * @return A hexadecimal encoded representation of the wallet's public key.
    */
   public String getPublicKey() {
-    return javaScriptWallet.getMember("publicKey").asString();
+    return javaScriptWallet.getString("publicKey");
   }
 
   /**
@@ -47,7 +46,7 @@ public class JavaScriptWallet {
    * @return A hexadecimal encoded representation of the wallet's private key.
    */
   public String getPrivateKey() {
-    return javaScriptWallet.getMember("privateKey").asString();
+    return javaScriptWallet.getString("privateKey");
   }
 
   /**
@@ -58,11 +57,7 @@ public class JavaScriptWallet {
    * @throws XrpException An exception if the input could not be signed.
    */
   public String sign(String input) throws XrpException {
-    Value javaScriptSignature = javaScriptWallet.invokeMember("sign", input);
-    if (javaScriptSignature.isNull()) {
-      throw new XrpException(XrpExceptionType.SIGNING_ERROR, "Could not sign input");
-    }
-    return javaScriptSignature.asString();
+    return (String) javaScriptWallet.executeJSFunction("sign", input);
   }
 
   /**
@@ -73,6 +68,6 @@ public class JavaScriptWallet {
    * @return A boolean indicating the validity of the signature.
    */
   public boolean verify(String message, String signature) {
-    return javaScriptWallet.invokeMember("verify", message, signature).asBoolean();
+    return javaScriptWallet.executeBooleanFunction("verify", JavaScriptLoader.newV8Array(message, signature));
   }
 }

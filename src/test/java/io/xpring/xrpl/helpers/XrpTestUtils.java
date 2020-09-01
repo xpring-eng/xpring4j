@@ -76,6 +76,7 @@ public class XrpTestUtils {
 
     FaucetAccountResponse response = faucetClient.generateFaucetAccount();
     Awaitility.await()
+        .pollInSameThread()
         .atMost(Duration.ofSeconds(timeoutInSeconds))
         .pollInterval(Duration.ofSeconds(pollingIntervalInSeconds))
         .until(() -> xrpClient.accountExists(response.account().xAddress()));
@@ -89,6 +90,7 @@ public class XrpTestUtils {
     try {
       Awaitility.await()
           .atMost(Duration.ofSeconds(timeoutInSeconds))
+          .pollInSameThread()
           .pollInterval(Duration.ofSeconds(pollingIntervalInSeconds))
           .until(() -> xrpClient.getBalance(wallet.getAddress()), Matchers.greaterThan(BigInteger.ZERO));
       // In the future if we had a tx hash from the faucet

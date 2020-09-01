@@ -143,7 +143,7 @@ public class XrpClientIntegrationTests {
     assertThat(transaction).isNotNull();
   }
 
-  @Test(timeout = 20000)
+  @Test
   public void sendWithDetailsIncludingMemoTest() throws XrpException {
     // GIVEN an XrpClient, and some SendXrpDetails that include memos
     List<XrpMemo> memos = Arrays.asList(
