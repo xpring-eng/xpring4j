@@ -63,7 +63,7 @@ public interface XrpSignerListSet {
 
     final Integer signerQuorum = signerListSet.getSignerQuorum().getValue();
 
-    final Optional<List<XrpSignerEntry>> signerEntries = signerListSet.getSignerEntriesList() != null
+    final Optional<List<XrpSignerEntry>> signerEntries = signerListSet.getSignerEntriesList().size() > 0
         ? Optional.of(signerListSet.getSignerEntriesList().stream()
           .map(XrpSignerEntry::from)
           .filter(Objects::nonNull)
