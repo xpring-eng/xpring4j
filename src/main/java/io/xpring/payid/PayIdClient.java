@@ -61,6 +61,8 @@ public class PayIdClient {
    *
    * @param payId The PayID to resolve.
    * @param network The network to resolve on.
+   * @return A {@link CryptoAddressDetails} containing address information for the given PayID.
+   * @throws PayIdException if the PayID is invalid or more than one address is returned.
    */
   public CryptoAddressDetails cryptoAddressForPayId(String payId, String network) throws PayIdException {
     List<Address> addresses = this.addressesForPayIdAndNetwork(payId, network);
@@ -81,6 +83,7 @@ public class PayIdClient {
    *
    * @param payId The PayID to resolve.
    * @return a list of all {@link Address}es associated with the given PayID.
+   * @throws PayIdException if the given PayID is invalid.
    */
   public List<Address> allAddressesForPayId(String payId) throws PayIdException {
     return this.addressesForPayIdAndNetwork(payId, "payid");

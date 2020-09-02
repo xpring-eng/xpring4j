@@ -1,6 +1,8 @@
 package io.xpring.xrpl;
 
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpTransaction;
 
 import java.math.BigInteger;
@@ -37,15 +39,25 @@ public interface XrpClientInterface {
   TransactionStatus getPaymentStatus(String transactionHash) throws XrpException;
 
   /**
-   * Transact XRP between two accounts on the ledger.
+   * Send the given amount of XRP from the source wallet to the destination address.
    *
    * @param amount             The number of drops of XRP to send.
    * @param destinationAddress The X-Address to send the XRP to.
    * @param sourceWallet       The {@link Wallet} which holds the XRP.
-   * @return A transaction hash for the payment.
+   * @return A string representing the hash of the submitted transaction.
    * @throws XrpException If the given inputs were invalid.
    */
   public String send(BigInteger amount, String destinationAddress, Wallet sourceWallet) throws XrpException;
+
+  /**
+   * Send the given amount of XRP from the source wallet to the destination address, allowing
+   * for additional details to be specified for use with supplementary features of the XRP ledger.
+   *
+   * @param sendXrpDetails a {@link SendXrpDetails} wrapper object containing details for constructing a transaction.
+   * @return A string representing the hash of the submitted transaction.
+   * @throws XrpException If the given inputs were invalid.
+   */
+  String sendWithDetails(final SendXrpDetails sendXrpDetails) throws XrpException;
 
   /**
    * Return the history of payments for the given account.
@@ -69,6 +81,21 @@ public interface XrpClientInterface {
    * @param transactionHash The hash of the transaction to retrieve.
    * @return An XrpTransaction object representing an XRP Ledger transaction.
    * @throws io.grpc.StatusRuntimeException If the transaction hash was invalid.
+   * @throws XrpException if there was a problem communicating with the XRP Ledger.
    */
   public XrpTransaction getPayment(String transactionHash) throws XrpException;
+
+
+  /**
+   * Enable Deposit Authorization for this XRPL account.
+   *
+   * <p>@see <a href="https://xrpl.org/depositauth.html">Deposit Authorization</a>
+   * </p>
+   * @param wallet The wallet associated with the XRPL account enabling Deposit Authorization and that will sign the
+   *               request.
+   * @return A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
+   *          final status of the transaction.
+   * @throws XrpException If there was a problem communicating with the XRP Ledger.
+   */
+  public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException;
 }

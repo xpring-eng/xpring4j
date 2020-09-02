@@ -1,6 +1,7 @@
 package io.xpring.xrpl;
 
 import static io.xpring.xrpl.Utils.dropsToXrp;
+import static io.xpring.xrpl.Utils.isTestNetwork;
 import static io.xpring.xrpl.Utils.xrpToDrops;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,6 +9,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import io.xpring.common.XrplNetwork;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -411,5 +413,26 @@ public class UtilsTest {
     // GIVEN a null xrp value, WHEN converted to drops,
     // THEN an exception is thrown
     assertThrows("null argument", NullPointerException.class, () -> xrpToDrops(null));
+  }
+
+  @Test
+  public void isTestNetworkWithTest() {
+    // GIVEN an XrplNetwork of testnet, WHEN checked if it's a test network,
+    // THEN it is a test network
+    assertTrue("testnet not a test network", isTestNetwork(XrplNetwork.TEST));
+  }
+
+  @Test
+  public void isTestNetworkWithDev() {
+    // GIVEN an XrplNetwork of devnet, WHEN checked if it's a test network,
+    // THEN it is a test network
+    assertTrue("devnet not a test network", isTestNetwork(XrplNetwork.DEV));
+  }
+
+  @Test
+  public void isTestNetworkWithMain() {
+    // GIVEN an XrplNetwork of mainnet, WHEN checked if it's a test network,
+    // THEN it is not a test network
+    assertFalse("mainnet is a test network", isTestNetwork(XrplNetwork.MAIN));
   }
 }

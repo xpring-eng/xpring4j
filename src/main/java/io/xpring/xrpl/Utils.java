@@ -1,6 +1,8 @@
 package io.xpring.xrpl;
 
 import com.google.common.base.Preconditions;
+import io.xpring.common.CommonUtils;
+import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.javascript.JavaScriptLoaderException;
 import io.xpring.xrpl.javascript.JavaScriptUtils;
 
@@ -42,31 +44,26 @@ public class Utils {
   /**
    * Convert bytes to a hex string.
    *
+   * @deprecated Please use `CommonUtils.byteArrayToHex`
    * @param bytes The bytes to convert.
    * @return Hex from bytes.
    */
+  @Deprecated
   public static String byteArrayToHex(byte[] bytes) {
-    StringBuilder sb = new StringBuilder(bytes.length * 2);
-    for (byte b : bytes) {
-      sb.append(String.format("%02x", b));
-    }
-    return sb.toString();
+    return CommonUtils.byteArrayToHex(bytes);
   }
 
   /**
    * Convert a hex string to bytes.
    *
+   * @deprecated Please use `CommonUtils.hexStringToByteArray`
+   *
    * @param hex The hex to convert to bytes.
    * @return Bytes from hex.
    */
+  @Deprecated
   public static byte[] hexStringToByteArray(String hex) {
-    int len = hex.length();
-    byte[] data = new byte[len / 2];
-    for (int i = 0; i < len; i += 2) {
-      data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
-          + Character.digit(hex.charAt(i + 1), 16));
-    }
-    return data;
+    return CommonUtils.hexStringToByteArray(hex);
   }
 
   /**
@@ -217,5 +214,15 @@ public class Utils {
             .multiply(new BigDecimal(dropsPerXrp))
             .toBigInteger()
             .toString(10);
+  }
+
+  /**
+   * Check if the XrplNetwork is a test network.
+   *
+   * @param xrplNetwork - The {@link XrplNetwork} to check.
+   * @return A boolean representing whether or not the {@link XrplNetwork} is a test network.
+   */
+  public static boolean isTestNetwork(XrplNetwork xrplNetwork) {
+    return xrplNetwork != XrplNetwork.MAIN;
   }
 }

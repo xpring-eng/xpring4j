@@ -15,6 +15,8 @@ import io.grpc.testing.GrpcCleanupRule;
 import io.xpring.common.Result;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
+import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,12 +36,15 @@ import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.Meta;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
+import org.xrpl.rpc.v1.Transaction;
 import org.xrpl.rpc.v1.TransactionResult;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -534,6 +539,60 @@ public class DefaultXrpClientTest {
 
     // THEN the result is null.
     assertThat(transaction).isNull();
+  }
+
+  @Test
+  public void sendWithDetailsIncludingMemoTest() throws XrpException, IOException {
+    // GIVEN an XrpClient, a wallet, a BigInteger denominated amount and a memo.
+    DefaultXrpClient xrpClient = getClient();
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+    String destinationAddress = "X76YZJgkFzdSLZQTa7UzVSs34tFgyV2P16S3bvC8AWpmwdH";
+    BigInteger amount = new BigInteger("10");
+    List<XrpMemo> memos = Arrays.asList(XrpTestUtils.iForgotToPickUpCarlMemo);
+
+    // WHEN the account makes a transaction with a memo.
+    SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
+            .amount(amount)
+            .destination(destinationAddress)
+            .sender(wallet)
+            .memosList(memos)
+            .build();
+
+    // THEN the transaction is submitted without error and a hash is returned.
+    String transactionHash = xrpClient.sendWithDetails(sendXrpDetails);
+  }
+
+  @Test
+  public void enableDepositAuthSuccessfulResponse() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient with mocked networking that will return a successful hash for submitTransaction
+    DefaultXrpClient client = getClient();
+
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+
+    // WHEN enableDepositAuth is called
+    io.xpring.xrpl.model.TransactionResult transactionResult = client.enableDepositAuth(wallet);
+
+    // THEN a transaction hash exists and is the expected hash
+    assertThat(transactionResult.hash()).isEqualTo(TRANSACTION_HASH.toLowerCase());
+  }
+
+  @Test
+  public void enableDepositAuthSubmissionFailure() throws XrpException, IOException {
+    // GIVEN a DefaultXrpClient which will fail to submit a transaction.
+    Result<SubmitTransactionResponse, Throwable> submitResult = Result.error(GENERIC_ERROR);
+    DefaultXrpClient client = getClient(
+            Result.ok(makeGetAccountInfoResponse(DROPS_OF_XRP_IN_ACCOUNT)),
+            Result.ok(makeTransactionStatus(true, TRANSACTION_STATUS_SUCCESS)),
+            Result.ok(makeGetFeeResponse(MINIMUM_FEE, LAST_LEDGER_SEQUENCE)),
+            submitResult,
+            Result.ok(makeGetAccountTransactionHistoryResponse())
+    );
+
+    Wallet wallet = Wallet.generateRandomWallet().getWallet();
+
+    // WHEN enableDepositAuth is attempted THEN an error is propagated.
+    expectedException.expect(Exception.class);
+    client.enableDepositAuth(wallet);
   }
 
   /**

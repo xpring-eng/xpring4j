@@ -5,9 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.helpers.XrpTestUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.math.BigInteger;
 
 public class WalletTest {
   @Rule
@@ -196,5 +200,20 @@ public class WalletTest {
     String signature = "DEADBEEF";
 
     assertFalse(wallet.verify(message, signature));
+  }
+
+  @Test
+  public void testRandomWalletFromFaucet() throws Exception {
+    // GIVEN a new, randomly generated wallet that is funded by the Testnet faucet
+    Wallet wallet = XrpTestUtils.randomWalletFromFaucet();
+
+    // WHEN the wallet is examined
+    // THEN it exists
+    assertNotNull(wallet);
+
+    // AND it has a non-zero balance
+    XrpClient xrpClient = new XrpClient("test.xrp.xpring.io:50051", XrplNetwork.TEST);
+    BigInteger balance = xrpClient.getBalance(wallet.getAddress());
+    assertTrue(balance.signum() == 1);
   }
 }

@@ -5,11 +5,17 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.xpring.common.XrplNetwork;
+import io.xpring.xrpl.model.AccountSetFlag;
+import io.xpring.xrpl.model.SendXrpDetails;
+import io.xpring.xrpl.model.TransactionResult;
+import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xrpl.rpc.v1.AccountAddress;
 import org.xrpl.rpc.v1.AccountRoot;
+import org.xrpl.rpc.v1.AccountSet;
+import org.xrpl.rpc.v1.Common;
 import org.xrpl.rpc.v1.Common.Account;
 import org.xrpl.rpc.v1.Common.Amount;
 import org.xrpl.rpc.v1.Common.Destination;
@@ -25,6 +31,7 @@ import org.xrpl.rpc.v1.GetFeeResponse;
 import org.xrpl.rpc.v1.GetTransactionRequest;
 import org.xrpl.rpc.v1.GetTransactionResponse;
 import org.xrpl.rpc.v1.LedgerSpecifier;
+import org.xrpl.rpc.v1.Memo;
 import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
@@ -38,7 +45,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A client that can submit transactions to the XRP Ledger.
@@ -140,19 +149,41 @@ public class DefaultXrpClient implements XrpClientDecorator {
   }
 
   /**
-   * Transact XRP between two accounts on the ledger.
+   * Send the given amount of XRP from the source wallet to the destination address.
    *
-   * @param drops              The number of drops of XRP to send.
+   * @param amount              The number of drops of XRP to send.
    * @param destinationAddress The X-Address to send the XRP to.
    * @param sourceWallet       The {@link Wallet} which holds the XRP.
-   * @return A transaction hash for the payment.
+   * @return A string representing the hash of the submitted transaction.
    * @throws XrpException If the given inputs were invalid.
    */
   public String send(
-      final BigInteger drops,
+      final BigInteger amount,
       final String destinationAddress,
       final Wallet sourceWallet
   ) throws XrpException {
+    SendXrpDetails sendXrpDetails = SendXrpDetails.builder()
+            .amount(amount)
+            .destination(destinationAddress)
+            .sender(sourceWallet)
+            .build();
+    return this.sendWithDetails(sendXrpDetails);
+  }
+
+  /**
+   * Send the given amount of XRP from the source wallet to the destination address, allowing
+   * for additional details to be specified for use with supplementary features of the XRP ledger.
+   *
+   * @param sendXrpDetails a {@link SendXrpDetails} wrapper object containing details for constructing a transaction.
+   * @return A string representing the hash of the submitted transaction.
+   * @throws XrpException If the given inputs were invalid.
+   */
+  public String sendWithDetails(final SendXrpDetails sendXrpDetails) throws XrpException {
+    final BigInteger drops = sendXrpDetails.amount();
+    final Wallet sourceWallet = sendXrpDetails.sender();
+    final String destinationAddress = sendXrpDetails.destination();
+    final Optional<List<XrpMemo>> xrpMemoList = sendXrpDetails.memosList();
+
     Objects.requireNonNull(drops);
     Objects.requireNonNull(destinationAddress);
     Objects.requireNonNull(sourceWallet);
@@ -177,7 +208,40 @@ public class DefaultXrpClient implements XrpClientDecorator {
     Payment payment = paymentBuilder.build();
 
     Transaction.Builder transactionBuilder = this.prepareBaseTransaction(sourceWallet);
-    Transaction transaction = transactionBuilder.setPayment(payment).build();
+    transactionBuilder.setPayment(payment);
+
+    if (xrpMemoList.isPresent() && xrpMemoList.get().size() > 0) {
+      List<Memo> memoList = xrpMemoList.get().stream()
+                                          .map(memo -> {
+                                            Memo.Builder xrpMemoBuilder = Memo.newBuilder();
+                                            if (memo.data().length > 0) {
+                                              ByteString memoDataBytes = ByteString.copyFrom(memo.data());
+                                              Common.MemoData memoData = Common.MemoData.newBuilder()
+                                                                                        .setValue(memoDataBytes)
+                                                                                        .build();
+                                              xrpMemoBuilder.setMemoData(memoData);
+                                            }
+                                            if (memo.format().length > 0) {
+                                              ByteString memoFormatBytes = ByteString.copyFrom(memo.format());
+                                              Common.MemoFormat memoFormat = Common.MemoFormat.newBuilder()
+                                                                                            .setValue(memoFormatBytes)
+                                                                                            .build();
+                                              xrpMemoBuilder.setMemoFormat(memoFormat);
+                                            }
+                                            if (memo.type().length > 0) {
+                                              ByteString memoTypeBytes = ByteString.copyFrom(memo.type());
+                                              Common.MemoType memoType = Common.MemoType.newBuilder()
+                                                                                        .setValue(memoTypeBytes)
+                                                                                        .build();
+                                              xrpMemoBuilder.setMemoType(memoType);
+                                            }
+                                            return xrpMemoBuilder.build();
+                                          }) // end .map
+              .collect(Collectors.toList());
+      transactionBuilder.addAllMemos(memoList);
+    } // end if memos present
+
+    Transaction transaction = transactionBuilder.build();
 
     return this.signAndSubmitTransaction(transaction, sourceWallet);
   }
@@ -276,6 +340,35 @@ public class DefaultXrpClient implements XrpClientDecorator {
             .setHash(transactionHashByteString).build();
     GetTransactionResponse response = this.stub.getTransaction(request);
     return XrpTransaction.from(response, this.xrplNetwork);
+  }
+
+  /**
+   * Enable Deposit Authorization for this XRPL account.
+   *
+   * <p>@see <a href="https://xrpl.org/depositauth.html">Deposit Authorization</a>
+   * </p>
+   * @param wallet The wallet associated with the XRPL account enabling Deposit Authorization and that will sign the
+   *               request.
+   * @return A TransactionResult object that contains the hash of the submitted AccountSet transaction and the
+   *          final status of the transaction.
+   * @throws XrpException If there was a problem communicating with the XRP Ledger.
+   */
+  public TransactionResult enableDepositAuth(Wallet wallet) throws XrpException {
+    Common.SetFlag setFlag = Common.SetFlag.newBuilder().setValue(AccountSetFlag.ASF_DEPOSIT_AUTH.value).build();
+    AccountSet accountSet = AccountSet.newBuilder().setSetFlag(setFlag).build();
+
+    Transaction.Builder transactionBuilder = this.prepareBaseTransaction(wallet);
+    Transaction transaction = transactionBuilder.setAccountSet(accountSet).build();
+
+    String transactionHash = this.signAndSubmitTransaction(transaction, wallet);
+    TransactionStatus status = this.getPaymentStatus(transactionHash);
+    RawTransactionStatus rawStatus = this.getRawTransactionStatus(transactionHash);
+
+    return TransactionResult.builder()
+                            .hash(transactionHash)
+                            .status(status)
+                            .validated(rawStatus.getValidated())
+                            .build();
   }
 
   public int getOpenLedgerSequence() throws XrpException {

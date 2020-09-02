@@ -5,7 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 6.1.1 - 2020-09-01
+
+This release contains updated dependencies for stability and security.
+
+## 6.1.0 - 2020-08-17
+
+### Added
+- A new method, `sendWithDetails`, is exposed on the `XrpClient` and `XpringClient`,
+allowing memo data to be attached to the transaction when sending XRP.
+- A new method `enableDepositAuth` is added to `XrpClient` which enables Deposit Authorization for the specified XRPL account.
+(See https://xrpl.org/depositauth.html)
+
+#### Removed
+- `Utils.byteArrayToHex` is deprecated.  Please use `CommonUtils.byteArrayToHex`.
+- `Utils.hexStringToByteArray` is deprecated.  Please use `CommonUtils.stringToByteArray`.
 
 ## 6.0.2 - 2020-08-01
 
