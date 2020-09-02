@@ -8,5 +8,20 @@ package io.xpring.xrpl;
  * See: https://xrpl.org/transaction-formats.html
  */
 public enum TransactionType {
-  PAYMENT
+  ACCOUNT_SET,
+  ACCOUNT_DELETE,
+  CHECK_CANCEL,
+  CHECK_CASH,
+  CHECK_CREATE,
+  DEPOSIT_PREAUTH,
+  ESCROW_CANCEL,
+  ESCROW_CREATE,
+  OFFER_CANCEL,
+  OFFER_CREATE,
+  PAYMENT,
+  PAYMENT_CHANNEL_CLAIM,
+  PAYMENT_CHANNEL_CREATE,
+  PAYMENT_CHANNEL_FUND,
+  SET_REGULAR_KEY,
+  SIGNER_LIST_SET
 }

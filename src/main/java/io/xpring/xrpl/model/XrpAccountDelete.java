@@ -64,7 +64,7 @@ public interface XrpAccountDelete {
     ClassicAddress classicAddress = ImmutableClassicAddress.builder()
         .address(destination)
         .tag(destinationTag)
-        .isTest(xrplNetwork == XrplNetwork.TEST)
+        .isTest(Utils.isTestNetwork(xrplNetwork))
         .build();
 
     final String destinationXAddress = Utils.encodeXAddress(classicAddress);
