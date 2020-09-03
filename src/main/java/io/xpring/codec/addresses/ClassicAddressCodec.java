@@ -8,13 +8,13 @@ public class ClassicAddressCodec {
   public static final B58 codec = new B58("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz");
 
   // Otherwise known as `family seed`
-  public static final B58.Version SEED_K256 = new B58.Version(
+  public static final B58.Version SEED_K256_VERSION = new B58.Version(
       33, "seedK256", 16);
 
-  public static final B58.Version SEED_ED25519 = new B58.Version(
+  public static final B58.Version SEED_ED25519_VERSION = new B58.Version(
       "01E14B", "seedEd25519", 16);
 
-  public static final B58.Version ACCOUNT_ID = new B58.Version(
+  public static final B58.Version ACCOUNT_ID_VERSION = new B58.Version(
       0, "accountId", 20);
 
   public static final B58.Version NODE_PUBLIC_KEY = new B58.Version(
@@ -32,24 +32,24 @@ public class ClassicAddressCodec {
   }
 
   public static byte[] decodeSeedToBytes(String seed) {
-    return codec.decodeVersioned(seed, SEED_K256, SEED_ED25519)
+    return codec.decodeVersioned(seed, SEED_K256_VERSION, SEED_ED25519_VERSION)
         .payload;
   }
 
   public static B58.Decoded decodeSeed(String seed) {
-    return codec.decodeVersioned(seed, SEED_K256, SEED_ED25519);
+    return codec.decodeVersioned(seed, SEED_K256_VERSION, SEED_ED25519_VERSION);
   }
 
   public static String encodeSeedK256(byte[] bytes) {
-    return encode(bytes, SEED_K256);
+    return encode(bytes, SEED_K256_VERSION);
   }
 
   public static String encodeAccountID(byte[] bytes) {
-    return encode(bytes, ACCOUNT_ID);
+    return encode(bytes, ACCOUNT_ID_VERSION);
   }
 
   public static byte[] decodeAccountID(String id) {
-    return decode(id, ACCOUNT_ID);
+    return decode(id, ACCOUNT_ID_VERSION);
   }
 
   public static String encodeNodePublic(byte[] bytes) {
@@ -77,6 +77,6 @@ public class ClassicAddressCodec {
   }
 
   public static boolean isValidAccountID(String encoded) {
-    return isValid(encoded, ACCOUNT_ID);
+    return isValid(encoded, ACCOUNT_ID_VERSION);
   }
 }

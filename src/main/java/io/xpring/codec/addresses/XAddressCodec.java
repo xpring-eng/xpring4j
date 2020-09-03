@@ -47,18 +47,19 @@ public class XAddressCodec {
   /**
    * Decodes an x-address to a classic address.
    *
-   * @param xaddress the address to encode.
+   * @param xAddress the address to encode.
    * @return encoded x-address.
    */
-  public static ClassicAddress decode(String xaddress) {
-    Preconditions.checkArgument(xaddress.length() == 47, "X-address must be exactly 47 characters long");
-    boolean isMainnet = xaddress.startsWith("X");
-    boolean isTestnet = xaddress.startsWith("T");
+  @SuppressWarnings("checkstyle:ParameterName")
+  public static ClassicAddress decode(String xAddress) {
+    Preconditions.checkArgument(xAddress.length() == 47, "X-address must be exactly 47 characters long");
+    boolean isMainnet = xAddress.startsWith("X");
+    boolean isTestnet = xAddress.startsWith("T");
     Preconditions.checkArgument(isMainnet || isTestnet, "X-address must start with X or T");
 
     Prefix prefix = isMainnet ? Prefix.MAINNET : Prefix.TESTNET;
     IBaseX.Decoded decoded =
-        codec.decodeVersioned(xaddress, new IBaseX.Version(prefix.version, "accountId", XADDRESS_EXPECTED_LENGTH));
+        codec.decodeVersioned(xAddress, new IBaseX.Version(prefix.version, "accountId", XADDRESS_EXPECTED_LENGTH));
 
     // encoded address is a hex string with 60 characters, with parts at the following indexes:
     // NETWORK [0-1] | ADDRESS [2-41] | TAG_FLAG [42-43] | TAG [44-51] | PADDING [52-59]
