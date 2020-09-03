@@ -10,7 +10,7 @@ public class BaseX implements IBaseX {
   protected final int[] indexes;
 
   /**
-   * creates a new instance with the given alphabet.
+   * Creates a new instance with the given alphabet.
    *
    * @param alphabet the alphabet to use for encoding.
    */
