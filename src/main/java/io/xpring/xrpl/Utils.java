@@ -4,9 +4,8 @@ import com.google.common.base.Preconditions;
 import io.xpring.codec.addresses.ClassicAddressCodec;
 import io.xpring.codec.addresses.XAddressCodec;
 import io.xpring.common.CommonUtils;
+import io.xpring.common.HashUtils;
 import io.xpring.common.XrplNetwork;
-import io.xpring.xrpl.javascript.JavaScriptLoaderException;
-import io.xpring.xrpl.javascript.JavaScriptUtils;
 
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
@@ -16,16 +15,6 @@ import java.util.regex.Pattern;
  * Provides utility functions for working in the XRP Ecosystem.
  */
 public class Utils {
-
-  private static final JavaScriptUtils javaScriptUtils;
-
-  static {
-    try {
-      javaScriptUtils = new JavaScriptUtils();
-    } catch (JavaScriptLoaderException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   /**
    * Please do not instantiate this static utility class.
@@ -130,7 +119,11 @@ public class Utils {
    * @return A hex encoded hash if the input was valid, otherwise null.
    */
   public static String toTransactionHash(String transactionBlobHex) {
-    return javaScriptUtils.toTransactionHash(transactionBlobHex);
+    try {
+      return HashUtils.transactionBlobToTransactionHash(transactionBlobHex);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   /**
