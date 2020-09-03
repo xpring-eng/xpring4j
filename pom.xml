@@ -6,7 +6,7 @@
 
     <groupId>io.xpring</groupId>
     <artifactId>xpring4j</artifactId>
-    <version>HEAD-SNAPSHOT</version>
+    <version>6.1.1</version>
     <name>xpring4j</name>
     <url>https://github.com/xpring-eng/xpring4j</url>
     <description>
@@ -288,7 +288,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.5.7</version>
+                <version>3.5.9</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
