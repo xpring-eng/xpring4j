@@ -62,4 +62,59 @@ public class XAddressCodecTest {
         .isEqualTo(address);
   }
 
+  @Test
+  public void testEncodeTestnetNoTag() {
+    ClassicAddress address = ClassicAddress.builder().address("rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf")
+        .isTest(true)
+        .build();
+    assertThat(XAddressCodec.encode(address)).isEqualTo("TVE26TYGhfLC7tQDno7G8dGtxSkYQn49b3qD26PK7FcGSKE");
+  }
+
+  @Test
+  public void testEncodeTestnetWithTag() {
+    ClassicAddress address = ClassicAddress.builder().address("rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf")
+        .tag(1)
+        .isTest(true)
+        .build();
+    assertThat(XAddressCodec.encode(address)).isEqualTo("TVE26TYGhfLC7tQDno7G8dGtxSkYQnSz1uDimDdPYXzSpyw");
+  }
+
+  @Test
+  public void testEncodeTestnetWithLargeTag() {
+    ClassicAddress address = ClassicAddress.builder().address("rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf")
+        .tag(16781933)
+        .isTest(true)
+        .build();
+    assertThat(XAddressCodec.encode(address)).isEqualTo("TVE26TYGhfLC7tQDno7G8dGtxSkYQnVsw45sDtGHhLi27Qa");
+  }
+
+  @Test
+  public void testDecodeTestnetNoTag() {
+    ClassicAddress address = ClassicAddress.builder().address("rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf")
+        .isTest(true)
+        .build();
+    assertThat(XAddressCodec.decode("TVE26TYGhfLC7tQDno7G8dGtxSkYQn49b3qD26PK7FcGSKE"))
+        .isEqualTo(address);
+  }
+
+  @Test
+  public void testDecodeTestnetWithTag() {
+    ClassicAddress address = ClassicAddress.builder().address("rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf")
+        .tag(1)
+        .isTest(true)
+        .build();
+    assertThat(XAddressCodec.decode("TVE26TYGhfLC7tQDno7G8dGtxSkYQnSz1uDimDdPYXzSpyw"))
+        .isEqualTo(address);
+  }
+
+  @Test
+  public void testDecodeTestnetWithLargeTag() {
+    ClassicAddress address = ClassicAddress.builder().address("rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf")
+        .tag(16781933)
+        .isTest(true)
+        .build();
+    assertThat(XAddressCodec.decode("TVE26TYGhfLC7tQDno7G8dGtxSkYQnVsw45sDtGHhLi27Qa"))
+        .isEqualTo(address);
+  }
+
 }
