@@ -203,6 +203,10 @@
             <artifactId>feign-jackson</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -312,6 +316,11 @@
                 <groupId>io.github.openfeign</groupId>
                 <artifactId>feign-jackson</artifactId>
                 <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.64</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
