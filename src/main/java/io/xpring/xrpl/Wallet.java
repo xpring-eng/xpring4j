@@ -2,17 +2,18 @@ package io.xpring.xrpl;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.xpring.xrpl.javascript.JavaScriptWallet;
-import io.xpring.xrpl.javascript.JavaScriptWalletFactory;
-import io.xpring.xrpl.javascript.JavaScriptWalletGenerationResult;
+import io.xpring.xrpl.wallet.WalletFactory;
 
 /**
  * Represents an account on the XRP Ledger and provides signing / verifying cryptographic functions.
  */
 public class Wallet {
+  public static final WalletFactory WALLET_FACTORY = WalletFactory.getInstance();
+;
   /**
    * The underlying JavaScript wallet.
    */
-  private JavaScriptWallet javaScriptWallet;
+  private io.xpring.xrpl.wallet.WalletGenerationResult walletGenerationResult;
 
   /**
    * Initialize a new wallet from a seed.
@@ -32,7 +33,7 @@ public class Wallet {
    * @throws XrpException If the seed is malformed.
    */
   public Wallet(String seed, boolean isTest) throws XrpException {
-    this(JavaScriptWalletFactory.get().walletFromSeed(seed, isTest));
+    this(WALLET_FACTORY.generateWalletFromSeed(seed, isTest));
   }
 
   /**
@@ -55,11 +56,7 @@ public class Wallet {
    * @throws XrpException If the mnemonic or derivation path are malformed.
    */
   public Wallet(String mnemonic, String derivationPath, boolean isTest) throws XrpException {
-    this(JavaScriptWalletFactory.get().walletFromMnemonicAndDerivationPath(
-        mnemonic,
-        derivationPath,
-        isTest
-    ));
+    this(WALLET_FACTORY.generateWalletFromMnemonic(mnemonic, derivationPath, isTest));
   }
 
   /**
@@ -72,18 +69,19 @@ public class Wallet {
    * @throws XrpException If either input key is malformed.
    */
   public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XrpException {
-    JavaScriptWallet javaScriptWallet = JavaScriptWalletFactory.get().walletFromKeys(publicKey, privateKey, isTest);
-    return new Wallet(javaScriptWallet);
+    io.xpring.xrpl.wallet.WalletGenerationResult walletGenerationResult =
+        WALLET_FACTORY.generateWalletFromKeys(privateKey, publicKey, isTest);
+    return new Wallet(walletGenerationResult);
   }
 
   /**
-   * Create a new wallet from an {@link JavaScriptWallet}.
+   * Create a new wallet from an {@link WalletGenerationResult}.
    *
-   * @param javaScriptWallet The wallet to wrap.
+   * @param walletGenerationResult The wallet to wrap.
    */
   @VisibleForTesting
-  public Wallet(JavaScriptWallet javaScriptWallet) {
-    this.javaScriptWallet = javaScriptWallet;
+  public Wallet(io.xpring.xrpl.wallet.WalletGenerationResult walletGenerationResult) {
+    this.walletGenerationResult = walletGenerationResult;
   }
 
   /**
@@ -92,7 +90,7 @@ public class Wallet {
    * @return A {WalletGenerationResult} containing the artifacts of the generation process.
    * @throws XrpException If wallet generation fails.
    */
-  public static WalletGenerationResult generateRandomWallet() throws XrpException {
+  public static io.xpring.xrpl.wallet.WalletGenerationResult generateRandomWallet() throws XrpException {
     return generateRandomWallet(false);
   }
 
@@ -103,16 +101,8 @@ public class Wallet {
    * @return A {WalletGenerationResult} containing the artifacts of the generation process.
    * @throws XrpException If wallet generation fails.
    */
-  public static WalletGenerationResult generateRandomWallet(boolean isTest) throws XrpException {
-    JavaScriptWalletGenerationResult javaScriptWalletGenerationResult = JavaScriptWalletFactory.get()
-        .generateRandomWallet(isTest);
-
-    // TODO(keefertaylor): This should be a direct conversion, rather than recreating a new wallet.
-    Wallet newWallet = new Wallet(javaScriptWalletGenerationResult.getMnemonic(),
-        javaScriptWalletGenerationResult.getDerivationPath());
-
-    return new WalletGenerationResult(javaScriptWalletGenerationResult.getMnemonic(),
-        javaScriptWalletGenerationResult.getDerivationPath(), newWallet);
+  public static io.xpring.xrpl.wallet.WalletGenerationResult generateRandomWallet(boolean isTest) throws XrpException {
+    return WALLET_FACTORY.generateRandomWallet(isTest);
   }
 
   /**
@@ -121,7 +111,7 @@ public class Wallet {
    * @return The address of this {@link Wallet}.
    */
   public String getAddress() {
-    return javaScriptWallet.getAddress();
+    return walletGenerationResult.getAddress();
   }
 
   /**
@@ -130,7 +120,7 @@ public class Wallet {
    * @return The public key of this {@link Wallet}.
    */
   public String getPublicKey() {
-    return javaScriptWallet.getPublicKey();
+    return walletGenerationResult.getPublicKey();
   }
 
   /**
@@ -139,7 +129,7 @@ public class Wallet {
    * @return The private key of this {@link Wallet}.
    */
   public String getPrivateKey() {
-    return javaScriptWallet.getPrivateKey();
+    return walletGenerationResult.getPrivateKey();
   }
 
   /**
@@ -150,7 +140,8 @@ public class Wallet {
    * @throws XrpException If the input is malformed.
    */
   public String sign(String input) throws XrpException {
-    return javaScriptWallet.sign(input);
+    throw new UnsupportedOperationException("not yet implemented");
+    //return javaScriptWallet.sign(input);
   }
 
   /**
@@ -161,6 +152,7 @@ public class Wallet {
    * @return A boolean indicating the validity of the signature.
    */
   public boolean verify(String message, String signature) {
-    return javaScriptWallet.verify(message, signature);
+    throw new UnsupportedOperationException("not yet implemented");
+    //return javaScriptWallet.verify(message, signature);
   }
 }

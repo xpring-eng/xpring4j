@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
+import io.xpring.xrpl.wallet.WalletFactory;
+import io.xpring.xrpl.wallet.WalletGenerationResult;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -39,11 +41,12 @@ public class WalletTest {
   public void testGenerateRandomWallet() throws XrpException {
     WalletGenerationResult generationResult = Wallet.generateRandomWallet();
 
-    assertNotNull(generationResult.getWallet());
+    //assertNotNull(generationResult.getWallet());
     assertNotNull(generationResult.getMnemonic());
     assertNotNull(generationResult.getDerivationPath());
 
-    Wallet recreatedWallet = new Wallet(generationResult.getMnemonic(), generationResult.getDerivationPath());
+    Wallet recreatedWallet =
+        new Wallet(generationResult.getMnemonic().get(), generationResult.getDerivationPath().get());
 
     assertEquals(generationResult.getWallet().getAddress(), recreatedWallet.getAddress());
     assertEquals(generationResult.getWallet().getPublicKey(), recreatedWallet.getPublicKey());
@@ -92,6 +95,19 @@ public class WalletTest {
     assertEquals(wallet.getPrivateKey(), "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389");
     assertEquals(wallet.getAddress(), "X7uRz9jfzHUFEjZTZ7rMVzFuTGZTHWcmkKjvGkNqVbfMhca");
   }
+
+  @Test
+  public void testGenerateWalletFromMnemonicDerivationPath01ewrite() throws XrpException {
+    String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+    String derivationPath = "m/44'/144'/0'/0/1";
+    io.xpring.xrpl.wallet.WalletGenerationResult result =
+        WalletFactory.getInstance().generateWalletFromMnemonic(mnemonic, derivationPath, false);
+
+    assertEquals(result.getPublicKey(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89");
+    assertEquals(result.getPrivateKey(), "000974B4CFE004A2E6C4364CBF3510A36A352796728D0861F6B555ED7E54A70389");
+    assertEquals(result.getAddress(), "X7uRz9jfzHUFEjZTZ7rMVzFuTGZTHWcmkKjvGkNqVbfMhca");
+  }
+
 
   @Test
   public void testGenerateWalletFromMnemonicInvalidDerivationPath() throws XrpException {

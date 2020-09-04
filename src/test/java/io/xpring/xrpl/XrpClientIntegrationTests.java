@@ -95,6 +95,13 @@ public class XrpClientIntegrationTests {
     assertThat(transactionHash).isNotNull();
   }
 
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+  @Test
+  public void sendXRPTestJava() throws XrpException {
+    String transactionHash = xrpClient.send(AMOUNT, "shDzRL6QQThhGk6gpKsy9QWApRrRr", wallet);
+    assertThat(transactionHash).isNotNull();
+  }
+
   @Test
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void sendXRPWithADestinationTag() throws XrpException {
@@ -134,6 +141,7 @@ public class XrpClientIntegrationTests {
   @Test
   public void getPaymentTest() throws XrpException {
     // GIVEN a hash of a payment transaction.
+    Wallet wallet = new Wallet("shDzRL6QQThhGk6gpKsy9QWApRrRr", true);
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
 
     // WHEN the transaction is requested.
