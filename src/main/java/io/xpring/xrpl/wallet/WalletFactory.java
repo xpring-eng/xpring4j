@@ -89,7 +89,7 @@ public class WalletFactory {
    *
    * @param seed seed bytes.
    * @param isTest if the wallet is a testnet wallet.
-   * @return
+   * @return new wallet.
    */
   public WalletGenerationResult generateWalletFromSeedBytes(byte[] seed, boolean isTest) {
     IKeyPair keyPair = generateHdWalletFromSeed(seed, defaultDerivationPath);
