@@ -1,19 +1,20 @@
 package io.xpring.xrpl;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.xpring.xrpl.javascript.JavaScriptWallet;
+import com.google.common.io.BaseEncoding;
 import io.xpring.xrpl.wallet.WalletFactory;
 
 /**
  * Represents an account on the XRP Ledger and provides signing / verifying cryptographic functions.
  */
 public class Wallet {
+
   public static final WalletFactory WALLET_FACTORY = WalletFactory.getInstance();
-;
+
   /**
    * The underlying JavaScript wallet.
    */
-  private io.xpring.xrpl.wallet.WalletGenerationResult walletGenerationResult;
+  private io.xpring.xrpl.WalletGenerationResult walletGenerationResult;
 
   /**
    * Initialize a new wallet from a seed.
@@ -65,22 +66,22 @@ public class Wallet {
    * @param publicKey  A hex encoded string representing the public key.
    * @param privateKey A hex encoded string representing the private key.
    * @param isTest     Whether the address is for use on a test network.
-   * @return A new {@link JavaScriptWallet}.
+   * @return A new {@link Wallet}.
    * @throws XrpException If either input key is malformed.
    */
   public static Wallet walletFromKeys(String publicKey, String privateKey, boolean isTest) throws XrpException {
-    io.xpring.xrpl.wallet.WalletGenerationResult walletGenerationResult =
+    WalletGenerationResult walletGenerationResult =
         WALLET_FACTORY.generateWalletFromKeys(privateKey, publicKey, isTest);
     return new Wallet(walletGenerationResult);
   }
 
   /**
-   * Create a new wallet from an {@link WalletGenerationResult}.
+   * Create a new wallet from an {@link io.xpring.xrpl.WalletGenerationResult}.
    *
    * @param walletGenerationResult The wallet to wrap.
    */
   @VisibleForTesting
-  public Wallet(io.xpring.xrpl.wallet.WalletGenerationResult walletGenerationResult) {
+  public Wallet(io.xpring.xrpl.WalletGenerationResult walletGenerationResult) {
     this.walletGenerationResult = walletGenerationResult;
   }
 
@@ -90,7 +91,7 @@ public class Wallet {
    * @return A {WalletGenerationResult} containing the artifacts of the generation process.
    * @throws XrpException If wallet generation fails.
    */
-  public static io.xpring.xrpl.wallet.WalletGenerationResult generateRandomWallet() throws XrpException {
+  public static io.xpring.xrpl.WalletGenerationResult generateRandomWallet() throws XrpException {
     return generateRandomWallet(false);
   }
 
@@ -101,8 +102,12 @@ public class Wallet {
    * @return A {WalletGenerationResult} containing the artifacts of the generation process.
    * @throws XrpException If wallet generation fails.
    */
-  public static io.xpring.xrpl.wallet.WalletGenerationResult generateRandomWallet(boolean isTest) throws XrpException {
+  public static io.xpring.xrpl.WalletGenerationResult generateRandomWallet(boolean isTest) throws XrpException {
     return WALLET_FACTORY.generateRandomWallet(isTest);
+  }
+
+  public WalletGenerationResult getWalletGenerationResult() {
+    return walletGenerationResult;
   }
 
   /**
@@ -140,8 +145,12 @@ public class Wallet {
    * @throws XrpException If the input is malformed.
    */
   public String sign(String input) throws XrpException {
-    throw new UnsupportedOperationException("not yet implemented");
-    //return javaScriptWallet.sign(input);
+    try {
+      byte[] signature = walletGenerationResult.getKeyPair().signMessage(decode(input));
+      return BaseEncoding.base16().encode(signature);
+    } catch (Exception e) {
+      throw new XrpException(XrpExceptionType.SIGNING_ERROR, e.getMessage());
+    }
   }
 
   /**
@@ -152,7 +161,14 @@ public class Wallet {
    * @return A boolean indicating the validity of the signature.
    */
   public boolean verify(String message, String signature) {
-    throw new UnsupportedOperationException("not yet implemented");
-    //return javaScriptWallet.verify(message, signature);
+    try {
+      return walletGenerationResult.getKeyPair().verify(decode(message), decode(signature));
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  private static byte[] decode(String hex) {
+    return BaseEncoding.base16().decode(hex.toUpperCase());
   }
 }

@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import io.xpring.common.XrplNetwork;
 import io.xpring.xrpl.helpers.XrpTestUtils;
 import io.xpring.xrpl.wallet.WalletFactory;
-import io.xpring.xrpl.wallet.WalletGenerationResult;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -100,7 +99,7 @@ public class WalletTest {
   public void testGenerateWalletFromMnemonicDerivationPath01ewrite() throws XrpException {
     String mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     String derivationPath = "m/44'/144'/0'/0/1";
-    io.xpring.xrpl.wallet.WalletGenerationResult result =
+    io.xpring.xrpl.WalletGenerationResult result =
         WalletFactory.getInstance().generateWalletFromMnemonic(mnemonic, derivationPath, false);
 
     assertEquals(result.getPublicKey(), "038BF420B5271ADA2D7479358FF98A29954CF18DC25155184AEAD05796DA737E89");
@@ -143,7 +142,7 @@ public class WalletTest {
     Wallet wallet = new Wallet(mnemonic, derivationPath);
 
     String result = wallet.sign("74657374206d657373616765");
-    assertEquals(result, "3045022100E10177E86739A9C38B485B6AA04BF2B9AA00E79189A1132E7172B70F400ED1170220566BD64AA3F01DDE8D99DFFF0523D165E7DD2B9891ABDA1944E2F3A52CCCB83A");
+    assertEquals(result, "3045022100F72060F401BA12C0B62DED09F8A833089A0D42A99F8EC4A2C791761382C4D14302207FC99F3C6544B919210148B276F9908DB0426BC9F7994DFB823F71A1DC22AD8C");
   }
 
   @Test

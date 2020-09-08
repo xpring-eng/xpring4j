@@ -10,7 +10,7 @@ public class HashUtils {
 
   /**
    * A prefix applied when hashing a signed transaction blob.
-   * {@see https://xrpl.org/basic-data-types.html#hashes).
+   * @see <a href="https://xrpl.org/basic-data-types.html#hashes">hashes</a>
    */
   private static final String signedTransactionPrefixHex = "54584E00";
 

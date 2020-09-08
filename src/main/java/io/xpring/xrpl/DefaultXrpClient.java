@@ -36,7 +36,6 @@ import org.xrpl.rpc.v1.Payment;
 import org.xrpl.rpc.v1.SubmitTransactionRequest;
 import org.xrpl.rpc.v1.SubmitTransactionResponse;
 import org.xrpl.rpc.v1.Transaction;
-import org.xrpl.rpc.v1.TransactionOrBuilder;
 import org.xrpl.rpc.v1.XRPDropsAmount;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
@@ -57,6 +56,7 @@ import java.util.stream.Collectors;
 public class DefaultXrpClient implements XrpClientDecorator {
   // A margin to pad the current ledger sequence with when submitting transactions.
   private static final int MAX_LEDGER_VERSION_OFFSET = 10;
+  public static final Common.Flags FULLY_SIGNED_TX_FLAG = Common.Flags.newBuilder().setValue(0x80000000).build();
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -208,6 +208,7 @@ public class DefaultXrpClient implements XrpClientDecorator {
     Payment payment = paymentBuilder.build();
 
     Transaction.Builder transactionBuilder = this.prepareBaseTransaction(sourceWallet);
+    transactionBuilder.setFlags(FULLY_SIGNED_TX_FLAG);
     transactionBuilder.setPayment(payment);
 
     if (xrpMemoList.isPresent() && xrpMemoList.get().size() > 0) {

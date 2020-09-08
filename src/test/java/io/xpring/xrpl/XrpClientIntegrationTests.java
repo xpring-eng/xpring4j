@@ -95,13 +95,6 @@ public class XrpClientIntegrationTests {
     assertThat(transactionHash).isNotNull();
   }
 
-  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-  @Test
-  public void sendXRPTestJava() throws XrpException {
-    String transactionHash = xrpClient.send(AMOUNT, "shDzRL6QQThhGk6gpKsy9QWApRrRr", wallet);
-    assertThat(transactionHash).isNotNull();
-  }
-
   @Test
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public void sendXRPWithADestinationTag() throws XrpException {
