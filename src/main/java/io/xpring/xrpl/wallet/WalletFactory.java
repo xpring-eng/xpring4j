@@ -269,13 +269,13 @@ public class WalletFactory {
   }
 
   private static byte[] sign(byte[] privateKey, byte[] message) throws CryptoException {
+    byte [] hash = new Sha512().add(message).finish256();
     if (privateKey.length == 33 && privateKey[0] == 0xed) {
       Signer signer = new Ed25519Signer();
       signer.init(true, new Ed25519PrivateKeyParameters(privateKey, 0));
-      signer.update(message, 0, message.length);
+      signer.update(hash, 0, hash.length);
       return signer.generateSignature();
     } else {
-      byte [] hash = new Sha512().add(message).finish256();
       ECDSASigner ecdsaSigner = new ECDSASigner(new HMacDSAKCalculator(new SHA1Digest()));
       ECDomainParameters domain = SECP256K1.params();
       ECPrivateKeyParameters privateKeyParms =
