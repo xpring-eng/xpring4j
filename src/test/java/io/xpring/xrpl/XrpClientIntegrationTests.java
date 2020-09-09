@@ -13,6 +13,7 @@ import io.xpring.xrpl.model.SendXrpDetails;
 import io.xpring.xrpl.model.TransactionResult;
 import io.xpring.xrpl.model.XrpMemo;
 import io.xpring.xrpl.model.XrpTransaction;
+import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Test;
 import org.xrpl.rpc.v1.AccountAddress;
@@ -24,6 +25,7 @@ import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc;
 import org.xrpl.rpc.v1.XRPLedgerAPIServiceGrpc.XRPLedgerAPIServiceBlockingStub;
 
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
@@ -134,6 +136,7 @@ public class XrpClientIntegrationTests {
   @Test
   public void getPaymentTest() throws XrpException {
     // GIVEN a hash of a payment transaction.
+    Wallet wallet = new Wallet("shDzRL6QQThhGk6gpKsy9QWApRrRr", true);
     String transactionHash = xrpClient.send(AMOUNT, XRPL_ADDRESS, wallet);
 
     // WHEN the transaction is requested.
@@ -200,12 +203,13 @@ public class XrpClientIntegrationTests {
 
     GetAccountInfoResponse accountInfo = networkClient.getAccountInfo(request);
 
-    AccountRoot accountData = accountInfo.getAccountData();
-
-    Integer flags = accountData.getFlags().getValue();
-
     assertThat(transactionHash).isNotNull();
     assertThat(transactionStatus).isEqualTo(TransactionStatus.SUCCEEDED);
-    assertThat(AccountRootFlag.check(AccountRootFlag.LSF_DEPOSIT_AUTH, flags)).isTrue();
+    Awaitility.await().atMost(Duration.ofSeconds(10)).until(() -> {
+          AccountRoot accountData = accountInfo.getAccountData();
+          Integer flags = accountData.getFlags().getValue();
+          return AccountRootFlag.check(AccountRootFlag.LSF_DEPOSIT_AUTH, flags);
+        }
+    );
   }
 }

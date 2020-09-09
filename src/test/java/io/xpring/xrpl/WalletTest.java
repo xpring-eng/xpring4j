@@ -43,7 +43,8 @@ public class WalletTest {
     assertNotNull(generationResult.getMnemonic());
     assertNotNull(generationResult.getDerivationPath());
 
-    Wallet recreatedWallet = new Wallet(generationResult.getMnemonic(), generationResult.getDerivationPath());
+    Wallet recreatedWallet =
+        new Wallet(generationResult.getMnemonic().get(), generationResult.getDerivationPath().get());
 
     assertEquals(generationResult.getWallet().getAddress(), recreatedWallet.getAddress());
     assertEquals(generationResult.getWallet().getPublicKey(), recreatedWallet.getPublicKey());
@@ -127,7 +128,7 @@ public class WalletTest {
     Wallet wallet = new Wallet(mnemonic, derivationPath);
 
     String result = wallet.sign("74657374206d657373616765");
-    assertEquals(result, "3045022100E10177E86739A9C38B485B6AA04BF2B9AA00E79189A1132E7172B70F400ED1170220566BD64AA3F01DDE8D99DFFF0523D165E7DD2B9891ABDA1944E2F3A52CCCB83A");
+    assertEquals(result, "3045022100F72060F401BA12C0B62DED09F8A833089A0D42A99F8EC4A2C791761382C4D14302207FC99F3C6544B919210148B276F9908DB0426BC9F7994DFB823F71A1DC22AD8C");
   }
 
   @Test
