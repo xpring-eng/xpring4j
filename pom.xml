@@ -301,7 +301,7 @@
             <dependency>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.21</version>
+                <version>3.0.22</version>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign</groupId>
@@ -533,7 +533,7 @@
             <plugin>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.21</version>
+                <version>3.0.22</version>
                 <executions>
                     <execution>
                         <goals>
