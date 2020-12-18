@@ -9,6 +9,11 @@ import java.util.Optional;
  */
 @Value.Immutable
 public interface ClassicAddress {
+
+  static ImmutableClassicAddress.Builder builder() {
+    return ImmutableClassicAddress.builder();
+  }
+
   /**
    * The address component of the classic address.
    *
