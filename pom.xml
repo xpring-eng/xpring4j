@@ -20,7 +20,7 @@
         <protobuf.version>3.13.0</protobuf.version>
         <slf4j.version>1.7.30</slf4j.version>
         <feign.version>11.0</feign.version>
-        <graalvm.version>20.2.0</graalvm.version>
+        <graalvm.version>21.0.0.2</graalvm.version>
         <compiler.dir>${project.build.directory}/compiler</compiler.dir>
         <!-- org.apache.maven.plugins:maven-checkstyle-plugin -->
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
