@@ -5,6 +5,8 @@
 
 # Xpring4j
 
+**DEPRECATION NOTICE:** This library is no longer actively maintained. It has been replaced by the Java library developed and actively maintained by the [XRP Ledger Foundation](https://github.com/XRPLF/xrpl4j).
+
 Xpring4j is the Java client-side library of Xpring SDK.
 
 ## Features
