@@ -1,9 +1,12 @@
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](https://github.com/xpring-eng/xpring4j)
 [![CircleCI](https://img.shields.io/circleci/build/github/xpring-eng/xpring4j?style=flat-square)](https://circleci.com/gh/xpring-eng/Xpring4j)
 [![CodeCov](https://img.shields.io/codecov/c/github/xpring-eng/xpring4j?style=flat-square)](https://codecov.io/gh/xpring-eng/Xpring4J)
 [![Dependabot Status](https://img.shields.io/static/v1?label=Dependabot&message=enabled&color=success&style=flat-square&logo=dependabot)](https://dependabot.com)
 
-# Xpring4j
+# **\*DEPRECATED\*** Xpring4j
+
+**DEPRECATION NOTICE:** This library is no longer actively maintained. It has been replaced by the Java library developed and actively maintained by the [XRP Ledger Foundation](https://github.com/XRPLF/xrpl4j).
 
 Xpring4j is the Java client-side library of Xpring SDK.
 
