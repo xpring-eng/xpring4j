@@ -1,9 +1,12 @@
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](https://github.com/xpring-eng/xpring4j)
 [![CircleCI](https://img.shields.io/circleci/build/github/xpring-eng/xpring4j?style=flat-square)](https://circleci.com/gh/xpring-eng/Xpring4j)
 [![CodeCov](https://img.shields.io/codecov/c/github/xpring-eng/xpring4j?style=flat-square)](https://codecov.io/gh/xpring-eng/Xpring4J)
 [![Dependabot Status](https://img.shields.io/static/v1?label=Dependabot&message=enabled&color=success&style=flat-square&logo=dependabot)](https://dependabot.com)
 
-# Xpring4j
+# **\*DEPRECATED\*** Xpring4j
+
+**DEPRECATION NOTICE:** This library is no longer actively maintained. It has been replaced by the Java library developed and actively maintained by the [XRP Ledger Foundation](https://github.com/XRPLF/xrpl4j).
 
 Xpring4j is the Java client-side library of Xpring SDK.
 
@@ -130,7 +133,7 @@ String mnemonic = "abandon abandon abandon abandon abandon abandon abandon aband
 
 Wallet wallet = new Wallet(mnemonic, null);
 
-System.out.println(wallet.getAddress()); // X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr
+System.out.println(wallet.getAddress()); // XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ
 System.out.println(wallet.getPublicKey()); // 031D68BC1A142E6766B2BDFB006CCFE135EF2E0E2E94ABB5CF5C9AB6104776FBAE
 System.out.println(wallet.getPrivateKey()); // 0090802A50AA84EFB6CDB225F17C27616EA94048C179142FECF03F4712A07EA7A4
 ```
@@ -174,7 +177,7 @@ import io.xpring.common.idiomatic.XrplLNetwork;
 String grpcURL = "test.xrp.xpring.io:50051"; // Testnet URL, use main.xrp.xpring.io:50051 for Mainnet
 XrpClient xrpClient = new XrpClient(grpcURL, XrplNetwork.TEST);
 
-String address = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
+String address = "XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ";
 BigInteger balance = xrpClient.getBalance(address);
 System.out.println(balance); // Logs a balance in drops of XRP
 ```
@@ -254,7 +257,7 @@ WalletGenerationResult walletGenerationResult = Wallet.generateRandomWallet();
 Wallet wallet = walletGenerationResult.getWallet();
 
 // Destination address.
-String destinationAddress = "X7u4MQVhU2YxS4P9fWzQjnNuDRUkP3GM6kiVjTjcQgUU3Jr";
+String destinationAddress = "XVMFQQBMhdouRqhPMuawgBMN1AVFTofPAdRsXG5RkPtUPNQ";
 
 String transactionHash = xrpClient.send(amount, destinationAddress, wallet);
 ```
