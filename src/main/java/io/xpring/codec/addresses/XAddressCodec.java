@@ -3,8 +3,8 @@ package io.xpring.codec.addresses;
 import static com.google.common.io.BaseEncoding.base16;
 
 import com.google.common.base.Preconditions;
-import io.xpring.codec.base58.B58;
-import io.xpring.codec.basex.IBaseX;
+import com.ripple.encodings.base58.B58;
+import com.ripple.encodings.basex.IBaseX;
 import io.xpring.xrpl.ClassicAddress;
 
 import java.util.Optional;

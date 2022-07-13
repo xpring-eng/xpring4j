@@ -1,8 +1,7 @@
 package io.xpring.codec.addresses;
 
-
-import io.xpring.codec.base58.B58;
-import io.xpring.codec.basex.EncodingFormatException;
+import com.ripple.encodings.base58.B58;
+import com.ripple.encodings.basex.EncodingFormatException;
 
 public class ClassicAddressCodec {
   public static final B58 codec = new B58("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz");

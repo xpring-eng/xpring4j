@@ -1,46 +1,37 @@
 package io.xpring.xrpl;
 
+import com.ripple.crypto.keys.IKeyPair;
+import org.immutables.value.Value;
+
+import java.util.Optional;
+
 /**
  * Contains artifacts of generating a new Wallet.
  */
-public class WalletGenerationResult {
-  /**
-   * The mnemonic of the newly generated Wallet.
-   */
-  private String mnemonic;
+@Value.Immutable
+public interface WalletGenerationResult {
 
-  public String getMnemonic() {
-    return mnemonic;
+  static ImmutableWalletGenerationResult.Builder builder() {
+    return ImmutableWalletGenerationResult.builder();
   }
 
-  /**
-   * The derivation path of the newly generated Wallet.
-   */
-  private String derivationPath;
-
-  public String getDerivationPath() {
-    return derivationPath;
+  @Value.Auxiliary
+  default Wallet getWallet() {
+    return new Wallet(this);
   }
 
-  /**
-   * The newly generated Wallet.
-   */
-  private Wallet wallet;
+  String getAddress();
 
-  public Wallet getWallet() {
-    return wallet;
-  }
+  IKeyPair getKeyPair();
 
-  /**
-   * Create a new JavaScriptWalletGenerationResult.
-   *
-   * @param mnemonic       The mnemonic that generated the wallet.
-   * @param derivationPath The derivation path that generated the wallet.
-   * @param wallet         The newly generated wallet.
-   */
-  public WalletGenerationResult(String mnemonic, String derivationPath, Wallet wallet) {
-    this.mnemonic = mnemonic;
-    this.derivationPath = derivationPath;
-    this.wallet = wallet;
-  }
+  String getPrivateKey();
+
+  String getPublicKey();
+
+  Optional<String> getDerivationPath();
+
+  Optional<String> getSeed();
+
+  Optional<String> getMnemonic();
+
 }
