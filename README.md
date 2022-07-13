@@ -1,12 +1,4 @@
-
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](https://github.com/xpring-eng/xpring4j)
-[![CircleCI](https://img.shields.io/circleci/build/github/xpring-eng/xpring4j?style=flat-square)](https://circleci.com/gh/xpring-eng/Xpring4j)
-[![CodeCov](https://img.shields.io/codecov/c/github/xpring-eng/xpring4j?style=flat-square)](https://codecov.io/gh/xpring-eng/Xpring4J)
-[![Dependabot Status](https://img.shields.io/static/v1?label=Dependabot&message=enabled&color=success&style=flat-square&logo=dependabot)](https://dependabot.com)
-
-# **\*DEPRECATED\*** Xpring4j
-
-**DEPRECATION NOTICE:** This library is no longer actively maintained. It has been replaced by the Java library developed and actively maintained by the [XRP Ledger Foundation](https://github.com/XRPLF/xrpl4j).
+# This library has been deprecated. Instead, use [xrpl4j](https://github.com/XRPLF/xrpl4j).
 
 Xpring4j is the Java client-side library of Xpring SDK.
 
@@ -452,17 +444,3 @@ XpringClient xpringClient = new XpringClient(payIdClient, xrpClient);
 
 String hash = xpringClient.send(dropsToSend, payID, wallet);
 ```
-
-# Contributing
-
-Pull requests are welcome! To get started with building this library and opening pull requests, please see [contributing.md](CONTRIBUTING.md).
-
-Thank you to all the users who have contributed to this library!
-
-<a href="https://github.com/xpring-eng/xpring4j/graphs/contributors">
-  <img src="https://contributors-img.firebaseapp.com/image?repo=xpring-eng/xpring4j" />
-</a>
-
-# License
-
-Xpring SDK is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
